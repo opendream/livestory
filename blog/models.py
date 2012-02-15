@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from localtion.models import Location
+from location.models import Location
 
 import settings
 
@@ -33,7 +33,7 @@ class Blog(models.Model):
     modified = models.DateTimeField(auto_now=True)
     
     user     = models.ForeignKey(User)
-    category = models.ForeignKey(Location)
+    category = models.ForeignKey(Category)
     location = models.ForeignKey(Location)
     
     def __unicode__(self):
