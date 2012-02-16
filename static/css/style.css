@@ -1,0 +1,32 @@
+.well-custom{
+	padding: 8px 0;
+}
+
+.navbar-inner{
+	margin: 0 0 18px 0;
+}
+
+#header{
+	margin: 0 0 20px 0;
+}
+
+#footer{
+	margin: 20px 0 0 0;
+}
+
+.content{
+	border: 1px solid #eee;
+	padding: 8px 35px 8px 14px;
+	margin-bottom: 18px;
+}
+
+.rounded{
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+legend h1{
+	font-size: 19.5px;
+	font-weight: normal;
+}

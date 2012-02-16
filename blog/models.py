@@ -1,12 +1,22 @@
+import os
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 
 from location.models import Location
 
 import settings
 
+def blog_image_path(instance, filename):
+    filepath = '%sblog/%s' % (settings.IMAGE_ROOT, instance.user.id)
+    if not os.path.exists(filepath):
+        os.makedirs(filepath)
+    return '%s/%s' % (filepath, filename)
+
 def blog_image_url(instance, filename):
-    return '%sblog/%s/%s' % (settings.IMAGE_ROOT, instance.user.id, filename)
+    return '%simages/blog/%s/%s' % (settings.MEDIA_URL, instance.user.id, filename)
+
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -24,20 +34,21 @@ class Blog(models.Model):
     PRIVATE_CHOICES = ((False, 'No'), (True, 'Yes'))
     DRAFT_CHOICES   = ((False, 'No'), (True, 'Yes'))
     
-    image    = models.ImageField(upload_to=blog_image_url)
-    detail   = models.CharField(max_length=1000, null=True)
-    mood     = models.IntegerField(default=0, choices=MOOD_CHOICES)
-    private  = models.BooleanField(default=False, choices=PRIVATE_CHOICES)
-    draft    = models.BooleanField(default=False, choices=DRAFT_CHOICES)
-    created  = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-    
-    user     = models.ForeignKey(User)
-    category = models.ForeignKey(Category)
-    location = models.ForeignKey(Location)
+    title       = models.CharField(max_length=200)
+    image       = models.ImageField(upload_to=blog_image_path)
+    description = models.TextField(null=True)
+    mood        = models.IntegerField(default=0, choices=MOOD_CHOICES)
+    private     = models.BooleanField(default=False, choices=PRIVATE_CHOICES)
+    draft       = models.BooleanField(default=False, choices=DRAFT_CHOICES)
+    created     = models.DateTimeField(auto_now_add=True)
+    modified    = models.DateTimeField(auto_now=True)
+                
+    user        = models.ForeignKey(User)
+    category    = models.ForeignKey(Category)
+    location    = models.ForeignKey(Location)
     
     def __unicode__(self):
-        return '%s' % (self.detail)
+        return '%s' % (self.title)
         
     def get_thumbnail(self, point):
         # TODO

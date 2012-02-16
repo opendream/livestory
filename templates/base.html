@@ -1,18 +1,27 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Open Reader | {% block head_title %}{% endblock %}</title>
+  <title>Ofxam Live Stories | {% block head_title %}{% endblock %}</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
   <meta charset="utf-8">
   <meta name="keywords" content="{% block meta_keywords %}{% endblock %}" />
   
   <script type="text/javascript" src="{{STATIC_URL}}libs/jquery-1.7.1.min.js"></script>
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/bootstrap/bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/styles.css">
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css">
   
   {% block html_head %}{% endblock %}
 
   <!-- <script type="text/javascript" src="{{STATIC_URL}}libs/less-1.2.1.js"></script> -->
 </head>
 <body>
+  <div class="nav">
+    <div class="container">
+      {% block nav %}{% endblock %}
+    </div>
+  </div>
   <div class="container">
     {% block content %}{% endblock %}
   </div>
