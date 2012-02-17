@@ -2,6 +2,10 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 
+
+class AccountInviteForm(forms.Form):
+    invite = forms.CharField(widget=forms.Textarea)
+
 class EmailAuthenticationForm(forms.Form):
     """
     Base class for authenticating users. Extend this to get a form that accepts
