@@ -8,6 +8,23 @@ from location.models import Location
 
 import settings
 
+MOOD_CHOICES = (
+    (1, 'Happy'), 
+    (2, 'Love'), 
+    (3, 'Sad'), 
+    (4, 'Boring')
+)
+
+PRIVATE_CHOICES = (
+    (False, 'Public to everyone'),
+    (True, 'Only %s group' % settings.ORGANIZATION_NAME)
+)
+
+DRAFT_CHOICES = (
+    (False, 'No'), 
+    (True, 'Yes')
+)
+
 def blog_image_path(instance, filename):
     filepath = '%sblog/%s' % (settings.IMAGE_ROOT, instance.user.id)
     if not os.path.exists(filepath):
@@ -16,7 +33,6 @@ def blog_image_path(instance, filename):
 
 def blog_image_url(instance, filename):
     return '%simages/blog/%s/%s' % (settings.MEDIA_URL, instance.user.id, filename)
-
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -30,10 +46,6 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
     
 class Blog(models.Model):
-    MOOD_CHOICES    = ((0, 'Happy'), (1, 'Love'), (2, 'Sad'), (3, 'Boring'))
-    PRIVATE_CHOICES = ((False, 'No'), (True, 'Yes'))
-    DRAFT_CHOICES   = ((False, 'No'), (True, 'Yes'))
-    
     title       = models.CharField(max_length=200)
     image       = models.ImageField(upload_to=blog_image_path)
     description = models.TextField(null=True)
@@ -49,6 +61,10 @@ class Blog(models.Model):
     
     def __unicode__(self):
         return '%s' % (self.title)
+    
+    def get_image_url(self):
+        (folder, filename) = os.path.split(self.image.name)
+        return blog_image_url(self, filename)
         
     def get_thumbnail(self, point):
         # TODO

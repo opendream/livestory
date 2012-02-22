@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block head_title %}Invite Users{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+<form action="{% url account_invite %}" method="post">
+{% csrf_token %}
+{{ form.invite }}
+<input type="submit" value="submit" />
+</form>
+{% endblock %}

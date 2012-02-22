@@ -2,6 +2,9 @@
 import os
 base_path = os.path.dirname(__file__)
 
+import djcelery
+djcelery.setup_loader()
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -36,6 +39,8 @@ TIME_ZONE = 'America/Chicago'
 LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
+
+SITE_NAME = 'Ofxam Live Stories'
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -106,6 +111,18 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+    'context_processors.site_information',
+)
+
+
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
@@ -126,6 +143,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'djkombu',
+    'djcelery',
     
     'account',
     'blog',
@@ -164,6 +183,20 @@ LOGGING = {
     }
 }
 
-# LIVE STORY
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'oxfram.livestory@gmail.com'
+EMAIL_HOST_PASSWORD = 'openpassword'
+EMAIL_PORT = 587
+EMAIL_SUBJECT_PREFIX = '[LiveStory] '
 
+BROKER_HOST = 'localhost'
+BROKER_PORT = 5672
+BROKER_USER = 'guest'
+BROKER_PASSWORD = 'guest'
+BROKER_VHOST = '/'
+BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+
+# LIVE STORY
+ORGANIZATION_NAME = 'Oxfam'
 IMAGE_ROOT = MEDIA_ROOT + 'images/'
