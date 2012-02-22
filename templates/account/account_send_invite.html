@@ -1,1 +1,35 @@
-"You have invite from {{ site_name }}. Please update your profile with click {{ activate_link }}"
+<table cellspacing="0" cellpadding="0" border="0" width="740px" background="{{ base_url }}static/img/bg-body_email.png"> 
+	<tbody> 
+		<tr> 
+			<td><img src="{{ base_url }}static/img/bg-header_email.png"  width="740px" height="62px" /></td>
+		</tr>
+		<tr>
+		<tr>
+			<td></td>
+		</tr>
+			<td>
+				<div style="padding: 20px 50px;">
+					<img src="{{ base_url }}{{ site_logo }}" alt="{{ site_name }}" />
+					<p>Hello, </p>
+					<p>You have invite from {{ site_name }}. Please, click "Activate your account" below.</p>
+					
+					<a href="{{ activate_link }}" title="Activate your account"><img src="{{ base_url }}static/img/email_invite.png" alt="Activate your account" style="border:0;" /></a>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td>
+				<div style="padding: 0px 50px;">
+					<span style="display:block; width: 640px; border-bottom:1px solid #ccc; margin-bottom: 15px;"></span>
+					<p style="float:left; line-height: 30px; margin:0;"><a href="{{ base_url }}" style="color: #339900; text-decoration: none;">{{ base_url }}</a></p>
+					<img style="float:right;" src="{{ base_url }}{{ site_logo_email }}" />
+				</div>
+				
+				<img src="{{ base_url }}static/img/bg-footer_email.png" />
+			</td>
+				
+		</tr>
+	</tfoot>
+</table>
