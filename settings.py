@@ -165,5 +165,5 @@ LOGGING = {
 }
 
 # LIVE STORY
-
+ORGANIZATION_NAME = 'Oxfam'
 IMAGE_ROOT = MEDIA_ROOT + 'images/'

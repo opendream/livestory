@@ -7,6 +7,7 @@ admin.autodiscover()
 import settings
 
 urlpatterns = patterns('',
+    url(r'^ajax/', include('ajax.urls')),
     url(r'^account/', include('account.urls')),
     url(r'^blog/', include('blog.urls')),
     url(r'^location/', include('location.urls')),
