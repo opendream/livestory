@@ -198,5 +198,5 @@ BROKER_VHOST = '/'
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 # LIVE STORY
-
+ORGANIZATION_NAME = 'Oxfam'
 IMAGE_ROOT = MEDIA_ROOT + 'images/'
