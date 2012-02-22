@@ -1,32 +1,590 @@
-.well-custom{
-	padding: 8px 0;
+/****************************/
+/* Oxfam Live Stories Style */
+/****************************/
+
+/* Bootstrap override */
+	.menubar-inner{ margin: 0 0 18px 0; }
+	.container .span8, .container .span4{ margin-bottom: 24px;}
+	
+
+/*****************/
+/* Layouts Style */
+/*****************/
+	body.admin{ background: whitesmoke; }
+	#navigation{
+		margin: 20px 0 30px;
+		height: 78px;
+	}
+	#footer{
+		padding: 20px 0;
+		margin: 20px 0 0 0;
+		color: #fff;
+		background: #000;
+	}
+	
+	.admin-main{ padding-top: 30px; }
+
+/**************/
+/* Base Style */
+/**************/
+	@font-face { 	/* Oxfam's font-face */
+	    font-family: 'OxfamGlobalHeadlineRegular';
+	    src: url('../fonts/oxfamglobalheadline-webfont.eot');
+	    src: url('../fonts/oxfamglobalheadline-webfont.eot?#iefix') format('embedded-opentype'),
+	         url('../fonts/oxfamglobalheadline-webfont.woff') format('woff'),
+	         url('../fonts/oxfamglobalheadline-webfont.ttf') format('truetype'),
+	         url('../fonts/oxfamglobalheadline-webfont.svg#OxfamGlobalHeadlineRegular') format('svg');
+	    font-weight: normal;
+	    font-style: normal;
+	}
+	.oxfam-font{ font-family: OxfamGlobalHeadlineRegular; }
+	
+	.content{
+		border: 1px solid #eee;
+		padding: 8px 35px 8px 14px;
+		margin-bottom: 18px;
+		background: #fff;
+	}
+	.rounded{
+		-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+		border-radius: 4px;
+	}
+	.rounded5{
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+		border-radius: 5px;
+	}
+	.rounded10{
+		-webkit-border-radius: 10px;
+		-moz-border-radius: 10px;
+		border-radius: 10px;
+	}
+	.block{
+		margin: 0 0 20px;
+	}
+	.label-inline-form{
+		line-height: 25px;
+	}
+	
+	legend{ padding: 10px 7px 10px; }
+	legend h1{ font: normal 19.5px OxfamGlobalHeadlineRegular; }
+	.form-backend { padding-left: 160px; }
+	
+	a:link { color:#61a534; }
+	a:visited { color:#339900; }
+	a:hover { text-decoration: underline;} 
+	a:active { color:#000; }
+	
+	.grey{ color: #999; }
+	
+	.btn-green, .btn-grey {margin-right: 10px;}
+	.btn-green{
+		display: inline-block;
+		color: white;
+		font: bold 14px arial;
+		padding: 10px 20px;
+		text-decoration: none;
+		border-radius: 6px;
+		border: 1px solid #089D4B;
+		-moz-box-shadow: inset -1px -2px 0px 0px #3f9303;
+		-webkit-box-shadow: inset -1px -2px 0px 0px #3f9303;
+		box-shadow: inset -1px -2px 0px 0px #3f9303;
+		-moz-border-radius: 6px;
+		-webkit-border-radius: 6px;
+		background-color: #72B64A;
+	}
+	.btn-green:hover {
+		border: 1px solid #0A5A26;
+		-moz-box-shadow: inset -1px -2px 0px 0px #0a5a26;
+		-webkit-box-shadow: inset -1px -2px 0px 0px #0a5a26;
+		box-shadow: inset -1px -2px 0px 0px #0a5a26;
+		background-color: #0F7335;
+	}
+	
+	.btn-grey {
+		display: inline-block;
+		color: white;
+		font: bold 14px arial;
+		padding: 10px 20px;
+		text-decoration: none;
+		border: 1px solid #787878;
+		-moz-box-shadow: inset -1px -2px 0px 0px #636363;
+		-webkit-box-shadow: inset -1px -2px 0px 0px #636363;
+		box-shadow: inset -1px -2px 0px 0px #636363;
+		background-color: #A0A0A0;
+		-moz-border-radius: 6px;
+		-webkit-border-radius: 6px;
+		border-radius: 6px;
+	}
+	.btn-grey:hover {
+		border: 1px solid #696969;
+		-moz-box-shadow: inset -1px -2px 0px 0px #535353;
+		-webkit-box-shadow: inset -1px -2px 0px 0px #535353;
+		box-shadow: inset -1px -2px 0px 0px #535353;
+		background-color: #787878;
+	}
+	
+	
+	
+/* Topbar */
+	#topbar{
+		height: 26px;
+		padding: 8px 0 6px;
+		background: #000;
+	}
+	.topbar-widget a, #topbar .home{ color: #999;}
+	.topbar-widget a:hover, #topbar .home:hover{ color: #fff; text-decoration: none;}
+	#topbar .home{
+		float: left;
+		margin: 3px 0 0;
+		padding: 0 0 0 20px;
+		line-height: 22px;
+		background: url('../img/topbar-widget.png') no-repeat 0 1px;
+		text-decoration: none;
+	}
+	.topbar-widget{
+		float: right;
+	}
+	.btn-group, .notify, .post-blog, .invite{
+		float: left;
+		height: 17px;
+		padding: 0 10px;
+	}
+	.notify, .post-blog, .invite {margin-top: 3px; border-left: 1px solid #5e5e5e;}
+	/* Profile dropdown*/
+	.btn-group .profile-toggle{
+		background: transparent;
+		padding: 0;
+		border: none;
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		text-shadow: none;
+	}
+	.btn-group .profile-toggle img{ vertical-align: middle; margin-right: 5px;}
+	.profile-group.open .dropdown-menu{
+		top: 30px;
+		left: 9px;
+		border: none;
+		background: #353535;
+		
+		-moz-border-radius: 0;
+		-webkit-border-radius: 0;
+		border-radius: 0;
+		-moz-border-radius-bottomright: 5px;
+		-moz-border-radius-bottomleft: 5px;
+		-webkit-border-bottom-left-radius: 5px;
+		-webkit-border-bottom-right-radius: 5px;
+		border-bottom-right-radius: 5px;
+		border-bottom-left-radius: 5px;
+	}
+	.dropdown-menu li > a:hover{ background: #222; }
+	.profile-toggle .caret{ 
+		border-left: 4px solid transparent;
+		border-right: 4px solid transparent;
+		border-top: 4px solid #fff;
+		margin-left: 3px;
+	}
+	
+	.notify a{
+		padding: 3px 7px;
+		font-size: 11px;
+		color: #fff !important;
+		background: #ea1515;
+	}
+		.notify-bottom{
+			width: 7px;
+			height: 5px;
+			display: block;
+			background: url('../img/topbar-widget.png') no-repeat 0 -25px;
+			margin: 0 0 0 8px;
+		}
+	.post-blog a{
+		width: 16px;
+		height: 16px;
+		display: block;
+		text-indent: -999em;
+		background: url('../img/topbar-widget.png') no-repeat 0 -39px;
+	}
+	.post-blog a:hover {background-position: -16px -39px;}
+	.invite a{
+		padding: 0 0 0 15px;
+		background: url('../img/topbar-widget.png') no-repeat 0 -61px;
+		text-decoration: none;
+	}
+	
+	
+/* Header Section */
+	#header{
+		height: 90px;
+		background: url('../img/bg_header.png') repeat-x 0px -20px ;
+	}
+	#header .container{ position: relative;}
+		#logo{
+			float: left;
+			width: 128px;
+			height: 48px;
+			display: block;
+			margin: 20px 0 0;
+			text-indent: -999em;
+			background: url('../img/logo-oxfam.png') no-repeat ;
+		}
+		.login{
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 80px;
+			padding: 15px 0;
+			text-align: center;
+			background: #000;
+		}
+		.login a{ font-size: 12px; color: #fff; }
+		.login a:hover{ text-decoration: none; border-bottom: 1px dotted #fff;}
+		
+/* menu */
+	.menu{
+		float: right;
+		width: 350px;
+		list-style: none;
+		margin-top: 4px;
+	}
+	.menu li {float: left;}
+		.menu a{
+			display: block;
+			height: 69px;
+			display: block;
+			text-indent: -999em;
+			background: url('../img/nav.png') no-repeat;
+		}
+		.menu .popular{
+			width: 65px;
+			margin-right: 25px;
+		}
+		.menu .place{
+			width: 62px;
+			margin-right: 28px;
+			background-position: -65px 0;
+		}
+		.menu .moods{
+			width: 62px;
+			margin-right: 15px;
+			background-position: -127px 0;
+		}
+		.menu .categories{
+			width: 89px;
+			background-position: -189px 0;
+		}
+		
+		/*  Active & Hover */
+		.popular:hover, .popular.active{ background-position: 0 -69px; }
+		.place:hover, .place.active{ background-position: -65px -69px; }
+		.moods:hover, .moods.active{ background-position: -127px -69px; }
+		.categories:hover, .categories.active{ background-position: -189px -69px; }
+		
+		/* Admin Menu */
+		.nav-admin .active > a, .nav-admin .active > a:hover{
+			background: #72b64a;
+		}
+		
+		.nav-admin .nav-header a{
+			color: #999;
+		}
+		.nav-admin .nav-header a span{
+			float: right;
+			padding: 0px 7px;
+			color: #fff;
+			font-weight: normal;
+			font-size: 11px;
+			background: #EA1515;
+		}
+		.nav-admin > li + .nav-header {
+			margin-top: 0;
+		}
+		.nav-admin .nav-header{
+			border-top: 1px dotted #AAA;
+		}
+		.nav-admin > li:hover {
+			background-color: #ebebeb;
+		}
+	
+/* Search */
+	.search-stories{
+		float: left;
+		width: 182px;
+		height: 12px;
+		padding: 8px 12px;
+		margin: 0 1px 0 0;
+		border-top: 3px solid #ececec;
+		border-left: 2px solid #ececec;
+		background: #fff;
+		-webkit-border-radius: 0;
+		-moz-border-radius: 0;
+		border-radius: 0;
+	}
+	
+	.btn-search{
+		width: 47px;
+		height: 32px;
+		border: 0;
+		border-top: 3px solid #ececec;
+		border-left: 1px solid #fff;
+		border-right: 1px solid #fff;
+		border-bottom: 1px solid #fff;
+		text-indent: -999em;
+		background: #fff url('../img/btn-search.png') no-repeat 10px 2px;
+		-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+		-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+		box-sizing: border-box;         /* Opera/IE 8+ */
+	}
+
+/* Brand */
+	span.brand{
+		display: block;
+		font-size: 18px;
+		font-weight: normal;
+		color: #72b64a;
+	}
+	#navigation h1{ float: left;}
+	span.slogan{ font-size: 44px; }
+	
+/* View Blog Page */
+	.blog-container-photo{
+/* 		width: 630px; */
+		float: left;
+		margin: 0 auto 18px;
+	}
+	.blog-photo{
+		position: relative;
+		padding: 10px;
+		border: 1px solid #d6d6d6;
+		-moz-box-shadow: 3px 3px 0px #e3e3e3;
+		-webkit-box-shadow: 3px 3px 0px #e3e3e3;
+		box-shadow: 3px 3px 0px #e3e3e3;
+	}
+	.status{
+		position: absolute;
+		bottom: 10px;
+		right: 10px;
+		padding: 5px 10px;
+		color: #ddd;
+		background: rgba(0,0,0,0.5);
+	}
+	#title-blog{
+		clear: both;
+		line-height: 28px;
+		margin: 0 0 10px;
+		font-size: 18px;
+	}
+	
+	.blog-description {margin-bottom: 20px;}
+	
+	.blog-profile{ 
+		margin-bottom: 40px;
+	}
+	.blog-profile .porfile-photo{
+		float: left;
+		width: 94px;
+		height: 94px;
+		margin: 0 10px 5px 0;
+		border: 3px solid #000;
+	}
+	.blog-profile .profile-name{
+		display: inline-block;
+		margin-bottom: 5px;
+		font-size: 18px;
+		font-weight: bold;
+		color: #000;
+	}
+	
+	/* Love it */
+	.love, .unlove{
+		display: block;
+		float: left;
+		width: 102px;
+		height: 33px;
+		margin: 0 10px 0 0;
+		text-indent: -999em;
+		background: url('../img/btn-loveit.png') no-repeat ;
+	}
+	.love:hover{ background-position: 0 -33px; }
+	.unlove{ background-position: 0 -66px; }
+	.unlove:hover{ background-position: 0 -99px; }
+	
+	.people-love{
+		padding: 0 0 0 20px;
+		font-size: 12px;
+		line-height: 28px;
+		background: url('../img/ic-loveit.png') no-repeat ;
+	}
+	.love-sum{
+		font-weight: bold;
+		font-size: 18px;
+		color: #333;
+	}
+	
+	.friends{
+		margin: 20px 0 0;
+	}
+	.friends li{
+		position: relative;
+		float: left;
+		width: 35px;
+		height: 35px;
+		margin: 0 7px 7px 0;
+		list-style: none;
+	}
+	/* Tooltip */
+		.tooltip-popup{
+			display: none;
+			height: 15px;
+			padding: 7px 10px;
+			white-space: nowrap;
+			text-align: center;
+			color: #fff;
+			background: #333;
+		}
+		.friends li:hover .tooltip-popup{
+			display: block;
+			position: absolute;
+			left: 0;
+			top: 50px;
+			
+			/* CSS Animation */
+			-moz-animation-name: pop;
+		  -moz-animation-duration: 300ms;
+		  -moz-animation-fill-mode: forwards;
+		  -webkit-animation-name: pop;
+		  -webkit-animation-duration: 300ms;
+		  -webkit-animation-fill-mode: forwards;
+		  animation-name: pop;
+		  animation-duration: 300ms;
+		  animation-fill-mode: forwards;
+		}
+		.tooltip-popup:after {
+		  position: absolute;
+		  left: 15px;
+		  bottom: 29px;
+		  width: 0;
+		  content: "";
+		  display: block;
+		  border-color: #333 transparent;
+		  border-style: solid;
+		  border-width: 0 5px 5px;
+		}
+		@-webkit-keyframes pop{
+			0%{ opacity: 0; top: 45px; }
+			100%{ opacity: 1; top: 50px; }
+		}
+		@-moz-keyframes pop {
+		  0%{ opacity: 0; top: 45px; }
+			100%{ opacity: 1; top: 50px; }
+		}
+		@keyframes pop {
+		  0%{ opacity: 0; top: 45px; }
+			100%{ opacity: 1; top: 50px; }
+		}
+		
+	.more-friend{
+		float: right;
+		clear: both;
+		margin: 10px 0 0;
+	}
+
+/* Moods Icons*/
+	.moods{
+		display: block;
+		float: left;
+		width: 16px;
+		height: 16px;
+		margin: 0 10px 0 0;
+		text-indent: -999em;
+	}
+	.smile{ background: url('../img/ic-moods-smile.png') no-repeat ;}
+
+
+/*****************/
+/* Media Queries */
+/*****************/
+
+/* Landscape phones and down */
+  @media (max-width: 480px) { 
+  
+  }
+  
+  @media (max-width: 730px) {
+	  #navigation{
+		  margin-top: 0;
+	  }
+	  #navigation h1{
+		  margin: 10px 0 18px;
+	  }
+	  .menu{
+		  float: none;
+		  margin: 0;
+	  }
+	  .menu li{
+		  margin-bottom: 20px;
+	  }
+  }
+ 
+/* Landscape phone to portrait tablet */
+  @media (max-width: 768px) { 
+	  .blog-profile{
+		  margin-bottom: 20px;
+	  }
+	  .container .span8{
+		  border-bottom: 2px dotted #ccc;
+		  padding-bottom: 22px;
+	  }
+  }
+ 
+/* Portrait tablet to landscape and desktop */
+  @media (min-width: 768px) and (max-width: 980px) { 
+	  
+	  /* Blog */
+	  .blog-profile .porfile-photo{
+		  margin-bottom: 5px;
+	  }
+	  .blog-profile{
+		  margin-bottom: 20px;
+	  }
+  }
+ 
+/* Large desktop */
+  @media (min-width: 1200px) { 
+  
+  }
+
+
+
+
+
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+.clearfix { display: inline-block; }
+html[xmlns] .clearfix { display: block; }
+* html .clearfix { height: 1%; }
+
+/* create blog */
+.emo {
+	background: url('../img/emo.png') no-repeat ;
+	display: block;
+	height: 16px;
+	width: 16px;
+	text-indent: -9999px;
+	overflow: hidden;
 }
 
-.navbar-inner{
-	margin: 0 0 18px 0;
-}
-
-#header{
-	margin: 0 0 20px 0;
-}
-
-#footer{
-	margin: 20px 0 0 0;
-}
-
-.content{
-	border: 1px solid #eee;
-	padding: 8px 35px 8px 14px;
-	margin-bottom: 18px;
-}
-
-.rounded{
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-}
-
-legend h1{
-	font-size: 19.5px;
-	font-weight: normal;
-}
+.emo_sad {background-position: 0 0;}
+.emo_confused {background-position: -16px 0;}
+.emo_happy {background-position: -32px 0;}
+.emo_laughing {background-position: -48px 0;}
+.emo_love {background-position: -64px 0;}

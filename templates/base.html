@@ -17,15 +17,55 @@
   <!-- <script type="text/javascript" src="{{STATIC_URL}}libs/less-1.2.1.js"></script> -->
 </head>
 <body>
-  <div class="nav">
+  <!-- topbar -->
+  <div id="topbar">
     <div class="container">
-      {% block nav %}{% endblock %}
+    <a class="home" href="#">Home</a>
+    <div class="topbar-widget">
+      <div class="btn-group profile-group">
+      <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
+        <img src="img/avt.png" alt=""/>
+        <span>Janice Sonia</span>
+      <span class="caret"></span></a>
+      <ul class="dropdown-menu">
+        <li><a href="#">Edit Profile</a></li>
+      </ul>
+    </div>
+    <div class="notify"><a href="#" class="rounded">24</a><span class="notify-bottom"></span></div>
+    <div class="post-blog"><a href="#" class="">Post Blog</a></div>
+    <div class="invite"><a href="#" class="">Invite User</a></div>
+    </div>
     </div>
   </div>
-  <div class="container">
-    {% block content %}{% endblock %}
+
+  <!-- Header -->
+  <div id="header">
+    <div class="container">
+      <a id="logo" href="#">Oxfam Live Stories</a>
+    </div>
+  </div>
+  
+  <div class="container admin-main">
+    {% block base_content %}{% endblock %}
   </div>
 
-  {% block html_foot %}{% endblock %}
+  <!------- Footer -->
+  <div id="footer">
+    <div class="container">
+      <div class="row">
+        <div class="span5">
+          <form>
+            <input type="text" class="search-stories" placeholder="Enter keywords">
+            <button type="submit" class="btn-search">Search</button>
+          </form>
+        </div> <!-- span5 -->
+        
+        <div class="span7">
+          <p>© 2011.Oxfam is a registered charity in England and Wales (no 202918) and Scotland (SC039042). Oxfam GB is a member of Oxfam International</p>
+        </div>
+      </div> <!-- row -->
+    </div>
+  </div>
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_backend.html' %}
 
 {% block head_title %}Create Your Blog{% endblock %}
 
@@ -14,145 +14,92 @@
 {% endblock %}
 
 {% block nav %}
-<a class="brand" href="#">Oxfam Live Stories | Administrator</a>
-<div class="">
-	<a href="#">8 Loves</a>
-	
-	<div class="btn-group">
-		<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-		<img src="{{STATIC_URL}}img/avt.png" alt=""/>
-		<span class="caret"></span></a>
-		<ul class="dropdown-menu">
-			<li><a href="#">Action</a></li>
-			<li><a href="#">Another action</a></li>
-			<li><a href="#">Something else here</a></li>
-			<li class="divider"></li>
-			<li><a href="#">Separated link</a></li>
-		</ul>
-	</div>
-	
-	<a href="#">Post Blog</a>
-</div>
 {% endblock %}
 
 {% block content %}
-	<div class="row">
-		<div class="span3">
-			<div class="well well-custom">
-				<ul class="nav nav-list">
-					<li class="nav-header">Post</li>
-					<li class="active"><a href="#"><i class="icon-white icon-home"></i> All Post</a></li>
-					<li><a href="#"><i class="icon-book"></i> Add New Post</a></li>
-					<li class="nav-header">User</li>
-					<li><a href="#"><i class="icon-user"></i> All User</a></li>
-					<li><a href="#"><i class="icon-cog"></i> Invite User</a></li>
-					<li><a href="#"><i class="icon-flag"></i> Your Profile</a></li>
-				</ul>
-			</div> <!-- well -->
-		</div> <!-- span3 -->
+<form class="form-horizontal" method="post" action="{{ action }}" enctype="multipart/form-data">
+	{% csrf_token %}
+	<fieldset>
+		<legend>Create Your Blog</legend>
 		
-		<div class="span9">
-			<div class="content rounded">
-			<form class="form-horizontal" method="post" action="{{ action }}" enctype="multipart/form-data">
-				{% csrf_token %}
-				<fieldset>
-					<legend>Create Your Blog</legend>
-					
-					<div class="control-group{% if form.title.errors %} error{% endif %}">
-						<label class="control-label" for="id_title">Title</label>
-						<div class="controls">
-							{{ form.title }}
-							{{ form.title.errors }}
-						</div>
-					</div>
-					
-					<div class="control-group{% if form.image.errors %} error{% endif %}">
-						<label class="control-label" for="id_image">Image</label>
-						<div class="controls">
-							<img src="{{ image_path }}" />
-							{{ form.image }}
-							{{ form.image.errors }}
-						</div>
-					</div>
-					
-					<div class="control-group{% if form.description.errors %} error{% endif %}">
-						<label class="control-label" for="id_description">Description</label>
-						<div class="controls">
-							{{ form.description }}
-							{{ form.description.errors }}
-							<p class="help-block">Limit <span id="text-counting">300</span> characters.</p>
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label class="control-label" for="id_country">Location</label>
-						<div class="controls">
-							{{ form.country }}
-							{{ form.city }}
-							{{ form.country.errors }}
-							<p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
-						</div>
-					</div>
-					
-					<div class="control-group{% if form.mood.errors %} error{% endif %}">
-						<label class="control-label" for="mood_1">Mood</label>
-						<div class="controls"> 
-							{% for value, text in moods %}
-							<label class="radio inline">
-								<input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% ifequal form.mood.data value|lower %} checked="checked"{% endifequal %}> {{ text }}
-							</label>
-							{% endfor %}
-						</div>
-					</div>
-					
-					<div class="control-group">
-						<label class="control-label" for="id_category">Category</label>
-						<div class="controls">
-							{{ form.category }}
-						</div>
-					</div>
-					
-					<div class="control-group{% if form.private.errors %} error{% endif %}">
-						<label class="control-label" for="visibility_0">Visibility</label>
-						<div class="controls">
-							{% for value, text in visibilities %}
-							<label class="radio">
-								<input type="radio" id="visibility_{{ value|yesno:"1,0"}}" name="private" value="{{ value|yesno:"1,0"}}"{% ifequal value|yesno:"1,0" form.private.data %} checked="checked"{% endifequal %}>
-								{{ text }}
-							</label>
-							{% endfor %}
-							{{ form.private.errors }}
-						</div>
-					</div>
-					
-					<div class="form-actions">
-						{% if is_draft %}
-						<button type="submit" class="btn btn-primary" name="draft" value="0">Publish</button>
-						{% else %}
-						<button type="submit" class="btn btn-primary" name="draft" value="0">Save changes</button>
-						{% endif %}
-						{% if is_draft %}
-						<button type="submit" class="btn btn-info" name="draft" value="1">Save Draft</button>
-						{% endif %}
-						<button type="reset" class="btn">Cancel</button>
-					</div>
-				</fieldset>
-			</form>
-			</div> <!-- content -->
-		</div>
-	</div>
-	
-	<div class="row">
-		<div class="span12">
-			<h1>Guideline for programmer</h1>
-			<p>When error add .error to [div class=control-group] -> [div class=control-group error]</p>
-			<div class="control-group error">
-				<label class="control-label" for="inputError">Input with error</label>
-				<div class="controls">
-					<input type="text" id="inputError">
-					<span class="help-inline">Please correct the error</span>
-				</div>
+		<div class="control-group{% if form.title.errors %} error{% endif %}">
+			<label class="control-label" for="id_title">Title</label>
+			<div class="controls">
+				{{ form.title }}
+				{{ form.title.errors }}
 			</div>
 		</div>
-	</div>
+		
+		<div class="control-group{% if form.image.errors %} error{% endif %}">
+			<label class="control-label" for="id_image">Image</label>
+			<div class="controls">
+				<img src="{{ image_path }}" />
+				{{ form.image }}
+				{{ form.image.errors }}
+			</div>
+		</div>
+		
+		<div class="control-group{% if form.description.errors %} error{% endif %}">
+			<label class="control-label" for="id_description">Description</label>
+			<div class="controls">
+				{{ form.description }}
+				{{ form.description.errors }}
+				<p class="help-block">Limit <span id="text-counting">300</span> characters.</p>
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="id_country">Location</label>
+			<div class="controls">
+				{{ form.country }}
+				{{ form.city }}
+				{{ form.country.errors }}
+				<p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
+			</div>
+		</div>
+		
+		<div class="control-group{% if form.mood.errors %} error{% endif %}">
+			<label class="control-label" for="mood_1">Mood</label>
+			<div class="controls"> 
+				{% for value, text in moods %}
+				<label class="radio inline">
+					<input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% ifequal form.mood.data value|lower %} checked="checked"{% endifequal %}> {{ text }}
+				</label>
+				{% endfor %}
+			</div>
+		</div>
+		
+		<div class="control-group">
+			<label class="control-label" for="id_category">Category</label>
+			<div class="controls">
+				{{ form.category }}
+			</div>
+		</div>
+		
+		<div class="control-group{% if form.private.errors %} error{% endif %}">
+			<label class="control-label" for="visibility_0">Visibility</label>
+			<div class="controls">
+				{% for value, text in visibilities %}
+				<label class="radio">
+					<input type="radio" id="visibility_{{ value|yesno:"1,0"}}" name="private" value="{{ value|yesno:"1,0"}}"{% ifequal value|yesno:"1,0" form.private.data %} checked="checked"{% endifequal %}>
+					{{ text }}
+				</label>
+				{% endfor %}
+				{{ form.private.errors }}
+			</div>
+		</div>
+		
+		<div class="form-backend">
+			{% if is_draft %}
+			<button type="submit" class="btn-grey" name="draft" value="1">Save Draft</button>
+			{% endif %}
+			{% if is_draft %}
+			<button type="submit" class="btn-green" name="draft" value="0">Publish</button>
+			{% else %}
+			<button type="submit" class="btn-green" name="draft" value="0">Save changes</button>
+			{% endif %}
+			<button type="reset" class="btn">Cancel</button>
+		</div>
+	</fieldset>
+</form>
 {% endblock %}
