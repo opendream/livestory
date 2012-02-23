@@ -16,6 +16,7 @@ class Account(models.Model):
     user      = models.OneToOneField(User)
     
     def get_fullname(self):
+        return 'xxxxx'
         return '%s %s' % (self.firstname, self.lastname)
         
     def __unicode__(self):

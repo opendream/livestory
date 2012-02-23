@@ -26,7 +26,13 @@
       <div class="btn-group profile-group">
       <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
         <img src="img/avt.png" alt=""/>
-        <span>Janice Sonia</span>
+        <span>
+          {% if user.get_profile.get_fullname %}
+          {{ user.get_profile.get_fullname }}
+          {% else %}
+          {{ user.username }}
+          {% endif %}
+        </span>
       <span class="caret"></span></a>
       <ul class="dropdown-menu">
         <li><a href="#">Edit Profile</a></li>
@@ -34,7 +40,9 @@
     </div>
     <div class="notify"><a href="#" class="rounded">24</a><span class="notify-bottom"></span></div>
     <div class="post-blog"><a href="#" class="">Post Blog</a></div>
-    <div class="invite"><a href="#" class="">Invite User</a></div>
+    {% if user.is_staff %}
+    <div class="invite"><a href="{% url account_invite %}" class="">Invite User</a></div>
+    {% endif %}
     </div>
     </div>
   </div>
