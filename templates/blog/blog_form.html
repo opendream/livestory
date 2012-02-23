@@ -23,7 +23,9 @@
       <label class="control-label" for="id_title">Title</label>
       <div class="controls">
         {{ form.title }}
-        {{ form.title.errors }}
+        {% if form.title.errors %}
+        <span class="help-inline">{{ form.title.errors.as_text }}</span>
+        {% endif %}
       </div>
     </div>
     
@@ -32,7 +34,9 @@
       <div class="controls">
         <img src="{{ image_path }}" />
         {{ form.image }}
-        {{ form.image.errors }}
+        {% if form.image.errors %}
+        <span class="help-inline">{{ form.image.errors.as_text }}</span>
+        {% endif %}
       </div>
     </div>
     
@@ -45,12 +49,14 @@
       </div>
     </div>
     
-    <div class="control-group">
+    <div class="control-group{% if form.country.errors or form.city.errors %} error{% endif %}">
       <label class="control-label" for="id_country">Location</label>
       <div class="controls">
         {{ form.country }}
         {{ form.city }}
-        {{ form.country.errors }}
+        {% if form.country.errors or form.city.errors %}
+        <span class="help-inline">* Please enter both fields.</span>
+        {% endif %}
         <p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
       </div>
     </div>
@@ -63,6 +69,9 @@
           <input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% ifequal form.mood.data value|lower %} checked="checked"{% endifequal %}> <span class="emo_{{ text|lower }} emoticon"></span>{{ text }}
         </label>
         {% endfor %}
+        {% if form.mood.errors %}
+        <p class="help-block">{{ form.mood.errors.as_text }}</p>
+        {% endif %}
       </div>
     </div>
     
@@ -82,7 +91,9 @@
           {{ text }}
         </label>
         {% endfor %}
-        {{ form.private.errors }}
+        {% if form.private.errors %}
+        <p class="help-block">{{ form.private.errors.as_text }}</p>
+        {% endif %}
       </div>
     </div>
     
