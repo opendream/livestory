@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 
+{% block base_container_class %} admin-main{% endblock %}
+
+
 {% block base_content %}
 <div class="row">
   <div class="span3">
@@ -14,6 +17,16 @@
     </ul>
   </div>
   <div class="span9">
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        <a class="close">×</a>{{ message }}
+  		</div>
+  		{% endfor %}
+		</div>
+		{% endif %}
+		
     <div class="content rounded">
       {% block content %}{% endblock %}
     </div>

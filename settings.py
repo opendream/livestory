@@ -40,8 +40,6 @@ LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
-SITE_NAME = 'Ofxam Live Stories'
-
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -68,6 +66,14 @@ STATIC_ROOT = os.path.join(base_path, 'sitestatic/')
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
+
+
+# Uniqu for your project
+SITE_NAME = 'Ofxam Live Stories'
+SITE_LOGO = 'static/img/logo-livestories.png'
+SITE_LOGO_EMAIL = 'static/img/logo-oxfram_email.png'
+
+
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.

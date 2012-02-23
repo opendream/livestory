@@ -1,9 +1,10 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import get_object_or_404, redirect, render
 from django.core.validators import validate_email
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 
 from account.forms import *
 from account.models import *
@@ -20,6 +21,7 @@ def account_login(request):
 def account_invite(request):
     if request.method == 'POST':
         form = AccountInviteForm(request.POST)
+        print request
         if form.is_valid():
             
             email_exist = [user.email for user in User.objects.all()]
@@ -35,6 +37,7 @@ def account_invite(request):
                     
                     key = hashlib.md5('key%s%s' % (email, str(datetime.now()))).hexdigest()[0:30]
                     activate_link = request.build_absolute_uri(reverse('account_activate', args=[key]))
+                    
                     
                     # Case first time invite user
                     if email not in email_exist:
@@ -72,7 +75,16 @@ def account_invite(request):
                     email_invalid_list.append(email)
             
             # Send email backend with celery
-            send_invite.delay(invite_list)
+            send_invite.delay(invite_list, request.build_absolute_uri('/'))
+            
+            # Set message
+            if len(invite_list):
+                messages.success(request, 'Sending email invite. you can see list of user invited in user managment.')
+            if len(email_joined_list):
+                messages.warning(request, 'Email user has joined : %s' % ', '.join(email_invalid_list))
+            if len(email_invalid_list):
+                messages.error(request, 'Email format incorect : %s' % ', '.join(email_invalid_list))
+
             
     else:
         form = AccountInviteForm()
