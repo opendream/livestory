@@ -9,10 +9,11 @@ from location.models import Location
 import settings
 
 MOOD_CHOICES = (
-    (1, 'Happy'), 
-    (2, 'Love'), 
-    (3, 'Sad'), 
-    (4, 'Boring')
+    (1, 'Sad'), 
+    (2, 'Confused'), 
+    (3, 'Happy'), 
+    (4, 'Laughing'),
+    (5, 'Love')
 )
 
 PRIVATE_CHOICES = (
