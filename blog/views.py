@@ -7,8 +7,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 
+try:
+    from PIL import Image, ImageOps
+except ImportError:
+    import Image
+    import ImageOps
+
 from blog.models import *
 from blog.forms import *
+
 from location.models import Location
 
 @login_required
@@ -84,7 +91,8 @@ def blog_edit(request, blog_id):
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
         'image_path': blog.get_image_url(),
-        'is_draft': blog.draft
+        'is_draft': blog.draft,
+        'blog': blog
     }
         
     return render(request, 'blog/blog_form.html', context)

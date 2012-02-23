@@ -154,6 +154,7 @@ INSTALLED_APPS = (
     
     'account',
     'blog',
+    'common',
     'location',
 )
 
