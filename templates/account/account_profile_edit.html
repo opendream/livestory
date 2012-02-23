@@ -1,0 +1,62 @@
+{% extends 'base_backend.html' %}
+
+{% block head_title %}Your Profile{% endblock %}
+
+{% block content %}
+<form class="form-horizontal" method="post" action="{% url account_profile_edit %}">
+  {% csrf_token %}
+  <fieldset>
+    <legend><h1>Your profile</h1></legend>
+    
+    <div class="control-group">
+      <label class="control-label" for="title">Email</label>
+      <div class="controls">
+        <span class="grey label-inline-form">{{ user.username }}</span>
+      </div>
+    </div>
+    
+    <div class="control-group{% if form.firstname.errors %} error{% endif %}">
+      <label class="control-label" for="title">Firstname</label>
+      <div class="controls">
+        {{ form.firstname }}
+        <span class="help-inline">{{ form.firstname.errors.as_text }}</span>
+      </div>
+    </div>
+    
+    <div class="control-group{% if form.lastname.errors %} error{% endif %}">
+      <label class="control-label" for="title">Lastname</label>
+      <div class="controls">
+        {{ form.lastname }}
+        <span class="help-inline">{{ form.lastname.errors.as_text }}</span>
+      </div>
+    </div>
+    
+    <div class="control-group{% if form.password.errors %} error{% endif %}">
+      <label class="control-label" for="title">Password</label>
+      <div class="controls">
+        {{ form.password }}
+        <span class="help-inline">{{ form.password.errors.as_text }}</span>
+      </div>
+    </div>
+    
+    <div class="control-group{% if form.confirm_password.errors %} error{% endif %}">
+      <label class="control-label" for="title">Confirm Password</label>
+      <div class="controls">
+        {{ form.confirm_password }}
+        <span class="help-inline">{{ form.confirm_password.errors.as_text }}</span>
+      </div>
+    </div>
+    
+    <div class="control-group">
+      <label class="control-label" for="fileInput">Avatar</label>
+      <div class="controls">
+        <input class="input-file" id="fileInput" type="file">
+      </div>
+    </div>
+
+    <div class="form-backend">
+      <button type="submit" class="btn-green">Update Profile</button>
+    </div>
+  </fieldset>
+</form>
+{% endblock %}

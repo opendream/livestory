@@ -2,9 +2,6 @@
 
 {% block head_title %}Invite Users{% endblock %}
 
-{% block nav %}
-{% endblock %}
-
 {% block content %}
 <form class="form-horizontal" action="{% url account_invite %}" method="post">
 {% csrf_token %}

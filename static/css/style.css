@@ -125,6 +125,16 @@
 		background-color: #787878;
 	}
 	
+	.messages p:first-letter {
+	    text-transform: uppercase;
+	}
+	.messages p {
+	    font-weight: bold;
+        float: left;
+        line-height: 15px;
+        padding-right: 5px;
+	}
+	
 	
 	
 /* Topbar */
