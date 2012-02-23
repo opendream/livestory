@@ -1,6 +1,7 @@
 {% extends 'base_backend.html' %}
 
 {% load blog_tags %}
+{% load common_tags %}
 
 {% block head_title %}Create Your Blog{% endblock %}
 
@@ -32,7 +33,9 @@
     <div class="control-group{% if form.image.errors %} error{% endif %}">
       <label class="control-label" for="id_image">Image</label>
       <div class="controls">
-        <img src="{{ image_path }}" />
+        {% if blog.image %}
+        <img src="{{ blog.image|scale:'470x250' }}" class="block" />
+        {% endif %}
         {{ form.image }}
         {% if form.image.errors %}
         <span class="help-inline">{{ form.image.errors.as_text }}</span>
