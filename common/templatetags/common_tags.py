@@ -9,6 +9,7 @@ QUAL = 75
 
 register = template.Library()
 
+@register.filter()
 def path_to_url(path):
 	return path.replace(settings.base_path, '')
 
@@ -20,7 +21,7 @@ def resized_path(path, size, method):
     image_name, ext = name.rsplit('.', 1)
     return os.path.join(dir, '%s_%s_%s.%s' % (image_name, method, size, EXT))
 
-
+@register.filter()
 def scale(imagefield, size, method='scale'):
     """ 
     Template filter used to scale an image
@@ -73,8 +74,7 @@ def scale(imagefield, size, method='scale'):
     path = resized_path(imagefield.url, size, method)
     return path_to_url(path)
 
-
-
+@register.filter()
 def crop(imagefield, size):
     """
     Template filter used to crop an image
@@ -85,7 +85,3 @@ def crop(imagefield, size):
 
     """
     return scale(imagefield, size, 'crop')
-
-
-register.filter('scale', scale)
-register.filter('crop', crop)

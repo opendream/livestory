@@ -1,9 +1,76 @@
 {% extends 'base.html' %}
 
+{% load common_tags %}
+
 {% block head_title %}{{ blog.title }}{% endblock %}
 
-{% block content %}
-<h2>{{ blog.title }}</h2>
-<img src="{{ blog.image }}" />
-<p>{{ blog.description }}</p>
+{% block html_head %}
+<script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block base_content %}
+  <!------- Navigation -->
+  <div id="navigation">
+    <h1 class="oxfam-font">
+      <span class="brand">oxfam</span><span class="slogan">live stories</span>
+    </h1>
+    <ul class="menu">
+      <li><a href="#" class="popular active">Popular</a></li>
+      <li><a href="#" class="place">Place</a></li>
+      <li><a href="#" class="moods">Moods</a></li>
+      <li><a href="#" class="categories">Categories</a></li>
+    </ul>
+  </div>
+  
+  <div id ="blog" class="row">
+    <div class="span8 block">
+    
+      <div class="blog-container-photo">
+        <div class="blog-photo rounded5">
+          <img src="{{ blog.image|scale:'700x1000' }}" alt="{{ blog.title }}" />
+          <div class="status rounded">
+            <span class="emoticon-icon emo_{{ blog.get_mood_text|lower }}">Mood: {{ blog.get_mood_text }}</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <h2 id="title-blog">{{ blog.title }}</h2>
+      
+      <p class="block">{{ blog.description }}</p>
+
+      <span class="grey">Posted on {{ blog.created|date:"m.d.Y" }} in</span> <a href="#">{{ blog.category }}</a>
+      
+    </div> <!-- span3 -->
+    
+    <div class="span4 block">
+      <div class="blog-profile block clearfix">
+        <img src="{{ profile.image.path|path_to_url }}" alt="" class="porfile-photo"/>
+        <a href="{% url account_profile_edit %}" class="profile-name">{{ profile.firstname }} {{ profile.lastname }}</a>
+        <span class="profile-email grey">{{ profile.user }}</span>
+      </div>
+      
+      <div class="blog-loveit block clearfix">
+        <a href="{{ love_path }}" class="{{ love_class }}">Love it</a>
+        <span class="people-love grey"><span class="love-sum">{{ love_count }}</span> People love it</span>
+        {% if users_loved %}
+        <ul class="friends clearfix">
+          {% for user in users_loved %}
+          <li>
+            <div>
+              <a href="#" title=""><img src="{{ user.image.path|path_to_url }}" alt="{{ user.firstname }} {{ user.lastname }}" /></a>
+              <div class="tooltip-popup">{{ user.firstname }} {{ user.lastname }}</div>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        <a href="#" class="more-friend">more</a>
+        {% endif %}
+      </div>
+      
+      <div class="blog-share">
+        Addthis here
+      </div>
+  
+    </div>    
+  </div> <!-- row -->
 {% endblock %}

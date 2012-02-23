@@ -70,6 +70,12 @@ class Blog(models.Model):
     def get_thumbnail(self, point):
         # TODO
         pass
+    
+    def get_mood_text(self):
+        return MOOD_CHOICES[self.mood-1][1]
+    
+    def get_loved_users(self):
+        return self.love_set()
 
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)

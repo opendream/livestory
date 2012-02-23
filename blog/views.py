@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
+from django.utils import simplejson as json
 
 try:
     from PIL import Image, ImageOps
@@ -13,6 +14,7 @@ except ImportError:
     import Image
     import ImageOps
 
+from account.models import Account
 from blog.models import *
 from blog.forms import *
 
@@ -99,7 +101,59 @@ def blog_edit(request, blog_id):
 
 def blog_view(request, blog_id):
     blog = Blog.objects.get(pk=blog_id)
-    return render(request, 'blog/blog_view.html', locals())
+    if blog.private:
+        # TODO redirect to access denied
+        pass
+    love_path = '/blog/%s/love/'
+    love_class = 'love'
+    try:
+        love = Love.objects.get(user=request.user, blog=blog)
+        love_path = '/blog/%s/unlove/'
+        love_class = 'unlove'
+    except Love.DoesNotExist:
+        pass
+
+    context = {
+        'blog': blog,
+        'profile': request.user.get_profile(),
+        'love_path': love_path % blog_id,
+        'love_class': love_class,
+        'love_count': Love.objects.filter(blog=blog).count()
+    }
+    return render(request, 'blog/blog_view.html', context)
+
+@login_required
+def blog_love(request, blog_id):
+    data = {'love': 0}
+    try:
+        Love.objects.get(user=request.user, blog__id=blog_id)
+    except Love.DoesNotExist:
+        try:
+            blog = Blog.objects.get(pk=blog_id)
+            love = Love(user=request.user, blog=blog)
+            love.save()
+            data['love'] = 1
+        except Blog.DoesNotExist:
+            # TODO page not found
+            pass
+    if request.is_ajax():
+        return HttpResponse(json.dumps(data), mimetype="application/json")
+    else:
+        return redirect('/blog/%s/view' % blog_id)
+
+@login_required
+def blog_unlove(request, blog_id):
+    data = {'love': 0}
+    try:
+        love = Love.objects.get(user=request.user, blog__id=blog_id)
+        love.delete()
+        data['love'] = -1
+    except Love.DoesNotExist:
+        pass
+    if request.is_ajax():
+        return HttpResponse(json.dumps(data), mimetype="application/json")
+    else:
+        return redirect('/blog/%s/view' % blog_id)
 
 def blog_save_location(country, city):
     try:
