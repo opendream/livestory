@@ -41,12 +41,8 @@ $(document).ready(function() {\n\
     }\n\
   };\n\
   $country.typeahead({\n\
-    onSelect: function(country) {\n\
-      cityTypeahead(country);\n\
-    },\n\
     source: data.countries\n\
   }).keyup(function(e) {\n\
-    //if (e.keyCode != 13 && e.keyCode != 27) {\n\
     if (country_val != this.value) {\n\
       $city.val('');\n\
       country_val = this.value;\n\
@@ -56,7 +52,7 @@ $(document).ready(function() {\n\
     cityTypeahead(country_val);\n\
   });\n\
   if (country_val != '') {\n\
-      cityTypeahead(country_val)\n\
+    cityTypeahead(country_val)\n\
   }\n\
 });\n\
 </script>" % (countries_str, ",".join(cities_arr))
