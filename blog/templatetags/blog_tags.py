@@ -61,3 +61,32 @@ $(document).ready(function() {\n\
 });\n\
 </script>" % (countries_str, ",".join(cities_arr))
     return inline_js
+
+@register.simple_tag
+def textcounter_js():
+    maxlength = 300;
+    inline_js = "<script>\n\
+$(document).ready(function() {\n\
+  var maxlength = %s;\n\
+  $('.textcounter').each(function(delta, el) {\n\
+    var $form = $(el).closest('form');\n\
+    var $buttons = $('button[type=submit]', $form);\n\
+    var $counter = $('span#'+ $(el).attr('id') +'_counter');\n\
+    var updateLength = function() {\n\
+      var len = parseInt($(el).val().length);\n\
+      var remaining = maxlength - len;\n\
+      if (remaining < 0) {\n\
+        $counter.closest('.control-group').addClass('error');\n\
+        $buttons.attr('disabled', 'disabled');\n\
+      } else {\n\
+        $counter.closest('.control-group').removeClass('error');\n\
+        $buttons.removeAttr('disabled');\n\
+      }\n\
+      $counter.html(remaining + '');\n\
+    }\n\
+    $(el).keyup(function(e) { updateLength() });\n\
+    updateLength();\n\
+  });\n\
+});\n\
+</script>"
+    return inline_js % maxlength

@@ -7,6 +7,7 @@
 {% block html_head %}
 <script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.js" type="text/javascript"></script>
 {% location_js %}
+{% textcounter_js %}
 {% endblock %}
 
 {% block nav %}
@@ -40,7 +41,7 @@
       <div class="controls">
         {{ form.description }}
         {{ form.description.errors }}
-        <p class="help-block">Limit <span id="text-counting">300</span> characters.</p>
+        <p class="help-block"><span id="id_description_counter">-1</span> characters left.</p>
       </div>
     </div>
     

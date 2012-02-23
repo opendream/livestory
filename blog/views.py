@@ -18,9 +18,10 @@ def blog_create(request):
         form = BlogCreateForm(request.POST, request.FILES)
         if form.is_valid():
             blog = form.save(commit=False)
+            blog.description = form.cleaned_data.get('description')[:300]
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
-            blog.location = blog_save_location(form.cleaned_data['country'], form.cleaned_data['city'])
+            blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
             blog.image.save('test.png', request.FILES['image'], save=False)
             # blog.image = handle_upload_file(request.FILES['image'], request)
             blog.save()
@@ -45,10 +46,10 @@ def blog_edit(request, blog_id):
         form = BlogEditForm(request.POST, request.FILES)
         if form.is_valid():
             blog.title = form.cleaned_data.get('title')
-            blog.description = form.cleaned_data.get('description')
+            blog.description = form.cleaned_data.get('description')[:300]
             blog.mood = form.cleaned_data.get('mood')
             blog.category = form.cleaned_data.get('category')
-            blog.location = blog_save_location(form.cleaned_data['country'], form.cleaned_data['city'])
+            blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
             blog.private = form.cleaned_data.get('private')
 
             # If previous is draft, you can draft it again.
@@ -95,7 +96,7 @@ def blog_view(request, blog_id):
 def blog_save_location(country, city):
     try:
         location = Location.objects.get(country=country, city=city)
-    except:
+    except Location.DoesNotExist:
         location = Location(country=country, city=city, lat=0, lng=0)
         location.save()
     return location
