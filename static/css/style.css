@@ -4,8 +4,6 @@
 
 /* Bootstrap override */
 	.menubar-inner{ margin: 0 0 18px 0; }
-	.container .span8, .container .span4{ margin-bottom: 24px;}
-	
 
 /*****************/
 /* Layouts Style */
@@ -22,12 +20,13 @@
 		background: #000;
 	}
 	
-	.admin-main{ padding-top: 30px; }
+	.admin #header{ margin-bottom: 30px; }
+
 
 /**************/
 /* Base Style */
 /**************/
-	@font-face { 	/* Oxfam's font-face */
+	@font-face { 	/*----- Oxfam's font-face -----*/
 	    font-family: 'OxfamGlobalHeadlineRegular';
 	    src: url('../fonts/oxfamglobalheadline-webfont.eot');
 	    src: url('../fonts/oxfamglobalheadline-webfont.eot?#iefix') format('embedded-opentype'),
@@ -61,7 +60,7 @@
 		border-radius: 10px;
 	}
 	.block{
-		margin: 0 0 20px;
+		margin-bottom: 24px !important;
 	}
 	.label-inline-form{
 		line-height: 25px;
@@ -136,8 +135,9 @@
 	}
 	
 	
-	
-/* Topbar */
+/***********/
+/* Top bar */
+/***********/
 	#topbar{
 		height: 26px;
 		padding: 8px 0 6px;
@@ -162,7 +162,8 @@
 		padding: 0 10px;
 	}
 	.notify, .post-blog, .invite {margin-top: 3px; border-left: 1px solid #5e5e5e;}
-	/* Profile dropdown*/
+	
+	/*------ Profile dropdown ------*/
 	.btn-group .profile-toggle{
 		background: transparent;
 		padding: 0;
@@ -217,20 +218,22 @@
 		text-indent: -999em;
 		background: url('../img/topbar-widget.png') no-repeat 0 -39px;
 	}
-	.post-blog a:hover {background-position: -16px -39px;}
+	.post-blog a:hover { background-position: -16px -39px; }
 	.invite a{
 		padding: 0 0 0 15px;
 		background: url('../img/topbar-widget.png') no-repeat 0 -61px;
 		text-decoration: none;
 	}
-	
-	
+
+
+/******************/
 /* Header Section */
+/******************/
 	#header{
 		height: 90px;
 		background: url('../img/bg_header.png') repeat-x 0px -20px ;
 	}
-	#header .container{ position: relative;}
+	#header .container{ position: relative; }
 		#logo{
 			float: left;
 			width: 128px;
@@ -252,7 +255,7 @@
 		.login a{ font-size: 12px; color: #fff; }
 		.login a:hover{ text-decoration: none; border-bottom: 1px dotted #fff;}
 		
-/* menu */
+	/*----- menu -----*/
 	.menu{
 		float: right;
 		width: 350px;
@@ -286,13 +289,13 @@
 			background-position: -189px 0;
 		}
 		
-		/*  Active & Hover */
+		/*----- Active & Hover -----*/
 		.popular:hover, .popular.active{ background-position: 0 -69px; }
 		.place:hover, .place.active{ background-position: -65px -69px; }
 		.moods:hover, .moods.active{ background-position: -127px -69px; }
 		.categories:hover, .categories.active{ background-position: -189px -69px; }
 		
-		/* Admin Menu */
+		/*----- Admin Menu -----*/
 		.nav-admin .active > a, .nav-admin .active > a:hover{
 			background: #72b64a;
 		}
@@ -317,8 +320,8 @@
 		.nav-admin > li:hover {
 			background-color: #ebebeb;
 		}
-	
-/* Search */
+		
+	/*----- Search -----*/
 	.search-stories{
 		float: left;
 		width: 182px;
@@ -348,7 +351,7 @@
 		box-sizing: border-box;         /* Opera/IE 8+ */
 	}
 
-/* Brand */
+	/*----- Brand -----*/
 	span.brand{
 		display: block;
 		font-size: 18px;
@@ -357,10 +360,12 @@
 	}
 	#navigation h1{ float: left;}
 	span.slogan{ font-size: 44px; }
-	
-/* View Blog Page */
+
+
+/******************/
+/* Header Section */
+/******************/
 	.blog-container-photo{
-/* 		width: 630px; */
 		float: left;
 		margin: 0 auto 18px;
 	}
@@ -407,7 +412,7 @@
 		color: #000;
 	}
 	
-	/* Love it */
+	/*----- Love it -----*/
 	.love, .unlove{
 		display: block;
 		float: left;
@@ -417,8 +422,8 @@
 		text-indent: -999em;
 		background: url('../img/btn-loveit.png') no-repeat ;
 	}
-	.love:hover{ background-position: 0 -33px; }
 	.unlove{ background-position: 0 -66px; }
+	.love:hover{ background-position: 0 -33px; }
 	.unlove:hover{ background-position: 0 -99px; }
 	
 	.people-love{
@@ -444,7 +449,7 @@
 		margin: 0 7px 7px 0;
 		list-style: none;
 	}
-	/* Tooltip */
+	/*----- Tooltip -----*/
 		.tooltip-popup{
 			display: none;
 			height: 15px;
@@ -453,6 +458,7 @@
 			text-align: center;
 			color: #fff;
 			background: #333;
+			z-index: 9999;
 		}
 		.friends li:hover .tooltip-popup{
 			display: block;
@@ -501,74 +507,98 @@
 		margin: 10px 0 0;
 	}
 
-/* Moods Icons*/
-	.moods{
+
+/***************/
+/* Moods Icons */
+/***************/
+	.emoticon-icon{
 		display: block;
 		float: left;
 		width: 16px;
 		height: 16px;
 		margin: 0 10px 0 0;
 		text-indent: -999em;
+		background: url('../img/ic-moods.png') no-repeat ;
 	}
-	.smile{ background: url('../img/ic-moods-smile.png') no-repeat ;}
+	
+	/*----- Create Blog -----*/
+	.emoticon {
+		background: url('../img/ic-moods.png') no-repeat ;
+		padding: 1px 0 0 16px;
+		margin: 0 7px 0 5px;
+	}
+	
+	.emo_sad {background-position: 0 0;}
+	.emo_confused {background-position: -16px 0;}
+	.emo_happy {background-position: -32px 0;}
+	.emo_laughing {background-position: -48px 0;}
+	.emo_love {background-position: -64px 0;}
 
 
 /*****************/
 /* Media Queries */
 /*****************/
 
-/* Landscape phones and down */
+	/*----- Landscape phones and down -----*/
   @media (max-width: 480px) { 
-  
+	  .form-backend { padding-left: 0px; }
+	  #header { height: 65px; }
+	  #logo { margin: 8px 0 0; }
+		span.slogan { font-size: 32px; }
+
+		span.brand {
+			font-size: 16px;
+			line-height: 22px;
+		}
+		.menu {
+			clear: both;
+		}
+		
+		#navigation h1 {	
+			margin: 10px 0 10px;
+		}
+		
   }
   
   @media (max-width: 730px) {
-	  #navigation{
-		  margin-top: 0;
-	  }
-	  #navigation h1{
-		  margin: 10px 0 18px;
-	  }
-	  .menu{
+		.menu{
 		  float: none;
 		  margin: 0;
 	  }
-	  .menu li{
-		  margin-bottom: 20px;
-	  }
+	  .menu li{ margin-bottom: 20px; }
+	  #navigation{ margin-top: 0; }
+	  #navigation h1{ margin: 10px 0 18px; }
   }
  
-/* Landscape phone to portrait tablet */
+	/*----- Landscape phone to portrait tablet -----*/
   @media (max-width: 768px) { 
-	  .blog-profile{
-		  margin-bottom: 20px;
-	  }
-	  .container .span8{
+  
+	  .container .span8, .container .span3{
 		  border-bottom: 2px dotted #ccc;
 		  padding-bottom: 22px;
 	  }
+	  
+		.blog-profile{ margin-bottom: 20px; }
+		.row{ margin-left: 0; }
+		.login{ right: 20px; }
   }
  
-/* Portrait tablet to landscape and desktop */
+	/*----- Portrait tablet to landscape and desktop -----*/
   @media (min-width: 768px) and (max-width: 980px) { 
 	  
 	  /* Blog */
-	  .blog-profile .porfile-photo{
-		  margin-bottom: 5px;
-	  }
-	  .blog-profile{
-		  margin-bottom: 20px;
-	  }
+	  .blog-profile .porfile-photo{ margin-bottom: 5px; }
+	  .blog-profile{ margin-bottom: 20px; }
   }
  
-/* Large desktop */
+	/*----- Large desktop -----*/
   @media (min-width: 1200px) { 
   
   }
 
-
-
-
+	@media only screen and (-webkit-min-device-pixel-ratio: 2){
+	
+	}
 
 
 .clearfix:after {
@@ -583,18 +613,3 @@
 html[xmlns] .clearfix { display: block; }
 * html .clearfix { height: 1%; }
 
-/* create blog */
-.emo {
-	background: url('../img/emo.png') no-repeat ;
-	display: block;
-	height: 16px;
-	width: 16px;
-	text-indent: -9999px;
-	overflow: hidden;
-}
-
-.emo_sad {background-position: 0 0;}
-.emo_confused {background-position: -16px 0;}
-.emo_happy {background-position: -32px 0;}
-.emo_laughing {background-position: -48px 0;}
-.emo_love {background-position: -64px 0;}

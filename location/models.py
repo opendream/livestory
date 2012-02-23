@@ -7,3 +7,6 @@ class Location(models.Model):
     # Optional
     lat = models.CharField(max_length=50)
     lng = models.CharField(max_length=50)
+
+    def __unicode__(self):
+    	return '%s: %s' % (self.country, self.city)
