@@ -2,6 +2,12 @@
 
 {% block head_title %}Your Profile{% endblock %}
 
+{% block html_head %}
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
+{% endblock %}
+
 {% block content %}
 <form class="form-horizontal" method="post" action="{% url account_profile_edit %}">
   {% csrf_token %}
@@ -50,7 +56,23 @@
     <div class="control-group">
       <label class="control-label" for="fileInput">Avatar</label>
       <div class="controls">
-        <input class="input-file" id="fileInput" type="file">
+        <input class="input-file" id="fileupload" type="file" name="files[]" multiple>
+        
+        {{ upload_to }}
+        <script type="text/javascript">
+        $(function () {
+            $('#fileupload').fileupload({
+                dataType: 'json',
+                url: 'server/php/',
+                done: function (e, data) {
+                    $.each(data.result, function (index, file) {
+                        $('<p/>').text(file.name).appendTo(document.body);
+                    });
+                }
+            });
+        });
+        </script>
+        
       </div>
     </div>
 

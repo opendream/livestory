@@ -16,6 +16,9 @@ from account.tasks import send_invite
 from datetime import datetime
 
 import hashlib
+import os
+
+import settings
 
 def account_login(request):
     from django.contrib.auth.views import login
@@ -148,8 +151,12 @@ def account_profile_edit(request):
 			
     else:
         form = AccountProfileForm(inst)
+        
+    upload_to = account_image_url(account, '').replace(settings.base_path, '')
             
     return render(request, 'account/account_profile_edit.html', locals())
-    
-    
-    
+
+@login_required    
+def account_profile_image_delete(request):
+    account = request.user.get_profile()
+    account.image.delete()
