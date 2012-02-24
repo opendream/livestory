@@ -11,18 +11,17 @@
 
 {% block base_content %}
 <div class="row">
-  <div class="span3">
-    <ul class="nav nav-list">
-      <li class="nav-header">Post</li>
-      <li class="active"><a href="#"><i class="icon-white icon-home"></i> All Post</a></li>
-      <li><a href="{% url blog_create %}"><i class="icon-book"></i> Add New Post</a></li>
-      <li class="nav-header">User</li>
-      <li><a href="#"><i class="icon-user"></i> All User</a></li>
-      <li><a href="#"><i class="icon-cog"></i> Invite User</a></li>
-      <li><a href="#"><i class="icon-flag"></i> Your Profile</a></li>
+  <div class="span3 block">
+    <ul class="nav nav-list nav-admin">
+      <li class="nav-header"><a href ="#">Post</a></li>
+      <li><a href="#"><i class="icon-th-list"></i> All Post</a></li>
+      <li class="active"><a href="{% url blog_create %}"><i class="icon-white icon-plus"></i> Add New Post</a></li>
+      <li class="nav-header"><a href ="#">Love <span class="rounded">24</span></a></li>
+      <li class="nav-header"><a href ="#">User</a></li></li>
+      <li><a href="{% url account_profile_edit %}"><i class="icon-user"></i> Your Profile</a></li>
     </ul>
   </div>
-  <div class="span9">
+  <div class="span9 block">
     {% if messages %}
     <div class="messages">
       {% for message in messages %}

@@ -4,6 +4,7 @@
 
 /* Bootstrap override */
 	.menubar-inner{ margin: 0 0 18px 0; }
+	.form-horizontal .control-group > label{ font-weight: bold; }
 
 /*****************/
 /* Layouts Style */
@@ -469,7 +470,11 @@
 			float: left;
 			margin: 1% 2% 1% 0;
 			list-style: none;
-			width: 48%;
+			width: 46%;
+			padding: 5px;
+		}
+		.friends-inline li:hover{
+			background: #eee;
 		}
 		.friends-inline img{
 			float: left;
@@ -589,7 +594,7 @@
 		background: url('../img/bg-drop.png') no-repeat !important;
 	}
 	.dropbox .image-append{
-		width: 302px;
+		width: 102px;
 		height: 102px;
 		z-index: 1000;
 	}
@@ -604,10 +609,15 @@
 	}
 	.select-file:hover{ cursor: pointer; }
 
-
-
-
-
+	.ic {
+		display: block;
+		margin: 10px 0;
+		padding-left: 16px;
+		background: url('../img/ic-moods.png') no-repeat;
+	}
+	.image-delete{
+		background-position: -90px 0;
+	}
 
 /*****************/
 /* Media Queries */
