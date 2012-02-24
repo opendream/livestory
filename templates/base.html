@@ -27,7 +27,7 @@
       <div class="btn-group profile-group">
       <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
         {% if user.get_profile.image %}
-        <img src="{{ account.image|crop:AVATAR_TOP_SIZE }}" alt=""/>
+        <img src="{{ user.get_profile.image|crop:AVATAR_TOP_SIZE }}" alt=""/>
         {% endif %}
         <span>
           {% if user.get_profile.get_fullname %}
