@@ -112,23 +112,27 @@ $(document).ready(function() {
       <p class="block">{{ blog.description }}</p>
 
       <span class="grey">Posted on {{ blog.created|date:"m.d.Y" }} in</span> <a href="#">{{ blog.category }}</a>
+
+      {% ifequal blog.user.id user.id %}
+      <a href="{% url blog_edit blog.id %}" class="edit-post-link">Edit this post</a>
+      {% endifequal %}
       
     </div> <!-- span3 -->
     
     <div class="span4 block">
       <div class="blog-profile block clearfix">
-        <img src="{{ profile.image.path|path_to_url }}" alt="" class="porfile-photo"/>
+        <img src="{{ profile.image|crop:'94x94' }}" alt="" class="porfile-photo"/>
         <a href="{% url account_profile_edit %}" class="profile-name">{{ profile.firstname }} {{ profile.lastname }}</a>
         <span class="profile-email grey">{{ profile.user }}</span>
       </div>
       
       <div class="blog-loveit block clearfix">
         <a href="{{ love_path }}" id="{{ button_type }}_{{ blog.id }}" class="love-button {{ button_type }}">Love it</a>
-        <span class="people-love grey"><span class="love-sum">{{ love_count }}</span> People love it</span>
+        <span class="people-love grey"><span class="love-sum">{{ love_count }}</span>&nbsp;&nbsp;People love it</span>
         <ul class="friends clearfix">
           {% for user in loved_users|slice:":7" %}
           <li class="love-user_{{ user.user.id }}">
-              <a href="#" title=""><img src="{{ user.image.path|path_to_url }}" alt="{{ user.get_fullname }}" /></a>
+              <a href="#" title=""><img src="{{ user.image|crop:'35x35' }}" alt="{{ user.get_fullname }}" /></a>
               <div class="tooltip-popup">{{ user.get_fullname }}</div>
           </li>
           {% endfor %}
@@ -143,8 +147,8 @@ $(document).ready(function() {
             <ul class="friends-inline">
               {% for user in loved_users %}
               <li class="love-user_{{ user.user.id }}">
-                <a href="#" title=""><img src="{{ user.image.path|path_to_url }}" alt="{{ user.get_profile.get_fullname }}"></a>
-                <a href="#" class="profile-name">{{ user.get_profile.get_fullname }}</a>
+                <a href="#" title=""><img src="{{ user.image|crop:'35x35' }}" alt="{{ user.get_fullname }}"></a>
+                <a href="#" class="profile-name">{{ user.get_fullname }}</a>
               </li>
               {% endfor %}
             </ul>
@@ -163,7 +167,14 @@ $(document).ready(function() {
       </div>
       
       <div class="blog-share">
-        Addthis here
+        <!-- AddThis Button BEGIN -->
+        <div class="addthis_toolbox addthis_default_style ">
+        <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+        <a class="addthis_button_tweet"></a>
+        <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+        </div>
+        <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4f476b3d6c5d7ab5"></script>
+        <!-- AddThis Button END -->
       </div>
   
     </div>    

@@ -2,6 +2,7 @@ import os
 import settings
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
@@ -28,11 +29,13 @@ def blog_create(request):
             blog.image.save('test.png', request.FILES['image'], save=False)
             # blog.image = handle_upload_file(request.FILES['image'], request)
             blog.save()
+            messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
             return redirect('/blog/%s/edit' % blog.pk)
     else:
         form = BlogCreateForm()
 
     context = {
+        'page_title': 'Create Your Blog',
         'form': form,
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
@@ -70,6 +73,7 @@ def blog_edit(request, blog_id):
                     blog.image.save(image.name, image, save=False)
                 
                 blog.save()
+                messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
                 return redirect('/blog/%s/edit' % blog.pk)
         else:
             defaults = {
@@ -84,6 +88,7 @@ def blog_edit(request, blog_id):
             form = BlogEditForm(defaults)
 
         context = {
+            'page_title': 'Edit Post',
             'form': form,
             'moods': MOOD_CHOICES,
             'visibilities': PRIVATE_CHOICES,

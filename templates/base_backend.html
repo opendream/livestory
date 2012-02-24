@@ -27,7 +27,7 @@
     <div class="messages">
       {% for message in messages %}
       <div class="alert alert-{{ message.tags }}">
-        <a class="close">×</a><p>{{ message.tags }}</p> {{ message }}
+        <a class="close">×</a><p>{{ message.tags }}</p> {{ message|safe }}
   		</div>
   		{% endfor %}
 		</div>

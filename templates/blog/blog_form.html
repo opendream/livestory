@@ -44,7 +44,7 @@ $(document).ready(function() {
 <form class="form-horizontal" method="post" action="{{ action }}" enctype="multipart/form-data">
   {% csrf_token %}
   <fieldset>
-    <legend>Create Your Blog</legend>
+    <legend>{{ page_title }}</legend>
     
     <div class="control-group{% if form.title.errors %} error{% endif %}">
       <label class="control-label" for="id_title">Title</label>
