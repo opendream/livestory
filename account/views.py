@@ -128,7 +128,7 @@ def account_profile_edit(request):
     inst = model_to_dict(user)
     inst.update(model_to_dict(account))
     inst['password'] = ''
-    
+    print inst
     param = request.GET.get('forgot') or request.GET.get('first')
     if param:
         inst['just_update_password'] = 1
@@ -146,17 +146,11 @@ def account_profile_edit(request):
 			account.lastname  = form.cleaned_data.get('lastname')
 			# TODO: save avatar
 			account.save()
-			
+						
 			messages.success(request, 'Your profile has been save.')
 			
     else:
         form = AccountProfileForm(inst)
-        
-    upload_to = account_image_url(account, '').replace(settings.base_path, '')
-            
-    return render(request, 'account/account_profile_edit.html', locals())
 
-@login_required    
-def account_profile_image_delete(request):
-    account = request.user.get_profile()
-    account.image.delete()
+    
+    return render(request, 'account/account_profile_edit.html', locals())

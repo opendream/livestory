@@ -9,12 +9,11 @@
   <meta name="keywords" content="{% block meta_keywords %}{% endblock %}" />
   
   <script type="text/javascript" src="{{STATIC_URL}}libs/jquery-1.7.1.min.js"></script>
-  <script type="text/javascript" src="{{STATIC_URL}}js/base.js"></script>
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css">
 
   {% block html_head %}{% endblock %}
-
+  
   <!-- <script type="text/javascript" src="{{STATIC_URL}}libs/less-1.2.1.js"></script> -->
 </head>
 <body class="{% block base_body_class %}{% endblock %}">
@@ -75,6 +74,6 @@
       </div> <!-- row -->
     </div>
   </div>
-
+  <script type="text/javascript" src="{{STATIC_URL}}js/base.js"></script>
 </body>
 </html>

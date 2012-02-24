@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^account/', include('account.urls')),
     url(r'^blog/', include('blog.urls')),
     url(r'^location/', include('location.urls')),
+    url(r'^ajax/', include('ajax.urls')),
     
     url(r'^account/logout/$', 'django.contrib.auth.views.logout', {'next_page':'/account/login/'}, name='account_logout'),
     url(r'^account/password_reset/$', 'django.contrib.auth.views.password_reset', name='account_password_reset'),

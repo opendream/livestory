@@ -1,4 +1,4 @@
-import os.path
+import os
 import settings
 
 from django import template
@@ -16,9 +16,12 @@ def path_to_url(path):
 def resized_path(path, size, method):
     "Returns the path for the resized image."
 
-    dir, name = os.path.split(path)
+    directory, name = os.path.split(path)
+    directory = directory.replace(settings.IMAGE_ROOT, '')
+    directory = '%scache/%s' % (settings.IMAGE_ROOT, directory)
+    
     image_name, ext = name.rsplit('.', 1)
-    return os.path.join(dir, '%s_%s_%s.%s' % (image_name, method, size, EXT))
+    return os.path.join(directory, '%s_%s_%s.%s' % (image_name, method, size, EXT))
 
 
 def scale(imagefield, size, method='scale'):
@@ -37,7 +40,11 @@ def scale(imagefield, size, method='scale'):
         imagefield = type('imageobj', (object,), imagefield)
 
     image_path = resized_path(imagefield.path, size, method)
-
+    
+    directory, name = os.path.split(image_path)    
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    
     if not os.path.exists(image_path):
         try:
             import Image
