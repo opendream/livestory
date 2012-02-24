@@ -5,6 +5,8 @@ from django.http import HttpResponse
 
 from common.templatetags.common_tags import *
 
+import os
+import shutil
 import settings
 
 @login_required
@@ -18,7 +20,7 @@ def ajax_account_image_upload(request):
         'name': image.name,
         'size': image.size,
         'url': account.get_image_url(),
-        'thumbnail_url': scale(account.image, '94x94'),
+        'thumbnail_url': crop(account.image, settings.AVATAR_SIZE),
         'delete_url': reverse('ajax_account_image_delete'),
         'delete_type': 'DELETE'
     }
@@ -28,8 +30,20 @@ def ajax_account_image_upload(request):
 @login_required    
 def ajax_account_image_delete(request):
     account = request.user.get_profile()
+    
+    #shutil.rmtree('/path/to/folder')
+    
+    
     try:
         account.image.file
+        
+        # Delete cache images
+        shutil.rmtree(cache_path(account.image.path))
+        
+        # Delete all old image
+        directory, name = os.path.split(account.image.path)
+        shutil.rmtree(directory)
+        
         account.image.delete()
         data = {'result': 'complete'}
     except:

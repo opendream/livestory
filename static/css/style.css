@@ -124,6 +124,28 @@
 		background-color: #787878;
 	}
 	
+    .messages p:first-letter {
+        text-transform: uppercase;
+    }
+    .messages p {
+        font-weight: bold;
+          float: left;
+          line-height: 15px;
+          padding-right: 5px;
+    }
+	
+	.image-append img {
+	    border: 1px dashed #BBB;
+        padding: 5px;
+        float: left;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+    }
+    .image-delete {
+        margin-left: 20px;
+        float: left;
+        margin-top: 42px;
+    }
 	
 /***********/
 /* Top bar */
@@ -567,8 +589,9 @@
 		background: url('../img/bg-drop.png') no-repeat !important;
 	}
 	.dropbox .image-append{
-		width: 102px;
+		width: 302px;
 		height: 102px;
+		z-index: 1000;
 	}
 	
 	.select-file{
@@ -579,7 +602,7 @@
 		height: 28px;
 		background: url('../img/btn-select-file.png') no-repeat !important;
 	}
-		.select-file:hover{ cursor: pointer; }
+	.select-file:hover{ cursor: pointer; }
 
 
 

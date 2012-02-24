@@ -60,16 +60,16 @@
           <div class="image-wrapper"{% if not account.image %} style="display:none;"{% endif %}>
   					<div class="image-append">
   					  {% if account.image %}
-  					  <img src="{{ account.image|scale:'94x94' }}" />
+  					  <img src="{{ account.image|crop:AVATAR_SIZE }}" />
   					  {% endif %}
   					</div>
-  					<a href="{% url ajax_account_image_delete %}" class="image-delete">change/delete image</a>
+  					<a href="{% url ajax_account_image_delete %}" class="image-delete">&laquo; change or delete</a>
   					<input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_account_image_upload %}" />
 					</div>
 					<div class="drop-area"{% if account.image %} style="display:none;"{% endif %}>
 						<div class="dropbox"><input class="input-file image-append fileupload" type="file" name="image"></div>
 						<div class="image-help">add photo here or</div>
-						<div class="select-file"><input class="input-file imgae-button fileupload-classic" type="file" name="image"></div>
+						<div class="select-file"><input class="input-file imgae-button fileupload-classic" type="file" name="image" disabled="disabled"></div>
 					</div>
 				</div>
         

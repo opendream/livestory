@@ -13,16 +13,21 @@ register = template.Library()
 def path_to_url(path):
 	return path.replace(settings.base_path, '')
 
+def cache_path(path):
+    directory, name = os.path.split(path)
+    directory = directory.replace(settings.IMAGE_ROOT, '')
+    return '%scache/%s' % (settings.IMAGE_ROOT, directory)
 
 def resized_path(path, size, method):
     "Returns the path for the resized image."
-
+    
     directory, name = os.path.split(path)
-    directory = directory.replace(settings.IMAGE_ROOT, '')
-    directory = '%scache/%s' % (settings.IMAGE_ROOT, directory)
+    directory = cache_path(path)
     
     image_name, ext = name.rsplit('.', 1)
     return os.path.join(directory, '%s_%s_%s.%s' % (image_name, method, size, EXT))
+
+
 
 @register.filter()
 def scale(imagefield, size, method='scale'):
@@ -63,7 +68,6 @@ def scale(imagefield, size, method='scale'):
 
         # parse size string 'WIDTHxHEIGHT'
         width, height = [int(i) for i in size.split('x')]
-
         # use PIL methods to edit images
         if method == 'scale':
             image.thumbnail((width, height), Image.ANTIALIAS)
@@ -92,3 +96,5 @@ def crop(imagefield, size):
 
     """
     return scale(imagefield, size, 'crop')
+    
+

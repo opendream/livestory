@@ -1,3 +1,5 @@
+{% load common_tags %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -24,7 +26,9 @@
     <div class="topbar-widget">
       <div class="btn-group profile-group">
       <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
-        <img src="img/avt.png" alt=""/>
+        {% if user.get_profile.image %}
+        <img src="{{ account.image|crop:AVATAR_TOP_SIZE }}" alt=""/>
+        {% endif %}
         <span>
           {% if user.get_profile.get_fullname %}
           {{ user.get_profile.get_fullname }}
