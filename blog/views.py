@@ -109,7 +109,7 @@ def blog_view(request, blog_id):
         # Do nothing. Use default love_path and button_type.
         pass
     
-    love_set = blog.love_set.all()
+    love_set = blog.love_set.all().order_by('-datetime')
     loved_users = []
     for l in love_set:
         loved_users.append(l.user.get_profile())
