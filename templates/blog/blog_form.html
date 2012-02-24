@@ -34,7 +34,7 @@
       <label class="control-label" for="id_image">Image</label>
       <div class="controls">
         {% if blog.image %}
-        <img src="{{ blog.image|scale:'470x250' }}" class="block" />
+        <img src="{{ blog.image|scale:'470x250' }}" class="block" /><br />
         {% endif %}
         {{ form.image }}
         {% if form.image.errors %}

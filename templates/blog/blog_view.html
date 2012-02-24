@@ -6,6 +6,79 @@
 
 {% block html_head %}
 <script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  var user_id = {{ user.id }};
+  var maxItems = {{ max_items }};
+  var button = $('a.love-button');
+  var counter = $('.love-sum');
+  var id = button.attr('id');
+  var split = id.split('_');
+  var loveType = split[0];
+  var blogId = parseInt(split[1]);
+  var updateLoves = function(num) {
+    if (typeof num == 'undefined') num = 0;
+    var current = parseInt(counter.html());
+    var newLove = current + num;
+    counter.html(newLove);
+    return newLove
+  };
+  var onResult = function(result) {
+    if (result.status == 200) {
+      // Change button style
+      button
+        .removeClass()
+        .addClass('love-button')
+        .addClass(result.type);
+      
+      // Update numbers of love.
+      var numLove = updateLoves(result.love);
+
+      // Predefine vars
+      var liList = $('ul.friends li.love-user_' + user_id);
+      var liPopup = $('ul.friends-inline li.love-user_' + user_id);
+      // If has more room to add new item.
+      if (liList.size() == 0 && $('ul.friends li').size() < maxItems) {
+        // On the list.
+        liList = $('#own_love_list').clone().removeAttr('id');
+        $('ul.friends').prepend(liList);
+      }
+      if (liPopup.size() == 0) {
+        // On the popup.
+        liPopup = $('#own_love_popup').clone().removeAttr('id');
+        $('ul.friends-inline').prepend(liPopup);
+      }
+
+      // Effect.
+      if (loveType == 'love') {
+        liList.fadeIn();
+        liPopup.show();
+      } else {
+        liList.fadeOut(function() { liList.remove() });
+        liPopup.hide();
+      }
+
+      // Handle with more link.
+      if (numLove > maxItems) {
+        $('#more-loves').slideDown();
+      } else {
+        $('#more-loves').slideUp();
+      }
+
+      // Update type.
+      loveType = result.type;
+    }
+  };
+  var getAjaxUrl = function() {
+    var urls = ['blog', blogId, loveType];
+    return '/' + urls.join('/');
+  };
+  button.click(function(e) {
+    e.preventDefault();
+    $.getJSON(getAjaxUrl(), {}, onResult);
+  });
+});
+</script>
 {% endblock %}
 
 {% block base_content %}
@@ -50,21 +123,43 @@
       </div>
       
       <div class="blog-loveit block clearfix">
-        <a href="{{ love_path }}" class="{{ love_class }}">Love it</a>
+        <a href="{{ love_path }}" id="{{ button_type }}_{{ blog.id }}" class="love-button {{ button_type }}">Love it</a>
         <span class="people-love grey"><span class="love-sum">{{ love_count }}</span> People love it</span>
-        {% if users_loved %}
         <ul class="friends clearfix">
-          {% for user in users_loved %}
-          <li>
-            <div>
-              <a href="#" title=""><img src="{{ user.image.path|path_to_url }}" alt="{{ user.firstname }} {{ user.lastname }}" /></a>
-              <div class="tooltip-popup">{{ user.firstname }} {{ user.lastname }}</div>
-            </div>
+          {% for user in loved_users|slice:":7" %}
+          <li class="love-user_{{ user.user.id }}">
+              <a href="#" title=""><img src="{{ user.image.path|path_to_url }}" alt="{{ user.get_fullname }}" /></a>
+              <div class="tooltip-popup">{{ user.get_fullname }}</div>
           </li>
           {% endfor %}
         </ul>
-        <a href="#" class="more-friend">more</a>
-        {% endif %}
+        <a data-toggle="modal" href="#all-loves" id="more-loves" class="{% if love_count < max_items %}hide {% endif %}more-friend">more</a>
+        <div id="all-loves" class="modal hide fade" style="">
+          <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3>People who love this photo</h3>
+          </div>
+          <div class="modal-body">
+            <ul class="friends-inline">
+              {% for user in loved_users %}
+              <li class="love-user_{{ user.user.id }}">
+                <a href="#" title=""><img src="{{ user.image.path|path_to_url }}" alt="{{ user.get_profile.get_fullname }}"></a>
+                <a href="#" class="profile-name">{{ user.get_profile.get_fullname }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <ul class="hide">
+          <li id="own_love_list" class="love-user_{{ user.id }} hide">
+              <a href="#" title=""><img src="{{ user.get_profile.image.path|path_to_url }}" alt="{{ user.get_profile.get_fulllname }}" /></a>
+              <div class="tooltip-popup">{{ user.get_profile.get_fullname }}</div>
+          </li>
+          <li id="own_love_popup" class="love-user_{{ user.id }} hide">
+            <a href="#" title=""><img src="{{ user.get_profile.image.path|path_to_url }}" alt="{{ user.get_profile.get_fullname }}"></a>
+            <a href="#" class="profile-name">{{ user.get_profile.get_fullname }}</a>
+          </li>
+        </ul>
       </div>
       
       <div class="blog-share">

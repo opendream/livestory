@@ -124,16 +124,6 @@
 		background-color: #787878;
 	}
 	
-	.messages p:first-letter {
-	    text-transform: uppercase;
-	}
-	.messages p {
-	    font-weight: bold;
-        float: left;
-        line-height: 15px;
-        padding-right: 5px;
-	}
-	
 	
 /***********/
 /* Top bar */
@@ -392,8 +382,6 @@
 		font-size: 18px;
 	}
 	
-	.blog-description {margin-bottom: 20px;}
-	
 	.blog-profile{ 
 		margin-bottom: 40px;
 	}
@@ -405,7 +393,7 @@
 		border: 3px solid #000;
 	}
 	.blog-profile .profile-name{
-		display: inline-block;
+		display: block;
 		margin-bottom: 5px;
 		font-size: 18px;
 		font-weight: bold;
@@ -438,6 +426,7 @@
 		color: #333;
 	}
 	
+	/*----- Friends -----*/
 	.friends{
 		margin: 20px 0 0;
 	}
@@ -449,6 +438,22 @@
 		margin: 0 7px 7px 0;
 		list-style: none;
 	}
+	.friends-inline{
+		margin: 0;
+		overflow: hidden;
+		width: 100%;
+	}
+		.friends-inline li{
+			float: left;
+			margin: 1% 2% 1% 0;
+			list-style: none;
+			width: 48%;
+		}
+		.friends-inline img{
+			float: left;
+			margin: 0 10px 0 0;
+		}
+	
 	/*----- Tooltip -----*/
 		.tooltip-popup{
 			display: none;
@@ -534,6 +539,52 @@
 	.emo_laughing {background-position: -48px 0;}
 	.emo_love {background-position: -64px 0;}
 
+	/* Upload Image */
+	.image-help{
+		position: absolute;
+		top: 10px;
+		left: 80px;
+		width: 225px;
+		height: 40px;
+		text-indent: -999em;
+		background: url('../img/ic-add-photo.png') no-repeat ;
+	}
+	
+	.input-file{
+		position: relative;
+		border: none;
+		-moz-opacity: 0;
+		opacity: 0;
+		filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+		background: transparent !important;
+		z-index: 999;
+	}
+	
+	.drop-area{ position: relative; }
+	.dropbox{
+		width: 102px;
+		height: 102px;
+		background: url('../img/bg-drop.png') no-repeat !important;
+	}
+	.dropbox .image-append{
+		width: 102px;
+		height: 102px;
+	}
+	
+	.select-file{
+		position: absolute;
+		bottom: 10px;
+		left: 170px;
+		width: 104px;
+		height: 28px;
+		background: url('../img/btn-select-file.png') no-repeat !important;
+	}
+		.select-file:hover{ cursor: pointer; }
+
+
+
+
+
 
 /*****************/
 /* Media Queries */
@@ -550,13 +601,40 @@
 			font-size: 16px;
 			line-height: 22px;
 		}
-		.menu {
-			clear: both;
-		}
 		
 		#navigation h1 {	
 			margin: 10px 0 10px;
 		}
+		
+		.menu{
+			clear: both;
+			width: 310px;
+		}
+		.menu a{ height: 59px; }
+		.menu .popular{
+			width: 55px;
+			margin-right: 13px;
+			background-position: 0 -140px;
+		}
+		.menu .place{
+			width: 53px;
+			margin-right: 12px;
+			background-position: -56px -140px;
+		}
+		.menu .moods{
+			width: 53px;
+			margin-right: 13px;
+			background-position: -109px -140px;
+		}
+		.menu .categories{
+			width: 75px;
+			background-position: -163px -140px;
+		}
+		
+		.popular:hover, .popular.active{ background-position: 0 -199px; }
+		.place:hover, .place.active{ background-position: -56px -199px; }
+		.moods:hover, .moods.active{ background-position: -109px -199px; }
+		.categories:hover, .categories.active{ background-position: -163px -199px; }
 		
   }
   
@@ -588,6 +666,7 @@
 	  
 	  /* Blog */
 	  .blog-profile .porfile-photo{ margin-bottom: 5px; }
+	  .blog-profile .profile-name{ clear: both; }
 	  .blog-profile{ margin-bottom: 20px; }
   }
  
