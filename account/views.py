@@ -16,6 +16,9 @@ from account.tasks import send_invite
 from datetime import datetime
 
 import hashlib
+import os
+
+import settings
 
 def account_login(request):
     from django.contrib.auth.views import login
@@ -125,7 +128,7 @@ def account_profile_edit(request):
     inst = model_to_dict(user)
     inst.update(model_to_dict(account))
     inst['password'] = ''
-    
+    print inst
     param = request.GET.get('forgot') or request.GET.get('first')
     if param:
         inst['just_update_password'] = 1
@@ -143,13 +146,11 @@ def account_profile_edit(request):
 			account.lastname  = form.cleaned_data.get('lastname')
 			# TODO: save avatar
 			account.save()
-			
+						
 			messages.success(request, 'Your profile has been save.')
 			
     else:
         form = AccountProfileForm(inst)
-            
+
+    
     return render(request, 'account/account_profile_edit.html', locals())
-    
-    
-    

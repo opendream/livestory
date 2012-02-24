@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 
+from account.models import Account
 
 class AccountInviteForm(forms.Form):
     invite = forms.CharField(widget=forms.Textarea)
@@ -15,7 +16,11 @@ class AccountProfileForm(forms.Form):
     password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'input-xlarge'}, render_value=False), required=False)
     confirm_password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'input-xlarge'}, render_value=False), required=False)
     
+    image = forms.ImageField(required=False)
     
+    class Meta:
+		model = Account
+		#exclude = ('user', 'location', 'draft')
     
     def clean_password(self):
         if self.cleaned_data.get('just_update_password'):

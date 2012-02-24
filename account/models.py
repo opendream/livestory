@@ -1,7 +1,7 @@
 from django.db import models
-
 from django.contrib.auth.models import User
 
+from common.templatetags.common_tags import *
 import settings
 
 def account_image_url(instance, filename):
@@ -16,9 +16,15 @@ class Account(models.Model):
     user      = models.OneToOneField(User)
     
     def get_fullname(self):
-        return 'xxxxx'
         return '%s %s' % (self.firstname, self.lastname)
         
+    def get_image_url(self):
+        try:
+            self.image.file
+            return path_to_url(account_image_url(self, self.image.name))
+        except ValueError:
+            return None
+            
     def __unicode__(self):
         return '%s' % (self.get_fullname())
 

@@ -1,6 +1,9 @@
 {% extends 'base_backend.html' %}
+{% load common_tags %}
 
 {% block head_title %}Your Profile{% endblock %}
+
+
 
 {% block content %}
 <form class="form-horizontal" method="post" action="{% url account_profile_edit %}">
@@ -50,7 +53,27 @@
     <div class="control-group">
       <label class="control-label" for="fileInput">Avatar</label>
       <div class="controls">
-        <input class="input-file" id="fileInput" type="file">
+        
+        
+        <div class="image-upload">
+          
+          <div class="image-wrapper"{% if not account.image %} style="display:none;"{% endif %}>
+  					<div class="image-append">
+  					  {% if account.image %}
+  					  <img src="{{ account.image|scale:'94x94' }}" />
+  					  {% endif %}
+  					</div>
+  					<a href="{% url ajax_account_image_delete %}" class="image-delete">change/delete image</a>
+  					<input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_account_image_upload %}" />
+					</div>
+					<div class="drop-area"{% if account.image %} style="display:none;"{% endif %}>
+						<div class="dropbox"><input class="input-file image-append fileupload" type="file" name="image"></div>
+						<div class="image-help">add photo here or</div>
+						<div class="select-file"><input class="input-file imgae-button fileupload-classic" type="file" name="image"></div>
+					</div>
+				</div>
+        
+        
       </div>
     </div>
 

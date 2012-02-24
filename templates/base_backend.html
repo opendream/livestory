@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
+{% block base_body_class %}admin{% endblock %}
 {% block base_container_class %} admin-main{% endblock %}
 
+{% block html_head %}
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
+{% endblock %}
 
 {% block base_content %}
 <div class="row">
