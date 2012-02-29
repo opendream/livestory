@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load common_tags %}
+
+{% block head_title %}{{ blog.title }}{% endblock %}
+
+{% block html_head %}
+{% endblock %}
+
+{% block base_content %}
+<div class="scour" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
+  {% for rect in rects %}
+  <div class="rect" style="
+    left:{{ rect.left }}px;
+    top:{{ rect.top }}px;
+    width: {{ rect.width }}px;
+    height: {{ rect.height }}px
+  ">
+    
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

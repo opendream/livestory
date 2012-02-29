@@ -725,3 +725,14 @@
 html[xmlns] .clearfix { display: block; }
 * html .clearfix { height: 1%; }
 
+/*****************/
+/* Scour         */
+/*****************/
+
+.scour {
+    position: relative;
+}
+.scour .rect {
+    position: absolute;
+    background-color: #888;
+}

@@ -14,6 +14,14 @@ from blog.models import *
 from blog.forms import *
 
 from location.models import Location
+from common.scour import Scour
+
+def blog_home(request):
+    scour_width = 960
+    scour_height = 660
+    scour = Scour(10, 9, scour_width, scour_height, 10)
+    rects = scour.get_rect()
+    return render(request, 'blog/blog_home.html', locals())
 
 @login_required
 def blog_create(request):
