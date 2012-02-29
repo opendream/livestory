@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block base_body_class %}single{% endblock %}
+
+
+{% block base_content %}
+<!------- Navigation -->
+<div id="navigation">
+  <h1 class="oxfam-font">
+    <span class="brand">oxfam</span><span class="slogan">live stories</span>
+  </h1>
+  <ul class="menu">
+    <li><a href="#" class="popular active">Popular</a></li>
+    <li><a href="#" class="place">Place</a></li>
+    <li><a href="#" class="moods">Moods</a></li>
+    <li><a href="#" class="categories">Categories</a></li>
+  </ul>
+</div>
+
+{% block content %}{% endblock %}
+
+{% endblock %}

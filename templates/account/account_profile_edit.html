@@ -63,7 +63,7 @@
   					  <img src="{{ account.image|crop:AVATAR_SIZE }}" />
   					  {% endif %}
   					</div>
-  					<a href="{% url ajax_account_image_delete %}" class="image-delete">&laquo; change or delete</a>
+  					<a href="{% url ajax_account_image_delete %}" class="ic image-delete">change image</a>
   					<input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_account_image_upload %}" />
 					</div>
 					<div class="drop-area"{% if account.image %} style="display:none;"{% endif %}>

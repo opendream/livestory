@@ -138,14 +138,8 @@
 	.image-append img {
 	    border: 1px dashed #BBB;
         padding: 5px;
-        float: left;
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
-    }
-    .image-delete {
-        margin-left: 20px;
-        float: left;
-        margin-top: 42px;
     }
 	
 /***********/
@@ -594,7 +588,7 @@
 		background: url('../img/bg-drop.png') no-repeat !important;
 	}
 	.dropbox .image-append{
-		width: 102px;
+		width: 280px;
 		height: 102px;
 		z-index: 1000;
 	}
@@ -734,5 +728,8 @@ html[xmlns] .clearfix { display: block; }
 }
 .scour .rect {
     position: absolute;
-    background-color: #888;
+    background-color: #DDD;
+}
+.scour .has_blog {
+    background-color: #FFF;
 }

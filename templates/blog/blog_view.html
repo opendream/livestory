@@ -1,11 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'base_single.html' %}
 
 {% load common_tags %}
 
 {% block head_title %}{{ blog.title }}{% endblock %}
 
 {% block html_head %}
-<script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function() {
   var user_id = {{ user.id }};
@@ -81,19 +80,8 @@ $(document).ready(function() {
 </script>
 {% endblock %}
 
-{% block base_content %}
-  <!------- Navigation -->
-  <div id="navigation">
-    <h1 class="oxfam-font">
-      <span class="brand">oxfam</span><span class="slogan">live stories</span>
-    </h1>
-    <ul class="menu">
-      <li><a href="#" class="popular active">Popular</a></li>
-      <li><a href="#" class="place">Place</a></li>
-      <li><a href="#" class="moods">Moods</a></li>
-      <li><a href="#" class="categories">Categories</a></li>
-    </ul>
-  </div>
+{% block content %}
+
   
   <div id ="blog" class="row">
     <div class="span8 block">

@@ -61,7 +61,7 @@ class Blog(models.Model):
     location    = models.ForeignKey(Location)
     
     def __unicode__(self):
-        return '%s' % (self.title)
+        return '(%d)' % (self.id)
     
     def get_image_url(self):
         (folder, filename) = os.path.split(self.image.name)

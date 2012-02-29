@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.utils import simplejson as json
+from django.db.models import Count, Sum
 
 from account.models import Account
 from blog.models import *
@@ -20,7 +21,36 @@ def blog_home(request):
     scour_width = 960
     scour_height = 660
     scour = Scour(10, 9, scour_width, scour_height, 10)
-    rects = scour.get_rect()
+    
+    borders = scour.get_rect()
+    
+    # Ask crosalot when you has question with long query.
+    blogs = Blog.objects.raw(
+    "SELECT tmp.bid AS id, SUM(tmp.rate) AS love_rate \
+     FROM ( \
+        SELECT blog_blog.id AS bid, COALESCE(blog_love.id, 0) AS rate \
+        FROM blog_blog \
+        LEFT JOIN blog_love \
+        ON blog_blog.id = blog_love.blog_id \
+    ) AS tmp \
+    GROUP BY tmp.bid \
+    ORDER BY love_rate DESC")[0: len(borders)]
+    
+    blogs = list(blogs)
+    
+    rects = []
+    for i, rect in enumerate(borders):
+        try:
+            blog = blogs[i]
+        except IndexError:
+            blog = None
+            
+        rects.append({
+            'blog': blog, 
+            'rect': rect, 
+            'widthxheight': '%sx%s' % (rect['width'], rect['height'])
+        })
+
     return render(request, 'blog/blog_home.html', locals())
 
 @login_required

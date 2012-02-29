@@ -1,23 +1,35 @@
-{% extends 'base.html' %}
+{% extends 'base_single.html' %}
 
 {% load common_tags %}
 
-{% block head_title %}{{ blog.title }}{% endblock %}
+{% block head_title %}Welcome{% endblock %}
 
 {% block html_head %}
 {% endblock %}
 
-{% block base_content %}
+{% block content %}
 <div class="scour" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
   {% for rect in rects %}
-  <div class="rect" style="
-    left:{{ rect.left }}px;
-    top:{{ rect.top }}px;
-    width: {{ rect.width }}px;
-    height: {{ rect.height }}px
-  ">
-    
+  <div class="rect{% if rect.blog %} has_blog{% endif %}" style="
+    left:{{ rect.rect.left }}px;
+    top:{{ rect.rect.top }}px;
+    width: {{ rect.rect.width }}px;
+    height: {{ rect.rect.height }}px;
+  " 
+  {% if rect.blog %}
+  data-original-title="<a href='{% url blog_view rect.blog.id %}'>{{ rect.blog.title }}</a>" 
+  data-content="{{ rect.blog.description }}" 
+  {% endif %}
+  >
+    {% if rect.blog %}
+    <a href="{% url blog_view rect.blog.id %}">
+      <img alt="{{ rect.blog.title }}" src="{{ rect.blog.image|crop:rect.widthxheight }}" />
+    </a>
+    {% endif %}
   </div>
   {% endfor %}
+  <script type="text/javascript">
+    $('.scour .has_blog').popover();
+  </script>
 </div>
 {% endblock %}

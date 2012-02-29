@@ -11,6 +11,7 @@
   <meta name="keywords" content="{% block meta_keywords %}{% endblock %}" />
   
   <script type="text/javascript" src="{{STATIC_URL}}libs/jquery-1.7.1.min.js"></script>
+  <script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css">
 
@@ -22,7 +23,7 @@
   <!-- topbar -->
   <div id="topbar">
     <div class="container">
-    <a class="home" href="/">Home</a>
+    <a class="home" href="{% url blog_home %}">Home</a>
     <div class="topbar-widget">
       <div class="btn-group profile-group">
       <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
@@ -53,7 +54,7 @@
   <!-- Header -->
   <div id="header">
     <div class="container">
-      <a id="logo" href="#">Oxfam Live Stories</a>
+      <a id="logo" href="{% url blog_home %}">Oxfam Live Stories</a>
     </div>
   </div>
   
