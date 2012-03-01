@@ -15,6 +15,7 @@
     top:{{ rect.rect.top }}px;
     width: {{ rect.rect.width }}px;
     height: {{ rect.rect.height }}px;
+    padding: 5px;
   " 
   {% if rect.blog %}
   data-original-title="{{ rect.blog.title }}" 
@@ -40,12 +41,13 @@
     
     $('.black-layer').css('opacity', 0);
     
+    
     $('.rect').mouseenter(function () {
       $(this).css('opacity', 1);
-      $('.black-layer').show().stop().animate({opacity: 0.5}, {queue: false, duration: 1000});
+      $('.black-layer').show().stop().animate({opacity: 0.3}, {queue: false, duration: 200});
       $('.black-layer', $(this)).hide()
     }).mouseleave(function () {
-      $('.black-layer').stop().animate({opacity: 0}, {queue: false, duration: 1000});
+      $('.black-layer').stop().animate({opacity: 0}, {queue: false, duration: 200});
     })
     
   </script>
