@@ -31,4 +31,14 @@ $(function () {
             });
         });
     })
+
+    $('.dropdown-toggle').mouseenter(function(e) {
+        var $toggle = $(this);
+        var closeDropdown = function(e) {
+            $toggle.parent().removeClass('open');
+            $(this).unbind('mouseleave');
+        }
+        $toggle.parent().addClass('open');
+        $toggle.siblings('.dropdown-menu').mouseleave(closeDropdown);
+    });
 });
