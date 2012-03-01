@@ -17,7 +17,14 @@ class Account(models.Model):
     
     def get_fullname(self):
         return '%s %s' % (self.firstname, self.lastname)
-        
+    
+    def get_image(self):
+        try:
+            self.image.file
+            return self.image
+        except ValueError:
+            return None
+            
     def get_image_url(self):
         try:
             self.image.file

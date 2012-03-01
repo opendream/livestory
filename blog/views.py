@@ -44,11 +44,12 @@ def blog_home(request):
             blog = blogs[i]
         except IndexError:
             blog = None
-            
+                
         rects.append({
             'blog': blog, 
             'rect': rect, 
-            'widthxheight': '%sx%s' % (rect['width'], rect['height'])
+            'widthxheight': '%sx%s' % (rect['width'], rect['height']),
+            'placement': 'right' if rect['left'] <= scour_width/2 else 'left'
         })
 
     return render(request, 'blog/blog_home.html', locals())
@@ -162,7 +163,7 @@ def blog_view(request, blog_id):
 
         context = {
             'blog': blog,
-            'profile': request.user.get_profile(),
+            'profile': blog.user.get_profile(),
             'love_path': love_path % blog_id,
             'button_type': button_type,
             'love_count': Love.objects.filter(blog=blog).count(),

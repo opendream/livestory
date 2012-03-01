@@ -3,6 +3,7 @@ $(function () {
         $(this).parent('.alert').slideUp('fast');
     });
     
+    $('.dropdown-toggle').dropdown();
 
     
     $('.image-upload').each(function (i, item) {

@@ -71,7 +71,7 @@ STATIC_URL = '/static/'
 # Uniqu for your project
 SITE_NAME = 'Ofxam Live Stories'
 SITE_LOGO = 'static/img/logo-livestories.png'
-SITE_LOGO_EMAIL = 'static/img/logo-oxfram_email.png'
+SITE_LOGO_EMAIL = 'static/img/logo-oxfam_email.png'
 
 
 

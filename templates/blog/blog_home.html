@@ -10,7 +10,7 @@
 {% block content %}
 <div class="scour" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
   {% for rect in rects %}
-  <div class="rect{% if rect.blog %} has_blog{% endif %}" style="
+  <div class="rect {{ rect.placement }}{% if rect.blog %} has_blog{% endif %}" style="
     left:{{ rect.rect.left }}px;
     top:{{ rect.rect.top }}px;
     width: {{ rect.rect.width }}px;
@@ -23,13 +23,19 @@
   >
     {% if rect.blog %}
     <a href="{% url blog_view rect.blog.id %}">
-      <img alt="{{ rect.blog.title }}" src="{{ rect.blog.image|crop:rect.widthxheight }}" />
+      <img 
+        width="{{ rect.rect.width }}" 
+        height="{{ rect.rect.height }}" 
+        alt="{{ rect.blog.title }}" 
+        src="{{ rect.blog.image|crop:rect.widthxheight }}" 
+      />
     </a>
     {% endif %}
   </div>
   {% endfor %}
   <script type="text/javascript">
-    $('.scour .has_blog').popover();
+    $('.scour .has_blog.right').popover({'placement': 'right'});
+    $('.scour .has_blog.left').popover({'placement': 'left'});
   </script>
 </div>
 {% endblock %}

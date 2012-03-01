@@ -21,6 +21,7 @@
 </head>
 <body class="{% block base_body_class %}{% endblock %}">
   <!-- topbar -->
+  {% if user.is_authenticated %}
   <div id="topbar">
     <div class="container">
     <a class="home" href="{% url blog_home %}">Home</a>
@@ -39,7 +40,8 @@
         </span>
       <span class="caret"></span></a>
       <ul class="dropdown-menu">
-        <li><a href="#">Edit Profile</a></li>
+        <li><a href="{% url account_profile_edit %}">Edit Profile</a></li>
+        <li><a href="{% url account_logout %}">Logout</a></li>
       </ul>
     </div>
     <div class="notify"><a href="#" class="rounded">24</a><span class="notify-bottom"></span></div>
@@ -50,7 +52,7 @@
     </div>
     </div>
   </div>
-
+  {% endif %}
   <!-- Header -->
   <div id="header">
     <div class="container">
