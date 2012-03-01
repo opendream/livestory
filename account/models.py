@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from common.templatetags.common_tags import *
+
+import Image
 import settings
 
 def account_image_url(instance, filename):
@@ -23,7 +25,12 @@ class Account(models.Model):
             self.image.file
             return self.image
         except ValueError:
-            return None
+            image  = {
+                'url': '%s/static/img/default_user.png' % settings.base_path,
+                'path': 'static/img/default_user.png'
+            }
+            image = type('imageobj', (object,), image)
+            return image
             
     def get_image_url(self):
         try:

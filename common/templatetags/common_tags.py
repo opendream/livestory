@@ -47,7 +47,15 @@ def scale(imagefield, size, method='scale'):
 
     image_path = resized_path(imagefield.path, size, method)
     
-    directory, name = os.path.split(image_path)    
+    directory, name = os.path.split(image_path)
+    
+    try:
+        format = imagefield.path.split('.')[-1].upper()
+        if format == 'JPG':
+            format = 'JPEG'
+    except IndexError:
+        format = 'JPEG'
+                
     if not os.path.exists(directory):
         os.makedirs(directory)
     
@@ -63,15 +71,22 @@ def scale(imagefield, size, method='scale'):
         image = Image.open(imagefield.path)
 
         # normalize image mode
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-
+        if image.mode != 'RGBA':
+            image = image.convert('RGBA')
+        
+        if format == 'PNG':
+            pixdata = image.load()
+            for y in xrange(image.size[1]):
+                for x in xrange(image.size[0]):
+                    if pixdata[x, y] == (0, 0, 0, 0):
+                        pixdata[x, y] = (255, 255, 255, 0)
+        
         # parse size string 'WIDTHxHEIGHT'
         width, height = [int(i) for i in size.split('x')]
         # use PIL methods to edit images
         if method == 'scale':
             image.thumbnail((width, height), Image.ANTIALIAS)
-            image.save(image_path, FMT, quality=QUAL)
+            image.save(image_path, format)
 
         elif method == 'crop':
             try:
@@ -80,8 +95,9 @@ def scale(imagefield, size, method='scale'):
                 from PIL import ImageOps
 
             ImageOps.fit(image, (width, height), Image.ANTIALIAS
-                        ).save(image_path, FMT, quality=QUAL)
-
+                        ).save(image_path, format, quality=QUAL)
+    
+    print imagefield.url
     path = resized_path(imagefield.url, size, method)
     return path_to_url(path)
 
@@ -95,6 +111,7 @@ def crop(imagefield, size):
     {{ profile.picture|crop:"48x48" }}
 
     """
+    
     return scale(imagefield, size, 'crop')
     
 

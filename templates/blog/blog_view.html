@@ -109,8 +109,10 @@ $(document).ready(function() {
     
     <div class="span4 block">
       <div class="blog-profile block clearfix">
-        <img src="{{ profile.get_image|crop:'94x94' }}" alt="" class="porfile-photo"/>
-        <a href="{% url account_profile_edit %}" class="profile-name">{{ profile.firstname }} {{ profile.lastname }}</a>
+        <a href="#" class="profile-image">
+          <img width="94" height="94" src="{{ profile.get_image|crop:'94x94' }}" alt="" class="porfile-photo"/>
+        </a>
+        <a href="#" class="profile-name">{{ profile.firstname }} {{ profile.lastname }}</a>
         <span class="profile-email grey">{{ profile.user }}</span>
       </div>
       
