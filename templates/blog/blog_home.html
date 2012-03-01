@@ -29,6 +29,7 @@
         alt="{{ rect.blog.title }}" 
         src="{{ rect.blog.image|crop:rect.widthxheight }}" 
       />
+      <div class="black-layer"></div>
     </a>
     {% endif %}
   </div>
@@ -36,6 +37,17 @@
   <script type="text/javascript">
     $('.scour .has_blog.right').popover({'placement': 'right'});
     $('.scour .has_blog.left').popover({'placement': 'left'});
+    
+    $('.black-layer').css('opacity', 0);
+    
+    $('.rect').mouseenter(function () {
+      $(this).css('opacity', 1);
+      $('.black-layer').show().stop().animate({opacity: 0.5}, {queue: false, duration: 1000});
+      $('.black-layer', $(this)).hide()
+    }).mouseleave(function () {
+      $('.black-layer').stop().animate({opacity: 0}, {queue: false, duration: 1000});
+    })
+    
   </script>
 </div>
 {% endblock %}
