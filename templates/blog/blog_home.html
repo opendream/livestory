@@ -17,8 +17,8 @@
     height: {{ rect.rect.height }}px;
   " 
   {% if rect.blog %}
-  data-original-title="<a href='{% url blog_view rect.blog.id %}'>{{ rect.blog.title }}</a>" 
-  data-content="{{ rect.blog.description }}" 
+  data-original-title="{{ rect.blog.title }}" 
+  data-content="<span class='emoticon-icon emo_{{ rect.blog.get_mood_text|lower }}'>Mood: {{ rect.blog.get_mood_text }}</span><span class='location'>{{ rect.blog.location.city }}, {{ rect.blog.location.country }}</span>" 
   {% endif %}
   >
     {% if rect.blog %}

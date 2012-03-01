@@ -733,3 +733,33 @@ html[xmlns] .clearfix { display: block; }
 .scour .has_blog {
     background-color: #FFF;
 }
+
+.popover-inner {
+  padding: 3px;
+  width: 280px;
+  overflow: hidden;
+  /*background: url(../img/bg-black80.png);*/
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+.popover-title {
+  padding: 9px 15px 0;
+  line-height: 1.5em;
+  background: none;
+  border-bottom: 0px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  color: #fff;
+  font-size: 1.1em;
+}
+.popover-content {
+  padding: 14px;
+  background: none;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  color: #a7a7a7;
+  font-size: 1em;
+}
