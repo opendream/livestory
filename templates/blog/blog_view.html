@@ -147,6 +147,7 @@ $(document).ready(function() {
           </div>
         </div>
         <ul class="hide">
+          {% if user.is_authenticated %}
           <li id="own_love_list" class="love-user_{{ user.id }} hide">
               <a href="#" title=""><img src="{{ user.get_profile.get_image|crop:'35x35' }}" alt="{{ user.get_profile.get_fulllname }}" /></a>
               <div class="tooltip-popup">{{ user.get_profile.get_fullname }}</div>
@@ -155,6 +156,7 @@ $(document).ready(function() {
             <a href="#" title=""><img src="{{ user.get_profile.get_image|crop:'94x94' }}" alt="{{ user.get_profile.get_fullname }}"></a>
             <a href="#" class="profile-name">{{ user.get_profile.get_fullname }}</a>
           </li>
+          {% endif %}
         </ul>
       </div>
       
