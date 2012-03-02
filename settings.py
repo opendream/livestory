@@ -159,9 +159,10 @@ INSTALLED_APPS = (
 )
 
 FIXTURE_DIRS = (
-   'account/fixtures/',
-   'blog/fixtures/',
-   'location/fixtures/',
+    'auth/fixtures'
+    'account/fixtures/',
+    'blog/fixtures/',
+    'location/fixtures/',
 )
 
 # A sample logging configuration. The only tangible logging
