@@ -592,6 +592,16 @@
 		height: 102px;
 		z-index: 1000;
 	}
+
+	form#blog-form .dropbox {
+		background: url('../img/bg-drop_post.png') no-repeat !important;
+	}
+
+	form#blog-form .dropbox,
+	form#blog-form input.image-append {
+		width: 402px;
+		height: 163px;
+	}
 	
 	.select-file{
 		position: absolute;

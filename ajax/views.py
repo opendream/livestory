@@ -5,6 +5,8 @@ from django.http import HttpResponse
 
 from common.templatetags.common_tags import *
 
+from common.views import file_save_upload
+
 import os
 import shutil
 import settings
@@ -49,4 +51,17 @@ def ajax_account_image_delete(request):
     except:
         data = {'result': 'nofile'}
         
+    return HttpResponse(json.dumps(data), mimetype="application/json")
+
+@login_required
+def ajax_blog_image_upload(request):
+    f = request.FILES['image']
+    file_data = file_save_upload(request.FILES['image'])
+    data = {
+        'name': f.name,
+        'size': f.size,
+        'url': file_data['url'],
+        'filepath': file_data['filepath'],
+        'thumbnail_url': scale(file_data['filepath'], settings.BLOG_PREVIEW_SIZE)
+    }
     return HttpResponse(json.dumps(data), mimetype="application/json")

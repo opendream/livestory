@@ -15,12 +15,11 @@ def path_to_url(path):
 
 def cache_path(path):
     directory, name = os.path.split(path)
-    directory = directory.replace(settings.IMAGE_ROOT, '')
-    return '%scache/%s' % (settings.IMAGE_ROOT, directory)
+    directory = directory.replace(settings.MEDIA_ROOT, '')
+    return '%scache/%s' % (settings.MEDIA_ROOT, directory)
 
 def resized_path(path, size, method):
     "Returns the path for the resized image."
-    
     directory, name = os.path.split(path)
     directory = cache_path(path)
     
@@ -45,16 +44,27 @@ def scale(imagefield, size, method='scale'):
     if imagefield.__class__.__name__ == 'dict':
         imagefield = type('imageobj', (object,), imagefield)
 
-    image_path = resized_path(imagefield.path, size, method)
+    # Support filepath
+    if type(imagefield) is unicode:
+        image_path = resized_path(imagefield, size, method)
+        image_url = imagefield
+        try:
+            format = imagefield.split('.')[-1].upper()
+            if format == 'JPG':
+                format = 'JPEG'
+        except IndexError:
+            format = 'JPEG'
+    else:
+        image_path = resized_path(imagefield.path, size, method)
+        image_url = imagefield.url
+        try:
+            format = imagefield.path.split('.')[-1].upper()
+            if format == 'JPG':
+                format = 'JPEG'
+        except IndexError:
+            format = 'JPEG'
     
     directory, name = os.path.split(image_path)
-    
-    try:
-        format = imagefield.path.split('.')[-1].upper()
-        if format == 'JPG':
-            format = 'JPEG'
-    except IndexError:
-        format = 'JPEG'
                 
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -68,7 +78,10 @@ def scale(imagefield, size, method='scale'):
             except ImportError:
                 raise ImportError('Cannot import the Python Image Library.')
 
-        image = Image.open(imagefield.path)
+        if type(imagefield) is unicode:
+            image = Image.open(imagefield)
+        else:
+            image = Image.open(imagefield.path)
 
         # normalize image mode
         if image.mode != 'RGBA':
@@ -97,8 +110,7 @@ def scale(imagefield, size, method='scale'):
             ImageOps.fit(image, (width, height), Image.ANTIALIAS
                         ).save(image_path, format, quality=QUAL)
     
-    print imagefield.url
-    path = resized_path(imagefield.url, size, method)
+    path = resized_path(image_url, size, method)
     return path_to_url(path)
 
 @register.filter()

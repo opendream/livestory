@@ -1,5 +1,6 @@
 import os
 import settings
+import shutil
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -57,15 +58,25 @@ def blog_home(request):
 @login_required
 def blog_create(request):
     action = reverse('blog_create')
+    image_path = ''
+    imagefield_error = False
+
     if request.method == 'POST':
         form = BlogCreateForm(request.POST, request.FILES)
-        if form.is_valid():
+
+        # Check image field upload.
+        image_path = form.data.get('image_path')
+        if not image_path or not os.path.exists(image_path):
+            image_path = ''
+            imagefield_error = True
+
+        if form.is_valid() and not imagefield_error:
             blog = form.save(commit=False)
             blog.description = form.cleaned_data.get('description')[:300]
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
             blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-            blog.image.save('test.png', request.FILES['image'], save=False)
+            blog.image = blog_save_image(image_path, request)
             # blog.image = handle_upload_file(request.FILES['image'], request)
             blog.save()
             messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
@@ -74,11 +85,13 @@ def blog_create(request):
         form = BlogCreateForm()
 
     context = {
-        'page_title': 'Create Your Blog',
+        'page_title': 'Add New Blog',
         'form': form,
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
-        'is_draft': True
+        'is_draft': True,
+        'image_path': image_path,
+        'imagefield_error': imagefield_error
     }
     return render(request, 'blog/blog_form.html', context)
 
@@ -88,9 +101,18 @@ def blog_edit(request, blog_id):
         blog = Blog.objects.get(pk=blog_id)
         location = Location.objects.get(pk=blog.location_id)
         action = reverse('blog_edit', args=[blog_id])
+        image_path = blog.image.path
+        imagefield_error = False
+
         if request.method == 'POST':
             form = BlogEditForm(request.POST, request.FILES)
-            if form.is_valid():
+
+            # Check image field upload.
+            image_path = form.data.get('image_path')
+            if not image_path or not os.path.exists(image_path):
+                imagefield_error = True
+
+            if form.is_valid() and not imagefield_error:
                 blog.title = form.cleaned_data.get('title')
                 blog.description = form.cleaned_data.get('description')[:300]
                 blog.mood = form.cleaned_data.get('mood')
@@ -103,13 +125,12 @@ def blog_edit(request, blog_id):
                     blog.draft = bool(int(form.data.get('draft')))
                 
                 # There is image uploaded.
-                if request.FILES.get('image'):
-                    image = request.FILES.get('image')
+                if blog.image.path != image_path:
                     # Remove old image.
                     if os.path.isfile(blog.image.path):
                         os.remove(blog.image.path)
                     # Save new image.
-                    blog.image.save(image.name, image, save=False)
+                    blog.image = blog_save_image(image_path, request)
                 
                 blog.save()
                 messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
@@ -124,7 +145,7 @@ def blog_edit(request, blog_id):
                 'category': blog.category,
                 'private': str(int(blog.private))
             }
-            form = BlogEditForm(defaults)
+            form = BlogCreateForm(defaults)
 
         context = {
             'page_title': 'Edit Post',
@@ -133,10 +154,13 @@ def blog_edit(request, blog_id):
             'visibilities': PRIVATE_CHOICES,
             'image_path': blog.get_image_url(),
             'is_draft': blog.draft,
-            'blog': blog
+            'blog': blog,
+            'image_path': image_path,
+            'imagefield_error': imagefield_error
         }
         return render(request, 'blog/blog_form.html', context)
     except Blog.DoesNotExist:
+        # TODO handle blog not found
         pass
 
 def blog_view(request, blog_id):
@@ -228,6 +252,13 @@ def blog_save_location(country, city):
         location = Location(country=country, city=city, lat=0, lng=0)
         location.save()
     return location
+
+def blog_save_image(image_path, request):
+    directory, name = os.path.split(image_path)
+    real_path = '%sblog/%s/%s' % (settings.IMAGE_ROOT, request.user.id, name)
+    real_path = check_file_exists(real_path)
+    shutil.copy2(image_path, real_path)
+    return real_path
 
 def handle_upload_file(f, instance):
     filepath = blog_image_path(instance, f.name)

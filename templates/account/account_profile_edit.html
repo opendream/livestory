@@ -3,7 +3,11 @@
 
 {% block head_title %}Your Profile{% endblock %}
 
-
+{% block html_head %}
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
+{% endblock %}
 
 {% block content %}
 <form class="form-horizontal" method="post" action="{% url account_profile_edit %}">

@@ -6,45 +6,44 @@
 {% block head_title %}Create Your Blog{% endblock %}
 
 {% block html_head %}
-<script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="{{STATIC_URL}}libs/load-image.min.js" type="text/javascript"></script>
-
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
 {% location_js %}
-
 {% textcounter_js %}
-
-<script type="text/javascript">
-$(document).ready(function() {
-  var fileInputs = $('input[type=file]');
-  var load = function(e) {
-    var preview = $(this).siblings('.image-preview');
-    e = e.originalEvent;
-    e.preventDefault();
-    window.loadImage(
-      (e.dataTransfer || e.target).files[0],
-      function (img) {
-        preview.children().remove().end().append(img).addClass('block');
-      },
-      {
-        maxWidth: 470,
-        canvas: false
-      }
-    );
-  };
-  $('input[type=file]').on('change', load);
-});
-</script>
-
 {% endblock %}
 
 {% block nav %}
 {% endblock %}
 
 {% block content %}
-<form class="form-horizontal" method="post" action="{{ action }}" enctype="multipart/form-data">
+<form id="blog-form" class="form-horizontal" method="post" action="{{ action }}" enctype="multipart/form-data">
   {% csrf_token %}
   <fieldset>
     <legend><h1>{{ page_title }}</h1></legend>
+    
+    <div class="control-group{% if imagefield_error %} error{% endif %}">
+      <div class="controls">
+        <div class="image-upload">
+          <div class="image-wrapper"{% if not image_path %} style="display:none;"{% endif %}>
+            <div class="image-append">
+              {% if image_path %}
+              <img src="{{ image_path|scale:BLOG_PREVIEW_SIZE }}" />
+              {% endif %}
+            </div>
+            <a href="" class="ic image-delete">change image</a>
+            <input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_blog_image_upload %}" />
+          </div>
+          <div class="drop-area"{% if image_path %} style="display:none;"{% endif %}>
+            <div class="dropbox"><input class="input-file image-append fileupload" type="file" name="image"></div>
+          </div>
+          <input type="hidden" name="image_path" value="{{ image_path }}" />
+        </div>
+        {% if imagefield_error %}
+        <span class="help-inline">* This field is required.</span>
+        {% endif %}
+      </div>
+    </div>
     
     <div class="control-group{% if form.title.errors %} error{% endif %}">
       <label class="control-label" for="id_title">Title</label>
@@ -52,21 +51,6 @@ $(document).ready(function() {
         {{ form.title }}
         {% if form.title.errors %}
         <span class="help-inline">{{ form.title.errors.as_text }}</span>
-        {% endif %}
-      </div>
-    </div>
-    
-    <div class="control-group{% if form.image.errors %} error{% endif %}">
-      <label class="control-label" for="id_image">Image</label>
-      <div class="controls">
-        <div class="image-preview">
-        {% if blog.image %}
-        <img src="{{ blog.image|scale:'470x1000' }}" class="block" />
-        {% endif %}
-        </div>
-        {{ form.image }}
-        {% if form.image.errors %}
-        <span class="help-inline">{{ form.image.errors.as_text }}</span>
         {% endif %}
       </div>
     </div>

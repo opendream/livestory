@@ -3,11 +3,13 @@ from blog.models import Blog, Category
 from blog.models import Location
 
 class BlogCreateForm(forms.ModelForm):
+	image = forms.ImageField(required=False)
+
 	title = forms.CharField(max_length=200, 
 					widget=forms.TextInput(attrs={'class': 'input-xlarge'}))
 	
 	description = forms.CharField(max_length=300, required=False,
-					widget=forms.Textarea(attrs={'rows': 5, 'class': 'textcounter input-xlarge'}))
+					widget=forms.Textarea(attrs={'rows': 7, 'class': 'textcounter input-xlarge'}))
 	
 	country = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'span2', 'placeHolder': 'Country'}))
 
@@ -20,6 +22,3 @@ class BlogCreateForm(forms.ModelForm):
 	class Meta:
 		model = Blog
 		exclude = ('user', 'location', 'draft')
-
-class BlogEditForm(BlogCreateForm):
-	image = forms.ImageField(required=False)

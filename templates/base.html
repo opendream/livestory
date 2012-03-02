@@ -27,7 +27,7 @@
     <a class="home" href="{% url blog_home %}">Home</a>
     <div class="topbar-widget">
       <div class="btn-group profile-group">
-      <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
+      <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown">
         {% if user.get_profile.image %}
         <img src="{{ user.get_profile.image|crop:AVATAR_TOP_SIZE }}" alt=""/>
         {% endif %}

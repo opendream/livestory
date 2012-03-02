@@ -15,20 +15,29 @@ $(function () {
             done: function (e, data) {
                 $('div.image-append', scope).html('');
                 $('div.image-append', scope).append($('<img/>').attr('src', data.result.thumbnail_url));
+                $('input[type=hidden][name=image_path]', scope).val(data.result.filepath);
                 $('.drop-area', scope).hide();
                 $('.image-wrapper').show();
+                // Hide error message
+                scope.siblings('.help-inline').hide()
             }
         }
         
         $('.fileupload', scope).fileupload(param);
         $('.image-delete', scope).click(function (e) {
             e.preventDefault();
-            $.getJSON($(this).attr('href'), function (resp) {
+            var onSuccess = function (resp) {
                 if (resp.result == 'complete') {
                     $('.drop-area', scope).show();
                     $('.image-wrapper').hide();
+                    $('input[type=hidden][name=image_path]', scope).val('');
                 }
-            });
+            }
+            if ($(this).attr('href')) {
+                $.getJSON($(this).attr('href'), onSuccess);
+            } else {
+                onSuccess({'result': 'complete'});
+            }
         });
     })
 
