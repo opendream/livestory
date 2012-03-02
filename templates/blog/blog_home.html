@@ -50,6 +50,10 @@
       $('.black-layer').stop().animate({opacity: 0}, {queue: false, duration: 200});
     })
     
+    $('.popover').live('mouseenter', function (e) {
+      console.log(e)
+    });
+    
   </script>
 </div>
 {% endblock %}

@@ -178,7 +178,7 @@ def blog_view(request, blog_id):
             love = Love.objects.get(user=request.user, blog=blog)
             love_path = '/blog/%s/unlove/'
             button_type = 'unlove'
-        except Love.DoesNotExist:
+        except (Love.DoesNotExist, TypeError):
             # Do nothing. Use default love_path and button_type.
             pass
         

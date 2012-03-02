@@ -613,14 +613,17 @@
 	}
 	.select-file:hover{ cursor: pointer; }
 
-	.ic {
+	.ic, .edit-post-link {
 		display: block;
 		margin: 10px 0;
 		padding-left: 16px;
 		background: url('../img/ic-moods.png') no-repeat;
 	}
-	.image-delete{
+	.image-delete, .edit-post-link {
 		background-position: -90px 0;
+	}
+	.edit-post-link {
+		width: 100px;
 	}
 
 /*****************/
