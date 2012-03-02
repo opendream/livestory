@@ -26,6 +26,9 @@ $(function () {
         $('.fileupload', scope).fileupload(param);
         $('.image-delete', scope).click(function (e) {
             e.preventDefault();
+            var params = {
+                'image_path': $('input[type=hidden][name=image_path]', scope).val()
+            };
             var onSuccess = function (resp) {
                 if (resp.result == 'complete') {
                     $('.drop-area', scope).show();
@@ -34,7 +37,7 @@ $(function () {
                 }
             }
             if ($(this).attr('href')) {
-                $.getJSON($(this).attr('href'), onSuccess);
+                $.getJSON($(this).attr('href'), params, onSuccess);
             } else {
                 onSuccess({'result': 'complete'});
             }

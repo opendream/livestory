@@ -31,7 +31,7 @@
               <img src="{{ image_path|scale:BLOG_PREVIEW_SIZE }}" />
               {% endif %}
             </div>
-            <a href="" class="ic image-delete">change image</a>
+            <a href="{% url ajax_blog_image_delete %}" class="ic image-delete">change image</a>
             <input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_blog_image_upload %}" />
           </div>
           <div class="drop-area"{% if image_path %} style="display:none;"{% endif %}>
