@@ -5,7 +5,12 @@ from tests import factory
 
 class TestBlogManagement(TestCase):
     def setUp(self):
-        self.user = factory.create_user()
+        user = factory.create_user()
+        category = factory.create_category()
+        location = factory.create_location()
+        factory.create_blog(user, category, location)
+        factory.create_blog(user, category, location)
+        factory.create_blog(user, category, location)
 
         
     

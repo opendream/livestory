@@ -19,3 +19,14 @@ def create_location():
     location.save()
     return location
 
+def create_blog(user = None, category = None, location = None):
+    user = user or create_user()
+    category = category or create_category()
+    location = location or create_location()
+    blog = Blog(title='Icecream') 
+    blog.user = user
+    blog.category = category
+    blog.location = location
+    blog.save()
+    return blog
+    
