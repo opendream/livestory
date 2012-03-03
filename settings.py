@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'django_nose',
     'djkombu',
     'djcelery',
     
@@ -214,4 +215,13 @@ BLOG_PREVIEW_SIZE = '470x1000'
 
 # DJANGO-NOSE
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-erase',
+    '--cover-package='
+        'account,'
+        'blog,'
+        'location',
+]
 
