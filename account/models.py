@@ -3,7 +3,11 @@ from django.contrib.auth.models import User
 
 from common.templatetags.common_tags import *
 
-import Image
+try :
+    import Image
+except ImportError:
+    from PIL import Image
+
 import settings
 
 def account_image_url(instance, filename):
