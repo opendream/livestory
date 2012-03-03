@@ -1,8 +1,12 @@
 {% extends 'base_backend.html' %}
 
 {% block content %}
+    <table>
     {% for blog in blogs %}
+        <tr><td>
         {{ blog.title }}
+        </td></tr>
     {% endfor %}
+    </table>
 {% endblock %}
 
