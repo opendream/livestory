@@ -8,14 +8,14 @@ class TestBlogManagement(TestCase):
         user = factory.create_user()
         category = factory.create_category()
         location = factory.create_location()
-        factory.create_blog(user, category, location)
-        factory.create_blog(user, category, location)
-        factory.create_blog(user, category, location)
-
-        
+        factory.create_blog('Sprite', user, category, location)
+        factory.create_blog('Coke', user, category, location)
+        factory.create_blog('Pepsi', user, category, location)
     
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')
-        self.assertEqual(200, response.status_code)
+        self.assertContains(response, 'Sprite')
+        self.assertContains(response, 'Coke')
+        self.assertContains(response, 'Pepsi')
         
         

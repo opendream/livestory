@@ -58,7 +58,11 @@ def blog_home(request):
     return render(request, 'blog/blog_home.html', locals())
 
 def blog_manage(request):
-    return HttpResponse('ok')  
+    blogs = Blog.objects.all()
+    context = {
+        'blogs': blogs
+    }
+    return render(request, 'blog/blog_manage.html', context)
 
 @login_required
 def blog_create(request):
