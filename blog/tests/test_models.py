@@ -1,21 +1,13 @@
-from django.contrib.auth.models import User
+from blog.models import Blog
 from django.test import TestCase
-from blog.models import Blog, Category, Location
+from tests import factory
 
 class TestBlog(TestCase):
     def setUp(self):
-        self.category = Category(name = 'Food', code = 'f')
-        self.category.save()
+        self.category = factory.create_category()
+        self.user = factory.create_user()
 
-        username = 'testuser'
-        email = 'test@example.com'
-        password = 'testuser'
-        self.user = User.objects.create_user(username, email, password)
-
-        self.location = Location(country = 'Thailand', city = 'Bangkok')
-        self.location.lat = '100.00'
-        self.location.lng = '13.00'
-        self.location.save()
+        self.location = factory.create_location() 
 
     def test_unicode(self):
         blog = Blog(title='Icecream') 

@@ -1,13 +1,11 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from blog.models import Blog
+from tests import factory
 
 class TestBlogManagement(TestCase):
     def setUp(self):
-        username = 'testuser'
-        email = 'test@example.com'
-        password = 'testuser'
-        self.user = User.objects.create_user(username, email, password)
+        self.user = factory.create_user()
 
         
     
