@@ -268,6 +268,12 @@ def blog_manage_set_private(request):
         blog_bulk_update_private(blogs)
     return redirect('/blog/manage/')
 
+def blog_manage_set_public(request):
+    if request.method == 'POST':
+        blogs = [ Blog.objects.get(id=blog_id) for blog_id in request.POST.getlist('blog_id') ]
+        blog_bulk_update_public(blogs)
+    return redirect('/blog/manage/')
+
 def blog_bulk_update_private(blogs):
     for blog in blogs:
         blog.private = True
