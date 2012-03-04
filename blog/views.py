@@ -262,6 +262,23 @@ def blog_save_location(country, city):
         location.save()
     return location
 
+def blog_manage_set_private(request):
+    if request.method == 'POST':
+        blogs = [ Blog.objects.get(id=blog_id) for blog_id in request.POST.getlist('blog_id') ]
+        blog_bulk_update_private(blogs)
+    return redirect('/blog/manage/')
+
+def blog_bulk_update_private(blogs):
+    for blog in blogs:
+        blog.private = True
+        blog.save()
+        print 'blog private = ', blog.private
+
+def blog_bulk_update_public(blogs):
+    for blog in blogs:
+        blog.private = False
+        blog.save()
+
 def blog_save_image(image_path, request):
     directory, name = os.path.split(image_path)
     real_path = '%sblog/%s/%s' % (settings.IMAGE_ROOT, request.user.id, name)
