@@ -3,6 +3,7 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('blog.views',
     url(r'create/$', 'blog_create', name='blog_create'),
     url(r'manage/$', 'blog_manage', name='blog_manage'),
+    url(r'manage/set/private/$', 'blog_manage_set_private', name='blog_manage_set_private'),
     url(r'(?P<blog_id>\d+)/$', 'blog_view', name='blog_view'),
     url(r'(?P<blog_id>\d+)/view/$', 'blog_view', name='blog_view'),
     url(r'(?P<blog_id>\d+)/edit/$', 'blog_edit', name='blog_edit'),
