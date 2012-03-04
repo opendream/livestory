@@ -75,9 +75,11 @@ class TestBlogManagementWithModel(TestCase):
         blog1 = factory.create_blog('Sprite', user, category, location)
         blog2 = factory.create_blog('Coke', user, category, location)
         blog3 = factory.create_blog('Pepsi', user, category, location)
+        blog3.mood = 3
+        blog3.save()
         
         user1 = factory.create_user('testlove1', 'tester1@example.com', 'testuser1')
-        user2 = User.objects.create_user('testlove2', 'tester2@example.com', 'testuser2')
+        user2 = factory.create_user('testlove2', 'tester2@example.com', 'testuser2')
 
         love1 = Love(user=user1, blog=blog1)
         love1.save()
@@ -88,8 +90,14 @@ class TestBlogManagementWithModel(TestCase):
     
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')
+        # test names
         self.assertContains(response, 'Sprite')
         self.assertContains(response, 'Coke')
         self.assertContains(response, 'Pepsi')
+        
+        # test loves after names
         self.assertContains(response, '<td>Sprite</td><td>2</td>')
         self.assertContains(response, '<td>Coke</td><td>1</td>')
+        
+        # test mood
+        self.assertContains(response, '<td>Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
