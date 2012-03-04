@@ -76,7 +76,7 @@ class TestBlogManagementWithModel(TestCase):
         blog2 = factory.create_blog('Coke', user, category, location)
         blog3 = factory.create_blog('Pepsi', user, category, location)
         
-        user1 = User.objects.create_user('testlove1', 'tester1@example.com', 'testuser1')
+        user1 = factory.create_user('testlove1', 'tester1@example.com', 'testuser1')
         user2 = User.objects.create_user('testlove2', 'tester2@example.com', 'testuser2')
 
         love1 = Love(user=user1, blog=blog1)
