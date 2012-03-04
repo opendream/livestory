@@ -67,7 +67,7 @@ class TestBlogManagementUsingMock(BaseTestBlogManagement):
         Blog.objects.all.assert_called_once_with()
 
     
-class TestBlogManagementWithModel(TestCase):
+class TestGetBlogManagementWithModel(TestCase):
     def setUp(self):
         user = factory.create_user()
         category = factory.create_category()
@@ -86,19 +86,22 @@ class TestBlogManagementWithModel(TestCase):
         love3 = Love(user=user2, blog=blog2)
         love3.save()
     
-    def test_get__names(self):
+    def test_names(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'Sprite')
-        self.assertContains(response, 'Coke')
-        self.assertContains(response, 'Pepsi')
+        self.assertContains(response, '<td class="title">Sprite</td>')
+        self.assertContains(response, '<td class="title">Coke</td>')
+        self.assertContains(response, '<td class="title">Pepsi</td>')
         
-    def test_get__loves(self):
+    def test_loves(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td>Sprite</td><td>2</td>')
-        self.assertContains(response, '<td>Coke</td><td>1</td>')
+        self.assertContains(response, '<td class="title">Sprite</td><td>2</td>')
+        self.assertContains(response, '<td class="title">Coke</td><td>1</td>')
         
-    def test_get__mood(self):
+    def test_mood(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td>Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
-        self.assertContains(response, '<td>Sprite</td><td>2</td><td><div class="mood-1">Sad</div></td>')
+        self.assertContains(response, '<td class="title">Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
+        self.assertContains(response, '<td class="title">Sprite</td><td>2</td><td><div class="mood-1">Sad</div></td>')
         
+    def test_columns_order(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, '<td class="title">Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
