@@ -1,4 +1,4 @@
-from blog.models import Blog, Category, Location
+from blog.models import Blog, Category, Location, Love
 from django.contrib.auth.models import User
 
 def create_user():
@@ -19,14 +19,16 @@ def create_location():
     location.save()
     return location
 
-def create_blog(title='Icecream', user = None, category = None, location = None):
+def create_blog(title='Icecream', user = None, category = None, location = None, love=0):
     user = user or create_user()
     category = category or create_category()
     location = location or create_location()
+    
     blog = Blog(title = title) 
     blog.user = user
     blog.category = category
     blog.location = location
     blog.save()
+    
     return blog
     

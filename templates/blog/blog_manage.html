@@ -3,9 +3,9 @@
 {% block content %}
     <table>
     {% for blog in blogs %}
-        <tr><td>
-        {{ blog.title }}
-        </td></tr>
+        <tr>
+          <td>{{ blog.title }}</td><td>{{ blog.love_set.count }} Loves</td>
+        </tr>
     {% endfor %}
     </table>
 {% endblock %}

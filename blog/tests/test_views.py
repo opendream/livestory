@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from blog.models import Blog
+from blog.models import Blog, Love
 from mock import Mock, patch
 from tests import factory
 
@@ -72,14 +72,24 @@ class TestBlogManagementWithModel(TestCase):
         user = factory.create_user()
         category = factory.create_category()
         location = factory.create_location()
-        factory.create_blog('Sprite', user, category, location)
-        factory.create_blog('Coke', user, category, location)
-        factory.create_blog('Pepsi', user, category, location)
+        blog1 = factory.create_blog('Sprite', user, category, location)
+        blog2 = factory.create_blog('Coke', user, category, location)
+        blog3 = factory.create_blog('Pepsi', user, category, location)
+        
+        user1 = User.objects.create_user('testlove1', 'tester1@example.com', 'testuser1')
+        user2 = User.objects.create_user('testlove2', 'tester2@example.com', 'testuser2')
+
+        love1 = Love(user=user1, blog=blog1)
+        love1.save()
+        love2 = Love(user=user2, blog=blog1)
+        love2.save()
+        love3 = Love(user=user2, blog=blog2)
+        love3.save()
     
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')
         self.assertContains(response, 'Sprite')
         self.assertContains(response, 'Coke')
         self.assertContains(response, 'Pepsi')
-        
-        
+        self.assertContains(response, '<td>Sprite</td><td>2 Loves</td>')
+        self.assertContains(response, '<td>Coke</td><td>1 Loves</td>')
