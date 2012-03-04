@@ -3,6 +3,7 @@ from django.test import TestCase
 from blog.models import Blog, Love
 from mock import Mock, patch
 from tests import factory
+from bs4 import BeautifulSoup
 
 class MyMock(object):
     def __init__(self, **kwargs):
@@ -88,20 +89,24 @@ class TestGetBlogManagementWithModel(TestCase):
     
     def test_names(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td class="title">Sprite</td>')
-        self.assertContains(response, '<td class="title">Coke</td>')
-        self.assertContains(response, '<td class="title">Pepsi</td>')
+        self.assertContains(response, 'class="title">Sprite</')
+        self.assertContains(response, 'class="title">Coke</')
+        self.assertContains(response, 'class="title">Pepsi</')
         
     def test_loves(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td class="loves">2</td>')
-        self.assertContains(response, '<td class="loves">1</td>')
+        self.assertContains(response, 'class="loves">2</')
+        self.assertContains(response, 'class="loves">1</')
         
     def test_mood(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td class="mood"><div class="mood-3">Happy</div></td>')
-        self.assertContains(response, '<td class="mood"><div class="mood-1">Sad</div></td>')
+        self.assertContains(response, 'class="mood-3">Happy</')
+        self.assertContains(response, 'class="mood-1">Sad</')
         
     def test_columns_order(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td class="title">Pepsi</td><td class="loves">0</td><td class="mood"><div class="mood-3">Happy</div></td>')
+        soup = BeautifulSoup(response.content)
+        tr = soup.find('tr')
+        classes = [td.attrs['class'][0] for td in tr.find_all('td')]
+        
+        self.assertEqual(classes, ['title', 'loves', 'mood'])
