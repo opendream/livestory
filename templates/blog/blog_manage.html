@@ -4,7 +4,7 @@
     <table>
     {% for blog in blogs %}
         <tr>
-          <td>{{ blog.title }}</td><td>{{ blog.love_set.count }}</td><td><div class="mood-3">Happy</div></td>
+          <td>{{ blog.title }}</td><td>{{ blog.love_set.count }}</td><td><div class="mood-{{ blog.mood }}">{{ blog.get_mood_text }}</div></td>
         </tr>
     {% endfor %}
     </table>

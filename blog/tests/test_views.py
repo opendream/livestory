@@ -75,6 +75,8 @@ class TestBlogManagementWithModel(TestCase):
         blog1 = factory.create_blog('Sprite', user, category, location)
         blog2 = factory.create_blog('Coke', user, category, location)
         blog3 = factory.create_blog('Pepsi', user, category, location)
+        blog1.mood = 1
+        blog1.save()
         blog3.mood = 3
         blog3.save()
         
@@ -101,3 +103,4 @@ class TestBlogManagementWithModel(TestCase):
         
         # test mood
         self.assertContains(response, '<td>Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
+        self.assertContains(response, '<td>Sprite</td><td>2</td><td><div class="mood-1">Sad</div></td>')
