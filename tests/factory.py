@@ -19,7 +19,7 @@ def create_location():
     location.save()
     return location
 
-def create_blog(title='Icecream', user = None, category = None, location = None, love=0):
+def create_blog(title='Icecream', user = None, category = None, location = None, mood=1):
     user = user or create_user()
     category = category or create_category()
     location = location or create_location()
@@ -28,6 +28,7 @@ def create_blog(title='Icecream', user = None, category = None, location = None,
     blog.user = user
     blog.category = category
     blog.location = location
+    blog.mood = mood
     blog.save()
     
     return blog

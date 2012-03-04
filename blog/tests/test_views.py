@@ -72,13 +72,9 @@ class TestBlogManagementWithModel(TestCase):
         user = factory.create_user()
         category = factory.create_category()
         location = factory.create_location()
-        blog1 = factory.create_blog('Sprite', user, category, location)
+        blog1 = factory.create_blog('Sprite', user, category, location, mood=1)
         blog2 = factory.create_blog('Coke', user, category, location)
-        blog3 = factory.create_blog('Pepsi', user, category, location)
-        blog1.mood = 1
-        blog1.save()
-        blog3.mood = 3
-        blog3.save()
+        blog3 = factory.create_blog('Pepsi', user, category, location, mood=3)
         
         user1 = factory.create_user('testlove1', 'tester1@example.com', 'testuser1')
         user2 = factory.create_user('testlove2', 'tester2@example.com', 'testuser2')
