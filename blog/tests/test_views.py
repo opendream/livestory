@@ -94,14 +94,14 @@ class TestGetBlogManagementWithModel(TestCase):
         
     def test_loves(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td class="title">Sprite</td><td>2</td>')
-        self.assertContains(response, '<td class="title">Coke</td><td>1</td>')
+        self.assertContains(response, '<td class="loves">2</td>')
+        self.assertContains(response, '<td class="loves">1</td>')
         
     def test_mood(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td class="title">Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
-        self.assertContains(response, '<td class="title">Sprite</td><td>2</td><td><div class="mood-1">Sad</div></td>')
+        self.assertContains(response, '<td class="mood"><div class="mood-3">Happy</div></td>')
+        self.assertContains(response, '<td class="mood"><div class="mood-1">Sad</div></td>')
         
     def test_columns_order(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<td class="title">Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
+        self.assertContains(response, '<td class="title">Pepsi</td><td class="loves">0</td><td class="mood"><div class="mood-3">Happy</div></td>')
