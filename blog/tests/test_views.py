@@ -86,17 +86,19 @@ class TestBlogManagementWithModel(TestCase):
         love3 = Love(user=user2, blog=blog2)
         love3.save()
     
-    def test_simple_get(self):
+    def test_get__names(self):
         response = self.client.get('/blog/manage/')
-        # test names
         self.assertContains(response, 'Sprite')
         self.assertContains(response, 'Coke')
         self.assertContains(response, 'Pepsi')
         
-        # test loves after names
+    def test_get__loves(self):
+        response = self.client.get('/blog/manage/')
         self.assertContains(response, '<td>Sprite</td><td>2</td>')
         self.assertContains(response, '<td>Coke</td><td>1</td>')
         
-        # test mood
+    def test_get__mood(self):
+        response = self.client.get('/blog/manage/')
         self.assertContains(response, '<td>Pepsi</td><td>0</td><td><div class="mood-3">Happy</div></td>')
         self.assertContains(response, '<td>Sprite</td><td>2</td><td><div class="mood-1">Sad</div></td>')
+        
