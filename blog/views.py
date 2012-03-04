@@ -264,13 +264,10 @@ def blog_save_location(country, city):
 
 def blog_manage_bulk(request):
     if request.method == 'POST':
-        if request.POST.get('op') == 'set_private':
-            return blog_manage_set_private(request)
-
-def blog_manage_set_private(request):
-    if request.method == 'POST':
         blogs = [ Blog.objects.get(id=blog_id) for blog_id in request.POST.getlist('blog_id') ]
-        blog_bulk_update_private(blogs)
+
+        if request.POST.get('op') == 'set_private':
+            blog_bulk_update_private(blogs)
     return redirect('/blog/manage/')
 
 def blog_manage_set_public(request):
@@ -283,7 +280,6 @@ def blog_bulk_update_private(blogs):
     for blog in blogs:
         blog.private = True
         blog.save()
-        print 'blog private = ', blog.private
 
 def blog_bulk_update_public(blogs):
     for blog in blogs:
