@@ -91,5 +91,5 @@ class TestBlogManagementWithModel(TestCase):
         self.assertContains(response, 'Sprite')
         self.assertContains(response, 'Coke')
         self.assertContains(response, 'Pepsi')
-        self.assertContains(response, '<td>Sprite</td><td>2 Loves</td>')
-        self.assertContains(response, '<td>Coke</td><td>1 Loves</td>')
+        self.assertContains(response, '<td>Sprite</td><td>2</td>')
+        self.assertContains(response, '<td>Coke</td><td>1</td>')
