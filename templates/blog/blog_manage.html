@@ -9,6 +9,7 @@
           <td class="mood">
             <div class="mood-{{ blog.mood }}">{{ blog.get_mood_text }}</div>
           </td>
+          <td class="created">{{ blog.created|date:"Y-m-d" }}</td>
         </tr>
     {% endfor %}
     </table>

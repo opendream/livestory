@@ -86,6 +86,11 @@ class TestGetBlogManagementWithModel(TestCase):
         love2.save()
         love3 = Love(user=user2, blog=blog2)
         love3.save()
+        
+        blog1.created = '2012-03-02'
+        blog1.save()
+        blog3.created = '2012-02-14'
+        blog3.save()
     
     def test_names(self):
         response = self.client.get('/blog/manage/')
@@ -103,10 +108,15 @@ class TestGetBlogManagementWithModel(TestCase):
         self.assertContains(response, 'class="mood-3">Happy</')
         self.assertContains(response, 'class="mood-1">Sad</')
         
+    def test_created(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, 'class="created">2012-03-02</')
+        self.assertContains(response, 'class="created">2012-02-14</')
+        
     def test_columns_order(self):
         response = self.client.get('/blog/manage/')
         soup = BeautifulSoup(response.content)
         tr = soup.find('tr')
         classes = [td.attrs['class'][0] for td in tr.find_all('td')]
         
-        self.assertEqual(classes, ['title', 'loves', 'mood'])
+        self.assertEqual(classes, ['title', 'loves', 'mood', 'created'])
