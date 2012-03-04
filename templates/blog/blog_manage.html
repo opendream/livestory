@@ -1,6 +1,8 @@
 {% extends 'base_backend.html' %}
 
 {% block content %}
+	<select name="op"><option value="set_private">Private</option><option value="set_public">Public</option></select> 
+	<input type="submit" value="Apply">
     <table>
     {% for blog in blogs %}
         <tr>
