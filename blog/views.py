@@ -262,6 +262,11 @@ def blog_save_location(country, city):
         location.save()
     return location
 
+def blog_manage_bulk(request):
+    if request.method == 'POST':
+        if request.POST.get('op') == 'set_private':
+            return blog_manage_set_private(request)
+
 def blog_manage_set_private(request):
     if request.method == 'POST':
         blogs = [ Blog.objects.get(id=blog_id) for blog_id in request.POST.getlist('blog_id') ]
