@@ -106,6 +106,14 @@ class TestBlogUpdate(TestCase):
             b = Blog.objects.get(id=blog.id)
             self.assertEquals(True, b.private)
 
+    def test_post_bulk_public(self):
+        blog_ids = [ blog.id for blog in self.blogs]
+        response = self.client.post('/blog/manage/set/public/', {'blog_id': blog_ids})
+        self.assertEquals(302, response.status_code) # redirect code
+        for blog in self.blogs:
+            b = Blog.objects.get(id=blog.id)
+            self.assertEquals(False, b.private)
+
     def test_blog_bulk_update_private(self):
         blog_bulk_update_private(self.blogs)
         for blog in self.blogs:
