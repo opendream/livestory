@@ -3,9 +3,10 @@
 {% block content %}
     <table>
     {% for blog in blogs %}
-        <tr><td>
-        {{ blog.title }}
-        </td></tr>
+        <tr>
+        	<td><input type="checkbox" name="blog_id" value="{{ blog.id }}"></td>
+        	<td>{{ blog.title }}</td>
+       	</tr>
     {% endfor %}
     </table>
 {% endblock %}
