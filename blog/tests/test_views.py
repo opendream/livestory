@@ -102,8 +102,11 @@ class TestBlogUpdate(TestCase):
             factory.create_blog('Pepsi', user, category, location)
         ]
         self.blogs[0].private = True
+        self.blogs[0].save()
         self.blogs[1].private = False
+        self.blogs[1].save()
         self.blogs[2].private = True
+        self.blogs[2].save()
 
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')
@@ -119,7 +122,7 @@ class TestBlogUpdate(TestCase):
 
     def test_post_bulk_public(self):
         blog_ids = [ blog.id for blog in self.blogs]
-        response = self.client.post('/blog/manage/set/public/', {'blog_id': blog_ids})
+        response = self.client.post('/blog/manage/bulk/', {'blog_id': blog_ids, 'op': 'set_public'})
         self.assertEquals(302, response.status_code) # redirect code
         for blog in self.blogs:
             b = Blog.objects.get(id=blog.id)
