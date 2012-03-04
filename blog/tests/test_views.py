@@ -94,6 +94,9 @@ class TestBlogUpdate(TestCase):
             factory.create_blog('Coke', user, category, location),
             factory.create_blog('Pepsi', user, category, location)
         ]
+        self.blogs[0].private = True
+        self.blogs[1].private = False
+        self.blogs[2].private = True
 
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')
