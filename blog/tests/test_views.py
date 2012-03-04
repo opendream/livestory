@@ -91,6 +91,14 @@ class TestBlogManagementWithModel(TestCase):
         for blog in self.blogs:
             self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % blog.id)
 
+    def test_operations_select_exists(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, '<select name="op"><option value="set_private">Private</option><option value="set_public">Public</option></select>')
+
+    def test_apply_button_exists(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, '<input type="submit" value="Apply">')
+
 class TestBlogUpdate(TestCase):
     def setUp(self):
         user = factory.create_user()
