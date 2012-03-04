@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from blog.models import Blog
+from blog.views import blog_bulk_update_private
+from blog.views import blog_bulk_update_public
 from mock import Mock, patch
 from tests import factory
 
@@ -81,5 +83,37 @@ class TestBlogManagementWithModel(TestCase):
         self.assertContains(response, 'Sprite')
         self.assertContains(response, 'Coke')
         self.assertContains(response, 'Pepsi')
-        
-        
+
+class TestBlogUpdate(TestCase):
+    def setUp(self):
+        user = factory.create_user()
+        category = factory.create_category()
+        location = factory.create_location()
+        self.blogs = [
+            factory.create_blog('Sprite', user, category, location),
+            factory.create_blog('Coke', user, category, location),
+            factory.create_blog('Pepsi', user, category, location)
+        ]
+
+    def test_simple_get(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, 'Sprite')
+
+    def test_post_bulk_private(self):
+        blog_ids = [ blog.id for blog in self.blogs]
+        response = self.client.post('/blog/manage/set/private/', {'blog_id': blog_ids})
+        for blog in self.blogs:
+            b = Blog.objects.get(id=blog.id)
+            self.assertEquals(True, b.private)
+
+    def test_blog_bulk_update_private(self):
+        blog_bulk_update_private(self.blogs)
+        for blog in self.blogs:
+            b = Blog.objects.get(id=blog.id)
+            self.assertEquals(True, b.private)
+
+    def test_blog_bulk_update_public(self):
+        blog_bulk_update_public(self.blogs)
+        for blog in self.blogs:
+            b = Blog.objects.get(id=blog.id)
+            self.assertEquals(False, b.private)
