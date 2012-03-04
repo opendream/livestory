@@ -74,15 +74,22 @@ class TestBlogManagementWithModel(TestCase):
         user = factory.create_user()
         category = factory.create_category()
         location = factory.create_location()
-        factory.create_blog('Sprite', user, category, location)
-        factory.create_blog('Coke', user, category, location)
-        factory.create_blog('Pepsi', user, category, location)
+        self.blogs = [
+            factory.create_blog('Sprite', user, category, location),
+            factory.create_blog('Coke', user, category, location),
+            factory.create_blog('Pepsi', user, category, location)
+        ]
     
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')
         self.assertContains(response, 'Sprite')
         self.assertContains(response, 'Coke')
         self.assertContains(response, 'Pepsi')
+
+    def test_render_checkboxes(self):
+        response = self.client.get('/blog/manage/')
+        for blog in self.blogs:
+            self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % blog.id)
 
 class TestBlogUpdate(TestCase):
     def setUp(self):
@@ -104,7 +111,8 @@ class TestBlogUpdate(TestCase):
 
     def test_post_bulk_private(self):
         blog_ids = [ blog.id for blog in self.blogs]
-        response = self.client.post('/blog/manage/set/private/', {'blog_id': blog_ids})
+        response = self.client.post('/blog/manage/bulk/', {'blog_id': blog_ids, 'op': 'set_private'})
+        self.assertEquals(302, response.status_code) # redirect code
         for blog in self.blogs:
             b = Blog.objects.get(id=blog.id)
             self.assertEquals(True, b.private)
