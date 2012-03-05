@@ -1,11 +1,12 @@
+from account.models import Account
 from blog.models import Blog, Category, Location, Love
 from django.contrib.auth.models import User
 
-def create_user(username=None, email=None, password=None):
-    username = username or 'testuser'
-    email = email or 'test@example.com'
-    password = password or 'testuser'
-    return User.objects.create_user(username, email, password)
+def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe'):
+    user = User.objects.create_user(username, email, password)
+    account = Account(firstname=firstname, lastname=lastname, user=user)
+    account.save()
+    return user
 
 def create_category(name = 'Food', code = 'f'):
     category = Category(name=name, code=code)

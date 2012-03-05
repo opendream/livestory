@@ -4,7 +4,5 @@ from tests import factory
 
 class TestAccount(TestCase):
     def test_get_fullname(self):
-        user = factory.create_user('rutcreate1@gmail.com', 'rutcreate1@gmail.com', 'rutcreate')
-        account = Account(firstname='Nirut', lastname='Khemasakchai', user=user)
-        account.save()
+        user = factory.create_user('rutcreate1@gmail.com', 'rutcreate1@gmail.com', 'rutcreate', 'Nirut', 'Khemasakchai')
         self.assertEquals('Nirut Khemasakchai', user.get_profile().get_fullname())
