@@ -1,0 +1,17 @@
+{% extends 'base_backend.html' %}
+
+{% block content %}
+    <table>
+    {% for blog in blogs %}
+        <tr>
+          <td class="title">{{ blog.title }}</td>
+          <td class="loves">{{ blog.love_set.count }}</td>
+          <td class="mood">
+            <div class="mood-{{ blog.mood }}">{{ blog.get_mood_text }}</div>
+          </td>
+          <td class="created">{{ blog.created|date:"Y-m-d" }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
+

@@ -1,12 +1,23 @@
 {% extends 'base.html' %}
 
-{% block head_title %}เข้าสู่ระบบ{% endblock %}
+{% block head_title %}Login{% endblock %}
 
 {% block base_content %}
+<style>
+	.inner-container{
+		border : 1px solid #ccc;
+		padding : 10px 30px 30px 10px;
+		margin : 40px 0 0 ;
+		width: 400px;
+	}
+	
+</style>
+
 <div class="outer-container span6 offset3">
   <div class="inner-container">
-    <h1>Login</h1>
-    {% include 'snippets/login_form.html' with form=form next=next %}
+	  
+		  {% include 'snippets/login_form.html' with form=form next=next %}
+	  
   </div>
 </div>
 {% endblock %}
