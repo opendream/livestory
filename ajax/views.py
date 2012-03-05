@@ -15,6 +15,12 @@ import settings
 def ajax_account_image_upload(request):
     account = request.user.get_profile()
     image = request.FILES['image']
+    try:
+        account.image.file
+        account.image.delete()
+    except:
+        pass
+        
     account.image.save(image.name, request.FILES['image'], save=False)
     account.save()
     

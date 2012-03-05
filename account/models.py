@@ -11,7 +11,8 @@ except ImportError:
 import settings
 
 def account_image_url(instance, filename):
-    return './images/account/%s/%s' % (instance.user.id, filename)
+    ext = filename.split('.')[-1]
+    return './images/account/%s/avatar.%s' % (instance.user.id, ext)
 
 class Account(models.Model):
     
