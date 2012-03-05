@@ -267,8 +267,8 @@ def blog_save_image(image_path, request):
     real_path = blog_image_url(request, name)
     real_path = check_file_exists(real_path)
     directory, name = os.path.split(real_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    if not os.path.exists(directory.replace('./', settings.MEDIA_ROOT, 1)):
+        os.makedirs(directory.replace('./', settings.MEDIA_ROOT, 1))
     shutil.copy2(image_path, real_path.replace('./', settings.MEDIA_ROOT, 1))
     return real_path
 
