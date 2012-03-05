@@ -128,7 +128,6 @@ def account_profile_edit(request):
     inst = model_to_dict(user)
     inst.update(model_to_dict(account))
     inst['password'] = ''
-    print inst
     param = request.GET.get('forgot') or request.GET.get('first')
     if param:
         inst['just_update_password'] = 1

@@ -207,6 +207,7 @@ BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 # LIVE STORY
 ORGANIZATION_NAME = 'Oxfam'
+IMAGE_URL = MEDIA_URL + 'images/'
 IMAGE_ROOT = MEDIA_ROOT + 'images/'
 TEMP_ROOT = MEDIA_ROOT + 'temp/'
 AVATAR_SIZE = '94x94'

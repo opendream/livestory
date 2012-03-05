@@ -71,12 +71,8 @@ def ajax_blog_image_delete(request):
     data = {'result': 'complete', 'isTemp': False}
     try:
         image_path = request.GET.get('image_path')
-        print 'xxxx' + image_path
-        print image_path.find(settings.TEMP_ROOT)
-        print os.path.exists(image_path)
         if image_path:
             if image_path.find(settings.TEMP_ROOT) == 0 and os.path.exists(image_path):
-                print 'remove image'
                 os.unlink(image_path)
                 data['isTemp'] = True
     except:

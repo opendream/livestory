@@ -264,12 +264,12 @@ def blog_save_location(country, city):
 
 def blog_save_image(image_path, request):
     directory, name = os.path.split(image_path)
-    real_path = '%sblog/%s/%s' % (settings.IMAGE_ROOT, request.user.id, name)
+    real_path = blog_image_url(request, name)
     real_path = check_file_exists(real_path)
     directory, name = os.path.split(real_path)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    shutil.copy2(image_path, real_path)
+    shutil.copy2(image_path, real_path.replace('./', settings.MEDIA_ROOT, 1))
     return real_path
 
 def handle_upload_file(f, instance):

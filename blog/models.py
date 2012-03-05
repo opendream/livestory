@@ -33,7 +33,7 @@ def blog_image_path(instance, filename):
     return '%s/%s' % (filepath, filename)
 
 def blog_image_url(instance, filename):
-    return '%simages/blog/%s/%s' % (settings.MEDIA_URL, instance.user.id, filename)
+    return './images/blog/%s/%s' % (instance.user.id, filename)
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -48,7 +48,7 @@ class Category(models.Model):
     
 class Blog(models.Model):
     title       = models.CharField(max_length=200)
-    image       = models.ImageField(upload_to=blog_image_path)
+    image       = models.ImageField(upload_to=blog_image_url)
     description = models.TextField(null=True)
     mood        = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private     = models.BooleanField(default=False, choices=PRIVATE_CHOICES)
