@@ -1,11 +1,17 @@
-from account.models import Account
+from account.models import Account, AccountKey
 from blog.models import Blog, Category, Location, Love
 from django.contrib.auth.models import User
+import hashlib
+from datetime import datetime
 
 def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe'):
     user = User.objects.create_user(username, email, password)
     account = Account(firstname=firstname, lastname=lastname, user=user)
     account.save()
+    
+    key = hashlib.md5('key%s%s' % (user.email, str(datetime.now()))).hexdigest()[0:30]
+    account_key = AccountKey(key=key, can_send_mail=True, user=user)
+    account_key.save()
     return user
 
 def create_category(name = 'Food', code = 'f'):
