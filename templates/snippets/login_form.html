@@ -7,12 +7,12 @@
   {% endif %}
   <input type="hidden" name="next" value="{{next}}" />
 	
-  <div class="item">
+  <div class="item" style="margin-bottom:10px;">
     <label for="id_email">Email</label>
     <div class="input">{{form.username}}{{form.username.errors.as_text}}</div>
   </div>
 
-  <div class="item">
+  <div class="item" style="margin-bottom:10px;">
     <label for="id_password">Password</label>
     <div class="input">{{form.password}}{{form.password.errors}}</div>
   </div>

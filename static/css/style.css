@@ -40,6 +40,7 @@
 	.oxfam-font{ font-family: OxfamGlobalHeadlineRegular; }
 	
 	.content{
+		min-height: 400px;
 		border: 1px solid #eee;
 		padding: 8px 35px 8px 14px;
 		margin-bottom: 18px;
@@ -738,6 +739,7 @@ html[xmlns] .clearfix { display: block; }
 
 .scour {
     position: relative;
+    margin: 0 auto;
 }
 .scour .rect {
     position: absolute;
