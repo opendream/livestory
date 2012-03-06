@@ -114,7 +114,7 @@ def account_activate(request, key):
     # Activate and login to user and redirect to update user profile chang password and orther
     # When user forgot password can go to this method and force login
     user = account_key.user
-    param = {0: '?first=1', 1: '?forgot=1'}[int(user.is_active)]
+    param = {0: '?activate=1', 1: '?forgot=1'}[int(user.is_active)]
     user.is_active = True
     
     password = hashlib.md5('%s%s' % (user.username, str(datetime.now()))).hexdigest()[0:10]
@@ -135,7 +135,7 @@ def account_profile_edit(request):
     inst = model_to_dict(user)
     inst.update(model_to_dict(account))
     inst['password'] = ''
-    param = request.GET.get('forgot') or request.GET.get('first')
+    param = request.GET.get('forgot') or request.GET.get('activate')
     if param:
         inst['just_update_password'] = 1
     
