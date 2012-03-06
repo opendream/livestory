@@ -20,9 +20,12 @@ import os
 
 import settings
 
-def account_login(request):
-    from django.contrib.auth.views import login
-    return login(request, authentication_form=EmailAuthenticationForm)
+# def account_login(request):
+#     print 'xxx' , request.user.is_authenticated()
+#     if request.user.is_authenticated():
+#         return redirect(reverse('blog_home'))
+#     from django.contrib.auth.views import login
+#     return login(request, authentication_form=EmailAuthenticationForm)
 
 @staff_member_required
 def account_invite(request):
