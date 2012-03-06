@@ -40,7 +40,7 @@ class Account(models.Model):
     def get_image_url(self):
         try:
             self.image.file
-            return path_to_url(account_image_url(self, self.image.name))
+            return path_to_url(self.image.path)
         except ValueError:
             return None
             
