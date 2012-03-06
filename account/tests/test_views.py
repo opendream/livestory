@@ -25,3 +25,16 @@ class TestAccount(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertContains(response, 'name="username"')
         self.assertContains(response, 'name="password"')
+        self.client.logout()
+    
+    def test_account_invite_accessment(self):
+        response = self.client.get('/account/invite/')
+        self.assertEquals(403, response.status_code)
+        
+        staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
+        staff.is_staff = True
+        staff.save()
+        self.client.login(username='staff@example.com', password='staff')
+        response = self.client.get('/account/invite/')
+        self.assertEquals(200, response.status_code)
+        self.client.logout()

@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.forms.models import model_to_dict
+from django.http import HttpResponseForbidden
 
 from account.forms import *
 from account.models import *
@@ -27,8 +28,10 @@ import settings
 #     from django.contrib.auth.views import login
 #     return login(request, authentication_form=EmailAuthenticationForm)
 
-@staff_member_required
 def account_invite(request):
+    if not request.user.is_staff:
+        return render(request, '403.html', status=403)
+        
     if request.method == 'POST':
         form = AccountInviteForm(request.POST)
 
