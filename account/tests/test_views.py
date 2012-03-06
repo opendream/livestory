@@ -6,7 +6,10 @@ import settings
 
 class TestAccount(TestCase):
     def setUp(self):
-        pass
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
+        self.staff.is_staff = True
+        self.staff.save()
+        self.user = factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Panudate', 'Vasinwattana')
     
     def tearDown(self):
         pass
@@ -18,7 +21,6 @@ class TestAccount(TestCase):
         self.assertContains(response, 'name="password"')
     
     def test_account_login_authenticated(self):
-        factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Panudate', 'Vasinwattana')
         self.client.login(username='tester2@example.com', password='testuser2')
         response = self.client.get('/account/login/')
         # self.assertRedirects(response, '/')
@@ -30,10 +32,7 @@ class TestAccount(TestCase):
     def test_account_invite_accessment(self):
         response = self.client.get('/account/invite/')
         self.assertEquals(403, response.status_code)
-        
-        staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
-        staff.is_staff = True
-        staff.save()
+
         self.client.login(username='staff@example.com', password='staff')
         response = self.client.get('/account/invite/')
         self.assertEquals(200, response.status_code)
