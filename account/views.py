@@ -94,7 +94,7 @@ def account_invite(request):
             if len(invite_list):
                 messages.success(request, 'Sending email invite. you can see list of user invited in user managment.')
             if len(email_joined_list):
-                messages.warning(request, 'Email user has joined : %s' % ', '.join(email_invalid_list))
+                messages.warning(request, 'Email user has joined : %s' % ', '.join(email_joined_list))
             if len(email_invalid_list):
                 messages.error(request, 'Email format incorect : %s' % ', '.join(email_invalid_list))
 

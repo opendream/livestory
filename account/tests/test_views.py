@@ -57,7 +57,7 @@ class TestAccount(TestCase):
         self.assertEquals(False, testnewuser2.is_active)
         self.client.logout()
     
-    def test_account_invite_exists_user_inactive(self):    
+    def test_account_invite_exists_inactive_user(self):    
         account_key1 = AccountKey.objects.get(user=self.inactive_user1)
         account_key2 = AccountKey.objects.get(user=self.inactive_user2)
         
@@ -74,4 +74,14 @@ class TestAccount(TestCase):
         self.assertNotEquals(key1, account_key1.key)
         self.assertNotEquals(key2, account_key2.key)
         self.client.logout()
+    
+    def test_account_invite_exists_active_user(self):
+        self.client.login(username='staff@example.com', password='staff')
+        invite = 'tester2@example.com, staff@example.com'
+        response = self.client.post('/account/invite/', {'invite': invite})
+        self.assertContains(response, 'Email user has joined : tester2@example.com, staff@example.com')
         
+        tester2 = User.objects.get(username='tester2@example.com')
+        staff = User.objects.get(username='staff@example.com')
+        self.assertEquals(True, tester2.is_active)
+        self.assertEquals(True, staff.is_active)
