@@ -39,12 +39,13 @@ def account_invite(request):
             
             email_exist = [user.email for user in User.objects.all()]
             
-            invite_dummy = form.cleaned_data['invite'].replace(' ', '').split(',')
+            invite_dummy = form.cleaned_data['invite'].split(',')
             
             invite_list = []
             email_invalid_list = []
             email_joined_list = []
             for email in invite_dummy:
+                email = email.strip()
                 try:
                     validate_email(email)
                     
@@ -96,7 +97,7 @@ def account_invite(request):
             if len(email_joined_list):
                 messages.warning(request, 'Email user has joined : %s' % ', '.join(email_joined_list))
             if len(email_invalid_list):
-                messages.error(request, 'Email format incorect : %s' % ', '.join(email_invalid_list))
+                messages.error(request, 'Email format is invalid : %s' % ', '.join(email_invalid_list))
 
             
     else:

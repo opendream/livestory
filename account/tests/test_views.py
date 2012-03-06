@@ -85,3 +85,9 @@ class TestAccount(TestCase):
         staff = User.objects.get(username='staff@example.com')
         self.assertEquals(True, tester2.is_active)
         self.assertEquals(True, staff.is_active)
+    
+    def test_account_invite_invalid_email(self):
+        self.client.login(username='staff@example.com', password='staff')
+        invite = 'testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com'
+        response = self.client.post('/account/invite/', {'invite': invite})
+        self.assertContains(response, 'Email format is invalid : testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com')
