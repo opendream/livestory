@@ -14,7 +14,7 @@ def create_user(username='testuser', email='test@example.com', password='testuse
     account.save()
     
     key = hashlib.md5('key%s%s' % (user.email, str(datetime.now()))).hexdigest()[0:30]
-    account_key = AccountKey(key=key, can_send_mail=True, user=user)
+    account_key = AccountKey(key=key, user=user)
     account_key.save()
         
     return user

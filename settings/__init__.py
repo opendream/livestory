@@ -1,6 +1,9 @@
 # Django settings for livestory project.
 import os
 base_path = os.path.dirname(__file__)
+base_path = base_path.split('/')
+base_path.pop()
+base_path = '/'.join(base_path)
 
 import djcelery
 djcelery.setup_loader()
