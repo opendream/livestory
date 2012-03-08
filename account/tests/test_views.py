@@ -24,16 +24,14 @@ class TestAccount(TestCase):
     def test_account_login_anonymous(self):
         response = self.client.get('/account/login/')
         self.assertEquals(200, response.status_code)
-        self.assertContains(response, 'name="username"')
-        self.assertContains(response, 'name="password"')
+        self.assertTemplateUsed(response, 'registration/login.html')
     
     def test_account_login_authenticated(self):
         self.client.login(username='tester2@example.com', password='testuser2')
         response = self.client.get('/account/login/')
         # self.assertRedirects(response, '/')
         self.assertEquals(200, response.status_code)
-        self.assertContains(response, 'name="username"')
-        self.assertContains(response, 'name="password"')
+        self.assertTemplateUsed(response, 'registration/login.html')
         self.client.logout()
     
     def test_account_invite_accessment(self):
@@ -43,6 +41,7 @@ class TestAccount(TestCase):
         self.client.login(username='staff@example.com', password='staff')
         response = self.client.get('/account/invite/')
         self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'account/account_invite.html')
         self.client.logout()
         
     def test_account_invite_new_user(self):
@@ -94,7 +93,7 @@ class TestAccount(TestCase):
         self.assertContains(response, 'Email format is invalid : testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com')
         self.client.logout()
     
-    def test_account_activate_by_anonymous(self):
+    def test_account_activate(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'testactivate@example.com'
         response = self.client.post('/account/invite/', {'invite': invite})
@@ -102,8 +101,16 @@ class TestAccount(TestCase):
         
         account_key = AccountKey.objects.get(user__username='testactivate@example.com')
         response = self.client.get('/account/activate/%s/' % account_key.key, follow=True)
+        current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
+        
         self.assertRedirects(response, '/account/profile/edit/?activate=1')
         self.assertEquals(True, bool(self.client.session))
+        self.assertEquals('testactivate@example.com', current_user.username)
         self.assertContains(response, 'Password must be update')
         self.assertContains(response, 'Password must be confirm')
         self.assertContains(response, 'testactivate@example.com')
+        self.client.logout()
+    
+    def test_account_invalid_activate_key(self):
+        response = self.client.get('/account/activate/invalidkey/', follow=True)
+        self.assertTemplateUsed(response, 'account/account_key_error.html')
