@@ -127,8 +127,10 @@ def account_activate(request, key):
     
     return redirect(reverse('account_profile_edit') + param)
     
-@login_required 
 def account_profile_edit(request):
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
+    
     user = request.user
     account = user.get_profile()
     

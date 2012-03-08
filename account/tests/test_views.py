@@ -114,3 +114,35 @@ class TestAccount(TestCase):
     def test_account_invalid_activate_key(self):
         response = self.client.get('/account/activate/invalidkey/', follow=True)
         self.assertTemplateUsed(response, 'account/account_key_error.html')
+        
+    def test_account_profile_edit_get(self):
+        response = self.client.get('/account/profile/edit/')
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='staff@example.com', password='staff')
+        response = self.client.get('/account/profile/edit/')
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'account/account_profile_edit.html')
+        self.client.logout()
+    
+    def test_account_profile_edit_post_no_password(self):
+        self.client.login(username='staff@example.com', password='staff')
+        response = self.client.post('/account/profile/edit/', {'firstname': 'Alan', 'lastname': 'Smith', 'password': '', 'confirm_password': ''})
+        current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
+        self.assertTemplateUsed(response, 'account/account_profile_edit.html')
+        self.assertEquals('Alan', current_user.get_profile().firstname)
+        self.assertEquals('Smith', current_user.get_profile().lastname)
+        self.assertEquals(True, current_user.check_password('staff'))
+        self.client.logout()
+    
+    def test_account_profile_edit_post_new_password(self):
+        self.client.login(username='staff@example.com', password='staff')
+        response = self.client.post('/account/profile/edit/', {'firstname': 'Steve', 'lastname': 'Jobs', 'password': 'Apple', 'confirm_password': 'Apple'})
+        current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
+        self.assertTemplateUsed(response, 'account/account_profile_edit.html')
+        self.assertEquals('Steve', current_user.get_profile().firstname)
+        self.assertEquals('Jobs', current_user.get_profile().lastname)
+        self.assertEquals(True, current_user.check_password('Apple'))
+        
+        self.client.post('/account/profile/edit/', {'firstname': 'John', 'lastname': 'Doe', 'password': 'staff', 'confirm_password': 'staff'})
+        self.client.logout()
