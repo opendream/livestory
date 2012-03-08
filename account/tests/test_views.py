@@ -146,3 +146,16 @@ class TestAccount(TestCase):
         
         self.client.post('/account/profile/edit/', {'firstname': 'John', 'lastname': 'Doe', 'password': 'staff', 'confirm_password': 'staff'})
         self.client.logout()
+        
+    def test_account_profile_edit_post_missmatch_password(self):
+        self.client.login(username='staff@example.com', password='staff')
+        response = self.client.post('/account/profile/edit/', {'firstname': 'Steve', 'lastname': 'Jobs', 'password': 'Apple', 'confirm_password': 'APPLE'})
+        current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
+        self.assertTemplateUsed(response, 'account/account_profile_edit.html')
+        self.assertEquals('John', current_user.get_profile().firstname)
+        self.assertEquals('Doe', current_user.get_profile().lastname)
+        self.assertEquals(True, current_user.check_password('staff'))
+        self.assertContains(response, 'Password not match')
+        
+        self.client.post('/account/profile/edit/', {'firstname': 'John', 'lastname': 'Doe', 'password': 'staff', 'confirm_password': 'staff'})
+        self.client.logout()
