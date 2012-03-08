@@ -17,8 +17,8 @@ from blog.forms import *
 
 from location.models import Location
 from common.scour import Scour
-
 from common.views import check_file_exists
+from common.templatetags.common_tags import cache_path
 
 def blog_home(request):
     scour_width = 960
@@ -85,9 +85,11 @@ def blog_create(request):
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
             blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-            blog.image = blog_save_image(image_path, request)
-            # blog.image = handle_upload_file(request.FILES['image'], request)
             blog.save()
+            
+            blog.image = blog_save_image(image_path, blog)
+            blog.save()
+            
             messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
             return redirect('/blog/%s/edit' % blog.pk)
     else:
@@ -133,13 +135,16 @@ def blog_edit(request, blog_id):
                 if blog.draft:
                     blog.draft = bool(int(form.data.get('draft')))
                 
+                
                 # There is image uploaded.
-                if blog.image.path != image_path:
-                    # Remove old image.
-                    if os.path.isfile(blog.image.path):
-                        os.remove(blog.image.path)
-                    # Save new image.
-                    blog.image = blog_save_image(image_path, request)
+                if image_path.split('/')[-2] == 'temp':
+                    cpath = cache_path(blog.image.path)
+                    print 'ccccccc' + cpath
+                    blog.image.delete()
+                    shutil.rmtree(cpath)
+
+                # Save new image.
+                blog.image = blog_save_image(image_path, blog)
                 
                 blog.save()
                 messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
@@ -161,7 +166,6 @@ def blog_edit(request, blog_id):
             'form': form,
             'moods': MOOD_CHOICES,
             'visibilities': PRIVATE_CHOICES,
-            'image_path': blog.get_image_url(),
             'is_draft': blog.draft,
             'blog': blog,
             'image_path': image_path,
@@ -262,20 +266,13 @@ def blog_save_location(country, city):
         location.save()
     return location
 
-def blog_save_image(image_path, request):
+def blog_save_image(image_path, blog):
     directory, name = os.path.split(image_path)
-    real_path = blog_image_url(request, name)
-    real_path = check_file_exists(real_path)
+    real_path = blog_image_url(blog, 'blog_%s.jpg' % blog.id)
     directory, name = os.path.split(real_path)
     if not os.path.exists(directory.replace('./', settings.MEDIA_ROOT, 1)):
         os.makedirs(directory.replace('./', settings.MEDIA_ROOT, 1))
-    shutil.copy2(image_path, real_path.replace('./', settings.MEDIA_ROOT, 1))
+    final_path = real_path.replace('./', settings.MEDIA_ROOT, 1)
+        
+    shutil.copy2(image_path, final_path)
     return real_path
-
-def handle_upload_file(f, instance):
-    filepath = blog_image_path(instance, f.name)
-    destination = open(filepath, 'wd+')
-    for chunk in f.chunks():
-        destination.write(chunk)
-    destination.close()
-    return blog_image_url(instance, f.name)

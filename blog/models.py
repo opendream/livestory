@@ -27,13 +27,13 @@ DRAFT_CHOICES = (
 )
 
 def blog_image_path(instance, filename):
-    filepath = '%sblog/%s' % (settings.IMAGE_ROOT, instance.user.id)
+    filepath = '%sblog/%s/%s' % (settings.IMAGE_ROOT, instance.user.id, instance.id)
     if not os.path.exists(filepath):
         os.makedirs(filepath)
-    return '%s/%s' % (filepath, filename)
+    return '%s/blog_%d.jpg' % (filepath, instance.id)
 
 def blog_image_url(instance, filename):
-    return './images/blog/%s/%s' % (instance.user.id, filename)
+    return './images/blog/%s/%s/%s' % (instance.user.id, instance.id, filename)
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -63,19 +63,9 @@ class Blog(models.Model):
     def __unicode__(self):
         return '(%d) %s' % (self.id, self.title)
     
-    def get_image_url(self):
-        (folder, filename) = os.path.split(self.image.name)
-        return blog_image_url(self, filename)
-        
-    def get_thumbnail(self, point):
-        # TODO
-        pass
-    
     def get_mood_text(self):
-        return MOOD_CHOICES[self.mood-1][1]
-    
-    def get_loved_users(self):
-        return self.love_set()
+        moods = dict(MOOD_CHOICES)
+        return moods[self.mood]
 
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
@@ -84,7 +74,7 @@ class Love(models.Model):
     blog     = models.ForeignKey(Blog)
     
     def __unicode__(self):
-        return '%s love %s' % (self.user.username, self.blog.detail)
+        return '%s love %s' % (self.user.username, self.blog.title)
 
         
         
