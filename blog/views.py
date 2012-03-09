@@ -213,31 +213,35 @@ def blog_view(request, blog_id):
     except Blog.DoesNotExist:
         raise Http404
 
-@login_required
 def blog_love(request, blog_id):
-    data = {'love': 0, 'type': 'love', 'status': 200}
     try:
-        # Check if this user has ever loved this blog post.
-        Love.objects.get(user=request.user, blog__id=blog_id)
-        data['love'] = 1
-        data['type'] = 'unlove'
-    except Love.DoesNotExist:
+        blog = Blog.objects.get(id=blog_id)
+        if not request.user.is_authenticated():
+            return render(request, '403.html', status=403)
+        
+        data = {'love': 0, 'type': 'love', 'status': 200}
         try:
+            # Check if this user has ever loved this blog post.
+            Love.objects.get(user=request.user, blog__id=blog_id)
+            data['love'] = 1
+            data['type'] = 'unlove'
+        except Love.DoesNotExist:
             # Add new love
             blog = Blog.objects.get(pk=blog_id)
             love = Love(user=request.user, blog=blog)
             love.save()
             data['love'] = 1
             data['type'] = 'unlove'
-        except Blog.DoesNotExist:
-            # Blog post not found
-            # TODO
-            pass
-    
-    if request.is_ajax():
-        return HttpResponse(json.dumps(data), mimetype="application/json")
-    else:
-        return redirect('/blog/%s/view' % blog_id)
+        
+        if request.is_ajax():
+            return HttpResponse(json.dumps(data), mimetype="application/json")
+        else:
+            return redirect('/blog/%s/view' % blog_id)
+    except Blog.DoesNotExist:
+        if request.is_ajax():
+            return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
+        else:
+            raise Http404
 
 @login_required
 def blog_unlove(request, blog_id):

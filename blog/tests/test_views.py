@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.core.files.base import File as DjangoFile
 from django.test import TestCase
+from django.utils import simplejson as json
+
 from blog.models import Blog, Love
 from mock import Mock, patch
 from tests import factory
@@ -487,8 +489,41 @@ class TestBlogView(TestCase):
         self.assertEquals('/blog/%s/love/' % self.blog_private.id, response.context['love_path'])
         self.assertEquals('love', response.context['button_type'])
         self.client.logout()
+    
+    def test_blog_love_blog(self):
+        # not login
+        response = self.client.get('/blog/%s/love/' % self.blog_private.id)
+        self.assertEquals(403, response.status_code)
         
+        # not login, blog not found
+        response = self.client.get('/blog/0/love/')
+        self.assertEquals(404, response.status_code)
         
+        # login
+        self.client.login(username='test2@example.com', password='test')
+        
+        # love, not exists blog, not ajax
+        response = self.client.get('/blog/0/love/')
+        self.assertEquals(404, response.status_code)
+        
+        # love, not exists blog, ajax
+        response = self.client.get('/blog/0/love/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(json.dumps({'status': 404}), response.content)
+
+        # love, exists blog, not ajax
+        response = self.client.get('/blog/%s/love/' % self.blog_private.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_private.id)
+        
+        # love, exists blog, ajax
+        response = self.client.get('/blog/%s/love/' % self.blog.id, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': 1, 'type': 'unlove', 'status': 200}), response.content)
+        
+        # love, exists blog, ajax, loved
+        response = self.client.get('/blog/%s/love/' % self.blog.id, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': 1, 'type': 'unlove', 'status': 200}), response.content)
+        self.client.logout()
         
         
         
