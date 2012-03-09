@@ -4,7 +4,7 @@ import shutil
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
@@ -108,10 +108,13 @@ def blog_create(request):
     }
     return render(request, 'blog/blog_form.html', context)
 
-@login_required
 def blog_edit(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
+        
+        if not request.user.is_staff and (not request.user.is_authenticated() or request.user.id != blog.user.id):
+            return render(request, '403.html', status=403)
+        
         location = Location.objects.get(pk=blog.location_id)
         action = reverse('blog_edit', args=[blog_id])
         image_path = blog.image.path
@@ -137,15 +140,14 @@ def blog_edit(request, blog_id):
                 if blog.draft:
                     blog.draft = bool(int(form.data.get('draft')))
                 
-                
                 # There is image uploaded.
                 if image_path.split('/')[-2] == 'temp':
                     cpath = cache_path(blog.image.path)
                     blog.image.delete()
-                    shutil.rmtree(cpath)
-
-                # Save new image.
-                blog.image = blog_save_image(image_path, blog)
+                    if os.path.exists(cpath):
+                        shutil.rmtree(cpath)
+                    # Save new image.
+                    blog.image = blog_save_image(image_path, blog)
                 
                 blog.save()
                 messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
@@ -174,15 +176,14 @@ def blog_edit(request, blog_id):
         }
         return render(request, 'blog/blog_form.html', context)
     except Blog.DoesNotExist:
-        # TODO handle blog not found
-        pass
+        raise Http404
 
 def blog_view(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
-        if blog.private:
-            # TODO redirect to access denied
-            pass
+        if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
+            return render(request, '403.html', status=403)
+            
         love_path = '/blog/%s/love/'
         button_type = 'love'
         try:
@@ -194,7 +195,7 @@ def blog_view(request, blog_id):
             # Do nothing. Use default love_path and button_type.
             pass
         
-        love_set = blog.love_set.all().order_by('-datetime')
+        love_set = blog.love_set.all().order_by('-datetime', '-id')
         loved_users = []
         for l in love_set:
             loved_users.append(l.user.get_profile())
@@ -210,9 +211,7 @@ def blog_view(request, blog_id):
         }
         return render(request, 'blog/blog_view.html', context)
     except Blog.DoesNotExist:
-        # Page not found
-        # TODO
-        return HttpResponse('blog post not found')
+        raise Http404
 
 @login_required
 def blog_love(request, blog_id):

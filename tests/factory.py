@@ -41,7 +41,8 @@ def create_blog(title='Icecream', user = None, category = None, location = None,
     blog.category = category
     blog.location = location
     blog.mood = mood
-    blog.image = DjangoFile(open('static/tests/blog.jpg'), 'blog.jpg')
+    blog.save()
+    blog.image.save('blog_%s.jpg' % blog.id, DjangoFile(open('static/tests/blog.jpg'), 'blog.jpg'))
     blog.save()
     
     return blog
