@@ -265,6 +265,10 @@ def blog_save_location(country, city):
     except Location.DoesNotExist:
         location = Location(country=country, city=city, lat=0, lng=0)
         location.save()
+    # For unittest maybe create duplicate location
+    except Location.MultipleObjectsReturned:
+        location = Location.objects.filter(country=country, city=city).order_by('-id')[0]
+        
     return location
 
 def blog_save_image(image_path, blog):

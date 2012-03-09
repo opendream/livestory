@@ -1,10 +1,13 @@
 from django.contrib.auth.models import User
+from django.core.files.base import File as DjangoFile
 from django.test import TestCase
 from blog.models import Blog, Love
 from mock import Mock, patch
 from tests import factory
 from bs4 import BeautifulSoup
 
+import settings
+import shutil
 import xpath
 
 class MyMock(object):
@@ -125,7 +128,9 @@ class TestGetBlogManagementWithModel(TestCase):
         
 class TestBlogCreate(TestCase):
     def setUp(self):
-        factory.create_user('test@example.com', 'test@example.com', 'test')
+        self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
+        self.category = factory.create_category('Animal', 'animal')
+        self.location = factory.create_location('Japan', 'Tokyo')
         
     def test_blog_create_get(self):
         response = self.client.get('/blog/create/')
@@ -164,7 +169,43 @@ class TestBlogCreate(TestCase):
         self.assertFormError(response, 'form', 'city', ['This field is required.'])
         self.client.logout()
         
+    def test_blog_create_post(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world',
+            'image_path': dst,
+            'description': 'lorem ipsum',
+            'mood': '4',
+            'country': 'Japan',
+            'city': 'Tokyo',
+            'private': '1',
+            'draft': '0',
+            'category': str(self.category.id)
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
         
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+        
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(False, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world', blog.title)
+        self.assertEquals('lorem ipsum', blog.description)
+        self.assertEquals(4, blog.mood)
+        self.assertEquals(True, blog.private)
+        self.assertEquals(False, blog.draft)
+        self.assertEquals(self.category, blog.category)
+        self.assertEquals(self.location, blog.location)
         
         
         

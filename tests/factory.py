@@ -24,8 +24,8 @@ def create_category(name = 'Food', code = 'f'):
     category.save()
     return category
     
-def create_location():
-    location = Location(country = 'Thailand', city = 'Bangkok')
+def create_location(country='Thailand', city='Bangkok'):
+    location = Location(country=country, city=city)
     location.lat = '100.00'
     location.lng = '13.00'
     location.save()
