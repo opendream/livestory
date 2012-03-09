@@ -216,7 +216,7 @@ def blog_view(request, blog_id):
 def blog_love(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated() or (blog.user.id != request.user.id and blog.draft):
             return render(request, '403.html', status=403)
         
         data = {'love': 0, 'type': 'love', 'status': 200}
