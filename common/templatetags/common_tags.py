@@ -1,7 +1,9 @@
+import hashlib
 import os
 import settings
 
 from django import template
+from datetime import datetime
 
 FMT = 'JPEG'
 EXT = 'jpg'
@@ -114,7 +116,7 @@ def scale(imagefield, size, method='scale'):
                         ).save(image_path, format, quality=QUAL)
     
     path = resized_path(original_path, size, method)
-    return path_to_url(path)
+    return '%s?r=%s' % (path_to_url(path), hashlib.md5(str(datetime.now())).hexdigest()[0:5])
 
 @register.filter()
 def crop(imagefield, size):
