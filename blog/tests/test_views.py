@@ -5,6 +5,8 @@ from mock import Mock, patch
 from tests import factory
 from bs4 import BeautifulSoup
 
+import xpath
+
 class MyMock(object):
     def __init__(self, **kwargs):
         for key in kwargs.keys():
@@ -133,6 +135,34 @@ class TestBlogCreate(TestCase):
         response = self.client.get('/blog/create/')
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.client.logout()
+    
+    def test_blog_create_post_empty(self):
+        params = {
+            'title': '',
+            'image_path': '',
+            'description': '',
+            'mood': '',
+            'country': '',
+            'city': '',
+            'private': '',
+            'draft': '',
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        
+        self.assertEquals(True, response.context['imagefield_error'])
+        self.assertFormError(response, 'form', 'title', ['This field is required.'])
+        self.assertFormError(response, 'form', 'mood', ['This field is required.'])
+        self.assertFormError(response, 'form', 'private', ['This field is required.'])
+        self.assertFormError(response, 'form', 'country', ['This field is required.'])
+        self.assertFormError(response, 'form', 'city', ['This field is required.'])
+        self.client.logout()
         
         
         
