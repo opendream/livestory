@@ -12,6 +12,16 @@ import settings
 import shutil
 import xpath
 
+def rm_user(id):
+    try:
+        shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
+    except:
+        pass
+    try:
+        shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
+    except:
+        pass
+
 class MyMock(object):
     def __init__(self, **kwargs):
         for key in kwargs.keys():
@@ -98,6 +108,15 @@ class TestGetBlogManagementWithModel(TestCase):
         blog1.save()
         blog3.created = '2012-02-14'
         blog3.save()
+        
+        self.user = user
+        self.user1 = user1
+        self.user2 = user2
+        
+    def tearDown(self):
+        rm_user(self.user.id )
+        rm_user(self.user1.id)
+        rm_user(self.user2.id)
     
     def test_names(self):
         response = self.client.get('/blog/manage/')
@@ -133,6 +152,9 @@ class TestBlogCreate(TestCase):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
         self.category = factory.create_category('Animal', 'animal')
         self.location = factory.create_location('Japan', 'Tokyo')
+    
+    def tearDown(self):
+        rm_user(self.user.id)
         
     def test_blog_create_get(self):
         response = self.client.get('/blog/create/')
@@ -267,6 +289,11 @@ class TestBlogEdit(TestCase):
         self.blog_draft.draft = True
         self.blog_draft.save()
         
+    def tearDown(self):
+        rm_user(self.user.id      )
+        rm_user(self.other_user.id)
+        rm_user(self.staff.id     )
+        
     def test_blog_edit_get(self):
         response = self.client.get('/blog/%s/edit/' % self.blog.id)
         self.assertEquals(403, response.status_code)
@@ -354,7 +381,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
 
-    def test_blog_edit_post_draft_publish_post(self):
+    def test_blog_edit_post_draft_publish_post(self, again=True):
         src = '%s/static/tests/blog.jpg' % settings.base_path
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
@@ -388,6 +415,10 @@ class TestBlogEdit(TestCase):
         self.assertEquals(False, blog.draft)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
+        
+        # For image directory exist (duplicate from above)
+        if again:
+            self.test_blog_edit_post_draft_publish_post(False)
     
     def test_blog_edit_post_draft_on_draft_post(self):
         src = '%s/static/tests/blog.jpg' % settings.base_path
@@ -429,6 +460,7 @@ class TestBlogView(TestCase):
     def setUp(self):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
         self.user2 = factory.create_user('test2@example.com', 'test2@example.com', 'test')
+        self.user3 = factory.create_user('test3@example.com', 'test3@example.com', 'test')
         self.otheruser = factory.create_user('othertest@example.com', 'othertest@example.com', 'test')
         self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'test')
         self.staff.is_staff = True
@@ -443,9 +475,20 @@ class TestBlogView(TestCase):
         self.blog_draft = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
         self.blog_draft.draft = True
         self.blog_draft.save()
+        self.blog_unlove = factory.create_blog('Animal in Tokyo Unlove', self.user, self.category, self.location)
+        
         Love(blog=self.blog_private, user=self.user).save()
         Love(blog=self.blog_private, user=self.otheruser).save()
         Love(blog=self.blog_private, user=self.staff).save()
+        Love(blog=self.blog_unlove, user=self.user3).save()
+        print self.user.id
+    
+    def tearDown(self):
+        rm_user(self.user.id     )
+        rm_user(self.user2.id    )
+        rm_user(self.user3.id    )
+        rm_user(self.otheruser.id)
+        rm_user(self.staff.id    )
     
     def test_blog_view_get(self):    
         response = self.client.get('/blog/%s/view/' % self.blog.id)
@@ -459,6 +502,7 @@ class TestBlogView(TestCase):
         self.assertEquals(200, response.status_code)
         response = self.client.get('/blog/%s/view/' % self.blog_draft.id)
         self.assertEquals(200, response.status_code)
+        self.assertNotContains(response, 'class="love-button')
         self.client.logout()
         
         self.client.login(username='othertest@example.com', password='test')
@@ -502,10 +546,6 @@ class TestBlogView(TestCase):
         # login
         self.client.login(username='test2@example.com', password='test')
         
-        # user is logged in, blog does not exists, not ajax
-        response = self.client.get('/blog/0/love/')
-        self.assertEquals(404, response.status_code)
-        
         # user is logged in, blog does not exists, ajax
         response = self.client.get('/blog/0/love/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(json.dumps({'status': 404}), response.content)
@@ -513,25 +553,71 @@ class TestBlogView(TestCase):
         # user is logged in, blog exists, not ajax
         response = self.client.get('/blog/%s/love/' % self.blog_private.id, follow=True)
         self.assertRedirects(response, '/blog/%s/view/' % self.blog_private.id)
+        self.assertEquals(4, self.blog_private.love_set.count())
+        
+        response = self.client.get('/blog/%s/love/' % self.blog_private.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_private.id)
+        self.assertEquals(4, self.blog_private.love_set.count())
         
         # user is logged in, blog exists, ajax
-        response = self.client.get('/blog/%s/love/' % self.blog.id, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get('/blog/%s/love/' % self.blog.id,  HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(200, response.status_code)
         self.assertEquals(json.dumps({'love': 1, 'type': 'unlove', 'status': 200}), response.content)
+        self.assertEquals(1, self.blog.love_set.count())
         
         # user is logged in, blog exists, ajax, user has already loved
-        response = self.client.get('/blog/%s/love/' % self.blog.id, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get('/blog/%s/love/' % self.blog.id, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(200, response.status_code)
         self.assertEquals(json.dumps({'love': 1, 'type': 'unlove', 'status': 200}), response.content)
+        self.assertEquals(1, self.blog.love_set.count())
 
         # user is logged in, blog exists, blog is draft
         response = self.client.get('/blog/%s/love/' % self.blog_draft.id)
         self.assertEquals(403, response.status_code)
         self.client.logout()
-        
-        
     
+    def test_blog_unlove_blog(self):
+        # user is not logged in
+        response = self.client.get('/blog/%s/unlove/' % self.blog_private.id)
+        self.assertEquals(403, response.status_code)
         
+        # user is not logged in, blog does not exists
+        response = self.client.get('/blog/0/unlove/')
+        self.assertEquals(404, response.status_code)
+        
+        # login
+        self.client.login(username='test3@example.com', password='test')
+        
+        # user is logged in, blog does not exists, ajax
+        response = self.client.get('/blog/0/unlove/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(json.dumps({'status': 404}), response.content)
+
+        # user is logged in, blog exists, not ajax
+        response = self.client.get('/blog/%s/unlove/' % self.blog_unlove.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_unlove.id)
+        self.assertEquals(0, self.blog_unlove.love_set.count())
+        
+        response = self.client.get('/blog/%s/unlove/' % self.blog_unlove.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_unlove.id)
+        self.assertEquals(0, self.blog_unlove.love_set.count())
+        
+        # user is logged in, blog exists, ajax
+        self.client.get('/blog/%s/love/' % self.blog_unlove.id)
+        response = self.client.get('/blog/%s/unlove/' % self.blog.id,  HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': -1, 'type': 'love', 'status': 200}), response.content)
+        self.assertEquals(0, self.blog.love_set.count())
+        
+        # user is logged in, blog exists, ajax, user has already loved
+        response = self.client.get('/blog/%s/unlove/' % self.blog.id, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': -1, 'type': 'love', 'status': 200}), response.content)
+        self.assertEquals(0, self.blog.love_set.count())
+
+        # user is logged in, blog exists, blog is draft
+        response = self.client.get('/blog/%s/unlove/' % self.blog_draft.id)
+        self.assertEquals(403, response.status_code)
+        self.client.logout()
         
         
         

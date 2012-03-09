@@ -243,24 +243,33 @@ def blog_love(request, blog_id):
         else:
             raise Http404
 
-@login_required
 def blog_unlove(request, blog_id):
-    data = {'love': 0, 'type': 'unlove', 'status': 200}
     try:
-        # Remove love if exists.
-        love = Love.objects.get(user=request.user, blog__id=blog_id)
-        love.delete()
-        data['love'] = -1
-        data['type'] = 'love'
-    except Love.DoesNotExist:
-        # Never love this blog post before.
-        data['love'] = -1
-        data['type'] = 'love'
-    
-    if request.is_ajax():
-        return HttpResponse(json.dumps(data), mimetype="application/json")
-    else:
-        return redirect('/blog/%s/view' % blog_id)
+        blog = Blog.objects.get(id=blog_id)
+        if not request.user.is_authenticated() or (blog.user.id != request.user.id and blog.draft):
+            return render(request, '403.html', status=403)
+        
+        data = {'love': 0, 'type': 'unlove', 'status': 200}
+        try:
+            # Remove love if exists.
+            love = Love.objects.get(user=request.user, blog__id=blog_id)
+            love.delete()
+            data['love'] = -1
+            data['type'] = 'love'
+        except Love.DoesNotExist:
+            # Never love this blog post before.
+            data['love'] = -1
+            data['type'] = 'love'
+
+        if request.is_ajax():
+            return HttpResponse(json.dumps(data), mimetype="application/json")
+        else:
+            return redirect('/blog/%s/view' % blog_id)
+    except Blog.DoesNotExist:
+        if request.is_ajax():
+            return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
+        else:
+            raise Http404
 
 def blog_save_location(country, city):
     try:

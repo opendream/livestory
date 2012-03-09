@@ -6,6 +6,16 @@ import os
 import settings
 import shutil
 
+def rm_user(id):
+    try:
+        shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
+    except:
+        pass
+    try:
+        shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
+    except:
+        pass
+        
 class TestBlog(TestCase):
     def setUp(self):
         self.category = factory.create_category()
@@ -21,7 +31,7 @@ class TestBlog(TestCase):
         ]
         
     def tearDown(self):
-        shutil.rmtree('%s/media/images/blog/%d' % (settings.base_path, self.user.id))
+        rm_user(self.user.id)
     
     def test_unicode(self):
         """
@@ -64,6 +74,8 @@ class TestLove(TestCase):
         user = factory.create_user('loveuser@example.com', 'loveuser@example.com', 'loveuser')
         love = Love(blog=blog, user=user)
         self.assertEquals('loveuser@example.com love Hello world', love.__unicode__())
+        
+        rm_user(user.id)
 
 
 class TestCategory(TestCase):
