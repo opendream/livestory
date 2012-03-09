@@ -120,3 +120,45 @@ class TestGetBlogManagementWithModel(TestCase):
         classes = [td.attrs['class'][0] for td in tr.find_all('td')]
         
         self.assertEqual(classes, ['title', 'loves', 'mood', 'created'])
+        
+class TestBlogCreate(TestCase):
+    def setUp(self):
+        factory.create_user('test@example.com', 'test@example.com', 'test')
+        
+    def test_blog_create_get(self):
+        response = self.client.get('/blog/create/')
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.get('/blog/create/')
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

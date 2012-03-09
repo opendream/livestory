@@ -64,8 +64,10 @@ def blog_manage(request):
     }
     return render(request, 'blog/blog_manage.html', context)
 
-@login_required
 def blog_create(request):
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
+    
     action = reverse('blog_create')
     image_path = ''
     imagefield_error = False
@@ -139,7 +141,6 @@ def blog_edit(request, blog_id):
                 # There is image uploaded.
                 if image_path.split('/')[-2] == 'temp':
                     cpath = cache_path(blog.image.path)
-                    print 'ccccccc' + cpath
                     blog.image.delete()
                     shutil.rmtree(cpath)
 

@@ -64,4 +64,9 @@ class TestLove(TestCase):
         user = factory.create_user('loveuser@example.com', 'loveuser@example.com', 'loveuser')
         love = Love(blog=blog, user=user)
         self.assertEquals('loveuser@example.com love Hello world', love.__unicode__())
-        
+
+
+class TestCategory(TestCase):
+    def test_unicode(self):
+        category = factory.create_category('Animals', 'animals')
+        self.assertEquals('Animals', category.__unicode__())
