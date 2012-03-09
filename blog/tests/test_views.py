@@ -1,11 +1,28 @@
 from django.contrib.auth.models import User
+from django.core.files.base import File as DjangoFile
 from django.test import TestCase
+from django.utils import simplejson as json
+
 from blog.models import Blog, Love
 from blog.views import blog_bulk_update_private
 from blog.views import blog_bulk_update_public
 from mock import Mock, patch
 from tests import factory
 from bs4 import BeautifulSoup
+
+import settings
+import shutil
+import xpath
+
+def rm_user(id):
+    try:
+        shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
+    except:
+        pass
+    try:
+        shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
+    except:
+        pass
 
 class MyMock(object):
     def __init__(self, **kwargs):
@@ -69,77 +86,6 @@ class TestBlogManagementUsingMock(BaseTestBlogManagement):
         # Assert
         Blog.objects.all.assert_called_once_with()
 
-    
-class TestGetBlogManagementWithModel(TestCase):
-    def setUp(self):
-        user = factory.create_user()
-        category = factory.create_category()
-        location = factory.create_location()
-
-        self.blogs = [
-            factory.create_blog('Sprite', user, category, location, mood=1),
-            factory.create_blog('Coke', user, category, location),
-            factory.create_blog('Pepsi', user, category, location, mood=3)
-        ]
-        
-        user1 = factory.create_user('testlove1', 'tester1@example.com', 'testuser1')
-        user2 = factory.create_user('testlove2', 'tester2@example.com', 'testuser2')
-
-        love1 = Love(user=user1, blog=self.blogs[0])
-        love1.save()
-        love2 = Love(user=user2, blog=self.blogs[0])
-        love2.save()
-        love3 = Love(user=user2, blog=self.blogs[1])
-        love3.save()
-        
-        self.blogs[0].created = '2012-03-02'
-        self.blogs[0].save()
-        self.blogs[2].created = '2012-02-14'
-        self.blogs[2].save()
-    
-    def test_names(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="title">Sprite</')
-        self.assertContains(response, 'class="title">Coke</')
-        self.assertContains(response, 'class="title">Pepsi</')
-        
-    def test_loves(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="loves">2</')
-        self.assertContains(response, 'class="loves">1</')
-        
-    def test_mood(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="mood-3">Happy</')
-        self.assertContains(response, 'class="mood-1">Sad</')
-        
-    def test_created(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="created">2012-03-02</')
-        self.assertContains(response, 'class="created">2012-02-14</')
-        
-    def test_columns_order(self):
-        response = self.client.get('/blog/manage/')
-        soup = BeautifulSoup(response.content)
-        tr = soup.find('tr')
-        classes = [td.attrs['class'][0] for td in tr.find_all('td')]
-        
-        self.assertEqual(classes, ['blog_id', 'title', 'loves', 'mood', 'created'])
-
-    def test_render_checkboxes(self):
-        response = self.client.get('/blog/manage/')
-        for blog in self.blogs:
-            self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % blog.id)
-
-    def test_operations_select_exists(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<select name="op"><option value="set_private">Private</option><option value="set_public">Public</option></select>')
-
-    def test_apply_button_exists(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, '<input type="submit" value="Apply">')
-
-
 class TestBlogUpdate(TestCase):
     def setUp(self):
         user = factory.create_user()
@@ -188,3 +134,545 @@ class TestBlogUpdate(TestCase):
         for blog in self.blogs:
             b = Blog.objects.get(id=blog.id)
             self.assertEquals(False, b.private)
+            
+class TestGetBlogManagementWithModel(TestCase):
+    def setUp(self):
+        user = factory.create_user()
+        category = factory.create_category()
+        location = factory.create_location()
+
+        self.blogs = [
+            factory.create_blog('Sprite', user, category, location, mood=1),
+            factory.create_blog('Coke', user, category, location),
+            factory.create_blog('Pepsi', user, category, location, mood=3)
+        ]
+        
+        user1 = factory.create_user('testlove1', 'tester1@example.com', 'testuser1')
+        user2 = factory.create_user('testlove2', 'tester2@example.com', 'testuser2')
+
+        love1 = Love(user=user1, blog=self.blogs[0])
+        love1.save()
+        love2 = Love(user=user2, blog=self.blogs[0])
+        love2.save()
+        love3 = Love(user=user2, blog=self.blogs[1])
+        love3.save()
+        
+        self.blogs[0].created = '2012-03-02'
+        self.blogs[0].save()
+        self.blogs[2].created = '2012-02-14'
+        self.blogs[2].save()
+
+        
+        self.user = user
+        self.user1 = user1
+        self.user2 = user2
+        
+    def tearDown(self):
+        rm_user(self.user.id )
+        rm_user(self.user1.id)
+        rm_user(self.user2.id)
+            
+    def test_names(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, 'class="title">Sprite</')
+        self.assertContains(response, 'class="title">Coke</')
+        self.assertContains(response, 'class="title">Pepsi</')
+        
+    def test_loves(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, 'class="loves">2</')
+        self.assertContains(response, 'class="loves">1</')
+        
+    def test_mood(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, 'class="mood-3">Happy</')
+        self.assertContains(response, 'class="mood-1">Sad</')
+        
+    def test_created(self):
+        response = self.client.get('/blog/manage/')
+        self.assertContains(response, 'class="created">2012-03-02</')
+        self.assertContains(response, 'class="created">2012-02-14</')
+        
+    def test_columns_order(self):
+        response = self.client.get('/blog/manage/')
+        soup = BeautifulSoup(response.content)
+        tr = soup.find('tr')
+        classes = [td.attrs['class'][0] for td in tr.find_all('td')]
+        
+        self.assertEqual(classes, ['blog_id', 'title', 'loves', 'mood', 'created'])
+        
+class TestBlogCreate(TestCase):
+    def setUp(self):
+        self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
+        self.category = factory.create_category('Animal', 'animal')
+        self.location = factory.create_location('Japan', 'Tokyo')
+    
+    def tearDown(self):
+        rm_user(self.user.id)
+        
+    def test_blog_create_get(self):
+        response = self.client.get('/blog/create/')
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.get('/blog/create/')
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.client.logout()
+    
+    def test_blog_create_post_empty(self):
+        params = {
+            'title': '',
+            'image_path': '',
+            'description': '',
+            'mood': '',
+            'country': '',
+            'city': '',
+            'private': '',
+            'draft': '',
+            'category': ''
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        
+        self.assertEquals(True, response.context['imagefield_error'])
+        self.assertFormError(response, 'form', 'title', ['This field is required.'])
+        self.assertFormError(response, 'form', 'mood', ['This field is required.'])
+        self.assertFormError(response, 'form', 'private', ['This field is required.'])
+        self.assertFormError(response, 'form', 'country', ['This field is required.'])
+        self.assertFormError(response, 'form', 'city', ['This field is required.'])
+        self.assertFormError(response, 'form', 'category', ['This field is required.'])
+        self.client.logout()
+        
+    def test_blog_create_post_publish(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world',
+            'image_path': dst,
+            'description': 'lorem ipsum',
+            'mood': '4',
+            'country': 'Japan',
+            'city': 'Tokyo',
+            'private': '1',
+            'draft': '0',
+            'category': str(self.category.id)
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+        
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(False, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world', blog.title)
+        self.assertEquals('lorem ipsum', blog.description)
+        self.assertEquals(4, blog.mood)
+        self.assertEquals(True, blog.private)
+        self.assertEquals(False, blog.draft)
+        self.assertEquals(self.category, blog.category)
+        self.assertEquals(self.location, blog.location)
+    
+    def test_blog_create_post_draft(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world (Draft)',
+            'image_path': dst,
+            'description': 'lorem ipsum (Draft)',
+            'mood': '3',
+            'country': 'Uganda',
+            'city': 'Capital Uganda',
+            'private': '0',
+            'draft': '1',
+            'category': str(self.category.id)
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
+
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(True, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world (Draft)', blog.title)
+        self.assertEquals('lorem ipsum (Draft)', blog.description)
+        self.assertEquals(3, blog.mood)
+        self.assertEquals(False, blog.private)
+        self.assertEquals(True, blog.draft)
+        self.assertEquals(self.category, blog.category)
+        self.assertEquals('Uganda', blog.location.country)
+        self.assertEquals('Capital Uganda', blog.location.city)
+    
+
+class TestBlogEdit(TestCase):
+    def setUp(self):
+        self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
+        self.other_user = factory.create_user('othertest@example.com', 'othertest@example.com', 'test')
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'test')
+        self.staff.is_staff = True
+        self.staff.save()
+        self.category = factory.create_category('Animal', 'animal')
+        self.location = factory.create_location('Japan', 'Tokyo')
+        self.cat_travel = factory.create_category('Travel', 'travel')
+        self.loc_korea = factory.create_location('Korea', 'Sol')
+        self.blog = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
+        self.blog_draft = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
+        self.blog_draft.draft = True
+        self.blog_draft.save()
+        
+    def tearDown(self):
+        rm_user(self.user.id      )
+        rm_user(self.other_user.id)
+        rm_user(self.staff.id     )
+        
+    def test_blog_edit_get(self):
+        response = self.client.get('/blog/%s/edit/' % self.blog.id)
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='othertest@example.com', password='test')
+        response = self.client.get('/blog/%s/edit/' % self.blog.id)
+        self.assertEquals(403, response.status_code)
+        self.client.logout()
+        
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.get('/blog/%s/edit/' % self.blog.id)
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.client.logout()
+        
+        self.client.login(username='staff@example.com', password='test')
+        response = self.client.get('/blog/%s/edit/' % self.blog.id)
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.client.logout()
+        
+        self.client.login(username='staff@example.com', password='test')
+        response = self.client.get('/blog/0/edit/')
+        self.assertEquals(404, response.status_code)
+        self.client.logout()
+    
+    def test_blog_edit_post_empty(self):
+        params = {
+            'title': '',
+            'image_path': '',
+            'description': '',
+            'mood': '',
+            'country': '',
+            'city': '',
+            'private': '',
+            'draft': '',
+            'category': '',
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog.id, params)
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        
+        self.assertEquals(True, response.context['imagefield_error'])
+        self.assertFormError(response, 'form', 'title', ['This field is required.'])
+        self.assertFormError(response, 'form', 'mood', ['This field is required.'])
+        self.assertFormError(response, 'form', 'private', ['This field is required.'])
+        self.assertFormError(response, 'form', 'country', ['This field is required.'])
+        self.assertFormError(response, 'form', 'city', ['This field is required.'])
+        self.assertFormError(response, 'form', 'category', ['This field is required.'])
+        self.client.logout()
+
+    def test_blog_edit_post_publish(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world Edited',
+            'image_path': dst,
+            'description': 'lorem ipsum Edited',
+            'mood': '2',
+            'country': 'Korea',
+            'city': 'Sol',
+            'private': '1',
+            'draft': '0',
+            'category': str(self.cat_travel.id)
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(False, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world Edited', blog.title)
+        self.assertEquals('lorem ipsum Edited', blog.description)
+        self.assertEquals(2, blog.mood)
+        self.assertEquals(True, blog.private)
+        self.assertEquals(False, blog.draft)
+        self.assertEquals(self.cat_travel, blog.category)
+        self.assertEquals(self.loc_korea, blog.location)
+
+    def test_blog_edit_post_draft_publish_post(self, again=True):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world Edited',
+            'image_path': dst,
+            'description': 'lorem ipsum Edited',
+            'mood': '2',
+            'country': 'Korea',
+            'city': 'Sol',
+            'private': '1',
+            'draft': '1',
+            'category': str(self.cat_travel.id)
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(False, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world Edited', blog.title)
+        self.assertEquals('lorem ipsum Edited', blog.description)
+        self.assertEquals(2, blog.mood)
+        self.assertEquals(True, blog.private)
+        self.assertEquals(False, blog.draft)
+        self.assertEquals(self.cat_travel, blog.category)
+        self.assertEquals(self.loc_korea, blog.location)
+        
+        # For image directory exist (duplicate from above)
+        if again:
+            self.test_blog_edit_post_draft_publish_post(False)
+    
+    def test_blog_edit_post_draft_on_draft_post(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world Edited',
+            'image_path': dst,
+            'description': 'lorem ipsum Edited',
+            'mood': '2',
+            'country': 'Korea',
+            'city': 'Sol',
+            'private': '1',
+            'draft': '1',
+            'category': str(self.cat_travel.id)
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(True, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world Edited', blog.title)
+        self.assertEquals('lorem ipsum Edited', blog.description)
+        self.assertEquals(2, blog.mood)
+        self.assertEquals(True, blog.private)
+        self.assertEquals(True, blog.draft)
+        self.assertEquals(self.cat_travel, blog.category)
+        self.assertEquals(self.loc_korea, blog.location)
+
+
+class TestBlogView(TestCase):
+    def setUp(self):
+        self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
+        self.user2 = factory.create_user('test2@example.com', 'test2@example.com', 'test')
+        self.user3 = factory.create_user('test3@example.com', 'test3@example.com', 'test')
+        self.otheruser = factory.create_user('othertest@example.com', 'othertest@example.com', 'test')
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'test')
+        self.staff.is_staff = True
+        self.staff.save()
+        self.category = factory.create_category('Animal', 'animal')
+        self.location = factory.create_location('Japan', 'Tokyo')
+        self.blog = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
+        self.blog_private = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
+        self.blog_private.private = True
+        self.blog_private.save()
+        
+        self.blog_draft = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
+        self.blog_draft.draft = True
+        self.blog_draft.save()
+        self.blog_unlove = factory.create_blog('Animal in Tokyo Unlove', self.user, self.category, self.location)
+        
+        Love(blog=self.blog_private, user=self.user).save()
+        Love(blog=self.blog_private, user=self.otheruser).save()
+        Love(blog=self.blog_private, user=self.staff).save()
+        Love(blog=self.blog_unlove, user=self.user3).save()
+        print self.user.id
+    
+    def tearDown(self):
+        rm_user(self.user.id     )
+        rm_user(self.user2.id    )
+        rm_user(self.user3.id    )
+        rm_user(self.otheruser.id)
+        rm_user(self.staff.id    )
+    
+    def test_blog_view_get(self):    
+        response = self.client.get('/blog/%s/view/' % self.blog.id)
+        self.assertEquals(200, response.status_code)
+        
+        response = self.client.get('/blog/%s/view/' % self.blog_private.id)
+        self.assertEquals(403, response.status_code)
+        
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.get('/blog/%s/view/' % self.blog_private.id)
+        self.assertEquals(200, response.status_code)
+        response = self.client.get('/blog/%s/view/' % self.blog_draft.id)
+        self.assertEquals(200, response.status_code)
+        self.assertNotContains(response, 'class="love-button')
+        self.client.logout()
+        
+        self.client.login(username='othertest@example.com', password='test')
+        response = self.client.get('/blog/%s/view/' % self.blog_draft.id)
+        self.assertEquals(403, response.status_code)
+        self.client.logout()
+        
+        self.client.login(username='staff@example.com', password='test')
+        response = self.client.get('/blog/%s/view/' % self.blog_draft.id)
+        self.assertEquals(200, response.status_code)
+        self.client.logout()
+        
+        response = self.client.get('/blog/0/view/')
+        self.assertEquals(404, response.status_code)
+
+    def test_blog_view_love(self):
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.get('/blog/%s/view/' % self.blog_private.id)
+        self.assertEquals(3, response.context['love_count'])
+        self.assertEquals('/blog/%s/unlove/' % self.blog_private.id, response.context['love_path'])
+        self.assertEquals('unlove', response.context['button_type'])
+        self.assertEquals([self.staff.get_profile(), self.otheruser.get_profile(), self.user.get_profile()], response.context['loved_users'])
+        self.client.logout()
+        
+        self.client.login(username='test2@example.com', password='test')
+        response = self.client.get('/blog/%s/view/' % self.blog_private.id)
+        
+        self.assertEquals('/blog/%s/love/' % self.blog_private.id, response.context['love_path'])
+        self.assertEquals('love', response.context['button_type'])
+        self.client.logout()
+    
+    def test_blog_love_blog(self):
+        # user is not logged in
+        response = self.client.get('/blog/%s/love/' % self.blog_private.id)
+        self.assertEquals(403, response.status_code)
+        
+        # user is not logged in, blog does not exists
+        response = self.client.get('/blog/0/love/')
+        self.assertEquals(404, response.status_code)
+        
+        # login
+        self.client.login(username='test2@example.com', password='test')
+        
+        # user is logged in, blog does not exists, ajax
+        response = self.client.get('/blog/0/love/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(json.dumps({'status': 404}), response.content)
+
+        # user is logged in, blog exists, not ajax
+        response = self.client.get('/blog/%s/love/' % self.blog_private.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_private.id)
+        self.assertEquals(4, self.blog_private.love_set.count())
+        
+        response = self.client.get('/blog/%s/love/' % self.blog_private.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_private.id)
+        self.assertEquals(4, self.blog_private.love_set.count())
+        
+        # user is logged in, blog exists, ajax
+        response = self.client.get('/blog/%s/love/' % self.blog.id,  HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': 1, 'type': 'unlove', 'status': 200}), response.content)
+        self.assertEquals(1, self.blog.love_set.count())
+        
+        # user is logged in, blog exists, ajax, user has already loved
+        response = self.client.get('/blog/%s/love/' % self.blog.id, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': 1, 'type': 'unlove', 'status': 200}), response.content)
+        self.assertEquals(1, self.blog.love_set.count())
+
+        # user is logged in, blog exists, blog is draft
+        response = self.client.get('/blog/%s/love/' % self.blog_draft.id)
+        self.assertEquals(403, response.status_code)
+        self.client.logout()
+    
+    def test_blog_unlove_blog(self):
+        # user is not logged in
+        response = self.client.get('/blog/%s/unlove/' % self.blog_private.id)
+        self.assertEquals(403, response.status_code)
+        
+        # user is not logged in, blog does not exists
+        response = self.client.get('/blog/0/unlove/')
+        self.assertEquals(404, response.status_code)
+        
+        # login
+        self.client.login(username='test3@example.com', password='test')
+        
+        # user is logged in, blog does not exists, ajax
+        response = self.client.get('/blog/0/unlove/', HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(json.dumps({'status': 404}), response.content)
+
+        # user is logged in, blog exists, not ajax
+        response = self.client.get('/blog/%s/unlove/' % self.blog_unlove.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_unlove.id)
+        self.assertEquals(0, self.blog_unlove.love_set.count())
+        
+        response = self.client.get('/blog/%s/unlove/' % self.blog_unlove.id, follow=True)
+        self.assertRedirects(response, '/blog/%s/view/' % self.blog_unlove.id)
+        self.assertEquals(0, self.blog_unlove.love_set.count())
+        
+        # user is logged in, blog exists, ajax
+        self.client.get('/blog/%s/love/' % self.blog_unlove.id)
+        response = self.client.get('/blog/%s/unlove/' % self.blog.id,  HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': -1, 'type': 'love', 'status': 200}), response.content)
+        self.assertEquals(0, self.blog.love_set.count())
+        
+        # user is logged in, blog exists, ajax, user has already loved
+        response = self.client.get('/blog/%s/unlove/' % self.blog.id, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(json.dumps({'love': -1, 'type': 'love', 'status': 200}), response.content)
+        self.assertEquals(0, self.blog.love_set.count())
+
+        # user is logged in, blog exists, blog is draft
+        response = self.client.get('/blog/%s/unlove/' % self.blog_draft.id)
+        self.assertEquals(403, response.status_code)
+        self.client.logout()
+        
+        
+        
+

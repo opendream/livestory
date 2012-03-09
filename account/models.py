@@ -11,7 +11,8 @@ except ImportError:
 import settings
 
 def account_image_url(instance, filename):
-    return '%saccount/%s/%s' % (settings.IMAGE_ROOT, instance.user.id, filename)
+    ext = filename.split('.')[-1]
+    return './images/account/%s/avatar.%s' % (instance.user.id, ext)
 
 class Account(models.Model):
     
@@ -30,7 +31,7 @@ class Account(models.Model):
             return self.image
         except ValueError:
             image  = {
-                'url': '%s/static/img/default_user.png' % settings.base_path,
+                'url': '%s/static/img/default_user.png' % '.',
                 'path': 'static/img/default_user.png'
             }
             image = type('imageobj', (object,), image)
@@ -39,7 +40,7 @@ class Account(models.Model):
     def get_image_url(self):
         try:
             self.image.file
-            return path_to_url(account_image_url(self, self.image.name))
+            return path_to_url(self.image.path)
         except ValueError:
             return None
             

@@ -4,7 +4,7 @@ import shutil
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
@@ -17,8 +17,8 @@ from blog.forms import *
 
 from location.models import Location
 from common.scour import Scour
-
 from common.views import check_file_exists
+from common.templatetags.common_tags import cache_path
 
 def blog_home(request):
     scour_width = 960
@@ -64,8 +64,10 @@ def blog_manage(request):
     }
     return render(request, 'blog/blog_manage.html', context)
 
-@login_required
 def blog_create(request):
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
+    
     action = reverse('blog_create')
     image_path = ''
     imagefield_error = False
@@ -85,9 +87,11 @@ def blog_create(request):
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
             blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-            blog.image = blog_save_image(image_path, request)
-            # blog.image = handle_upload_file(request.FILES['image'], request)
             blog.save()
+            
+            blog.image = blog_save_image(image_path, blog)
+            blog.save()
+            
             messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
             return redirect('/blog/%s/edit' % blog.pk)
     else:
@@ -104,10 +108,13 @@ def blog_create(request):
     }
     return render(request, 'blog/blog_form.html', context)
 
-@login_required
 def blog_edit(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
+        
+        if not request.user.is_staff and (not request.user.is_authenticated() or request.user.id != blog.user.id):
+            return render(request, '403.html', status=403)
+        
         location = Location.objects.get(pk=blog.location_id)
         action = reverse('blog_edit', args=[blog_id])
         image_path = blog.image.path
@@ -134,12 +141,13 @@ def blog_edit(request, blog_id):
                     blog.draft = bool(int(form.data.get('draft')))
                 
                 # There is image uploaded.
-                if blog.image.path != image_path:
-                    # Remove old image.
-                    if os.path.isfile(blog.image.path):
-                        os.remove(blog.image.path)
+                if image_path.split('/')[-2] == 'temp':
+                    cpath = cache_path(blog.image.path)
+                    blog.image.delete()
+                    if os.path.exists(cpath):
+                        shutil.rmtree(cpath)
                     # Save new image.
-                    blog.image = blog_save_image(image_path, request)
+                    blog.image = blog_save_image(image_path, blog)
                 
                 blog.save()
                 messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
@@ -161,7 +169,6 @@ def blog_edit(request, blog_id):
             'form': form,
             'moods': MOOD_CHOICES,
             'visibilities': PRIVATE_CHOICES,
-            'image_path': blog.get_image_url(),
             'is_draft': blog.draft,
             'blog': blog,
             'image_path': image_path,
@@ -169,15 +176,14 @@ def blog_edit(request, blog_id):
         }
         return render(request, 'blog/blog_form.html', context)
     except Blog.DoesNotExist:
-        # TODO handle blog not found
-        pass
+        raise Http404
 
 def blog_view(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
-        if blog.private:
-            # TODO redirect to access denied
-            pass
+        if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
+            return render(request, '403.html', status=403)
+            
         love_path = '/blog/%s/love/'
         button_type = 'love'
         try:
@@ -189,7 +195,7 @@ def blog_view(request, blog_id):
             # Do nothing. Use default love_path and button_type.
             pass
         
-        love_set = blog.love_set.all().order_by('-datetime')
+        love_set = blog.love_set.all().order_by('-datetime', '-id')
         loved_users = []
         for l in love_set:
             loved_users.append(l.user.get_profile())
@@ -205,54 +211,65 @@ def blog_view(request, blog_id):
         }
         return render(request, 'blog/blog_view.html', context)
     except Blog.DoesNotExist:
-        # Page not found
-        # TODO
-        return HttpResponse('blog post not found')
+        raise Http404
 
-@login_required
 def blog_love(request, blog_id):
-    data = {'love': 0, 'type': 'love', 'status': 200}
     try:
-        # Check if this user has ever loved this blog post.
-        Love.objects.get(user=request.user, blog__id=blog_id)
-        data['love'] = 1
-        data['type'] = 'unlove'
-    except Love.DoesNotExist:
+        blog = Blog.objects.get(id=blog_id)
+        if not request.user.is_authenticated() or (blog.user.id != request.user.id and blog.draft):
+            return render(request, '403.html', status=403)
+        
+        data = {'love': 0, 'type': 'love', 'status': 200}
         try:
+            # Check if this user has ever loved this blog post.
+            Love.objects.get(user=request.user, blog__id=blog_id)
+            data['love'] = 1
+            data['type'] = 'unlove'
+        except Love.DoesNotExist:
             # Add new love
             blog = Blog.objects.get(pk=blog_id)
             love = Love(user=request.user, blog=blog)
             love.save()
             data['love'] = 1
             data['type'] = 'unlove'
-        except Blog.DoesNotExist:
-            # Blog post not found
-            # TODO
-            pass
-    
-    if request.is_ajax():
-        return HttpResponse(json.dumps(data), mimetype="application/json")
-    else:
-        return redirect('/blog/%s/view' % blog_id)
+        
+        if request.is_ajax():
+            return HttpResponse(json.dumps(data), mimetype="application/json")
+        else:
+            return redirect('/blog/%s/view' % blog_id)
+    except Blog.DoesNotExist:
+        if request.is_ajax():
+            return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
+        else:
+            raise Http404
 
-@login_required
 def blog_unlove(request, blog_id):
-    data = {'love': 0, 'type': 'unlove', 'status': 200}
     try:
-        # Remove love if exists.
-        love = Love.objects.get(user=request.user, blog__id=blog_id)
-        love.delete()
-        data['love'] = -1
-        data['type'] = 'love'
-    except Love.DoesNotExist:
-        # Never love this blog post before.
-        data['love'] = -1
-        data['type'] = 'love'
-    
-    if request.is_ajax():
-        return HttpResponse(json.dumps(data), mimetype="application/json")
-    else:
-        return redirect('/blog/%s/view' % blog_id)
+        blog = Blog.objects.get(id=blog_id)
+        if not request.user.is_authenticated() or (blog.user.id != request.user.id and blog.draft):
+            return render(request, '403.html', status=403)
+        
+        data = {'love': 0, 'type': 'unlove', 'status': 200}
+        try:
+            # Remove love if exists.
+            love = Love.objects.get(user=request.user, blog__id=blog_id)
+            love.delete()
+            data['love'] = -1
+            data['type'] = 'love'
+        except Love.DoesNotExist:
+            # Never love this blog post before.
+            data['love'] = -1
+            data['type'] = 'love'
+
+        if request.is_ajax():
+            return HttpResponse(json.dumps(data), mimetype="application/json")
+        else:
+            return redirect('/blog/%s/view' % blog_id)
+    except Blog.DoesNotExist:
+        if request.is_ajax():
+            return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
+        else:
+            raise Http404
 
 def blog_save_location(country, city):
     try:
@@ -260,6 +277,10 @@ def blog_save_location(country, city):
     except Location.DoesNotExist:
         location = Location(country=country, city=city, lat=0, lng=0)
         location.save()
+    # For unittest maybe create duplicate location
+    except Location.MultipleObjectsReturned:
+        location = Location.objects.filter(country=country, city=city).order_by('-id')[0]
+        
     return location
 
 def blog_manage_bulk(request):
@@ -284,20 +305,14 @@ def blog_bulk_update_public(blogs):
         blog.private = False
         blog.save()
 
-def blog_save_image(image_path, request):
-    directory, name = os.path.split(image_path)
-    real_path = '%sblog/%s/%s' % (settings.IMAGE_ROOT, request.user.id, name)
-    real_path = check_file_exists(real_path)
-    directory, name = os.path.split(real_path)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    shutil.copy2(image_path, real_path)
-    return real_path
 
-def handle_upload_file(f, instance):
-    filepath = blog_image_path(instance, f.name)
-    destination = open(filepath, 'wd+')
-    for chunk in f.chunks():
-        destination.write(chunk)
-    destination.close()
-    return blog_image_url(instance, f.name)
+def blog_save_image(image_path, blog):
+    directory, name = os.path.split(image_path)
+    real_path = blog_image_url(blog, 'blog_%s.jpg' % blog.id)
+    directory, name = os.path.split(real_path)
+    if not os.path.exists(directory.replace('./', settings.MEDIA_ROOT, 1)):
+        os.makedirs(directory.replace('./', settings.MEDIA_ROOT, 1))
+    final_path = real_path.replace('./', settings.MEDIA_ROOT, 1)
+        
+    shutil.copy2(image_path, final_path)
+    return real_path

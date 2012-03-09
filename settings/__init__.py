@@ -1,6 +1,9 @@
 # Django settings for livestory project.
 import os
 base_path = os.path.dirname(__file__)
+base_path = base_path.split('/')
+base_path.pop()
+base_path = '/'.join(base_path)
 
 import djcelery
 djcelery.setup_loader()
@@ -207,6 +210,7 @@ BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 # LIVE STORY
 ORGANIZATION_NAME = 'Oxfam'
+IMAGE_URL = MEDIA_URL + 'images/'
 IMAGE_ROOT = MEDIA_ROOT + 'images/'
 TEMP_ROOT = MEDIA_ROOT + 'temp/'
 AVATAR_SIZE = '94x94'

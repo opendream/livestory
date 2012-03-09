@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.forms.models import model_to_dict
+from django.http import HttpResponseForbidden
 
 from account.forms import *
 from account.models import *
@@ -20,12 +21,17 @@ import os
 
 import settings
 
-def account_login(request):
-    from django.contrib.auth.views import login
-    return login(request, authentication_form=EmailAuthenticationForm)
+# def account_login(request):
+#     print 'xxx' , request.user.is_authenticated()
+#     if request.user.is_authenticated():
+#         return redirect(reverse('blog_home'))
+#     from django.contrib.auth.views import login
+#     return login(request, authentication_form=EmailAuthenticationForm)
 
-@staff_member_required
 def account_invite(request):
+    if not request.user.is_staff:
+        return render(request, '403.html', status=403)
+        
     if request.method == 'POST':
         form = AccountInviteForm(request.POST)
 
@@ -33,12 +39,13 @@ def account_invite(request):
             
             email_exist = [user.email for user in User.objects.all()]
             
-            invite_dummy = form.cleaned_data['invite'].replace(' ', '').split(',')
+            invite_dummy = form.cleaned_data['invite'].split(',')
             
             invite_list = []
             email_invalid_list = []
             email_joined_list = []
             for email in invite_dummy:
+                email = email.strip()
                 try:
                     validate_email(email)
                     
@@ -88,9 +95,9 @@ def account_invite(request):
             if len(invite_list):
                 messages.success(request, 'Sending email invite. you can see list of user invited in user managment.')
             if len(email_joined_list):
-                messages.warning(request, 'Email user has joined : %s' % ', '.join(email_invalid_list))
+                messages.warning(request, 'Email user has joined : %s' % ', '.join(email_joined_list))
             if len(email_invalid_list):
-                messages.error(request, 'Email format incorect : %s' % ', '.join(email_invalid_list))
+                messages.error(request, 'Email format is invalid : %s' % ', '.join(email_invalid_list))
 
             
     else:
@@ -107,7 +114,7 @@ def account_activate(request, key):
     # Activate and login to user and redirect to update user profile chang password and orther
     # When user forgot password can go to this method and force login
     user = account_key.user
-    param = {0: '?first=1', 1: '?forgot=1'}[int(user.is_active)]
+    param = {0: '?activate=1', 1: '?forgot=1'}[int(user.is_active)]
     user.is_active = True
     
     password = hashlib.md5('%s%s' % (user.username, str(datetime.now()))).hexdigest()[0:10]
@@ -120,16 +127,17 @@ def account_activate(request, key):
     
     return redirect(reverse('account_profile_edit') + param)
     
-@login_required 
 def account_profile_edit(request):
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
+    
     user = request.user
     account = user.get_profile()
     
     inst = model_to_dict(user)
     inst.update(model_to_dict(account))
     inst['password'] = ''
-    print inst
-    param = request.GET.get('forgot') or request.GET.get('first')
+    param = request.GET.get('forgot') or request.GET.get('activate')
     if param:
         inst['just_update_password'] = 1
     

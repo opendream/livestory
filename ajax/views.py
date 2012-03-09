@@ -15,6 +15,12 @@ import settings
 def ajax_account_image_upload(request):
     account = request.user.get_profile()
     image = request.FILES['image']
+    try:
+        account.image.file
+        account.image.delete()
+    except:
+        pass
+        
     account.image.save(image.name, request.FILES['image'], save=False)
     account.save()
     
@@ -71,12 +77,8 @@ def ajax_blog_image_delete(request):
     data = {'result': 'complete', 'isTemp': False}
     try:
         image_path = request.GET.get('image_path')
-        print 'xxxx' + image_path
-        print image_path.find(settings.TEMP_ROOT)
-        print os.path.exists(image_path)
         if image_path:
             if image_path.find(settings.TEMP_ROOT) == 0 and os.path.exists(image_path):
-                print 'remove image'
                 os.unlink(image_path)
                 data['isTemp'] = True
     except:

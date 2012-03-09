@@ -1,7 +1,9 @@
+import hashlib
 import os
 import settings
 
 from django import template
+from datetime import datetime
 
 FMT = 'JPEG'
 EXT = 'jpg'
@@ -43,10 +45,12 @@ def scale(imagefield, size, method='scale'):
     # imagefield can be a dict with "path" and "url" keys
     if imagefield.__class__.__name__ == 'dict':
         imagefield = type('imageobj', (object,), imagefield)
-
+    
+    original_path = ''
     # Support filepath
     if type(imagefield) is unicode:
-        image_path = resized_path(imagefield, size, method)
+        original_path = imagefield
+        image_path = resized_path(original_path, size, method)
         image_url = imagefield
         try:
             format = imagefield.split('.')[-1].upper()
@@ -55,7 +59,8 @@ def scale(imagefield, size, method='scale'):
         except IndexError:
             format = 'JPEG'
     else:
-        image_path = resized_path(imagefield.path, size, method)
+        original_path = imagefield.path
+        image_path = resized_path(original_path, size, method)
         image_url = imagefield.url
         try:
             format = imagefield.path.split('.')[-1].upper()
@@ -110,8 +115,8 @@ def scale(imagefield, size, method='scale'):
             ImageOps.fit(image, (width, height), Image.ANTIALIAS
                         ).save(image_path, format, quality=QUAL)
     
-    path = resized_path(image_url, size, method)
-    return path_to_url(path)
+    path = resized_path(original_path, size, method)
+    return '%s?r=%s' % (path_to_url(path), hashlib.md5(str(datetime.now())).hexdigest()[0:5])
 
 @register.filter()
 def crop(imagefield, size):
