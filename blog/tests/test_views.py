@@ -169,7 +169,7 @@ class TestBlogCreate(TestCase):
         self.assertFormError(response, 'form', 'city', ['This field is required.'])
         self.client.logout()
         
-    def test_blog_create_post(self):
+    def test_blog_create_post_publish(self):
         src = '%s/static/tests/blog.jpg' % settings.base_path
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
@@ -206,7 +206,47 @@ class TestBlogCreate(TestCase):
         self.assertEquals(False, blog.draft)
         self.assertEquals(self.category, blog.category)
         self.assertEquals(self.location, blog.location)
+    
+    def test_blog_create_post_draft(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world (Draft)',
+            'image_path': dst,
+            'description': 'lorem ipsum (Draft)',
+            'mood': '3',
+            'country': 'Uganda',
+            'city': 'Capital Uganda',
+            'private': '0',
+            'draft': '1',
+            'category': str(self.category.id)
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
+
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(True, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world (Draft)', blog.title)
+        self.assertEquals('lorem ipsum (Draft)', blog.description)
+        self.assertEquals(3, blog.mood)
+        self.assertEquals(False, blog.private)
+        self.assertEquals(True, blog.draft)
+        self.assertEquals(self.category, blog.category)
+        self.assertEquals('Uganda', blog.location.country)
+        self.assertEquals('Capital Uganda', blog.location.city)
         
+
         
         
         
