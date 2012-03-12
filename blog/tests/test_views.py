@@ -521,7 +521,11 @@ class TestBlogView(TestCase):
         self.staff.save()
         self.category = factory.create_category('Animal', 'animal')
         self.location = factory.create_location('Japan', 'Tokyo')
+        
         self.blog = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
+        self.blog.private = False
+        self.blog.save()
+
         self.blog_private = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
         self.blog_private.private = True
         self.blog_private.save()
@@ -671,10 +675,6 @@ class TestBlogView(TestCase):
         response = self.client.get('/blog/%s/unlove/' % self.blog_draft.id)
         self.assertEquals(403, response.status_code)
         self.client.logout()
-
-    def test_social_network_do_not_display(self):
-        response = self.client.get(reverse('blog_view', args=[self.blog.id]))
-        self.assertNotContains(response, '<!-- AddThis Button BEGIN -->')
         
         
 class TestHomePage(TestCase):
