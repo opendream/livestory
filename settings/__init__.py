@@ -160,6 +160,7 @@ INSTALLED_APPS = (
     'blog',
     'common',
     'location',
+    'notification',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -227,6 +228,7 @@ NOSE_ARGS = [
     '--cover-package='
         'account,'
         'blog,'
-        'location',
+        'location,'
+        'notification',
 ]
 
