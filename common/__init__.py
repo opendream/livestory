@@ -10,3 +10,12 @@ def rm_user(id):
         shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
     except:
         pass
+        
+    try:
+        shutil.rmtree('%saccount/%s' % (settings.IMAGE_ROOT, id))
+    except:
+        pass
+    try:
+        shutil.rmtree('%scache/images/account/%s' % (settings.MEDIA_ROOT, id))
+    except:
+        pass

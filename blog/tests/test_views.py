@@ -182,8 +182,8 @@ class TestGetBlogManagementWithModel(TestCase):
         
     def test_mood(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="mood-3">Happy</')
-        self.assertContains(response, 'class="mood-1">Sad</')
+        self.assertContains(response, 'class="mood-3">Excited</')
+        self.assertContains(response, 'class="mood-1">Happy</')
         
     def test_created(self):
         response = self.client.get('/blog/manage/')

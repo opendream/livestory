@@ -1,20 +1,11 @@
 from blog.models import Blog, Love, blog_image_path
 from django.test import TestCase
 from tests import factory
+from common import rm_user
 
 import os
 import settings
 import shutil
-
-def rm_user(id):
-    try:
-        shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
-    except:
-        pass
-    try:
-        shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
-    except:
-        pass
         
 class TestBlog(TestCase):
     def setUp(self):
@@ -27,7 +18,12 @@ class TestBlog(TestCase):
             factory.create_blog('Hello world', self.user, self.category, self.location, 2),
             factory.create_blog('Hello world', self.user, self.category, self.location, 3),
             factory.create_blog('Hello world', self.user, self.category, self.location, 4),
-            factory.create_blog('Hello world', self.user, self.category, self.location, 5)
+            factory.create_blog('Hello world', self.user, self.category, self.location, 5),
+            factory.create_blog('Hello world', self.user, self.category, self.location, 6),
+            factory.create_blog('Hello world', self.user, self.category, self.location, 7),
+            factory.create_blog('Hello world', self.user, self.category, self.location, 8),
+            factory.create_blog('Hello world', self.user, self.category, self.location, 9),
+            factory.create_blog('Hello world', self.user, self.category, self.location, 10)
         ]
         
     def tearDown(self):
@@ -52,11 +48,17 @@ class TestBlog(TestCase):
         self.assertEquals(printed_unicode, result)
         
     def test_get_mood_text(self):
-        self.assertEquals('Sad', self.blogs[0].get_mood_text())
-        self.assertEquals('Confused', self.blogs[1].get_mood_text())
-        self.assertEquals('Happy', self.blogs[2].get_mood_text())
-        self.assertEquals('Laughing', self.blogs[3].get_mood_text())
-        self.assertEquals('Love', self.blogs[4].get_mood_text())
+        self.assertEquals('Happy'     , self.blogs[0].get_mood_text())
+        self.assertEquals('Sad'       , self.blogs[1].get_mood_text())
+        self.assertEquals('Excited'   , self.blogs[2].get_mood_text())
+        self.assertEquals('Inspired'  , self.blogs[3].get_mood_text())
+        self.assertEquals('Frustrated', self.blogs[4].get_mood_text())
+        self.assertEquals('Angry'     , self.blogs[5].get_mood_text())
+        self.assertEquals('Fun'       , self.blogs[6].get_mood_text())
+        self.assertEquals('Proud'     , self.blogs[7].get_mood_text())
+        self.assertEquals('Amazed'    , self.blogs[8].get_mood_text())
+        self.assertEquals('Motivated' , self.blogs[9].get_mood_text())
+        
         
     def test_blog_image_path(self):
         image_path = blog_image_path(self.blogs[0], self.blogs[0].image.file.name)
