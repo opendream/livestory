@@ -786,3 +786,6 @@ html[xmlns] .clearfix { display: block; }
   color: #a7a7a7;
   font-size: 1em;
 }
+
+/* Hide visibility on blog post */
+.field-private { display: none; }
