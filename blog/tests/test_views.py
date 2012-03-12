@@ -535,7 +535,6 @@ class TestBlogView(TestCase):
         Love(blog=self.blog_private, user=self.otheruser).save()
         Love(blog=self.blog_private, user=self.staff).save()
         Love(blog=self.blog_unlove, user=self.user3).save()
-        print self.user.id
     
     def tearDown(self):
         rm_user(self.user.id     )
@@ -672,6 +671,10 @@ class TestBlogView(TestCase):
         response = self.client.get('/blog/%s/unlove/' % self.blog_draft.id)
         self.assertEquals(403, response.status_code)
         self.client.logout()
+
+    def test_social_network_do_not_display(self):
+        response = self.client.get(reverse('blog_view', args=[self.blog.id]))
+        self.assertNotContains(response, '<!-- AddThis Button BEGIN -->')
         
         
 class TestHomePage(TestCase):
