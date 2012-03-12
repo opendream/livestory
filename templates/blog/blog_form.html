@@ -25,6 +25,18 @@
     <div class="field-image_path control-group{% if imagefield_error %} error{% endif %}">
       <div class="controls">
         <div class="image-upload">
+          <div class="image-border rounded5">
+            <div id="fileupload-progress-wrapper">
+              <div id="upload-detail">uploading...</div>
+              <div class="progress progress-info progress-striped active" id="fileupload-progress">
+                <div class="bar" id="fileupload-complete"></div>
+              </div>
+            </div>
+            <div class="drop-area"{% if image_path %} style="display:none;"{% endif %}>
+              <div class="dropbox"><input class="input-file image-append fileupload" type="file" name="image"></div>
+            </div>
+          </div>
+
           <div class="image-wrapper"{% if not image_path %} style="display:none;"{% endif %}>
             <div class="image-append">
               {% if image_path %}
@@ -34,9 +46,7 @@
             <a href="{% url ajax_blog_image_delete %}" class="ic image-delete">change image</a>
             <input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_blog_image_upload %}" />
           </div>
-          <div class="drop-area"{% if image_path %} style="display:none;"{% endif %}>
-            <div class="dropbox"><input class="input-file image-append fileupload" type="file" name="image"></div>
-          </div>
+
           <input type="hidden" name="image_path" value="{{ image_path }}" />
         </div>
         {% if imagefield_error %}

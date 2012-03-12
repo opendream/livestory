@@ -60,7 +60,12 @@
         
         
         <div class="image-upload">
-          
+          <div id="fileupload-progress-wrapper">
+            <div id="upload-detail">uploading...</div>
+            <div class="progress progress-info progress-striped active" id="fileupload-progress">
+              <div class="bar" id="fileupload-complete"></div>
+            </div>
+          </div>
           <div class="image-wrapper"{% if not account.image %} style="display:none;"{% endif %}>
   					<div class="image-append">
   					  {% if account.image %}
