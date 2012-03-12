@@ -676,13 +676,20 @@ class TestBlogView(TestCase):
         
 class TestHomePage(TestCase):
     def setUp(self):
-        pass
+        self.user = factory.create_user('testuser@example.com', 'testuser@example.com', 'password', 'John', 'Doe', True)
 
     def tearDown(self):
-        pass
+        rm_user(self.user.id)
 
     def test_anonymous_user_get(self):
         response = self.client.get(reverse('blog_home'))
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_static.html')
+
+    def test_authenticated_user_get(self):
+        self.client.login(username='testuser@example.com', password='password')
+        response = self.client.get(reverse('blog_home'))
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_home.html')
+        self.client.logout()
 
