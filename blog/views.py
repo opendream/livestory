@@ -21,6 +21,9 @@ from common.views import check_file_exists
 from common.templatetags.common_tags import cache_path
 
 def blog_home(request):
+    if not request.user.is_authenticated():
+        return render(request, 'blog/blog_static.html')
+    
     scour_width = 960
     scour_height = 660
     scour = Scour(10, 9, scour_width, scour_height, 10)
