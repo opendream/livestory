@@ -10,19 +10,11 @@ from mock import Mock, patch
 from tests import factory
 from bs4 import BeautifulSoup
 
+from common import rm_user
+
 import settings
 import shutil
 import xpath
-
-def rm_user(id):
-    try:
-        shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
-    except:
-        pass
-    try:
-        shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
-    except:
-        pass
 
 class MyMock(object):
     def __init__(self, **kwargs):
@@ -102,6 +94,11 @@ class TestBlogUpdate(TestCase):
         self.blogs[1].save()
         self.blogs[2].private = True
         self.blogs[2].save()
+        
+        self.user = user
+    
+    def tearDown(self):
+        rm_user(self.user.id)
 
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')

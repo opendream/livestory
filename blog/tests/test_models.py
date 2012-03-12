@@ -69,9 +69,8 @@ class TestBlog(TestCase):
 class TestLove(TestCase):
     
     def test_unicode(self):
-        
-        blog = factory.create_blog('Hello world') 
         user = factory.create_user('loveuser@example.com', 'loveuser@example.com', 'loveuser')
+        blog = factory.create_blog('Hello world', user) 
         love = Love(blog=blog, user=user)
         self.assertEquals('loveuser@example.com love Hello world', love.__unicode__())
         
