@@ -12,7 +12,6 @@ from bs4 import BeautifulSoup
 
 import settings
 import shutil
-import xpath
 
 def rm_user(id):
     try:
