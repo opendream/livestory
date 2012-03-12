@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.files.base import File as DjangoFile
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import simplejson as json
 
@@ -673,5 +674,15 @@ class TestBlogView(TestCase):
         self.client.logout()
         
         
-        
+class TestHomePage(TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_anonymous_user_get(self):
+        response = self.client.get(reverse('blog_home'))
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_static.html')
 
