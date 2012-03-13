@@ -331,6 +331,30 @@ class TestBlogCreate(TestCase):
             self.test_blog_create_post_draft(country='thailand', city='surat thani', again=False)
             same = Location.objects.filter(country='Thailand', city='Surat Thani').count()
             self.assertEquals(1, same)
+            
+    def test_blog_create_post_miss_match_location(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world (Draft)',
+            'image_path': dst,
+            'description': 'lorem ipsum (Draft)',
+            'mood': '3',
+            'country': 'ljkljkljlkjlkjlkj',
+            'city': 'asdfdasffdffad',
+            'private': '0',
+            'draft': '1',
+            'category': str(self.category.id)
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
+
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params, follow=True)
+
+        self.assertEquals(True, response.context['location_error'])
+        self.client.logout()
         
 class TestBlogEdit(TestCase):
     def setUp(self):
@@ -513,6 +537,27 @@ class TestBlogEdit(TestCase):
         self.assertEquals(True, blog.draft)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
+    
+    def test_blog_edit_post_miss_match_location(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world Edited',
+            'image_path': dst,
+            'description': 'lorem ipsum Edited',
+            'mood': '2',
+            'country': 'fdasdffafaf',
+            'city': 'tryeryrtytry',
+            'private': '1',
+            'draft': '1',
+            'category': str(self.cat_travel.id)
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
+
+        self.assertEquals(True, response.context['location_error'])
+        self.client.logout()
 
 
 class TestBlogView(TestCase):
