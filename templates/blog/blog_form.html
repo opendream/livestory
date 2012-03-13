@@ -25,7 +25,7 @@
     <div class="field-image_path control-group{% if imagefield_error %} error{% endif %}">
       <div class="controls">
         <div class="image-upload">
-          <div class="image-border rounded5">
+          <div class="image-border rounded5"{% if image_path %} style="display:none;"{% endif %}>
             <div id="fileupload-progress-wrapper">
               <div id="upload-detail">uploading...</div>
               <div class="progress progress-info progress-striped active" id="fileupload-progress">
@@ -74,13 +74,16 @@
       </div>
     </div>
     
-    <div class="field-location control-group{% if form.country.errors or form.city.errors %} error{% endif %}">
+    <div class="field-location control-group{% if form.country.errors or form.city.errors or location_error %} error{% endif %}">
       <label class="control-label" for="id_country">Location</label>
       <div class="controls">
         {{ form.country }}
         {{ form.city }}
         {% if form.country.errors or form.city.errors %}
         <span class="help-inline">* Please enter both fields.</span>
+        {% endif %}
+        {% if location_error %}
+        <span class="help-inline">* Your location miss match.</span>
         {% endif %}
         <p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
       </div>

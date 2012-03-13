@@ -7,6 +7,7 @@ from django.utils import simplejson as json
 from blog.models import Blog, Love
 from blog.views import blog_bulk_update_private
 from blog.views import blog_bulk_update_public
+from location.models import Location
 from mock import Mock, patch
 from tests import factory
 from bs4 import BeautifulSoup
@@ -284,7 +285,7 @@ class TestBlogCreate(TestCase):
         self.assertEquals(self.category, blog.category)
         self.assertEquals(self.location, blog.location)
     
-    def test_blog_create_post_draft(self):
+    def test_blog_create_post_draft(self, country='thailand', city='suratthanee', again=True):
         src = '%s/static/tests/blog.jpg' % settings.base_path
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
@@ -293,8 +294,8 @@ class TestBlogCreate(TestCase):
             'image_path': dst,
             'description': 'lorem ipsum (Draft)',
             'mood': '3',
-            'country': 'Uganda',
-            'city': 'Capital Uganda',
+            'country': country,
+            'city': city,
             'private': '0',
             'draft': '1',
             'category': str(self.category.id)
@@ -320,10 +321,17 @@ class TestBlogCreate(TestCase):
         self.assertEquals(False, blog.private)
         self.assertEquals(True, blog.draft)
         self.assertEquals(self.category, blog.category)
-        self.assertEquals('Uganda', blog.location.country)
-        self.assertEquals('Capital Uganda', blog.location.city)
-    
-
+        self.assertEquals('Thailand', blog.location.country)
+        self.assertEquals('Surat Thani', blog.location.city)
+        self.assertEquals('8.9034051', blog.location.lat)
+        self.assertEquals('99.0128926', blog.location.lng)
+        self.client.logout()
+        
+        if again:
+            self.test_blog_create_post_draft(country='thailand', city='surat thani', again=False)
+            same = Location.objects.filter(country='Thailand', city='Surat Thani').count()
+            self.assertEquals(1, same)
+        
 class TestBlogEdit(TestCase):
     def setUp(self):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
