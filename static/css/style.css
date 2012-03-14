@@ -41,7 +41,7 @@
 	
 	.content{
 		border: 1px solid #eee;
-		padding: 8px 35px 8px 14px;
+		padding: 8px 35px 8px 20px;
 		margin-bottom: 18px;
 		background: #fff;
 	}
@@ -66,9 +66,16 @@
 	.label-inline-form{
 		line-height: 25px;
 	}
+	.separate{
+		background: #5e5e5e;
+		width: 1px;
+		height: 20px;
+		margin: 0 0 0 10px;
+	}
+	.tab-menu{ margin: 20px 0;}
 	
-	legend{ padding: 10px 7px 10px; }
-	legend h1{ font: normal 19.5px OxfamGlobalHeadlineRegular; }
+	legend, .page-title{ padding: 10px 7px 10px; border-bottom: 1px solid #EEE;}
+	legend h1, h1{ font: normal 19.5px OxfamGlobalHeadlineRegular; }
 	.form-backend { padding-left: 160px; }
 	
 	a:link { color:#61a534; }
@@ -134,6 +141,18 @@
           line-height: 15px;
           padding-right: 5px;
     }
+    /*----- Grid -----*/
+	.grid-row{ clear: both;  margin-left: -10px;}
+	.grid{
+		float: left;
+		width: 186px;
+		margin: 0 0 10px 10px;
+	}
+	.grid-colspan{
+		width: 573px;
+		height: 135px;
+		background: #f2f2f2;
+	}
 	
 	.image-append img {
 	    border: 1px dashed #BBB;
@@ -141,6 +160,14 @@
         -webkit-border-radius: 5px;
         -moz-border-radius: 5px;
     }
+    .grid-colspan .slogan{
+		font: lighter 24px/36px "Helvetica Neue";
+		clear: both;
+		margin-right: 20px;
+		text-align: right;
+	}
+/* 	.grid-colspan .slogan strong{ font-size: 36px;} */
+	.grid-colspan .title-slogan{ margin-top: 30px;}
 	
 /***********/
 /* Top bar */
@@ -164,11 +191,10 @@
 		float: right;
 	}
 	.btn-group, .notify, .post-blog, .invite{
-		float: left;
 		height: 17px;
 		padding: 0 10px;
 	}
-	.notify, .post-blog, .invite {margin-top: 3px; border-left: 1px solid #5e5e5e;}
+	.notify, .post-blog, .invite {margin-top: 2px;}
 	
 	/*------ Profile dropdown ------*/
 	.btn-group .profile-toggle{
@@ -180,9 +206,9 @@
 		box-shadow: none;
 		text-shadow: none;
 	}
-	.btn-group .profile-toggle img{ vertical-align: middle; margin-right: 5px;}
-	.profile-group.open .dropdown-menu{
-		top: 30px;
+	.profile-toggle img{ vertical-align: middle; margin-right: 5px;}
+	.dropdown .dropdown-menu{
+		top: 32px;
 		left: 9px;
 		border: none;
 		background: #353535;
@@ -197,7 +223,7 @@
 		border-bottom-right-radius: 5px;
 		border-bottom-left-radius: 5px;
 	}
-	.dropdown-menu li > a:hover{ background: #222; }
+	.dropdown-menu li > a:hover{ background: #f2f2f2; color: #000;}
 	.profile-toggle .caret{ 
 		border-left: 4px solid transparent;
 		border-right: 4px solid transparent;
@@ -205,8 +231,9 @@
 		margin-left: 3px;
 	}
 	
-	.notify a{
-		padding: 3px 7px;
+	.notify{
+		padding: 2px 7px;
+		margin-top: 0;
 		font-size: 11px;
 		color: #fff !important;
 		background: #ea1515;
@@ -462,10 +489,10 @@
 	}
 		.friends-inline li{
 			float: left;
-			margin: 1% 2% 1% 0;
-			list-style: none;
 			width: 46%;
+			margin: 1% 2% 1% 0;
 			padding: 5px;
+			list-style: none;
 		}
 		.friends-inline li:hover{
 			background: #eee;
@@ -588,7 +615,7 @@
 		background: url('../img/bg-drop.png') no-repeat !important;
 	}
 	.dropbox .image-append{
-		width: 280px;
+		width: 102px;
 		height: 102px;
 		z-index: 1000;
 	}
@@ -613,28 +640,139 @@
 	}
 	.select-file:hover{ cursor: pointer; }
 
-	.ic, .edit-post-link {
+	.ic {
 		display: block;
 		margin: 10px 0;
 		padding-left: 16px;
 		background: url('../img/ic-moods.png') no-repeat;
 	}
-	.image-delete, .edit-post-link {
+	.image-delete {
 		background-position: -90px 0;
 	}
 	.edit-post-link {
 		width: 100px;
 	}
 
+/****************/
+/* Notification */
+/****************/
+	.ic-status{
+		display: inline-block;
+		width: 12px;
+		height: 12px;
+		text-indent: -999em;
+		background: url('../img/ic-notify.png') no-repeat ;
+	}
+	.ic-download-notify{ background-position: 0 -12px;}
+	
+	.avatar{ width: 35px;}
+	.ic-notify{ width: 12px; padding: 0 !important;}
+	.middle{ vertical-align: middle !important;}
+	
+	.table-list th, .table-list td{ border: none; }
+	.table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th{ background: #f6f6f6;}
+	
+	.dropdown-list{
+		max-width: 335px;
+		width: 335px;
+	}
+	
+	.dropdown-list li{ padding: 5px 10px; clear: both;}
+	.dropdown-list li:hover{ background: #f2f2f2;}
+	.dropdown-list .divider{ margin: 0 1px; padding: 0;}
+	
+	.dropdown-list a{ display: inline; padding: 0; color: #390 !important;}
+	
+	.dropdown-list .avatar{
+		float: left;
+		margin-right: 10px;
+	}
+
+	.dropdown-list .info{
+		width: 80%;
+		float: left;
+	}
+	.dropdown-list .info span{ font-size: 12px;}
+	
+	.view-all{
+		text-align: center;
+		padding: 10px !important;
+	}
+
 /*****************/
 /* Media Queries */
 /*****************/
 
+	@media only screen and (-webkit-min-device-pixel-ratio: 2){
+	
+	}
+	
+	@media (min-width: 1200px) { 
+		.grid-colspan{ width: 98.8%;}
+	}
+
+	/*----- Large desktop -----*/
+	@media (min-width: 1024px) and (max-width: 1200px) { 
+		/* Grid */
+		.grid{ width: 180px;}
+		.grid-colspan{ width: 560px;}
+	}
+	
+	@media (min-width: 981px) and (max-width: 1023px) {
+		/* Grid */
+		.grid{ width: 180px;}
+		.grid-colspan{ width: 560px;}
+	}
+	
+	/*----- Portrait tablet to landscape and desktop -----*/
+	@media (min-width: 768px) and (max-width: 980px) { 
+		
+		/* Blog */
+		.blog-profile .porfile-photo{ margin-bottom: 5px; }
+		.blog-profile .profile-name{ clear: both; }
+		.blog-profile{ margin-bottom: 20px; }
+		
+		/* Grid */
+		.grid{ width: 172px;}
+		.grid-colspan{ width: 718px;}
+	}
+	
+	/*----- Landscape phone to portrait tablet -----*/
+	@media (max-width: 768px) { 
+	
+		.container .span8, .container .span3{
+			border-bottom: 2px dotted #ccc;
+			padding-bottom: 22px;
+		}
+		
+	.blog-profile{ margin-bottom: 20px; }
+		.row{ margin-left: 0; }
+		.login{ right: 20px; }
+		
+		/* Grid */
+		.grid{ width: 166px;}
+		.grid-colspan{ width: 694px;}
+	}
+	
+	@media (max-width: 730px) {
+		.menu{
+			float: none;
+		 	margin: 0;
+		}
+		.menu li{ margin-bottom: 20px; }
+		#navigation{ margin-top: 0; }
+		#navigation h1{ margin: 10px 0 18px; }
+		
+		/* Grid */
+		.grid{ width: 160px;}
+		.grid-colspan{ width: 670px;}
+	}
+
 	/*----- Landscape phones and down -----*/
-  @media (max-width: 480px) { 
-	  .form-backend { padding-left: 0px; }
-	  #header { height: 65px; }
-	  #logo { margin: 8px 0 0; }
+	@media (max-width: 480px) { 
+		.form-backend { padding-left: 0px; }
+		#header { height: 65px; }
+		#logo { margin: 8px 0 0; }
 		span.slogan { font-size: 32px; }
 
 		span.brand {
@@ -676,47 +814,29 @@
 		.moods:hover, .moods.active{ background-position: -109px -199px; }
 		.categories:hover, .categories.active{ background-position: -163px -199px; }
 		
-  }
-  
-  @media (max-width: 730px) {
-		.menu{
-		  float: none;
-		  margin: 0;
-	  }
-	  .menu li{ margin-bottom: 20px; }
-	  #navigation{ margin-top: 0; }
-	  #navigation h1{ margin: 10px 0 18px; }
-  }
- 
-	/*----- Landscape phone to portrait tablet -----*/
-  @media (max-width: 768px) { 
-  
-	  .container .span8, .container .span3{
-		  border-bottom: 2px dotted #ccc;
-		  padding-bottom: 22px;
-	  }
-	  
-		.blog-profile{ margin-bottom: 20px; }
-		.row{ margin-left: 0; }
-		.login{ right: 20px; }
-  }
- 
-	/*----- Portrait tablet to landscape and desktop -----*/
-  @media (min-width: 768px) and (max-width: 980px) { 
-	  
-	  /* Blog */
-	  .blog-profile .porfile-photo{ margin-bottom: 5px; }
-	  .blog-profile .profile-name{ clear: both; }
-	  .blog-profile{ margin-bottom: 20px; }
-  }
- 
-	/*----- Large desktop -----*/
-  @media (min-width: 1200px) { 
-  
-  }
-
-	@media only screen and (-webkit-min-device-pixel-ratio: 2){
+		/* Grid */
+		.grid{ width: 138px;}
+		.grid-colspan{ width: 435px; height: 100px;}
+		
+		.grid-colspan .slogan{ font-size: 18px; line-height: 26px;}
+		
+		.grid-colspan .slogan strong{ font-size: 20px;}
+		.grid-colspan .title-slogan{ margin-top: 25px;}
+		
+		#navigation { margin-bottom: 10px;}
+	}
 	
+	@media (max-width: 320px) { 
+		/* Grid */
+		.grid{ width: 133px;}
+		.grid-colspan{ width: 280px; height: 70px;}
+		
+		.grid-colspan .slogan{ font-size: 10px; line-height: 18px;}
+		
+		.grid-colspan .slogan strong{ font-size: 14px;}
+		.grid-colspan .title-slogan{ margin-top: 15px;}
+		
+		#navigation { margin-bottom: 10px;}
 	}
 
 
