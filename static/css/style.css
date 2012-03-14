@@ -210,18 +210,6 @@
 	.dropdown .dropdown-menu{
 		top: 32px;
 		left: 9px;
-		border: none;
-		background: #353535;
-		
-		-moz-border-radius: 0;
-		-webkit-border-radius: 0;
-		border-radius: 0;
-		-moz-border-radius-bottomright: 5px;
-		-moz-border-radius-bottomleft: 5px;
-		-webkit-border-bottom-left-radius: 5px;
-		-webkit-border-bottom-right-radius: 5px;
-		border-bottom-right-radius: 5px;
-		border-bottom-left-radius: 5px;
 	}
 	.dropdown-menu li > a:hover{ background: #f2f2f2; color: #000;}
 	.profile-toggle .caret{ 
