@@ -1,5 +1,6 @@
-from notification.models import Notification
+from account.models import Account, AccountKey
 from django.test import TestCase
+from notification.models import Notification
 
 from tests import factory
 
@@ -15,7 +16,18 @@ class TestNotification(TestCase):
 		self.notification.save()
 
 	def tearDown(self):
-		pass
+		self.location.delete()
+		self.category.delete()
+		self.blog.delete()
+		self.notification.delete()
+
+		AccountKey.objects.get(user=self.love_user).delete()
+		Account.objects.get(user=self.love_user).delete()
+		self.love_user.delete()
+
+		AccountKey.objects.get(user=self.user).delete()
+		Account.objects.get(user=self.user).delete()
+		self.user.delete()
 
 	def test_unicode(self):
 		self.assertEqual('Adam Johnson loves Travel in Nakhonsawan', self.notification.__unicode__())
