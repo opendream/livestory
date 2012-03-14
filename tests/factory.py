@@ -6,9 +6,9 @@ from django.core.files.base import File as DjangoFile
 import hashlib
 from datetime import datetime
 
-def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe', has_image=False):
+def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe', has_image=False, timezone='Asia/Bangkok'):
     user = User.objects.create_user(username, email, password)
-    account = Account(firstname=firstname, lastname=lastname, user=user)
+    account = Account(firstname=firstname, lastname=lastname, user=user, timezone=timezone)
     if has_image:
         account.image = DjangoFile(open('static/tests/avatar.png'), 'avatar.png')
     account.save()

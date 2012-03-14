@@ -19,6 +19,7 @@ class Account(models.Model):
     image     = models.ImageField(upload_to=account_image_url, null=True)
     firstname = models.CharField(max_length=200, null=True)
     lastname  = models.CharField(max_length=200, null=True)
+    timezone  = models.CharField(max_length=200)
     
     user      = models.OneToOneField(User)
     
