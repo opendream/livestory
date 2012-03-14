@@ -65,3 +65,10 @@ class TestNotification(TestCase):
 		self.assertEqual(200, response.status_code)
 		self.assertTemplateUsed(response, 'notification/notification_view.html')
 		self.client.logout()
+
+	def test_notification_page_after_viewed(self):
+		self.assertEqual(1, len(get_notifications(self.user_with_notification)))
+		self.client.login(username='adam.johnson@example.com', password='adam123')
+		self.client.get(reverse('notification_view'))
+		self.assertEqual(0, len(get_notifications(self.user_with_notification)))
+		self.client.logout()

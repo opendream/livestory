@@ -7,6 +7,9 @@ def view(request):
 	if not request.user.is_authenticated():
 		return render(request, '403.html', status=403)
 
+	# Update view notification
+	AccountKey.objects.get(user=request.user).update_view_notification()
+
 	context = {}
 	return render(request, 'notification/notification_view.html', context)
 
