@@ -13,7 +13,7 @@ class TestHelperFunction(TestCase):
 		self.blog = factory.create_blog('Travel in Nakhonsawan', self.user, self.category, self.location)
 
 		self.user_with_notification = factory.create_user('adam.johnson@example.com', 'adam.johnson@example.com', 'adam123', 'Adam', 'Johnson')
-		self.notification = Notification(subject=self.user_with_notification, action='loves', blog=self.blog)
+		self.notification = Notification(subject=self.user_with_notification, action=1, blog=self.blog)
 		self.notification.save()
 
 	def tearDown(self):
@@ -42,7 +42,7 @@ class TestNotification(TestCase):
 		self.blog = factory.create_blog('Travel in Nakhonsawan', self.user, self.category, self.location)
 
 		self.user_with_notification = factory.create_user('adam.johnson@example.com', 'adam.johnson@example.com', 'adam123', 'Adam', 'Johnson')
-		self.notification = Notification(subject=self.user_with_notification, action='loves', blog=self.blog)
+		self.notification = Notification(subject=self.user_with_notification, action=1, blog=self.blog)
 		self.notification.save()
 
 	def tearDown(self):

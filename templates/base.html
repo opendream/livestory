@@ -39,50 +39,27 @@
         
         <div class="nav dropdown dropdown-profile pull-right">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          <div class="notify">0</div><span class="notify-bottom"></span>
+          <div class="notify">{{ notifications|length }}</div><span class="notify-bottom"></span>
           </a>
           <ul class="dropdown-menu dropdown-list">
+            {% if notifications %}
+            {% for notification in notifications %}
             <li class="clearfix">
               <div class="avatar">
-                <a href = "#" ><img src="img/not-test.jpg"/></a>
+                <a href="#"><img src="{{ notification.subject.get_profile.image|crop:AVATAR_TOP_SIZE }}"/></a>
               </div>
               <div class="info"> 
-                <a href ="#"><strong>Crosalot</strong></a> loved your <a href = "#">photo</a>.<br/>
-                  <span class="grey"><span class="ic-status"></span>  2 minutes ago.</span>
+                <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
+                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span>  2 minutes ago.</span>
               </div>
             </li>
             <li class="divider"></li>
-            <li class="clearfix">
-              <div class="avatar">
-                <a href = "#" ><img src="img/not-test.jpg"/></a>
-              </div>
-              <div class="info">
-                <a href ="#"><strong>Crosalot</strong></a> Downloaded <a href = "#">photo</a>.<br/>
-                  <span class="grey"><span class="ic-status ic-download-notify"></span>  2 minutes ago.</span>
-              </div>
-            </li>
+            {% endfor %}
+            {% else %}
+            <li class="clearfix">No notifications.</li>
             <li class="divider"></li>
-            <li class="clearfix">
-              <div class="avatar">
-                <a href = "#" ><img src="img/not-test.jpg"/></a>
-              </div>
-              <div class="info"> 
-                <a href ="#"><strong>Crosalot</strong></a> loved your <a href = "#">photo</a>.<br/>
-                  <span class="grey"><span class="ic-status"></span>  2 minutes ago.</span>
-              </div>
-            </li>
-            <li class="divider"></li>
-            <li class="clearfix">
-              <div class="avatar">
-                <a href = "#" ><img src="img/not-test.jpg"/></a>
-              </div>
-              <div class="info">
-                <a href ="#"><strong>Crosalot</strong></a> Downloaded <a href = "#">photo</a>.<br/>
-                  <span class="grey"><span class="ic-status ic-download-notify"></span>  2 minutes ago.</span>
-              </div>
-            </li>
-            <li class="divider"></li>
-            <li class="view-all"><a href="#">View all notifications</a></li>
+            {% endif %}
+            <li class="view-all"><a href="{% url notification_view %}">View all notifications</a></li>
           </ul>
         </div>
         
