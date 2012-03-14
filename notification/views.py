@@ -1,5 +1,13 @@
 from account.models import AccountKey
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
 from notification.models import Notification
+
+def view(request):
+	if not request.user.is_authenticated():
+		return render(request, '403.html', status=403)
+
+	return HttpResponse('xxx')
 
 def get_notifications(user):
 	notifications = []
