@@ -293,6 +293,9 @@ def blog_unlove(request, blog_id):
             return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
         else:
             raise Http404
+            
+def blog_all(request):
+    return render(request, 'blog/blog_all.html', {})
 
 def blog_save_location(country, city):
     try:
