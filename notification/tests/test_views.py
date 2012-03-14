@@ -92,3 +92,15 @@ class TestNotification(TestCase):
 		num_notification_after_love = len(get_notifications(self.user))
 		self.assertEqual(2, num_notification_after_love)
 		self.client.logout()
+
+	def test_notification_love_unlove_love(self):
+		self.client.login(username='tony.adams@example.com', password='tony123')
+		self.client.get(reverse('blog_love', args=[self.blog.id]))
+		self.assertEqual(2, len(get_notifications(self.user)))
+
+		self.client.get(reverse('blog_unlove', args=[self.blog.id]))
+		self.assertEqual(2, len(get_notifications(self.user)))
+
+		self.client.get(reverse('blog_love', args=[self.blog.id]))
+		self.assertEqual(2, len(get_notifications(self.user)))
+		self.client.logout()

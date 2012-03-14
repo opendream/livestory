@@ -20,3 +20,9 @@ class Notification(models.Model):
     def get_action_text(self):
         actions = dict(ACTION_CHOICES)
         return actions[self.action]
+
+    def save(self):
+        try:
+            notification = Notification.objects.get(subject=self.subject, action=self.action, blog=self.blog)
+        except Notification.DoesNotExist:
+            super(Notification, self).save()
