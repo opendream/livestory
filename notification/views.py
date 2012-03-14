@@ -24,7 +24,7 @@ def get_notifications(user):
 	if user.is_authenticated():
 		try:
 			account_key = AccountKey.objects.get(user=user)
-			notifications = Notification.objects.filter(subject=user, datetime__gt=account_key.view_notification)
+			notifications = Notification.objects.filter(blog__user=user, datetime__gt=account_key.view_notification)
 		except AccountKey.DoesNotExist:
 			pass
 	return notifications
