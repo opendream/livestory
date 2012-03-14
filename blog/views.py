@@ -91,13 +91,19 @@ def blog_create(request):
             blog.description = form.cleaned_data.get('description')[:300]
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
-            
+                            
             try:
                 blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
                 blog.save()
             
                 blog.image = blog_save_image(image_path, blog)
                 blog.save()
+                
+                # There is image uploaded.
+                if image_path.split('/')[-2] == 'temp':
+                    cpath = cache_path(blog.image.path)
+                    if os.path.exists(cpath):
+                        shutil.rmtree(cpath)
             
                 messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
                 return redirect('/blog/%s/edit' % blog.pk)
@@ -224,7 +230,7 @@ def blog_view(request, blog_id):
             'button_type': button_type,
             'love_count': Love.objects.filter(blog=blog).count(),
             'loved_users': loved_users,
-            'max_items': 7
+            'max_items': 7,
         }
         return render(request, 'blog/blog_view.html', context)
     except Blog.DoesNotExist:

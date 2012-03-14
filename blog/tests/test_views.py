@@ -247,7 +247,7 @@ class TestBlogCreate(TestCase):
         self.assertFormError(response, 'form', 'category', ['This field is required.'])
         self.client.logout()
         
-    def test_blog_create_post_publish(self):
+    def test_blog_create_post_publish(self, again=True):
         src = '%s/static/tests/blog.jpg' % settings.base_path
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
@@ -284,6 +284,8 @@ class TestBlogCreate(TestCase):
         self.assertEquals(False, blog.draft)
         self.assertEquals(self.category, blog.category)
         self.assertEquals(self.location, blog.location)
+        
+        self.client.logout()
     
     def test_blog_create_post_draft(self, country='thailand', city='suratthanee', again=True):
         src = '%s/static/tests/blog.jpg' % settings.base_path

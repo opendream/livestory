@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 from common.templatetags.common_tags import *
 
+import pytz
+
 try :
     import Image
 except ImportError:
@@ -19,7 +21,7 @@ class Account(models.Model):
     image     = models.ImageField(upload_to=account_image_url, null=True)
     firstname = models.CharField(max_length=200, null=True)
     lastname  = models.CharField(max_length=200, null=True)
-    timezone  = models.CharField(max_length=200)
+    timezone  = models.CharField(max_length=200, default='UTC', choices=[(tz, tz) for tz in pytz.common_timezones])
     
     user      = models.OneToOneField(User)
     
