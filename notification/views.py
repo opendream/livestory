@@ -7,7 +7,8 @@ def view(request):
 	if not request.user.is_authenticated():
 		return render(request, '403.html', status=403)
 
-	return HttpResponse('xxx')
+	context = {}
+	return render(request, 'notification/notification_view.html', context)
 
 def get_notifications(user):
 	notifications = []
