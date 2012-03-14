@@ -14,6 +14,7 @@ from django.db.models import Count, Sum
 from account.models import Account
 from blog.models import *
 from blog.forms import *
+from notification.models import Notification
 
 from location.models import Location
 from common.scour import Scour
@@ -230,11 +231,13 @@ def blog_love(request, blog_id):
             data['type'] = 'unlove'
         except Love.DoesNotExist:
             # Add new love
-            blog = Blog.objects.get(pk=blog_id)
             love = Love(user=request.user, blog=blog)
             love.save()
             data['love'] = 1
             data['type'] = 'unlove'
+            # Nofify
+            if request.user != blog.user:
+                Notification(subject=request.user, action=1, blog=blog).save()
         
         if request.is_ajax():
             return HttpResponse(json.dumps(data), mimetype="application/json")
