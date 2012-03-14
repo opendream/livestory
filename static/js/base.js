@@ -43,6 +43,19 @@ $(function () {
             }
         });
     })
+    
+    $('.dropdown-toggle#notification-section').click(function(e) {
+        var self = this;
+        var url = '/notifications/';
+        var params = {};
+        var callback = function(result) {
+            if (result.status == 200) {
+                $(self).children('.notify').html('0');
+                // TODO. add class for zero notification
+            }
+        }
+        $.get(url, params, callback);
+    });
 
     /*$('.dropdown-toggle').mouseenter(function(e) {
         var $toggle = $(this);
