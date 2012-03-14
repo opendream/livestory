@@ -50,6 +50,7 @@ class Account(models.Model):
 class AccountKey(models.Model):
     
     key           = models.CharField(max_length=200)
+    view_notification = models.DateTimeField(auto_now_add=True)
     can_send_mail = models.NullBooleanField(null=True)
     modified      = models.DateTimeField(auto_now=True)
     
@@ -57,3 +58,8 @@ class AccountKey(models.Model):
         
     def __unicode__(self):
         return '%s has key %s' % (self.user.username, self.key)
+
+    def update_view_notification(self):
+        self.view_notification = datetime.now()
+        self.save()
+        return self.view_notification
