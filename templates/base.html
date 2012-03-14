@@ -46,7 +46,7 @@
             {% for notification in notifications %}
             <li class="clearfix">
               <div class="avatar">
-                <a href="#"><img src="{{ notification.subject.get_profile.image|crop:AVATAR_TOP_SIZE }}"/></a>
+                <a href="#"><img src="{{ notification.subject.get_profile.get_image|crop:AVATAR_TOP_SIZE }}"/></a>
               </div>
               <div class="info"> 
                 <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
@@ -68,7 +68,7 @@
         <div class="nav dropdown pull-right">
           <a class="dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
           {% if user.get_profile.image %}
-          <img src="{{ user.get_profile.image|crop:AVATAR_TOP_SIZE }}" alt=""/>
+          <img src="{{ user.get_profile.get_image|crop:AVATAR_TOP_SIZE }}" alt=""/>
           {% endif %}
           <span>
           {% if user.get_profile.get_fullname %}
