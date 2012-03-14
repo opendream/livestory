@@ -72,3 +72,9 @@ class TestNotification(TestCase):
 		self.client.get(reverse('notification_view'))
 		self.assertEqual(0, len(get_notifications(self.user_with_notification)))
 		self.client.logout()
+
+	def test_notification_ajax_get(self):
+		self.client.login(username='adam.johnson@example.com', password='adam123')
+		response = self.client.get(reverse('notification_view'), HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+		self.assertContains(response, '{"status": 200}')
+		self.client.logout()

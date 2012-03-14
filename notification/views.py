@@ -1,6 +1,7 @@
 from account.models import AccountKey
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.utils import simplejson as json
 from notification.models import Notification
 
 def view(request):
@@ -9,6 +10,11 @@ def view(request):
 
 	# Update view notification
 	AccountKey.objects.get(user=request.user).update_view_notification()
+
+	# If request is ajax
+	if request.is_ajax():
+		print json.dumps({'status': 200})
+		return HttpResponse(json.dumps({'status': 200}), mimetype='application/json')
 
 	context = {}
 	return render(request, 'notification/notification_view.html', context)
