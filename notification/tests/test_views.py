@@ -27,3 +27,8 @@ class TestHelperFunction(TestCase):
 	def test_get_notifications(self):
 		self.assertEqual(0, len(get_notifications(self.user)))
 		self.assertEqual(1, len(get_notifications(self.user_with_notification)))
+
+	def test_get_notifications_after_view(self):
+		self.assertEqual(1, len(get_notifications(self.user_with_notification)))
+		AccountKey.objects.get(user=self.user_with_notification).update_view_notification()
+		self.assertEqual(0, len(get_notifications(self.user_with_notification)))
