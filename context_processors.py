@@ -9,5 +9,6 @@ def site_information(request):
         'AVATAR_SIZE': settings.AVATAR_SIZE,
         'AVATAR_TOP_SIZE': settings.AVATAR_TOP_SIZE,
         'BLOG_PREVIEW_SIZE': settings.BLOG_PREVIEW_SIZE,
-        'notifications': get_notifications(request.user)
+        'notifications': get_notifications(request.user),
+        'USE_TZ': settings.USE_TZ,
     }

@@ -20,6 +20,7 @@ from location.models import Location
 from common.scour import Scour
 from common.views import check_file_exists
 from common.templatetags.common_tags import cache_path
+from common import ucwords
 
 def blog_home(request):
     if not request.user.is_authenticated():
@@ -75,6 +76,7 @@ def blog_create(request):
     action = reverse('blog_create')
     image_path = ''
     imagefield_error = False
+    location_error = False
 
     if request.method == 'POST':
         form = BlogCreateForm(request.POST, request.FILES)
@@ -90,14 +92,25 @@ def blog_create(request):
             blog.description = form.cleaned_data.get('description')[:300]
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
-            blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-            blog.save()
+                            
+            try:
+                blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
+                blog.save()
             
-            blog.image = blog_save_image(image_path, blog)
-            blog.save()
+                blog.image = blog_save_image(image_path, blog)
+                blog.save()
+                
+                # There is image uploaded.
+                if image_path.split('/')[-2] == 'temp':
+                    cpath = cache_path(blog.image.path)
+                    if os.path.exists(cpath):
+                        shutil.rmtree(cpath)
             
-            messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
-            return redirect('/blog/%s/edit' % blog.pk)
+                messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
+                return redirect('/blog/%s/edit' % blog.pk)
+            except Location.DoesNotExist:
+                location_error = True
+                
     else:
         form = BlogCreateForm()
 
@@ -108,7 +121,8 @@ def blog_create(request):
         'visibilities': PRIVATE_CHOICES,
         'is_draft': True,
         'image_path': image_path,
-        'imagefield_error': imagefield_error
+        'imagefield_error': imagefield_error,
+        'location_error': location_error
     }
     return render(request, 'blog/blog_form.html', context)
 
@@ -123,6 +137,7 @@ def blog_edit(request, blog_id):
         action = reverse('blog_edit', args=[blog_id])
         image_path = blog.image.path
         imagefield_error = False
+        location_error = False
 
         if request.method == 'POST':
             form = BlogCreateForm(request.POST, request.FILES)
@@ -137,25 +152,29 @@ def blog_edit(request, blog_id):
                 blog.description = form.cleaned_data.get('description')[:300]
                 blog.mood = form.cleaned_data.get('mood')
                 blog.category = form.cleaned_data.get('category')
-                blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-                blog.private = form.cleaned_data.get('private')
+                try:
+                    blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
+                    blog.private = form.cleaned_data.get('private')
 
-                # If previous is draft, you can draft it again.
-                if blog.draft:
-                    blog.draft = bool(int(form.data.get('draft')))
+                    # If previous is draft, you can draft it again.
+                    if blog.draft:
+                        blog.draft = bool(int(form.data.get('draft')))
                 
-                # There is image uploaded.
-                if image_path.split('/')[-2] == 'temp':
-                    cpath = cache_path(blog.image.path)
-                    blog.image.delete()
-                    if os.path.exists(cpath):
-                        shutil.rmtree(cpath)
-                    # Save new image.
-                    blog.image = blog_save_image(image_path, blog)
+                    # There is image uploaded.
+                    if image_path.split('/')[-2] == 'temp':
+                        cpath = cache_path(blog.image.path)
+                        blog.image.delete()
+                        if os.path.exists(cpath):
+                            shutil.rmtree(cpath)
+                        # Save new image.
+                        blog.image = blog_save_image(image_path, blog)
                 
-                blog.save()
-                messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
-                return redirect('/blog/%s/edit' % blog.pk)
+                    blog.save()
+                    messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
+                    return redirect('/blog/%s/edit' % blog.pk)
+                    
+                except Location.DoesNotExist:
+                    location_error = True
         else:
             defaults = {
                 'title': blog.title,
@@ -176,7 +195,8 @@ def blog_edit(request, blog_id):
             'is_draft': blog.draft,
             'blog': blog,
             'image_path': image_path,
-            'imagefield_error': imagefield_error
+            'imagefield_error': imagefield_error,
+            'location_error': location_error,
         }
         return render(request, 'blog/blog_form.html', context)
     except Blog.DoesNotExist:
@@ -211,7 +231,7 @@ def blog_view(request, blog_id):
             'button_type': button_type,
             'love_count': Love.objects.filter(blog=blog).count(),
             'loved_users': loved_users,
-            'max_items': 7
+            'max_items': 7,
         }
         return render(request, 'blog/blog_view.html', context)
     except Blog.DoesNotExist:
@@ -276,16 +296,19 @@ def blog_unlove(request, blog_id):
             return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
         else:
             raise Http404
+            
+def blog_all(request):
+    return render(request, 'blog/blog_all.html', {})
 
 def blog_save_location(country, city):
     try:
-        location = Location.objects.get(country=country, city=city)
+        location = Location.objects.get(country=ucwords(country), city=ucwords(city))
     except Location.DoesNotExist:
-        location = Location(country=country, city=city, lat=0, lng=0)
+        location = Location(country=country, city=city)
         location.save()
     # For unittest maybe create duplicate location
     except Location.MultipleObjectsReturned:
-        location = Location.objects.filter(country=country, city=city).order_by('-id')[0]
+        location = Location.objects.filter(country=ucwords(country), city=ucwords(city)).order_by('-id')[0]
         
     return location
 

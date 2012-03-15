@@ -7,9 +7,9 @@ from django.core.files.base import File as DjangoFile
 import hashlib
 from datetime import datetime
 
-def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe', has_image=False):
+def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe', has_image=False, timezone='Asia/Bangkok'):
     user = User.objects.create_user(username, email, password)
-    account = Account(firstname=firstname, lastname=lastname, user=user)
+    account = Account(firstname=firstname, lastname=lastname, user=user, timezone=timezone)
     if has_image:
         account.image = DjangoFile(open('static/tests/avatar.png'), 'avatar.png')
     account.save()
@@ -25,10 +25,8 @@ def create_category(name = 'Food', code = 'f'):
     category.save()
     return category
     
-def create_location(country='Thailand', city='Bangkok'):
-    location = Location(country=country, city=city)
-    location.lat = '100.00'
-    location.lng = '13.00'
+def create_location(country='Thailand', city='Bangkok', lat='100.00', lng='13.00'):
+    location = Location(country=country, city=city, lat=lat, lng=lng)
     location.save()
     return location
 

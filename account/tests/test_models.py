@@ -2,6 +2,8 @@ from account.models import Account, AccountKey
 from django.test import TestCase
 from tests import factory
 
+from common import rm_user
+
 import settings
 
 class TestAccount(TestCase):
@@ -13,6 +15,8 @@ class TestAccount(TestCase):
         
     def tearDown(self):
          self.users[0].get_profile().image.delete()
+         rm_user(self.users[0].id)
+         rm_user(self.users[1].id)
         
     def test_get_fullname(self):
         self.assertEquals('Nirut Khemasakchai', self.users[0].get_profile().get_fullname())
@@ -45,6 +49,7 @@ class TestAccountKey(TestCase):
 
     def tearDown(self):
         for user in self.users:
+            rm_user(user.id)
             AccountKey.objects.get(user=user).delete()
             Account.objects.get(user=user).delete()
             user.delete()

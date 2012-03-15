@@ -11,6 +11,7 @@
   </h1>
   {% if user.is_authenticated %}
   <ul class="menu">
+    <li><a href="#" class="stories active">All Stories</a></li>
     <li><a href="#" class="popular active">Popular</a></li>
     <li><a href="#" class="place">Place</a></li>
     <li><a href="#" class="moods">Moods</a></li>
@@ -19,6 +20,8 @@
   {% endif %}
 </div>
 
+<div class="clear-both">
 {% block content %}{% endblock %}
+</div>
 
 {% endblock %}
