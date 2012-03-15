@@ -2,6 +2,7 @@
 
 {% load blog_tags %}
 {% load common_tags %}
+{% load tz %}
 
 {% block head_title %}Create Your Blog{% endblock %}
 
@@ -15,7 +16,7 @@
     <tr class="action-{{ notification.action }}">
       <td class="avatar"><a href = "#"><img src="{{ notification.subject.get_profile.get_image|crop:AVATAR_TOP_SIZE }}"/></a></td>
       <td class="ic-notify middle"><div class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></div></td>
-      <td class="middle"><a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>. | <span class="grey">2 minutes ago.</span></td>
+      <td class="middle"><a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>. | <span class="grey">{{ notification.datetime|localtime|timeago }}.</span></td>
     </tr>
     {% endfor %}
     {% else %}

@@ -1,4 +1,5 @@
 {% load common_tags %}
+{% load tz %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -50,7 +51,7 @@
               </div>
               <div class="info"> 
                 <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
-                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span>  2 minutes ago.</span>
+                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span> {{ notification.datetime|localtime|timeago }}.</span>
               </div>
             </li>
             <li class="divider"></li>

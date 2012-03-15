@@ -3,13 +3,27 @@ import os
 from django.conf import settings
 
 from django import template
-from datetime import datetime
+from datetime import datetime, timedelta
+
+from django.utils.timesince import timesince
+from common.templatetags.tz import localtime
+from django.template.defaultfilters import date as dateformat
 
 FMT = 'JPEG'
 EXT = 'jpg'
 QUAL = 75
 
 register = template.Library()
+
+@register.filter()
+def timeago(d, format='m.d.Y f a'):
+    now = localtime(datetime.now())
+    delta = now - (d - timedelta(0, 0, d.microsecond))
+    if delta.days > 0:
+        return dateformat(d, format)
+    else:
+        return '%s ago' %timesince(d) 
+
 
 @register.filter()
 def path_to_url(path):
