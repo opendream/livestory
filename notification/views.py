@@ -19,11 +19,10 @@ def view(request):
 		return HttpResponse(json.dumps({'status': 200}), mimetype='application/json')
 
 	last_notification = Notification.objects.all().order_by('-datetime')[:1]
-	last_seven_days = last_notification[0].datetime - timedelta(7)
-	print 'last 7 days = ', last_seven_days
-	notifications = Notification.objects.filter(datetime__gt=last_seven_days)
-	for notification in notifications:
-		print notification.subject.get_profile().get_fullname(), notification.datetime
+	notifications = []
+	if len(last_notification) == 1:
+		last_seven_days = last_notification[0].datetime - timedelta(7)
+		notifications = Notification.objects.filter(datetime__gt=last_seven_days)
 
 	context = {
 		'notification7days': notifications
