@@ -4,7 +4,7 @@ from tests import factory
 from common import rm_user
 
 import os
-import settings
+from django.conf import settings
 import shutil
         
 class TestBlog(TestCase):
@@ -63,8 +63,8 @@ class TestBlog(TestCase):
     def test_blog_image_path(self):
         image_path = blog_image_path(self.blogs[0], self.blogs[0].image.file.name)
         
-        self.assertEquals(True, os.path.exists('%s/media/images/blog/%d' % (settings.base_path, self.blogs[0].user.id)))
-        self.assertEquals('%s/media/images/blog/%d/%d/blog_%d.jpg' % (settings.base_path, self.blogs[0].user.id, self.blogs[0].id, self.blogs[0].id), image_path)
+        self.assertEquals(True, os.path.exists('%s/media/images/blog/%d' % (settings.BASE_PATH, self.blogs[0].user.id)))
+        self.assertEquals('%s/media/images/blog/%d/%d/blog_%d.jpg' % (settings.BASE_PATH, self.blogs[0].user.id, self.blogs[0].id, self.blogs[0].id), image_path)
 
     def test_blog_default_private_is_private(self):
         self.assertEqual(True, self.blogs[0].private)

@@ -4,7 +4,7 @@ from tests import factory
 
 from common import rm_user
 
-import settings
+from django.conf import settings
 
 class TestAccount(TestCase):
     def setUp(self):

@@ -10,7 +10,7 @@ try :
 except ImportError:
     from PIL import Image
 
-import settings
+from django.conf import settings
 
 def account_image_url(instance, filename):
     ext = filename.split('.')[-1]

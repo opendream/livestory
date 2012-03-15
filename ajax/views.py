@@ -9,7 +9,7 @@ from common.views import file_save_upload
 
 import os
 import shutil
-import settings
+from django.conf import settings
 
 @login_required
 def ajax_account_image_upload(request):

@@ -7,7 +7,7 @@ from smtplib import SMTPAuthenticationError
 
 from account.models import AccountKey
 
-import settings
+from django.conf import settings
 
 @task()
 def send_invite(invite_list, base_url):
