@@ -638,7 +638,10 @@
         background: #f0f0f0 url('../img/add_photo.png') center center no-repeat !important;
         width: 280px;
         height: 150px;
-        
+    }
+
+    form#blog-form .dropbox .image-append {
+        height: 150px;
     }
     
     form#blog-form #fileupload-progress-wrapper {
@@ -890,6 +893,7 @@ html[xmlns] .clearfix { display: block; }
 
 .scour {
     position: relative;
+    margin: 0 auto;
 }
 .scour .rect {
     position: absolute;
