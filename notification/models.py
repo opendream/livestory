@@ -2,13 +2,15 @@ from blog.models import Blog
 from django.contrib.auth.models import User
 from django.db import models
 
+from datetime import datetime
+
 ACTION_CHOICES = (
     (1, 'loved'),
     (2, 'downloaded'),
 )
 
 class Notification(models.Model):
-    datetime = models.DateTimeField(auto_now_add=True)
+    datetime = models.DateTimeField()
     action = models.IntegerField()
 
     subject = models.ForeignKey(User)
@@ -21,8 +23,10 @@ class Notification(models.Model):
         actions = dict(ACTION_CHOICES)
         return actions[self.action]
 
-    def save(self):
+    def save(self, *args, **kwargs):
         try:
             notification = Notification.objects.get(subject=self.subject, action=self.action, blog=self.blog)
         except Notification.DoesNotExist:
-            super(Notification, self).save()
+            if not self.id and not self.datetime:
+                self.datetime = datetime.now()
+            super(Notification, self).save(*args, **kwargs)
