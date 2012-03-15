@@ -248,7 +248,7 @@ class TestBlogCreate(TestCase):
         self.client.logout()
         
     def test_blog_create_post_publish(self, again=True):
-        src = '%s/static/tests/blog.jpg' % settings.base_path
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
         params = {
@@ -288,7 +288,7 @@ class TestBlogCreate(TestCase):
         self.client.logout()
     
     def test_blog_create_post_draft(self, country='thailand', city='suratthanee', again=True):
-        src = '%s/static/tests/blog.jpg' % settings.base_path
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
         params = {
@@ -335,7 +335,7 @@ class TestBlogCreate(TestCase):
             self.assertEquals(1, same)
             
     def test_blog_create_post_miss_match_location(self):
-        src = '%s/static/tests/blog.jpg' % settings.base_path
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
         params = {
@@ -432,7 +432,7 @@ class TestBlogEdit(TestCase):
         self.client.logout()
 
     def test_blog_edit_post_publish(self):
-        src = '%s/static/tests/blog.jpg' % settings.base_path
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
         params = {
@@ -467,7 +467,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(self.loc_korea, blog.location)
 
     def test_blog_edit_post_draft_publish_post(self, again=True):
-        src = '%s/static/tests/blog.jpg' % settings.base_path
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
         params = {
@@ -506,7 +506,7 @@ class TestBlogEdit(TestCase):
             self.test_blog_edit_post_draft_publish_post(False)
     
     def test_blog_edit_post_draft_on_draft_post(self):
-        src = '%s/static/tests/blog.jpg' % settings.base_path
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
         params = {
@@ -541,7 +541,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(self.loc_korea, blog.location)
     
     def test_blog_edit_post_miss_match_location(self):
-        src = '%s/static/tests/blog.jpg' % settings.base_path
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
         params = {

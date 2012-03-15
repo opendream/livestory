@@ -13,7 +13,7 @@ register = template.Library()
 
 @register.filter()
 def path_to_url(path):
-	return path.replace(settings.base_path, '')
+	return path.replace(settings.BASE_PATH, '')
 
 def cache_path(path):
     directory, name = os.path.split(path)
