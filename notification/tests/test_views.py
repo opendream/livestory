@@ -5,6 +5,8 @@ from notification.models import Notification
 from notification.views import get_notifications
 from tests import factory
 
+from datetime import datetime, timedelta
+
 class TestHelperFunction(TestCase):
 	def setUp(self):
 		self.user = factory.create_user('john.doe@example.com', 'john.doe@example.com', 'john123', 'John', 'Doe')
@@ -103,4 +105,19 @@ class TestNotification(TestCase):
 
 		self.client.get(reverse('blog_love', args=[self.blog.id]))
 		self.assertEqual(2, len(get_notifications(self.user)))
+		self.client.logout()
+
+	def test_notification_display_last_seven_days(self):
+		user_day1 = factory.create_user('day1@example.com', 'day1@example.com', 'day1', 'Day', 'One')
+		factory.create_notification(user_day1, 1, self.blog, datetime.now() - timedelta(8))
+
+		user_day2 = factory.create_user('day2@example.com', 'day2@example.com', 'day2', 'Day', 'Two')
+		factory.create_notification(user_day2, 1, self.blog, datetime.now() - timedelta(1))
+
+		user_day3 = factory.create_user('day3@example.com', 'day3@example.com', 'day3', 'Day', 'Three')
+		factory.create_notification(user_day3, 1, self.blog, datetime.now() - timedelta(2))
+
+		self.client.login(username='john.doe@example.com', password='john123')
+		response = self.client.get(reverse('notification_view'))
+		self.assertEqual(3, len(response.context['notification7days']))
 		self.client.logout()
