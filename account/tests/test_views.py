@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from tests import factory
 
-import settings
+from django.conf import settings
 
 class TestAccount(TestCase):
     def setUp(self):

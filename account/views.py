@@ -19,7 +19,7 @@ from datetime import datetime
 import hashlib
 import os
 
-import settings
+from django.conf import settings
 
 # def account_login(request):
 #     print 'xxx' , request.user.is_authenticated()

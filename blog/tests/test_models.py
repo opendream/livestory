@@ -4,7 +4,7 @@ from tests import factory
 from common import rm_user
 
 import os
-import settings
+from django.conf import settings
 import shutil
         
 class TestBlog(TestCase):

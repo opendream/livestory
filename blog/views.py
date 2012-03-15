@@ -1,5 +1,5 @@
 import os
-import settings
+from django.conf import settings
 import shutil
 
 from django.contrib.auth.decorators import login_required
@@ -232,6 +232,7 @@ def blog_view(request, blog_id):
             'love_count': Love.objects.filter(blog=blog).count(),
             'loved_users': loved_users,
             'max_items': 7,
+            'CAN_SHARE_SN': settings.CAN_SHARE_SN,
         }
         return render(request, 'blog/blog_view.html', context)
     except Blog.DoesNotExist:

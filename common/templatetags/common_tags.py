@@ -1,6 +1,6 @@
 import hashlib
 import os
-import settings
+from django.conf import settings
 
 from django import template
 from datetime import datetime

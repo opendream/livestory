@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.conf import settings
 
-import settings as project_settings
+from django.conf import settings as project_settings
 
 from account.tasks import send_invite
 from tests import factory

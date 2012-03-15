@@ -6,7 +6,7 @@ from django.template.defaultfilters import slugify
 
 from location.models import Location
 
-import settings
+from django.conf import settings
 
 MOOD_CHOICES = (
     (1, 'Happy'     ), 

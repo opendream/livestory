@@ -13,8 +13,8 @@ from tests import factory
 from bs4 import BeautifulSoup
 
 from common import rm_user
-
-import settings
+from django.conf import settings
+from override_settings import override_settings
 import shutil
 
 class MyMock(object):
@@ -726,6 +726,20 @@ class TestBlogView(TestCase):
         # user is logged in, blog exists, blog is draft
         response = self.client.get('/blog/%s/unlove/' % self.blog_draft.id)
         self.assertEquals(403, response.status_code)
+        self.client.logout()
+
+    @override_settings(CAN_SHARE_SN=False)
+    def test_blog_display_social_network(self):
+        self.client.login(username='test3@example.com', password='test')
+        response = self.client.get('/blog/%s/view/' % self.blog.id)
+        self.assertNotContains(response, '<!-- AddThis Button BEGIN -->')
+        self.client.logout()
+
+    @override_settings(CAN_SHARE_SN=True)
+    def test_blog_display_social_network(self):
+        self.client.login(username='test3@example.com', password='test')
+        response = self.client.get('/blog/%s/view/' % self.blog.id)
+        self.assertContains(response, '<!-- AddThis Button BEGIN -->')
         self.client.logout()
         
         

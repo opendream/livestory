@@ -1,5 +1,5 @@
 import shutil
-import settings
+from django.conf import settings
 
 def rm_user(id):
     try:

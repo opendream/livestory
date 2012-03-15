@@ -1,4 +1,4 @@
-import settings
+from django.conf import settings
 from notification.views import get_notifications
 
 def site_information(request):
@@ -10,6 +10,5 @@ def site_information(request):
         'AVATAR_TOP_SIZE': settings.AVATAR_TOP_SIZE,
         'BLOG_PREVIEW_SIZE': settings.BLOG_PREVIEW_SIZE,
         'USE_TZ': settings.USE_TZ,
-        'CAN_SHARE_SN': settings.CAN_SHARE_SN,
         'notifications': get_notifications(request.user)[:settings.NOTIFICATION_POPUP_NUM],
     }
