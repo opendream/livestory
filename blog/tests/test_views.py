@@ -787,14 +787,12 @@ class TestAllPage(TestCase):
         
         blogs = [ blog.id for blog in self.blogs[3:9]]
         blogs.reverse()
-        
-        print context['blogs']
-        
+                
         self.assertTemplateUsed(response, 'blog/blog_all.html')
         self.assertEquals(200, response.status_code)
         self.assertEquals(6, context['blogs'].count())
         self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
-        self.assertEquals(1, context['pagination'].num_pages)
+        self.assertEquals(1, context['pager'].num_pages)
         self.assertEquals(1, context['page'])
         
         # Authenticated =================
@@ -809,7 +807,30 @@ class TestAllPage(TestCase):
         self.assertTemplateUsed(response, 'blog/blog_all.html')
         self.assertEquals(8, context['blogs'].count())
         self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
-        self.assertEquals(2, context['pagination'].num_pages)
+        self.assertEquals(2, context['pager'].num_pages)
         self.assertEquals(1, context['page'])
+        self.client.logout()
+        
+    def test_blog_all_get_with_page(self):
+        self.client.login(username='testuser1@example.com', password='password')
+        response = self.client.get('/blog/all/?page=2')
+        context = response.context
+        
+        blogs = [ blog.id for blog in self.blogs[0:3]]
+        blogs.reverse()
+        
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_all.html')
+        self.assertEquals(3, context['blogs'].count())
+        self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
+        self.assertEquals(2, context['pager'].num_pages)
+        self.assertEquals(2, context['page'])
+        
+        response = self.client.get('/blog/all/?page=3')
+        self.assertEquals(404, response.status_code)
+        
+        response = self.client.get('/blog/all/?page=0')
+        self.assertEquals(404, response.status_code)
+        
         self.client.logout()
         
