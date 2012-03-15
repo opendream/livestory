@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 from common.templatetags.common_tags import *
 
+import pytz
+
 try :
     import Image
 except ImportError:
@@ -19,6 +21,7 @@ class Account(models.Model):
     image     = models.ImageField(upload_to=account_image_url, null=True)
     firstname = models.CharField(max_length=200, null=True)
     lastname  = models.CharField(max_length=200, null=True)
+    timezone  = models.CharField(max_length=200, default='UTC', choices=[(tz, tz) for tz in pytz.common_timezones])
     
     user      = models.OneToOneField(User)
     
@@ -50,6 +53,7 @@ class Account(models.Model):
 class AccountKey(models.Model):
     
     key           = models.CharField(max_length=200)
+    view_notification = models.DateTimeField(auto_now_add=True)
     can_send_mail = models.NullBooleanField(null=True)
     modified      = models.DateTimeField(auto_now=True)
     
@@ -57,3 +61,8 @@ class AccountKey(models.Model):
         
     def __unicode__(self):
         return '%s has key %s' % (self.user.username, self.key)
+
+    def update_view_notification(self):
+        self.view_notification = datetime.now()
+        self.save()
+        return self.view_notification

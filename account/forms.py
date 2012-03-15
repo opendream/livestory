@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from account.models import Account
 
+import pytz
+
 class AccountInviteForm(forms.Form):
     invite = forms.CharField(widget=forms.Textarea)
     
@@ -17,6 +19,8 @@ class AccountProfileForm(forms.Form):
     confirm_password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'input-xlarge'}, render_value=False), required=False)
     
     image = forms.ImageField(required=False)
+    
+    timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.common_timezones], required=False)
     
     class Meta:
 		model = Account

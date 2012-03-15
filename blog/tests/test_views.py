@@ -7,22 +7,15 @@ from django.utils import simplejson as json
 from blog.models import Blog, Love
 from blog.views import blog_bulk_update_private
 from blog.views import blog_bulk_update_public
+from location.models import Location
 from mock import Mock, patch
 from tests import factory
 from bs4 import BeautifulSoup
 
+from common import rm_user
+
 import settings
 import shutil
-
-def rm_user(id):
-    try:
-        shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
-    except:
-        pass
-    try:
-        shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
-    except:
-        pass
 
 class MyMock(object):
     def __init__(self, **kwargs):
@@ -102,6 +95,11 @@ class TestBlogUpdate(TestCase):
         self.blogs[1].save()
         self.blogs[2].private = True
         self.blogs[2].save()
+        
+        self.user = user
+    
+    def tearDown(self):
+        rm_user(self.user.id)
 
     def test_simple_get(self):
         response = self.client.get('/blog/manage/')
@@ -185,8 +183,8 @@ class TestGetBlogManagementWithModel(TestCase):
         
     def test_mood(self):
         response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="mood-3">Happy</')
-        self.assertContains(response, 'class="mood-1">Sad</')
+        self.assertContains(response, 'class="mood-3">Excited</')
+        self.assertContains(response, 'class="mood-1">Happy</')
         
     def test_created(self):
         response = self.client.get('/blog/manage/')
@@ -249,7 +247,7 @@ class TestBlogCreate(TestCase):
         self.assertFormError(response, 'form', 'category', ['This field is required.'])
         self.client.logout()
         
-    def test_blog_create_post_publish(self):
+    def test_blog_create_post_publish(self, again=True):
         src = '%s/static/tests/blog.jpg' % settings.base_path
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
@@ -286,8 +284,10 @@ class TestBlogCreate(TestCase):
         self.assertEquals(False, blog.draft)
         self.assertEquals(self.category, blog.category)
         self.assertEquals(self.location, blog.location)
+        
+        self.client.logout()
     
-    def test_blog_create_post_draft(self):
+    def test_blog_create_post_draft(self, country='thailand', city='suratthanee', again=True):
         src = '%s/static/tests/blog.jpg' % settings.base_path
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
@@ -296,8 +296,8 @@ class TestBlogCreate(TestCase):
             'image_path': dst,
             'description': 'lorem ipsum (Draft)',
             'mood': '3',
-            'country': 'Uganda',
-            'city': 'Capital Uganda',
+            'country': country,
+            'city': city,
             'private': '0',
             'draft': '1',
             'category': str(self.category.id)
@@ -323,10 +323,41 @@ class TestBlogCreate(TestCase):
         self.assertEquals(False, blog.private)
         self.assertEquals(True, blog.draft)
         self.assertEquals(self.category, blog.category)
-        self.assertEquals('Uganda', blog.location.country)
-        self.assertEquals('Capital Uganda', blog.location.city)
-    
+        self.assertEquals('Thailand', blog.location.country)
+        self.assertEquals('Surat Thani', blog.location.city)
+        self.assertEquals('8.9034051', blog.location.lat)
+        self.assertEquals('99.0128926', blog.location.lng)
+        self.client.logout()
+        
+        if again:
+            self.test_blog_create_post_draft(country='thailand', city='surat thani', again=False)
+            same = Location.objects.filter(country='Thailand', city='Surat Thani').count()
+            self.assertEquals(1, same)
+            
+    def test_blog_create_post_miss_match_location(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world (Draft)',
+            'image_path': dst,
+            'description': 'lorem ipsum (Draft)',
+            'mood': '3',
+            'country': 'ljkljkljlkjlkjlkj',
+            'city': 'asdfdasffdffad',
+            'private': '0',
+            'draft': '1',
+            'category': str(self.category.id)
+        }
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
 
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params, follow=True)
+
+        self.assertEquals(True, response.context['location_error'])
+        self.client.logout()
+        
 class TestBlogEdit(TestCase):
     def setUp(self):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
@@ -508,6 +539,27 @@ class TestBlogEdit(TestCase):
         self.assertEquals(True, blog.draft)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
+    
+    def test_blog_edit_post_miss_match_location(self):
+        src = '%s/static/tests/blog.jpg' % settings.base_path
+        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world Edited',
+            'image_path': dst,
+            'description': 'lorem ipsum Edited',
+            'mood': '2',
+            'country': 'fdasdffafaf',
+            'city': 'tryeryrtytry',
+            'private': '1',
+            'draft': '1',
+            'category': str(self.cat_travel.id)
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
+
+        self.assertEquals(True, response.context['location_error'])
+        self.client.logout()
 
 
 class TestBlogView(TestCase):

@@ -152,6 +152,7 @@ def account_profile_edit(request):
 			    
 			account.firstname = form.cleaned_data.get('firstname')
 			account.lastname  = form.cleaned_data.get('lastname')
+			account.timezone  = form.cleaned_data.get('timezone')
 			# TODO: save avatar
 			account.save()
 						
