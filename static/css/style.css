@@ -194,15 +194,6 @@
     .notify, .post-blog, .invite {margin-top: 2px;}
     
     /*------ Profile dropdown ------*/
-    .btn-group .profile-toggle{
-        background: transparent;
-        padding: 0;
-        border: none;
-        -moz-box-shadow: none;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-        text-shadow: none;
-    }
     .profile-toggle img{ vertical-align: middle; margin-right: 5px;}
     .dropdown .dropdown-menu{
         top: 32px;
@@ -403,10 +394,12 @@
     }
     .status{
         position: absolute;
-        bottom: 10px;
+        bottom: 5px;
         right: 10px;
         padding: 5px 10px;
         color: #ddd;
+        font-size: 11px;
+        line-height: 16px;
         background: rgba(0,0,0,0.5);
     }
     #title-blog{
@@ -612,7 +605,7 @@
         background: url('../img/bg-drop.png') no-repeat !important;
     }
     .dropbox .image-append{
-        width: 102px;
+        width: 280px;
         height: 102px;
         z-index: 1000;
     }
@@ -671,11 +664,7 @@
     .image-delete {
         background-position: -90px 0;
     }
-    .edit-post-link {
-        width: 100px;
-    }
     
-s
 /****************/
 /* Notification */
 /****************/
@@ -754,52 +743,6 @@ s
         zoom: 1;
         *display: inline;
         _height: 255px;
-    }
-
-/****************/
-/* Notification */
-/****************/
-    .ic-status{
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        text-indent: -999em;
-        background: url('../img/ic-notify.png') no-repeat ;
-    }
-    .ic-download-notify{ background-position: 0 -12px;}
-    
-    .avatar{ width: 35px;}
-    .ic-notify{ width: 12px; padding: 0 !important;}
-    .middle{ vertical-align: middle !important;}
-    
-    .table-list th, .table-list td{ border: none; }
-    .table-striped tbody tr:nth-child(odd) td, .table-striped tbody tr:nth-child(odd) th{ background: #f6f6f6;}
-    
-    .dropdown-list{
-        max-width: 335px;
-        width: 335px;
-    }
-    
-    .dropdown-list li{ padding: 5px 10px; clear: both;}
-    .dropdown-list li:hover{ background: #f2f2f2;}
-    .dropdown-list .divider{ margin: 0 1px; padding: 0;}
-    
-    .dropdown-list a{ display: inline; padding: 0; color: #390 !important;}
-    
-    .dropdown-list .avatar{
-        float: left;
-        margin-right: 10px;
-    }
-
-    .dropdown-list .info{
-        width: 80%;
-        float: left;
-    }
-    .dropdown-list .info span{ font-size: 12px;}
-    
-    .view-all{
-        text-align: center;
-        padding: 10px !important;
     }
 
 /*****************/
@@ -895,37 +838,6 @@ s
         #navigation{ margin: 0;}
         #navigation h1 { margin: 10px 0 0;}
         
-/*
-        .menu{
-            clear: both;
-            width: 310px;
-        }
-        .menu a{ height: 59px; }
-        .menu .popular{
-            width: 55px;
-            margin-right: 13px;
-            background-position: 0 -140px;
-        }
-        .menu .place{
-            width: 53px;
-            margin-right: 12px;
-            background-position: -56px -140px;
-        }
-        .menu .moods{
-            width: 53px;
-            margin-right: 13px;
-            background-position: -109px -140px;
-        }
-        .menu .categories{
-            width: 75px;
-            background-position: -163px -140px;
-        }
-        
-        .popular:hover, .popular.active{ background-position: 0 -199px; }
-        .place:hover, .place.active{ background-position: -56px -199px; }
-        .moods:hover, .moods.active{ background-position: -109px -199px; }
-        .categories:hover, .categories.active{ background-position: -163px -199px; }
-*/
         /* Grid */
         .grid{ width: 138px;}
         .grid-colspan{ width: 435px; height: 100px;}
