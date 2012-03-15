@@ -748,3 +748,89 @@ class TestHomePage(TestCase):
         self.assertTemplateUsed(response, 'blog/blog_home.html')
         self.client.logout()
 
+class TestAllPage(TestCase):
+    def setUp(self):
+        self.user1 = factory.create_user('testuser1@example.com', 'testuser1@example.com', 'password', 'John', 'Doe 1', True)
+        self.user2 = factory.create_user('testuser2@example.com', 'testuser2@example.com', 'password', 'John', 'Doe 2', True)
+        self.category1 = factory.create_category('Animal', 'animal')
+        self.category2 = factory.create_category('Food', 'food')
+        self.location1 = factory.create_location('Japan', 'Tokyo', '0', '0')
+        self.location2 = factory.create_location('Thailand', 'Bangkok', '0', '0')
+        
+        blogs = Blog.objects.all()
+        for blog in blogs:
+            blog.delete()
+        
+        self.blogs = [
+            factory.create_blog('Blog 1', self.user1, self.category1, self.location1, private=True ), 
+            factory.create_blog('Blog 2', self.user1, self.category1, self.location2, private=True ), 
+            factory.create_blog('Blog 3', self.user1, self.category1, self.location1, private=True ), 
+            factory.create_blog('Blog 4', self.user1, self.category2, self.location2, private=False), 
+            factory.create_blog('Blog 5', self.user1, self.category2, self.location1, private=False), 
+            factory.create_blog('Blog 6', self.user1, self.category2, self.location2, private=False), 
+            factory.create_blog('Blog 7', self.user2, self.category1, self.location1, private=False), 
+            factory.create_blog('Blog 8', self.user2, self.category1, self.location2, private=False), 
+            factory.create_blog('Blog 9', self.user2, self.category1, self.location1, private=False), 
+            factory.create_blog('Blog10', self.user2, self.category2, self.location2, private=True ), 
+            factory.create_blog('Blog11', self.user2, self.category2, self.location1, private=True ), 
+            factory.create_blog('Blog12', self.user2, self.category2, self.location2, private=True , draft=True)
+        ]
+
+    def tearDown(self):
+        rm_user(self.user1.id)
+        rm_user(self.user2.id)
+        
+    def test_blog_all_get(self):
+        # Anonymous =====================
+        response = self.client.get('/blog/all/')
+        context = response.context
+        
+        blogs = [ blog.id for blog in self.blogs[3:9]]
+        blogs.reverse()
+                
+        self.assertTemplateUsed(response, 'blog/blog_all.html')
+        self.assertEquals(200, response.status_code)
+        self.assertEquals(6, context['blogs'].count())
+        self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
+        self.assertEquals(1, context['pager'].num_pages)
+        self.assertEquals(1, context['page'])
+        
+        # Authenticated =================
+        self.client.login(username='testuser1@example.com', password='password')
+        response = self.client.get('/blog/all/')
+        context = response.context
+        
+        blogs = [ blog.id for blog in self.blogs[3:11]]
+        blogs.reverse()
+        
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_all.html')
+        self.assertEquals(8, context['blogs'].count())
+        self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
+        self.assertEquals(2, context['pager'].num_pages)
+        self.assertEquals(1, context['page'])
+        self.client.logout()
+        
+    def test_blog_all_get_with_page(self):
+        self.client.login(username='testuser1@example.com', password='password')
+        response = self.client.get('/blog/all/?page=2')
+        context = response.context
+        
+        blogs = [ blog.id for blog in self.blogs[0:3]]
+        blogs.reverse()
+        
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_all.html')
+        self.assertEquals(3, context['blogs'].count())
+        self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
+        self.assertEquals(2, context['pager'].num_pages)
+        self.assertEquals(2, context['page'])
+        
+        response = self.client.get('/blog/all/?page=3')
+        self.assertEquals(404, response.status_code)
+        
+        response = self.client.get('/blog/all/?page=0')
+        self.assertEquals(404, response.status_code)
+        
+        self.client.logout()
+        

@@ -1,6 +1,8 @@
 {% extends 'base_single.html' %}
 
 {% load common_tags %}
+{% load tz %}
+
 
 {% block head_title %}Latest Stories{% endblock %}
 
@@ -10,130 +12,44 @@
 {% block content %}
 <h2 class="oxfam-font ic-page-title">latest stories</h2>
 <ul class="thumbnails blog-thumbnails">
+  {% for blog in blogs %}
   <li class="span3">
     <div class="thumbnail">
       <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
+				<a href="{% url blog_view blog.id %}">
+          <img 
+            width="260" 
+            height="180" 
+            alt="{{ blog.title }}" 
+            src="{{ blog.image|crop:'260x180' }}" 
+          />
+        </a>
 				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
+					<span class="emoticon-icon emo_{{ rect.blog.get_mood_text|lower }}">Mood</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
 				</div>
 			</div>
       <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
+        <h4>{{ blog.title }}</h4>
+        <p class="posted"><span class="grey">Posted on {{ blog.created|localtime|date:"m.d.Y f a" }} in <a href="#" class="tag">Climate change</a></span></p>
       </div>
     </div>
   </li>
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
-				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
-				</div>
-			</div>
-      <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
-      </div>
-    </div>
-  </li>
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
-				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
-				</div>
-			</div>
-      <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
-      </div>
-    </div>
-  </li>
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
-				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
-				</div>
-			</div>
-      <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
-      </div>
-    </div>
-  </li>
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
-				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
-				</div>
-			</div>
-      <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
-      </div>
-    </div>
-  </li>
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
-				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
-				</div>
-			</div>
-      <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
-      </div>
-    </div>
-  </li>
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
-				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
-				</div>
-			</div>
-      <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
-      </div>
-    </div>
-  </li>
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-photo blog-thumbnail no-shadow">
-				<img src="img/thumbnail.jpg" alt="" title="">
-				<div class="status">
-					<span class="emoticon-icon emo_happy">Mood</span><span class="location">New York, USA</span>
-				</div>
-			</div>
-      <div class="caption">
-        <h4>Thumbnail 260*180</h4>
-        <p class="posted"><span class="grey">Posted on 11.02.2012 in <a href="#" class="tag">Climate change</a></span></p>
-      </div>
-    </div>
-  </li>
+  {% endfor %}
 </ul>
 
 <div class="pagination pagination-centered">
   <ul>
-    <li class="disabled"><a href="#">«</a></li>
-    <li class="active"><a href="#">1</a></li>
-    <li><a href="#">2</a></li>
-    <li><a href="#">3</a></li>
-    <li><a href="#">4</a></li>
-    <li><a href="#">5</a></li>
-    <li><a href="#">»</a></li>
+    {% if pagination.has_previous %}
+    <li class="disabled"><a href="?page={{ pagination.previous_page_number }}">«</a></li>
+    {% endif %}
+    {% for p in page_range %}
+    <li{% ifequal page p %} class="active"{% endifequal %}><a href="{% url blog_all %}?page={{ p }}">{{ p }}</a></li>
+    {% endfor %}
+    {% if pagination.has_next %}
+    <li><a href="?page={{ pagination.next_page_number }}">»</a></li>
+    {% endif %}
   </ul>
 </div>
+
 {% endblock %}
 
