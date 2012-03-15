@@ -8,10 +8,6 @@
 {% block content %}
 <h1 class="page-title">Notifications</h1>
 
-<div class="tab-menu">
-  <strong>All</strong> <span class="grey">(24)</span> | <a href="">Love</a> <span class="grey">(10)</span> | <a href="">Download</a> <span class="grey">(4)</span>
-</div>
-
 <table class="table table-striped table-list">
   <tbody>
     {% if notification7days %}
@@ -22,6 +18,10 @@
       <td class="middle"><a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>. | <span class="grey">2 minutes ago.</span></td>
     </tr>
     {% endfor %}
+    {% else %}
+    <tr class="no-notification">
+      <td>No notifications.</td>
+    </tr>
     {% endif %}
   </tbody>
 </table>
