@@ -15,7 +15,6 @@ def view(request):
 
 	# If request is ajax
 	if request.is_ajax():
-		print json.dumps({'status': 200})
 		return HttpResponse(json.dumps({'status': 200}), mimetype='application/json')
 
 	last_notification = Notification.objects.all().order_by('-datetime')[:1]
