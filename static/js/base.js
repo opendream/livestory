@@ -45,84 +45,93 @@ $(function () {
                 onSuccess({'result': 'complete'});
             }
         });
-        
+
         $('.fileupload', scope).bind('fileuploadstart', function () {
             var widget = $(this),
-                progressElement = $('#fileupload-progress').show(),
-                progressElementWrap = $('#fileupload-progress-wrapper').show(),
-                interval = 500,
-                total = 0,
-                loaded = 0,
-                loadedBefore = 0,
-                progressTimer,
-                drop = $('.drop-area').fadeOut(),
-                
-                progressHandler = function (e, data) {
-                    loaded = data.loaded;
-                    total = data.total;
-                },
-                stopHandler = function () {
-                    widget
-                        .unbind('fileuploadprogressall', progressHandler)
-                        .unbind('fileuploadstop', stopHandler);
-                    window.clearInterval(progressTimer);
-                    progressElement.fadeOut(function () {
-                        //progressElement.html('');
-                        progressElement.hide();
-                        progressElementWrap.hide();
-                        $('.image-border').hide();
-                        
-                        //drop.fadeIn();
-                    });
-                },
-                formatTime = function (seconds) {
-                    var date = new Date(seconds * 1000);
-                    return ('0' + date.getUTCHours()).slice(-2) + ':' +
-                        ('0' + date.getUTCMinutes()).slice(-2) + ':' +
-                        ('0' + date.getUTCSeconds()).slice(-2);
-                },
-                formatBytes = function (bytes) {
-                    if (bytes >= 1000000000) {
-                        return (bytes / 1000000000).toFixed(2) + ' GB';
-                    }
-                    if (bytes >= 1000000) {
-                        return (bytes / 1000000).toFixed(2) + ' MB';
-                    }
-                    if (bytes >= 1000) {
-                        return (bytes / 1000).toFixed(2) + ' KB';
-                    }
-                    return bytes + ' B';
-                },
-                formatPercentage = function (floatValue) {
-                    return (floatValue * 100)+ '%';
-                },
-                updateProgressElement = function (loaded, total, bps) {
-                    progressElement.children('#fileupload-complete').css('width', formatPercentage(loaded / total));
-                },
-                intervalHandler = function () {
-                    var diff = loaded - loadedBefore;
-                    if (!diff) {
-                        return;
-                    }
-                    loadedBefore = loaded;
-                    updateProgressElement(
-                        loaded,
-                        total,
-                        diff * (1000 / interval)
-                    );
-                };
+            progressElement = $('#fileupload-progress').show(),
+            progressElementWrap = $('#fileupload-progress-wrapper').show(),
+            interval = 500,
+            total = 0,
+            loaded = 0,
+            loadedBefore = 0,
+            progressTimer,
+            drop = $('.drop-area').fadeOut(),
+            
+            progressHandler = function (e, data) {
+                loaded = data.loaded;
+                total = data.total;
+            },
+            stopHandler = function () {
+                widget
+                    .unbind('fileuploadprogressall', progressHandler)
+                    .unbind('fileuploadstop', stopHandler);
+                window.clearInterval(progressTimer);
+                progressElement.fadeOut(function () {
+                    //progressElement.html('');
+                    progressElement.hide();
+                    progressElementWrap.hide();
+                    $('.image-border').hide();
+                    
+                    //drop.fadeIn();
+                });
+            },
+            formatTime = function (seconds) {
+                var date = new Date(seconds * 1000);
+                return ('0' + date.getUTCHours()).slice(-2) + ':' +
+                    ('0' + date.getUTCMinutes()).slice(-2) + ':' +
+                    ('0' + date.getUTCSeconds()).slice(-2);
+            },
+            formatBytes = function (bytes) {
+                if (bytes >= 1000000000) {
+                    return (bytes / 1000000000).toFixed(2) + ' GB';
+                }
+                if (bytes >= 1000000) {
+                    return (bytes / 1000000).toFixed(2) + ' MB';
+                }
+                if (bytes >= 1000) {
+                    return (bytes / 1000).toFixed(2) + ' KB';
+                }
+                return bytes + ' B';
+            },
+            formatPercentage = function (floatValue) {
+                return (floatValue * 100)+ '%';
+            },
+            updateProgressElement = function (loaded, total, bps) {
+                progressElement.children('#fileupload-complete').css('width', formatPercentage(loaded / total));
+            },
+            intervalHandler = function () {
+                var diff = loaded - loadedBefore;
+                if (!diff) {
+                    return;
+                }
+                loadedBefore = loaded;
+                updateProgressElement(
+                    loaded,
+                    total,
+                    diff * (1000 / interval)
+                );
+            };
             widget
                 .bind('fileuploadprogressall', progressHandler)
                 .bind('fileuploadstop', stopHandler);
             progressTimer = window.setInterval(intervalHandler, interval);
         });
-        
+    })
+    
+    $('.dropdown-toggle#notification-section').click(function(e) {
+        var self = this;
+        var url = '/notifications/';
+        var params = {};
+        var callback = function(result) {
+            if (result.status == 200) {
+                $(self).children('.notify').html('0');
+                // TODO. add class for zero notification
+            }
+        }
+        $.get(url, params, callback);
     });
-    
 
-    
-
-    $('.dropdown-toggle').mouseenter(function(e) {
+    /*$('.dropdown-toggle').mouseenter(function(e) {
         var $toggle = $(this);
         var closeDropdown = function(e) {
             $toggle.parent().removeClass('open');
@@ -130,5 +139,5 @@ $(function () {
         }
         $toggle.parent().addClass('open');
         $toggle.siblings('.dropdown-menu').mouseleave(closeDropdown);
-    });
+    });*/
 });

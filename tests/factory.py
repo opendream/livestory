@@ -1,5 +1,6 @@
 from account.models import Account, AccountKey
 from blog.models import Blog, Category, Location, Love
+from notification.models import Notification
 from django.contrib.auth.models import User
 from django.core.files.base import File as DjangoFile
 
@@ -45,4 +46,9 @@ def create_blog(title='Icecream', user = None, category = None, location = None,
     blog.save()
     
     return blog
+
+def create_notification(subject, action, blog, dt):
+    notification = Notification(subject=subject, action=action, blog=blog, datetime=dt)
+    notification.save()
+    return notification
     

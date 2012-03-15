@@ -23,33 +23,67 @@
   <!-- topbar -->
   {% if user.is_authenticated %}
   <div id="topbar">
-    <div class="container">
-    <a class="home" href="{% url blog_home %}">Home</a>
-    <div class="topbar-widget">
-      <div class="btn-group profile-group">
-      <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown">
-        {% if user.get_profile.image %}
-        <img src="{{ user.get_profile.image|crop:AVATAR_TOP_SIZE }}" alt=""/>
+    <div class="container navbar">
+      <a class="home" href="{% url blog_home %}">Home</a>
+      
+      <div class="topbar-widget">
+        {% if user.is_staff %}
+        <div class="invite pull-right"><a href="{% url account_invite %}" class="">Invite User</a></div>
+        
+        <span class="separate pull-right"></span>
         {% endif %}
-        <span>
+
+        <div class="post-blog pull-right"><a href="{% url blog_create %}" class="">Post Blog</a></div>
+        
+        <span class="separate pull-right"></span>
+        
+        <div class="nav dropdown dropdown-profile pull-right">
+          <a id="notification-section" class="dropdown-toggle" data-toggle="dropdown" href="#">
+          <div class="notify">{{ notifications|length }}</div><span class="notify-bottom"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-list">
+            {% if notifications %}
+            {% for notification in notifications %}
+            <li class="clearfix">
+              <div class="avatar">
+                <a href="#"><img src="{{ notification.subject.get_profile.get_image|crop:AVATAR_TOP_SIZE }}"/></a>
+              </div>
+              <div class="info"> 
+                <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
+                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span>  2 minutes ago.</span>
+              </div>
+            </li>
+            <li class="divider"></li>
+            {% endfor %}
+            {% else %}
+            <li class="clearfix">No notifications.</li>
+            <li class="divider"></li>
+            {% endif %}
+            <li class="view-all"><a href="{% url notification_view %}">View all notifications</a></li>
+          </ul>
+        </div>
+        
+        <span class="separate pull-right"></span>
+        
+        <div class="nav dropdown pull-right">
+          <a class="dropdown-toggle profile-toggle" data-toggle="dropdown" href="#">
+          {% if user.get_profile.image %}
+          <img src="{{ user.get_profile.get_image|crop:AVATAR_TOP_SIZE }}" alt=""/>
+          {% endif %}
+          <span>
           {% if user.get_profile.get_fullname %}
           {{ user.get_profile.get_fullname }}
           {% else %}
           {{ user.username }}
           {% endif %}
-        </span>
-      <span class="caret"></span></a>
-      <ul class="dropdown-menu">
-        <li><a href="{% url account_profile_edit %}">Edit Profile</a></li>
-        <li><a href="{% url account_logout %}">Logout</a></li>
-      </ul>
-    </div>
-    <div class="notify"><a href="#" class="rounded">24</a><span class="notify-bottom"></span></div>
-    <div class="post-blog"><a href="{% url blog_create %}" class="">Post Blog</a></div>
-    {% if user.is_staff %}
-    <div class="invite"><a href="{% url account_invite %}" class="">Invite User</a></div>
-    {% endif %}
-    </div>
+          </span>
+          <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url account_profile_edit %}">Edit Profile</a></li>
+            <li><a href="{% url account_logout %}">Logout</a></li>
+          </ul>
+        </div> <!-- dropdown -->
+      </div>
     </div>
   </div>
   {% endif %}

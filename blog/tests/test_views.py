@@ -573,7 +573,11 @@ class TestBlogView(TestCase):
         self.staff.save()
         self.category = factory.create_category('Animal', 'animal')
         self.location = factory.create_location('Japan', 'Tokyo')
+        
         self.blog = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
+        self.blog.private = False
+        self.blog.save()
+
         self.blog_private = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
         self.blog_private.private = True
         self.blog_private.save()
@@ -587,7 +591,6 @@ class TestBlogView(TestCase):
         Love(blog=self.blog_private, user=self.otheruser).save()
         Love(blog=self.blog_private, user=self.staff).save()
         Love(blog=self.blog_unlove, user=self.user3).save()
-        print self.user.id
     
     def tearDown(self):
         rm_user(self.user.id     )

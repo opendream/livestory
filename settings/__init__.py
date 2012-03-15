@@ -162,6 +162,7 @@ INSTALLED_APPS = (
     'blog',
     'common',
     'location',
+    'notification',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -218,6 +219,8 @@ TEMP_ROOT = MEDIA_ROOT + 'temp/'
 AVATAR_SIZE = '94x94'
 AVATAR_TOP_SIZE = '24x24'
 BLOG_PREVIEW_SIZE = '470x1000'
+CAN_SHARE_SN = False
+NOTIFICATION_POPUP_NUM = 7
 
 # DJANGO-NOSE
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -228,6 +231,7 @@ NOSE_ARGS = [
     '--cover-package='
         'account,'
         'blog,'
-        'location',
+        'location,'
+        'notification',
 ]
 

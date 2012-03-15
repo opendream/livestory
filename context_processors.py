@@ -1,5 +1,7 @@
+import settings
+from notification.views import get_notifications
+
 def site_information(request):
-    import settings
     return {
         'SITE_NAME': settings.SITE_NAME,
         'SITE_LOGO': settings.SITE_LOGO,
@@ -8,4 +10,6 @@ def site_information(request):
         'AVATAR_TOP_SIZE': settings.AVATAR_TOP_SIZE,
         'BLOG_PREVIEW_SIZE': settings.BLOG_PREVIEW_SIZE,
         'USE_TZ': settings.USE_TZ,
+        'CAN_SHARE_SN': settings.CAN_SHARE_SN,
+        'notifications': get_notifications(request.user)[:settings.NOTIFICATION_POPUP_NUM],
     }

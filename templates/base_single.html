@@ -9,6 +9,7 @@
   <h1 class="oxfam-font">
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
   </h1>
+  {% if user.is_authenticated %}
   <ul class="menu">
     <li><a href="#" class="stories active">All Stories</a></li>
     <li><a href="#" class="popular active">Popular</a></li>
@@ -16,6 +17,7 @@
     <li><a href="#" class="moods">Moods</a></li>
     <li><a href="#" class="categories">Categories</a></li>
   </ul>
+  {% endif %}
 </div>
 
 <div class="clear-both">
