@@ -30,7 +30,7 @@ def create_location(country='Thailand', city='Bangkok', lat='100.00', lng='13.00
     location.save()
     return location
 
-def create_blog(title='Icecream', user = None, category = None, location = None, mood=1, private=False):
+def create_blog(title='Icecream', user = None, category = None, location = None, mood=1, private=True, draft=False):
     user = user or create_user()
     category = category or create_category()
     location = location or create_location()
@@ -41,6 +41,7 @@ def create_blog(title='Icecream', user = None, category = None, location = None,
     blog.location = location
     blog.mood = mood
     blog.private = private
+    blog.draft = draft
     blog.save()
     blog.image.save('blog_%s.jpg' % blog.id, DjangoFile(open('static/tests/blog.jpg'), 'blog.jpg'))
     blog.save()

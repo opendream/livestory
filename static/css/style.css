@@ -945,3 +945,17 @@ html[xmlns] .clearfix { display: block; }
 
 /* Hide visibility on blog post */
 .field-private { display: none; }
+
+/*****************/
+/* Crosalot zone */
+/*****************/
+
+.messages p:first-letter {
+    text-transform: uppercase;
+}
+.messages p {
+    font-weight: bold;
+      float: left;
+      line-height: 15px;
+      padding-right: 5px;
+}

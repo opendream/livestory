@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.utils import simplejson as json
 from django.db.models import Count, Sum
+from django.core.paginator import Paginator
 
 from account.models import Account
 from blog.models import *
@@ -298,7 +299,22 @@ def blog_unlove(request, blog_id):
             raise Http404
             
 def blog_all(request):
-    return render(request, 'blog/blog_all.html', {})
+    items = Blog.objects.filter(draft=False)
+    if not request.user.is_authenticated():
+        items = items.filter(private=False)
+    items = items.order_by('-created')
+    
+    p = request.GET.get('page') or 1
+    pagination = Paginator(items, 8)
+    blogs = pagination.page(p).object_list
+    
+    context = {
+        'blogs': blogs,
+        'pagination': pagination,
+        'page': p
+    }
+    
+    return render(request, 'blog/blog_all.html', context)
 
 def blog_save_location(country, city):
     try:

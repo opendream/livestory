@@ -757,18 +757,24 @@ class TestAllPage(TestCase):
         self.location1 = factory.create_location('Japan', 'Tokyo', '0', '0')
         self.location2 = factory.create_location('Thailand', 'Bangkok', '0', '0')
         
-        factory.create_blog('Blog 1', self.user1, self.category1, self.location1, private=False)
-        factory.create_blog('Blog 2', self.user1, self.category1, self.location2, private=False)
-        factory.create_blog('Blog 3', self.user1, self.category1, self.location1, private=False)
-        factory.create_blog('Blog 4', self.user1, self.category2, self.location2, private=True )
-        factory.create_blog('Blog 5', self.user1, self.category2, self.location1, private=True )
-        factory.create_blog('Blog 6', self.user1, self.category2, self.location2, private=True )
-        factory.create_blog('Blog 7', self.user2, self.category1, self.location1, private=True )
-        factory.create_blog('Blog 8', self.user2, self.category1, self.location2, private=True )
-        factory.create_blog('Blog 9', self.user2, self.category1, self.location1, private=True )
-        factory.create_blog('Blog10', self.user2, self.category2, self.location2, private=False)
-        factory.create_blog('Blog11', self.user2, self.category2, self.location1, private=False)
-        factory.create_blog('Blog12', self.user2, self.category2, self.location2, private=False)
+        blogs = Blog.objects.all()
+        for blog in blogs:
+            blog.delete()
+        
+        self.blogs = [
+            factory.create_blog('Blog 1', self.user1, self.category1, self.location1, private=True ), 
+            factory.create_blog('Blog 2', self.user1, self.category1, self.location2, private=True ), 
+            factory.create_blog('Blog 3', self.user1, self.category1, self.location1, private=True ), 
+            factory.create_blog('Blog 4', self.user1, self.category2, self.location2, private=False), 
+            factory.create_blog('Blog 5', self.user1, self.category2, self.location1, private=False), 
+            factory.create_blog('Blog 6', self.user1, self.category2, self.location2, private=False), 
+            factory.create_blog('Blog 7', self.user2, self.category1, self.location1, private=False), 
+            factory.create_blog('Blog 8', self.user2, self.category1, self.location2, private=False), 
+            factory.create_blog('Blog 9', self.user2, self.category1, self.location1, private=False), 
+            factory.create_blog('Blog10', self.user2, self.category2, self.location2, private=True ), 
+            factory.create_blog('Blog11', self.user2, self.category2, self.location1, private=True ), 
+            factory.create_blog('Blog12', self.user2, self.category2, self.location2, private=True , draft=True)
+        ]
 
     def tearDown(self):
         rm_user(self.user1.id)
@@ -777,20 +783,33 @@ class TestAllPage(TestCase):
     def test_blog_all_get(self):
         # Anonymous =====================
         response = self.client.get('/blog/all/')
-        
         context = response.context
+        
+        blogs = [ blog.id for blog in self.blogs[3:9]]
+        blogs.reverse()
+        
+        print context['blogs']
         
         self.assertTemplateUsed(response, 'blog/blog_all.html')
         self.assertEquals(200, response.status_code)
         self.assertEquals(6, context['blogs'].count())
-        self.assertNotContains('pagination', context['pager'])
+        self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
+        self.assertEquals(1, context['pagination'].num_pages)
+        self.assertEquals(1, context['page'])
         
         # Authenticated =================
         self.client.login(username='testuser1@example.com', password='password')
         response = self.client.get('/blog/all/')
+        context = response.context
+        
+        blogs = [ blog.id for blog in self.blogs[3:11]]
+        blogs.reverse()
+        
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_all.html')
         self.assertEquals(8, context['blogs'].count())
-        self.assertContains('pagination', context['pager'])
+        self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
+        self.assertEquals(2, context['pagination'].num_pages)
+        self.assertEquals(1, context['page'])
         self.client.logout()
         
