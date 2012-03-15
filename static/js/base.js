@@ -45,23 +45,9 @@ $(function () {
                 onSuccess({'result': 'complete'});
             }
         });
-    })
-    
-    $('.dropdown-toggle#notification-section').click(function(e) {
-        var self = this;
-        var url = '/notifications/';
-        var params = {};
-        var callback = function(result) {
-            if (result.status == 200) {
-                $(self).children('.notify').html('0');
-                // TODO. add class for zero notification
-            }
-        }
-        $.get(url, params, callback);
-    });
-        
-    $('.fileupload', scope).bind('fileuploadstart', function () {
-        var widget = $(this),
+
+        $('.fileupload', scope).bind('fileuploadstart', function () {
+            var widget = $(this),
             progressElement = $('#fileupload-progress').show(),
             progressElementWrap = $('#fileupload-progress-wrapper').show(),
             interval = 500,
@@ -130,7 +116,19 @@ $(function () {
                 .bind('fileuploadstop', stopHandler);
             progressTimer = window.setInterval(intervalHandler, interval);
         });
-        
+    })
+    
+    $('.dropdown-toggle#notification-section').click(function(e) {
+        var self = this;
+        var url = '/notifications/';
+        var params = {};
+        var callback = function(result) {
+            if (result.status == 200) {
+                $(self).children('.notify').html('0');
+                // TODO. add class for zero notification
+            }
+        }
+        $.get(url, params, callback);
     });
 
     /*$('.dropdown-toggle').mouseenter(function(e) {
