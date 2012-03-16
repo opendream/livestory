@@ -9,7 +9,7 @@
   <h1 class="oxfam-font">
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
   </h1>
-  {% if user.is_authenticated %}
+  {% if not PRIVATE or user.is_authenticated %}
   <ul class="menu">
     <li><a href="{% url blog_home %}" class="popular active">Popular</a></li>
     <li><a href="{% url blog_all %}" class="stories active">All Stories</a></li>

@@ -56,7 +56,7 @@ class Blog(models.Model):
     image       = models.ImageField(upload_to=blog_image_url)
     description = models.TextField(null=True)
     mood        = models.IntegerField(default=0, choices=MOOD_CHOICES)
-    private     = models.BooleanField(default=True, choices=PRIVATE_CHOICES)
+    private     = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
     draft       = models.BooleanField(default=False, choices=DRAFT_CHOICES)
     created     = models.DateTimeField(auto_now_add=True)
     modified    = models.DateTimeField(auto_now=True)

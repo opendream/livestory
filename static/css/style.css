@@ -943,9 +943,6 @@ html[xmlns] .clearfix { display: block; }
     font-size: 1em;
 }
 
-/* Hide visibility on blog post */
-.field-private { display: none; }
-
 /*****************/
 /* Crosalot zone */
 /*****************/

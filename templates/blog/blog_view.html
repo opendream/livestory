@@ -102,9 +102,10 @@ $(document).ready(function() {
 
       <span class="grey">Posted on {{ blog.created|localtime|date:"m.d.Y f a" }} in</span> <a href="#">{{ blog.category }}</a>
 
-      {% ifequal blog.user.id user.id %}
-      <a href="{% url blog_edit blog.id %}" class="edit-post-link">Edit this post</a>
-      {% endifequal %}
+      {% if blog.user.id == user.id or user.is_staff %}
+      <br /><br />
+      <div><a href="{% url blog_edit blog.id %}" class="edit-post-link">Edit this post</a></div>
+      {% endif %}
       
     </div> <!-- span3 -->
     
