@@ -163,6 +163,7 @@ INSTALLED_APPS = (
     'common',
     'location',
     'notification',
+    'taggit',
 )
 
 # A sample logging configuration. The only tangible logging
