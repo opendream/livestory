@@ -6,8 +6,6 @@ class TimezoneMiddleware(object):
         tz = pytz.timezone('UTC')
 
         if request.user.is_authenticated():
-            print 'yyyyyyy'
-            print request.user.get_profile().timezone
             tz = pytz.timezone(request.user.get_profile().timezone)
         
         timezone.activate(tz)

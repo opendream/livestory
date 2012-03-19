@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.utils import simplejson as json
 from django.db.models import Count, Sum
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from account.models import Account
 from blog.models import *
@@ -20,7 +21,7 @@ from location.models import Location
 from common.scour import Scour
 from common.views import check_file_exists
 from common.templatetags.common_tags import cache_path
-from common import ucwords
+from common import ucwords, get_page_range
 
 def blog_home(request):
     if not request.user.is_authenticated():
@@ -299,7 +300,31 @@ def blog_unlove(request, blog_id):
             raise Http404
             
 def blog_all(request):
-    return render(request, 'blog/blog_all.html', {})
+    items = Blog.objects.filter(draft=False)
+    if not request.user.is_authenticated():
+        items = items.filter(private=False)
+    items = items.order_by('-created')
+    
+    pager = Paginator(items, 8)
+    p = request.GET.get('page') or 1
+    
+    try:
+        pagination = pager.page(p)
+        blogs = pagination.object_list
+    except (PageNotAnInteger, EmptyPage):
+        raise Http404
+    
+    p = int(p)
+    
+    context = {
+        'blogs': blogs,
+        'pagination': pagination,
+        'page': p,
+        'pager': pager,
+        'page_range': get_page_range(pagination)
+    }
+    
+    return render(request, 'blog/blog_all.html', context)
 
 def blog_save_location(country, city):
     try:
