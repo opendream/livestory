@@ -1,6 +1,8 @@
 from django import forms
 from blog.models import Blog, Category
 from blog.models import Location
+from taggit.managers import TaggableManager
+from taggit.forms import TagField
 
 class BlogCreateForm(forms.ModelForm):
 	image = forms.ImageField(required=False)
@@ -18,6 +20,7 @@ class BlogCreateForm(forms.ModelForm):
 	mood = forms.IntegerField()
 	private = forms.IntegerField()
 	category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label=None)
+	tags = TagField(required=False)
 
 	class Meta:
 		model = Blog

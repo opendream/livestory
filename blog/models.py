@@ -1,12 +1,12 @@
 import os
 
-from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import models
 from django.template.defaultfilters import slugify
 
 from location.models import Location
-
-from django.conf import settings
+from taggit.managers import TaggableManager
 
 MOOD_CHOICES = (
     (1, 'Happy'     ), 
@@ -64,6 +64,7 @@ class Blog(models.Model):
     user        = models.ForeignKey(User)
     category    = models.ForeignKey(Category)
     location    = models.ForeignKey(Location)
+    tags        = TaggableManager()
     
     def __unicode__(self):
         return '(%d) %s' % (self.id, self.title)
@@ -80,6 +81,3 @@ class Love(models.Model):
     
     def __unicode__(self):
         return '%s love %s' % (self.user.username, self.blog.title)
-
-        
-        
