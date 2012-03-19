@@ -11,11 +11,11 @@
   </h1>
   {% if not PRIVATE or user.is_authenticated %}
   <ul class="menu">
-    <li><a href="{% url blog_home %}" class="popular active">Popular</a></li>
-    <li><a href="{% url blog_all %}" class="stories">All Stories</a></li>
-    <li><a href="#" class="place">Place</a></li>
-    <li><a href="#" class="moods">Moods</a></li>
-    <li><a href="#" class="categories">Categories</a></li>
+    <li><a href="{% url blog_home %}" class="popular active" id="menu-home">Popular</a></li>
+    <li><a href="{% url blog_all %}" class="stories" id="menu-all">All Stories</a></li>
+    <li><a href="#" class="place has-filter" id="menu-place">Place</a></li>
+    <li><a href="#" class="moods has-filter" id="menu-mood">Moods</a></li>
+    <li><a href="#" class="categories has-filter" id="menu-category">Categories</a></li>
   </ul>
   {% endif %}
 </div>

@@ -776,18 +776,18 @@ class TestAllPage(TestCase):
             blog.delete()
         
         self.blogs = [
-            factory.create_blog('Blog 1', self.user1, self.category1, self.location1, private=True ), 
-            factory.create_blog('Blog 2', self.user1, self.category1, self.location2, private=True ), 
-            factory.create_blog('Blog 3', self.user1, self.category1, self.location1, private=True ), 
-            factory.create_blog('Blog 4', self.user1, self.category2, self.location2, private=False), 
-            factory.create_blog('Blog 5', self.user1, self.category2, self.location1, private=False), 
-            factory.create_blog('Blog 6', self.user1, self.category2, self.location2, private=False), 
-            factory.create_blog('Blog 7', self.user2, self.category1, self.location1, private=False), 
-            factory.create_blog('Blog 8', self.user2, self.category1, self.location2, private=False), 
-            factory.create_blog('Blog 9', self.user2, self.category1, self.location1, private=False), 
-            factory.create_blog('Blog10', self.user2, self.category2, self.location2, private=True ), 
-            factory.create_blog('Blog11', self.user2, self.category2, self.location1, private=True ), 
-            factory.create_blog('Blog12', self.user2, self.category2, self.location2, private=True , draft=True)
+            factory.create_blog('Blog 1', self.user1, self.category1, self.location1, mood=2, private=True ), 
+            factory.create_blog('Blog 2', self.user1, self.category1, self.location2, mood=2, private=True ), 
+            factory.create_blog('Blog 3', self.user1, self.category1, self.location1, mood=2, private=True ), 
+            factory.create_blog('Blog 4', self.user1, self.category2, self.location2, mood=2, private=False), 
+            factory.create_blog('Blog 5', self.user1, self.category2, self.location1, mood=3, private=False), 
+            factory.create_blog('Blog 6', self.user1, self.category2, self.location2, mood=3, private=False), 
+            factory.create_blog('Blog 7', self.user2, self.category1, self.location1, mood=3, private=False), 
+            factory.create_blog('Blog 8', self.user2, self.category1, self.location2, mood=4, private=False), 
+            factory.create_blog('Blog 9', self.user2, self.category1, self.location1, mood=4, private=False), 
+            factory.create_blog('Blog10', self.user2, self.category2, self.location2, mood=5, private=True ), 
+            factory.create_blog('Blog11', self.user2, self.category2, self.location1, mood=5, private=True ), 
+            factory.create_blog('Blog12', self.user2, self.category2, self.location2, mood=5, private=True , draft=True)
         ]
 
     def tearDown(self):
@@ -802,12 +802,13 @@ class TestAllPage(TestCase):
         blogs = [ blog.id for blog in self.blogs[3:9]]
         blogs.reverse()
                 
-        self.assertTemplateUsed(response, 'blog/blog_all.html')
+        self.assertTemplateUsed(response, 'blog/blog_list.html')
         self.assertEquals(200, response.status_code)
         self.assertEquals(6, context['blogs'].count())
         self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
         self.assertEquals(1, context['pager'].num_pages)
         self.assertEquals(1, context['page'])
+        self.assertEquals('Latest Stories', context['title'])
         
         # Authenticated =================
         self.client.login(username='testuser1@example.com', password='password')
@@ -818,11 +819,12 @@ class TestAllPage(TestCase):
         blogs.reverse()
         
         self.assertEquals(200, response.status_code)
-        self.assertTemplateUsed(response, 'blog/blog_all.html')
+        self.assertTemplateUsed(response, 'blog/blog_list.html')
         self.assertEquals(8, context['blogs'].count())
         self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
         self.assertEquals(2, context['pager'].num_pages)
         self.assertEquals(1, context['page'])
+        self.assertEquals('Latest Stories', context['title'])
         self.client.logout()
         
     def test_blog_all_get_with_page(self):
@@ -834,11 +836,12 @@ class TestAllPage(TestCase):
         blogs.reverse()
         
         self.assertEquals(200, response.status_code)
-        self.assertTemplateUsed(response, 'blog/blog_all.html')
+        self.assertTemplateUsed(response, 'blog/blog_list.html')
         self.assertEquals(3, context['blogs'].count())
         self.assertEquals(blogs, [ blog.id for blog in context['blogs']])
         self.assertEquals(2, context['pager'].num_pages)
         self.assertEquals(2, context['page'])
+        self.assertEquals('Latest Stories', context['title'])
         
         response = self.client.get('/blog/all/?page=3')
         self.assertEquals(404, response.status_code)
@@ -847,4 +850,29 @@ class TestAllPage(TestCase):
         self.assertEquals(404, response.status_code)
         
         self.client.logout()
+    
+    def test_blog_mood_get(self):
+        response = self.client.get('/blog/mood/')
+        self.assertEquals(404, response.status_code)
         
+        response = self.client.get('/blog/mood/foo/')
+        self.assertEquals(404, response.status_code)
+        
+        response = self.client.get('/blog/mood/sad/')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(1, context['blogs'].count())
+        self.assertEquals('Sad', context['title'])
+        self.assertEquals({'mood': 'sad'}, context['filter'])
+        
+        response = self.client.get('/blog/mood/excited/')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(3, context['blogs'].count())
+        self.assertEquals('Excited', context['title'])
+        self.assertEquals({'mood': 'excited'}, context['filter'])
+        
+        response = self.client.get('/blog/mood/frustrated/')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(0, context['blogs'].count())

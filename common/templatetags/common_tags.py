@@ -144,5 +144,3 @@ def crop(imagefield, size):
     """
     
     return scale(imagefield, size, 'crop')
-    
-

@@ -140,4 +140,13 @@ $(function () {
         $toggle.parent().addClass('open');
         $toggle.siblings('.dropdown-menu').mouseleave(closeDropdown);
     });*/
+    
+    $('.field-mood .mood-list input').change(function (e) {
+        $('.field-mood .mood-list .mood-icon').removeClass('active');
+        $(this).siblings('.mood-icon').addClass('active');
+    });
+    
+    $('a.has-filter').click(function (e) {
+        e.preventDefault();
+    })
 });
