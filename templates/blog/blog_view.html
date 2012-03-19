@@ -100,7 +100,7 @@ $(document).ready(function() {
       
       <p class="block">{{ blog.description }}</p>
 
-      <span class="grey">Posted on {{ blog.created|localtime|date:"m.d.Y f a" }} in</span> <a href="#">{{ blog.category }}</a>
+      <span class="grey">Posted on {{ blog.created|localtime|timeago }} in</span> <a href="#">{{ blog.category }}</a>
 
       {% if blog.user.id == user.id or user.is_staff %}
       <br /><br />
