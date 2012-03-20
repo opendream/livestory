@@ -4,6 +4,35 @@
 
 {% block head_title %}All Stories{% endblock %}
 
+{% block html_head %}
+<script>
+$(document).ready(function() {
+	var $checkall = $('form table tr:first th input[type=checkbox]');
+	var $checkboxes = $('input[type=checkbox][name=blog_id]');
+	$checkall.click(function(e) {
+		if ($(this).is(':checked')) {
+			$checkboxes.attr('checked', 'checked');
+		} else {
+			$checkboxes.removeAttr('checked');
+		}
+	});
+	$checkboxes.click(function(e) {
+		if (!$(this).is(':checked')) {
+			$checkall.removeAttr('checked');
+		} else {
+			var isCheckAll = true;
+			$.each($checkboxes, function(i, checkbox) {
+				isCheckAll = isCheckAll && $(checkbox).is(':checked');
+			});
+			if (isCheckAll) {
+				$checkall.attr('checked', 'checked');
+			}
+		}
+	});
+})
+</script>
+{% endblock %}
+
 {% block content %}
 	<h1 class="page-title block">All Stories</h1>
 	<div class="block">
@@ -23,7 +52,7 @@
 		<table class="table table-striped table-list">
 			<thead>
 				<tr>
-					<th><input type="checkbox" id="all_blog"></th>
+					<th><input type="checkbox"></th>
 					<th>Title</th>
 					<th class="centered">Date</th>
 					<th class="centered">Love</th>
