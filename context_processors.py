@@ -1,5 +1,6 @@
 from django.conf import settings
 from notification.views import get_notifications
+from blog.models import Category
 
 def site_information(request):
     return {
@@ -12,4 +13,5 @@ def site_information(request):
         'USE_TZ': settings.USE_TZ,
         'PRIVATE': settings.PRIVATE,
         'notifications': get_notifications(request.user)[:settings.NOTIFICATION_POPUP_NUM],
+        'category_filter': Category.objects.all(),
     }

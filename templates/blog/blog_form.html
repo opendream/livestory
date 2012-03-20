@@ -100,12 +100,15 @@
       <label class="control-label" for="mood_1">Mood</label>
       <div class="controls"> 
         {% for value, text in moods %}
-        <label class="radio">
-          <input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% ifequal form.mood.data value|lower %} checked="checked"{% endifequal %}> <span class="emo_{{ text|lower }} emoticon"></span>{{ text }}
+        <label class="radio mood-list{% if value == 6 %} clear-both{% endif %}">
+          <input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% ifequal form.mood.data value|lower %} checked="checked"{% endifequal %}>
+          <span class="mood-{{ text|lower }} mood-icon{% ifequal form.mood.data value|lower %} active{% endifequal %}"></span>{{ text }}
         </label>
         {% endfor %}
         {% if form.mood.errors %}
-        <p class="help-block">{{ form.mood.errors.as_text }}</p>
+        <div class="clear-both">
+          <p class="help-block">{{ form.mood.errors.as_text }}</p>
+        </div>
         {% endif %}
       </div>
     </div>

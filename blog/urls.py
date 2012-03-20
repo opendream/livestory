@@ -10,4 +10,6 @@ urlpatterns = patterns('blog.views',
     url(r'(?P<blog_id>\d+)/love/$', 'blog_love', name='blog_love'),
     url(r'(?P<blog_id>\d+)/unlove/$', 'blog_unlove', name='blog_unlove'),
     url(r'all/$', 'blog_all', name='blog_all'),
+    url(r'mood/(?P<mood>\w+)/$', 'blog_mood', name='blog_mood'),
+    url(r'category/(?P<category>[0-9A-Za-z,-]+)/$', 'blog_category', name='blog_category'),
 )

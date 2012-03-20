@@ -303,10 +303,13 @@ def blog_unlove(request, blog_id):
         else:
             raise Http404
             
-def blog_all(request):
+def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None):
     items = Blog.objects.filter(draft=False)
     if not request.user.is_authenticated():
         items = items.filter(private=False)
+    
+    items = items.filter(**filter)
+    
     items = items.order_by('-created')
     
     pager = Paginator(items, 8)
@@ -320,15 +323,39 @@ def blog_all(request):
     
     p = int(p)
     
+    filter = filter_text if filter_text else filter
+    
+    if not url:
+        url = reverse('blog_all')
+    
     context = {
+        'title': title,
         'blogs': blogs,
         'pagination': pagination,
         'page': p,
         'pager': pager,
-        'page_range': get_page_range(pagination)
+        'page_range': get_page_range(pagination),
+        'filter': filter,
+        'url': url
     }
     
-    return render(request, 'blog/blog_all.html', context)
+    return render(request, 'blog/blog_list.html', context)
+    
+def blog_mood(request, mood):
+    title = ucwords(mood)
+    try: 
+        fmood = dict([(m[1], m[0]) for m in MOOD_CHOICES])[title]
+    except KeyError:
+        raise Http404
+    return blog_all(request, title, {'mood': fmood}, {'mood': mood}, reverse('blog_mood', args=[mood]))
+    
+def blog_category(request, category):
+    title = ucwords(category)
+    try: 
+        fcategory = Category.objects.get(code=category)
+    except Category.DoesNotExist:
+        raise Http404
+    return blog_all(request, title, {'category': fcategory}, {'category': category}, reverse('blog_category', args=[category]))
 
 def blog_save_location(country, city):
     try:

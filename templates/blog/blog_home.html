@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="scour" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
+<div class="scour blog-list" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
   {% for rect in rects %}
   <div class="rect {{ rect.placement }}{% if rect.blog %} has_blog{% endif %}" style="
     left:{{ rect.rect.left }}px;

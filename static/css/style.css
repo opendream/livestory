@@ -37,7 +37,29 @@
         font-weight: normal;
         font-style: normal;
     }
+    
+    @font-face {
+			font-family: 'FuturaMdCnBTMedium';
+			src: url('../fonts/futuramc-webfont.eot');
+			src: url('../fonts/futuramc-webfont.eot?#iefix') format('embedded-opentype'),
+			url('../fonts/futuramc-webfont.woff') format('woff'),
+			url('../fonts/futuramc-webfont.ttf') format('truetype'),
+			url('../fonts/futuramc-webfont.svg#FuturaMdCnBTMedium') format('svg');
+			font-weight: normal;
+			font-style: normal;
+		}
+    
     .oxfam-font{ font-family: OxfamGlobalHeadlineRegular; }
+    .futura-font { font-family: FuturaMdCnBTMedium; }
+    
+    /* Title bullet icon */
+		.ic-page-title{
+			padding: 0 0 0 25px;
+			background: url('../img/ic-title.png') 0px 10px no-repeat ;
+		}
+		.ic-title-pink { background: url('../img/ic-title_pink.png') 0px 10px no-repeat; }
+		.ic-title-purple { background: url('../img/ic-title_purple.png') 0px 10px no-repeat; }
+		.ic-title-blue { background: url('../img/ic-title_blue.png') 0px 10px no-repeat; }
     
     .content{
         border: 1px solid #eee;
@@ -75,11 +97,15 @@
     .tab-menu{ margin: 20px 0;}
     .clear-both{ clear: both;}
     
-    .ic-page-title{
-        padding: 0 0 0 25px;
-        margin: 0 0 20px;
-        background: url('../img/ic-title.png') 0px 10px no-repeat ;
-    }
+		/* Color */
+		.grey{ color: #999; }
+		
+		/* Base Color Menu */
+		.green{ color: #72b64a;}
+		.yellow{ color: #f1bd36;}
+		.purple{ color: #573078;}
+		.pink{ color: #d04187;}
+		.blue{ color: #D04187;}
     
     legend, .page-title{ padding: 10px 7px 10px; border-bottom: 1px solid #EEE;}
     legend h1, h1{ font: normal 19.5px OxfamGlobalHeadlineRegular; }
@@ -547,28 +573,151 @@
 /***************/
 /* Moods Icons */
 /***************/
-    .emoticon-icon{
-        display: block;
-        float: left;
-        width: 16px;
-        height: 16px;
-        margin: 0 10px 0 0;
-        text-indent: -999em;
-        background: url('../img/ic-moods.png') no-repeat ;
-    }
-    
-    /*----- Create Blog -----*/
-    .emoticon {
-        background: url('../img/ic-moods.png') no-repeat ;
-        padding: 1px 0 0 16px;
-        margin: 0 7px 0 5px;
-    }
-    
-    .emo_sad {background-position: 0 0;}
-    .emo_confused {background-position: -16px 0;}
-    .emo_happy {background-position: -32px 0;}
-    .emo_laughing {background-position: -48px 0;}
-    .emo_love {background-position: -64px 0;}
+	.moodlist ul { margin: 10px;}
+	.moodlist li {
+		float: left;
+		width: 70px;
+		margin: 20px 0 20px;
+		list-style-type: none;
+		text-align: center;
+	}
+  .moodlist li a {
+    display: block; 
+    color: #000;
+  }
+  .moodlist li a.active, .moodlist li a:hover {color: #d04187; text-decoration: none;}
+	.mood-icon {
+		display: block;
+    overflow: hidden;
+    width: 32px;
+    height: 32px;
+    margin: 0 19px 5px;
+    text-indent: -999em;
+    background-image: url(../img/ic-mood-32x32.png);
+    background-repeat: no-repeat;
+    background-position: 0 0;
+	}
+	.mood-icon-s{
+		display: inline-block;
+    overflow: hidden;
+		width: 16px;
+		height: 16px;
+		margin-right: 5px;
+		text-indent: -999em;
+		background-image: url(../img/ic-mood-16x16.png);
+	}
+	  .mood-happy {background-position: 0 0;}	
+	  .mood-sad {background-position: -32px 0;}
+	  .mood-excited {background-position: -64px 0;}
+	  .mood-inspired {background-position: -96px 0;}
+	  .mood-frustrated {background-position: -128px 0;}
+	  .mood-angry {background-position: -160px 0;}
+	  .mood-fun {background-position: -192px 0;}
+	  .mood-proud {background-position: -224px 0;}
+	  .mood-amazed {background-position: -256px 0;}
+	  .mood-motivated {background-position: -288px 0;}
+	  
+	  .mood-happy-s {background-position: 0 0;}	
+	  .mood-sad-s {background-position: -32px 0;}
+	  .mood-excited-s {background-position: -64px 0;}
+	  .mood-inspired-s {background-position: -96px 0;}
+	  .mood-frustrated-s {background-position: -128px 0;}
+	  .mood-angry-s {background-position: -160px 0;}
+	  .mood-fun-s {background-position: -192px 0;}
+	  .mood-proud-s {background-position: -224px 0;}
+	  .mood-amazed-s {background-position: -256px 0;}
+	  .mood-motivated-s {background-position: -288px 0;}
+
+	  .mood-happy:hover, .mood-happy.active {background-position: 0 -32px;}	
+	  .mood-sad:hover, .mood-sad.active {background-position: -32px -32px;}
+	  .mood-excited:hover, .mood-excited.active {background-position: -64px -32px;}
+	  .mood-inspired:hover, .mood-inspired.active {background-position: -96px -32px;}
+	  .mood-frustrated:hover, .mood-frustrated.active {background-position: -128px -32px;}
+	  .mood-angry:hover, .mood-angry.active {background-position: -160px -32px;}
+	  .mood-fun:hover, .mood-fun.active {background-position: -192px -32px}
+	  .mood-proud:hover, .mood-proud.active{background-position: -224px -32px;}
+	  .mood-amazed:hover, .mood-amazed.active {background-position: -256px -32px;}
+	  .mood-motivated:hover, .mood-motivated.active {background-position: -288px -32px;}
+	  
+	  .mood-icon:hover{ cursor: pointer;}
+	  
+  /* Mood Form */
+  .mood-list{
+		float: left;
+		margin: 0 20px 15px 0;
+		padding: 0 !important;
+		text-align: center;
+  }
+  .mood-list input[type="radio"]{
+	  display: none;
+  }
+
+
+/****************/
+/* Filter */
+/****************/
+	.filter-block {
+		position: relative;
+	}
+	.filter-title {
+		float: left;
+		padding: 15px 15px 10px;
+		font-size: 24px;
+		font-weight: normal;  
+		background-color: #eaeaea;
+		text-transform: uppercase;
+		-moz-box-shadow: inset 0 0 10px #d0d0d0;
+		-webkit-box-shadow: inset 0 0 10px #d0d0d0;
+		box-shadow: inset 0 0 10px #d0d0d0;
+	}
+	
+	.btn-hide {
+		position: absolute;
+		display: block;
+		overflow: hidden;
+		bottom: 0;
+		right: 0;
+		height: 22px;
+		width: 59px;
+		text-indent: -999px;
+		background: url("../img/btn.png") no-repeat;
+	}
+	.btn-hide:hover { background-position: 0 -22px; }
+	
+	.filter-bottom, .filter-top {
+		display: block;
+		height: 20px;
+		clear: both;
+		background: url("../img/bg-filter_mood_bottom.png") no-repeat center bottom;
+	}
+	.filter-top {
+	  background: url("../img/bg-filter_mood_top.png") no-repeat center top;
+	}
+
+
+
+/**************/
+/* Categories */
+/**************/
+.categories-list {
+	float: right;
+	width: 68%;
+}
+  .list-block {
+    border-top: 1px solid #dadada;
+    border-bottom: 1px solid #dadada;
+    border-right: 1px solid #dadada;
+    border-left: 3px solid #D04187;
+    list-style: none;
+    float: left;
+    text-align: left;
+    width: 180px;
+    margin: 0 20px 5px 0;
+  }
+    .list-block a {color: #000; padding: 3px 5px; display: block; text-decoration: none;}
+    .list-block a:hover{ background: #eaeaea; }
+    .list-block a.active { background: #eaeaea; font-weight: bold;}
+
 
     /* Upload Image */
     .image-help{
@@ -957,12 +1106,21 @@ html[xmlns] .clearfix { display: block; }
 /* Crosalot zone */
 /*****************/
 
-.messages p:first-letter {
-    text-transform: uppercase;
-}
-.messages p {
+.messages .tags {
     font-weight: bold;
       float: left;
       line-height: 15px;
       padding-right: 5px;
+}
+.filter-block-append {
+    position: relative;
+}
+.filter-block-append .default {
+    z-index: 5;
+}
+.filter-menu {
+    background-color: #FFF;
+    z-index: 10;
+    position: relative;
+    width: 100%;
 }
