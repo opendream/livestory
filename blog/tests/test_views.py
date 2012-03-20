@@ -671,12 +671,17 @@ class TestAllPage(TestCase):
 
 class TestBlogManagement(TestCase):
     def setUp(self):
-        pass
+        self.john = factory.create_user('john.carter@example.com', 'john.carter@example.com', '1234', 'John', 'Carter', True)
 
     def tearDown(self):
-        pass
+        self.client.logout()
 
     def test_anonymous_user_get(self):
         response = self.client.get(reverse('blog_manage'))
         self.assertEqual(403, response.status_code)
+
+    def test_authenticated_user_get(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(200, response.status_code)
 
