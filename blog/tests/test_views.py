@@ -676,7 +676,7 @@ class TestBlogManagement(TestCase):
     def tearDown(self):
         pass
 
-    def test_unauthorized_user_get(self):
+    def test_anonymous_user_get(self):
         response = self.client.get(reverse('blog_manage'))
         self.assertEqual(403, response.status_code)
 
