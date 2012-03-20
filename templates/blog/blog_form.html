@@ -6,9 +6,16 @@
 {% block head_title %}Create Your Blog{% endblock %}
 
 {% block html_head %}
+<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/tag-it/css/jquery.tagit.css">
+<link href="{{STATIC_URL}}libs/tag-it/css/tagit.ui-zendesk.css" rel="stylesheet" type="text/css">
+
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/tag-it/js/tag-it.js"></script>
+{% tags_js %}
 {% location_js %}
 {% textcounter_js %}
 {% endblock %}
@@ -107,6 +114,13 @@
       <label class="control-label" for="id_category">Category</label>
       <div class="controls">
         {{ form.category }}
+      </div>
+    </div>
+
+    <div class="field-tags control-group">
+      <label class="control-label" for="id_tags">Tags</label>
+      <div class="controls">
+        {{ form.tags }}
       </div>
     </div>
     

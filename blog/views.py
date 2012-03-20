@@ -22,6 +22,7 @@ from common.scour import Scour
 from common.views import check_file_exists
 from common.templatetags.common_tags import cache_path
 from common import ucwords, get_page_range
+from taggit.models import TaggedItem
 
 def blog_home(request):
     if not request.user.is_authenticated():
@@ -93,11 +94,12 @@ def blog_create(request):
             blog.description = form.cleaned_data.get('description')[:300]
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
-                            
             try:
                 blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
                 blog.save()
-            
+                
+                blog.save_tags(form.data.get('tags'))
+                
                 blog.image = blog_save_image(image_path, blog)
                 blog.save()
                 
@@ -153,6 +155,7 @@ def blog_edit(request, blog_id):
                 blog.description = form.cleaned_data.get('description')[:300]
                 blog.mood = form.cleaned_data.get('mood')
                 blog.category = form.cleaned_data.get('category')
+                blog.save_tags(form.data.get('tags'))
                 try:
                     blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
                     blog.private = form.cleaned_data.get('private')
@@ -184,7 +187,8 @@ def blog_edit(request, blog_id):
                 'city': location.city,
                 'mood': str(blog.mood),
                 'category': blog.category,
-                'private': str(int(blog.private))
+                'private': str(int(blog.private)),
+                'tags': blog.get_tags()
             }
             form = BlogCreateForm(defaults)
 
@@ -359,7 +363,6 @@ def blog_bulk_update_public(blogs):
     for blog in blogs:
         blog.private = False
         blog.save()
-
 
 def blog_save_image(image_path, blog):
     directory, name = os.path.split(image_path)

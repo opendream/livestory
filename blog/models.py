@@ -1,12 +1,13 @@
 import os
 
-from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.db import models
 from django.template.defaultfilters import slugify
 
 from location.models import Location
-
-from django.conf import settings
+from taggit.managers import TaggableManager
+from taggit.models import TaggedItem
 
 MOOD_CHOICES = (
     (1, 'Happy'     ), 
@@ -64,6 +65,7 @@ class Blog(models.Model):
     user        = models.ForeignKey(User)
     category    = models.ForeignKey(Category)
     location    = models.ForeignKey(Location)
+    tags        = TaggableManager()
     
     def __unicode__(self):
         return '(%d) %s' % (self.id, self.title)
@@ -71,6 +73,24 @@ class Blog(models.Model):
     def get_mood_text(self):
         moods = dict(MOOD_CHOICES)
         return moods[self.mood]
+
+    def save_tags(self, tags):
+        if tags:
+            if type(tags) is unicode:
+                tags = tags.split(',')
+
+            if self.id:
+                self.tags.clear()
+                for tag in tags:
+                    self.tags.add(tag.strip())
+                return True
+        return False
+
+    def get_tags(self):
+        tags = []
+        for item in TaggedItem.objects.filter(object_id=self.id).order_by('id'):
+            tags.append(item.tag.name)
+        return ", ".join(tags)
 
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
@@ -80,6 +100,3 @@ class Love(models.Model):
     
     def __unicode__(self):
         return '%s love %s' % (self.user.username, self.blog.title)
-
-        
-        
