@@ -683,10 +683,10 @@ class TestBlogManagement(TestCase):
         self.blogs = [
             factory.create_blog('John blog 1', self.john, self.category, self.location, private=True),
             factory.create_blog('John blog 2', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 3', self.john, self.category, self.location, private=True),
             factory.create_blog('Adam blog 1', self.adam, self.category, self.location, private=True),
             factory.create_blog('Adam blog 2', self.adam, self.category, self.location, private=True),
             factory.create_blog('Staff blog 1', self.staff, self.category, self.location, private=True),
-            factory.create_blog('Staff blog 2', self.staff, self.category, self.location, private=True),
         ]
 
     def tearDown(self):
@@ -703,4 +703,15 @@ class TestBlogManagement(TestCase):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_manage'))
         self.assertEqual(200, response.status_code)
+
+    def test_authenticated_user_can_see_only_own_story(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(3, response.context['blogs'].count())
+        self.client.logout()
+
+        self.client.login(username=self.adam.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(2, response.context['blogs'].count())
+        self.client.logout()
 

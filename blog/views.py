@@ -67,8 +67,8 @@ def blog_home(request):
 def blog_manage(request):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
-    
-    blogs = Blog.objects.all()
+
+    blogs = Blog.objects.filter(user=request.user).order_by('-created')
     context = {
         'blogs': blogs
     }
