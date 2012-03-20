@@ -124,14 +124,14 @@
       </div>
     </div>
     
-    <div class="field-private control-group{% if form.private.errors %} error{% endif %}">
+    <div class="field-private control-group{% if form.private.errors %} error{% endif %}"{% if PRIVATE %} style="display: none"{% endif %}>
       <label class="control-label" for="visibility_0">Visibility</label>
       <div class="controls">
         <label class="radio">
-          <input type="radio" id="visibility_0" name="private" value="0"{% ifequal "0" form.private.data %} checked="checked"{% endifequal %}>{{ visibilities.0.1 }}
+          <input type="radio" id="visibility_0" name="private" value="0"{% if "0" == form.private.data %} checked="checked"{% endif %}>{{ visibilities.0.1 }}
         </label>
         <label class="radio">
-          <input type="radio" id="visibility_1" name="private" value="1"{% if form.private.data == 1 or form.private.data == None %} checked="checked"{% endif %}>{{ visibilities.1.1 }}
+          <input type="radio" id="visibility_1" name="private" value="1"{% if form.private.data == 1 or form.private.data == None and PRIVATE %} checked="checked"{% endif %}>{{ visibilities.1.1 }}
         </label>
         {% if form.private.errors %}
         <p class="help-block">{{ form.private.errors.as_text }}</p>

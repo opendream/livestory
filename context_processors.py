@@ -10,5 +10,6 @@ def site_information(request):
         'AVATAR_TOP_SIZE': settings.AVATAR_TOP_SIZE,
         'BLOG_PREVIEW_SIZE': settings.BLOG_PREVIEW_SIZE,
         'USE_TZ': settings.USE_TZ,
+        'PRIVATE': settings.PRIVATE,
         'notifications': get_notifications(request.user)[:settings.NOTIFICATION_POPUP_NUM],
     }

@@ -25,7 +25,7 @@ from common import ucwords, get_page_range
 from taggit.models import TaggedItem
 
 def blog_home(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated() and settings.PRIVATE:
         return render(request, 'blog/blog_static.html')
     
     scour_width = 960
