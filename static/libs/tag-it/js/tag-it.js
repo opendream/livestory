@@ -111,8 +111,7 @@
                 var filter = search.term.toLowerCase();
                 var choices = $.grep(this.options.availableTags, function(element) {
                     // Only match autocomplete options that begin with the search term.
-                    // (Case insensitive.)
-                    console.log(filter);
+                    // (Case insensitive.
                     return (element.toLowerCase().indexOf(filter) === 0);
                 });
                 showChoices(this._subtractArray(choices, this.assignedTags()));
@@ -156,7 +155,6 @@
                     var tags = node.val().split(this.options.singleFieldDelimiter);
                     node.val('');
                     $.each(tags, function(index, tag) {
-                        console.log(tag);
                         that.createTag(tag, 'reuse-item');
                     });
                 } else {

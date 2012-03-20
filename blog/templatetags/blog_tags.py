@@ -21,7 +21,6 @@ $(document).ready(function() {
     allowSpaces: true,
     removeConfirmation: true
   });
-  console.log($('#id_tags'))
 });
 </script>
 ''' % "', '".join(tags)
