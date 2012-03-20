@@ -136,13 +136,14 @@ $(function () {
         $(this).siblings('.mood-icon').addClass('active');
     });
     
-    var default_current_filter = '#' + $('.filter-menu.default').attr('id');
-    var current_filter = default_current_filter;
-    var cal_height = function (height) {
-        $('.filter-block-append').css('height', height)
-    }
+
+
     
     // Filter =====================
+    var default_current_filter = '#' + $('.filter-menu.default').attr('id');
+    var current_filter = default_current_filter;
+    var duration = 500;
+    
     $('a.has-filter').click(function (e) {
         e.preventDefault();
         
@@ -150,42 +151,62 @@ $(function () {
         if (current_filter == href) {
             return false;
         }
-        current_filter = href;
         var obj = $(href);
         if (obj.hasClass('default')) {
             obj.addClass('dshow');
         }
         
-        $('.filter-block-append').height(obj.height());
+        var height = obj.height();
+        var oheight = height-$(current_filter).height();
+
+        $('.blog-list').stop().animate({'margin-top': oheight}, {'queue': false, 'duration': duration});
         
         $('.filter-menu').stop().hide();
-        obj.stop().slideDown('slow');
-                
+        current_filter = href;
+        
+        obj.stop().slideDown(duration, function () {
+            $('.blog-list').css('margin-top', 0);
+            $('.filter-block-append').css('height', height);
+        });
     });
     $('a.filter-close').click(function (e) {
         e.preventDefault();
         var href = $(this).attr('href');
         var obj = $(href);
         
-        current_filter = default_current_filter;
-        if (!$('.filter-menu.defult.dshow').length) {
-            current_filter = '';
-        }
+
         
         if (obj.hasClass('dshow')) {
             obj.removeClass('dshow');
         }
         
+        var height = obj.height();
+        var oheight = $(current_filter).height() - height;
+        
+        current_filter = default_current_filter;
+        
+        if (!$('.filter-menu.default.dshow').length) {
+            current_filter = '';
+        }
+        
         var dshow = $('.filter-menu.dshow');
         if (dshow.length) {
-            $('.filter-block-append').height(dshow.height());
+            $('.filter-block-append').animate({'height': dshow.height()}, {'queue': false, 'duration': duration});
+            $('.blog-list').stop().animate({'margin-top': -oheight}, {'queue': false, 'duration': duration});
+            
+            //$('.filter-block-append').height(dshow.height());
             $('.filter-menu').css('position', 'absolute');
             dshow.show()
         }
+        else {
+            $('.blog-list').stop().animate({'margin-top': -height}, {'queue': false, 'duration': duration});
+        }
+
         
-        obj.stop().slideUp('slow', function () {
+        obj.stop().slideUp(duration, function () {
+            $('.blog-list').css('margin-top', 0);
             if (!dshow.length) {
-                $('.filter-block-append').height(0);
+                $('.filter-block-append').css('height', 0);
             }
             $('.filter-menu').css('position', 'relative');
         });
@@ -195,10 +216,10 @@ $(function () {
     setTimeout(function () {
         var dshow = $('.filter-menu.dshow');
         if (dshow.length) {
-            $('.filter-block-append').height(dshow.height());
+            $('.filter-block-append').css('height', dshow.height());
         }
         else {
-            $('.filter-block-append').height(0);
+            $('.filter-block-append').css('height', 0);
         }
     }, 500);
 
