@@ -715,3 +715,9 @@ class TestBlogManagement(TestCase):
         self.assertEqual(2, response.context['blogs'].count())
         self.client.logout()
 
+    def test_staff_can_see_all_story(self):
+        self.client.login(username=self.staff.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        all_blogs = Blog.objects.all()
+        self.assertEqual(all_blogs.count(), response.context['blogs'].count())
+
