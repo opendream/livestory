@@ -68,7 +68,18 @@ class TestBlog(TestCase):
 
     def test_blog_default_private_is_private(self):
         self.assertEqual(True, self.blogs[0].private)
-        
+
+    def test_blog_save_tags(self):
+        self.blogs[0].save_tags(u'Red, Green, Blue')
+        self.assertEqual(3, self.blogs[0].tags.all().count())
+
+        self.blogs[0].save_tags(u'Red, Green, Blue, Alpha')
+        self.assertEqual(4, self.blogs[0].tags.all().count())
+
+    def test_blog_get_tags(self):
+        self.blogs[0].save_tags(u'Red, Green, Blue')
+        self.blogs[0].save()
+        self.assertEqual('Red, Green, Blue', self.blogs[0].get_tags())
         
 
 class TestLove(TestCase):

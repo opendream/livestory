@@ -105,11 +105,14 @@
                 this._tagInput.attr('placeholder', this.options.placeholderText);
             }
 
+            this.options.source = this.options.availableTags.sort();
+
             this.options.tagSource = this.options.tagSource || function(search, showChoices) {
                 var filter = search.term.toLowerCase();
                 var choices = $.grep(this.options.availableTags, function(element) {
                     // Only match autocomplete options that begin with the search term.
                     // (Case insensitive.)
+                    console.log(filter);
                     return (element.toLowerCase().indexOf(filter) === 0);
                 });
                 showChoices(this._subtractArray(choices, this.assignedTags()));
@@ -153,7 +156,8 @@
                     var tags = node.val().split(this.options.singleFieldDelimiter);
                     node.val('');
                     $.each(tags, function(index, tag) {
-                        that.createTag(tag);
+                        console.log(tag);
+                        that.createTag(tag, 'reuse-item');
                     });
                 } else {
                     // Create our single field input after our list.
@@ -213,13 +217,15 @@
 
             // Autocomplete.
             if (this.options.availableTags || this.options.tagSource) {
+                var that = this;
                 this._tagInput.typeahead({
-                    source: this.options.availableTags,
+                    source: this.options.source,
                     onSelect: function(value) {
                         if (that._tagInput.val() === '') {
                             that.removeTag(that._lastTag(), false);
                         }
-                        that.createTag(value);
+                        that.createTag(value, 'reuse-item');
+                        this.source = that.options.source;
                         return false;
                     }
                 })
@@ -341,6 +347,13 @@
 
             // insert tag
             this._tagInput.parent().before(tag);
+
+            // Update autocomplete source
+            if (this.options.source && this.options.source.indexOf(value) > -1 && tag.hasClass('reuse-item')) {
+                this.options.source = $.grep(this.options.source, function(_value) {
+                    return _value != value;
+                });
+            }
         },
         
         removeTag: function(tag, animate) {
@@ -358,6 +371,13 @@
                 });
                 this._updateSingleTagsField(tags);
             }
+
+            // If tag is from source, restore it.
+            if (tag.hasClass('reuse-item')) {
+                tag_label = $('span', tag).html();
+                this.options.source.push(tag_label);
+            }
+
             // Animate the removal.
             if (animate) {
                 tag.fadeOut('fast').hide('blind', {direction: 'horizontal'}, 'fast', function(){
