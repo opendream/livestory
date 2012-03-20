@@ -41,11 +41,9 @@ $(document).ready(function() {
 		<a href="">Drafts </a><span class="grey">(24)</span> | 
 		<a href="">Trash </a><span class="grey">(24)</span>
 	</div>
-	<form class="form-inline">
+	<form class="form-inline" action="{% url blog_manage_bulk %}">
 		<select id="op">
 			<option>Bulk Actions</option>
-			<option value="private">Private</option>
-			<option value="public">Public</option>
 			<option value="delete">Delete</option>
 		</select>
 		<input type="submit" value="Apply">
@@ -67,7 +65,7 @@ $(document).ready(function() {
 					<td><input type="checkbox" name="blog_id" value="{{ blog.id }}"></td>
 					<td><a href="{% url blog_view blog.id %}">{{ blog.title }}</a></td>
 					<td class="centered">{{ blog.created|localtime|date:"m/d/Y" }}</td>
-					<td class="centered">24</td>
+					<td class="centered">{{ blog.love_set.all.count }}</td>
 					<td class="centered">355</td>
 					<td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
 					<td class="centered"><a href="#" class="ic-action-story ic-delete-story">Delete</a></td>
