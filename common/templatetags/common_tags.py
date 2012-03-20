@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from django.utils.timesince import timesince
 from common.templatetags.tz import localtime
 from django.template.defaultfilters import date as dateformat
+from common import ucwords
 
 FMT = 'JPEG'
 EXT = 'jpg'
@@ -144,3 +145,8 @@ def crop(imagefield, size):
     """
     
     return scale(imagefield, size, 'crop')
+
+@register.filter('ucwords')
+def ucwords_tag(string):
+    return ucwords(string)
+    

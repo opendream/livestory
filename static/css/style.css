@@ -1096,12 +1096,21 @@ html[xmlns] .clearfix { display: block; }
 /* Crosalot zone */
 /*****************/
 
-.messages p:first-letter {
-    text-transform: uppercase;
-}
-.messages p {
+.messages .tags {
     font-weight: bold;
       float: left;
       line-height: 15px;
       padding-right: 5px;
+}
+.filter-block-append {
+    position: relative;
+}
+.filter-block-append .default {
+    z-index: 5;
+}
+.filter-menu {
+    background-color: #FFF;
+    z-index: 10;
+    position: relative;
+    width: 100%;
 }

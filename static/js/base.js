@@ -130,23 +130,77 @@ $(function () {
         }
         $.get(url, params, callback);
     });
-
-    /*$('.dropdown-toggle').mouseenter(function(e) {
-        var $toggle = $(this);
-        var closeDropdown = function(e) {
-            $toggle.parent().removeClass('open');
-            $(this).unbind('mouseleave');
-        }
-        $toggle.parent().addClass('open');
-        $toggle.siblings('.dropdown-menu').mouseleave(closeDropdown);
-    });*/
     
     $('.field-mood .mood-list input').change(function (e) {
         $('.field-mood .mood-list .mood-icon').removeClass('active');
         $(this).siblings('.mood-icon').addClass('active');
     });
     
+    var default_current_filter = '#' + $('.filter-menu.default').attr('id');
+    var current_filter = default_current_filter;
+    var cal_height = function (height) {
+        $('.filter-block-append').css('height', height)
+    }
+    
+    // Filter =====================
     $('a.has-filter').click(function (e) {
         e.preventDefault();
-    })
+        
+        var href = $(this).attr('href');
+        if (current_filter == href) {
+            return false;
+        }
+        current_filter = href;
+        var obj = $(href);
+        if (obj.hasClass('default')) {
+            obj.addClass('dshow');
+        }
+        
+        $('.filter-block-append').height(obj.height());
+        
+        $('.filter-menu').stop().hide();
+        obj.stop().slideDown('slow');
+                
+    });
+    $('a.filter-close').click(function (e) {
+        e.preventDefault();
+        var href = $(this).attr('href');
+        var obj = $(href);
+        
+        current_filter = default_current_filter;
+        if (!$('.filter-menu.defult.dshow').length) {
+            current_filter = '';
+        }
+        
+        if (obj.hasClass('dshow')) {
+            obj.removeClass('dshow');
+        }
+        
+        var dshow = $('.filter-menu.dshow');
+        if (dshow.length) {
+            $('.filter-block-append').height(dshow.height());
+            $('.filter-menu').css('position', 'absolute');
+            dshow.show()
+        }
+        
+        obj.stop().slideUp('slow', function () {
+            if (!dshow.length) {
+                $('.filter-block-append').height(0);
+            }
+            $('.filter-menu').css('position', 'relative');
+        });
+
+    });
+    
+    setTimeout(function () {
+        var dshow = $('.filter-menu.dshow');
+        if (dshow.length) {
+            $('.filter-block-append').height(dshow.height());
+        }
+        else {
+            $('.filter-block-append').height(0);
+        }
+    }, 500);
+
+    // End Filter =====================
 });

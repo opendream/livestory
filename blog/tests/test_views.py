@@ -842,6 +842,7 @@ class TestAllPage(TestCase):
         self.assertEquals(2, context['pager'].num_pages)
         self.assertEquals(2, context['page'])
         self.assertEquals('Latest Stories', context['title'])
+        self.assertEquals('/blog/all/', context['url'])
         
         response = self.client.get('/blog/all/?page=3')
         self.assertEquals(404, response.status_code)
@@ -864,6 +865,7 @@ class TestAllPage(TestCase):
         self.assertEquals(1, context['blogs'].count())
         self.assertEquals('Sad', context['title'])
         self.assertEquals({'mood': 'sad'}, context['filter'])
+        self.assertEquals('/blog/mood/sad/', context['url'])
         
         response = self.client.get('/blog/mood/excited/')
         self.assertEquals(200, response.status_code)
@@ -876,3 +878,25 @@ class TestAllPage(TestCase):
         self.assertEquals(200, response.status_code)
         context = response.context
         self.assertEquals(0, context['blogs'].count())
+        
+    def test_blog_category_get(self):
+        response = self.client.get('/blog/category/')
+        self.assertEquals(404, response.status_code)
+        
+        response = self.client.get('/blog/category/foo/')
+        self.assertEquals(404, response.status_code)
+        
+        response = self.client.get('/blog/category/animal/')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(3, context['blogs'].count())
+        self.assertEquals('Animal', context['title'])
+        self.assertEquals({'category': self.category1.code}, context['filter'])
+        self.assertEquals('/blog/category/animal/', context['url'])
+        
+        response = self.client.get('/blog/category/food/')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(3, context['blogs'].count())
+        self.assertEquals('Food', context['title'])
+        self.assertEquals({'category': self.category2.code}, context['filter'])

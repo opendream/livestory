@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load common_tags %}
 
 {% block base_body_class %}admin{% endblock %}
 {% block base_container_class %} admin-main{% endblock %}
@@ -20,7 +21,7 @@
     <div class="messages">
       {% for message in messages %}
       <div class="alert alert-{{ message.tags }}">
-        <a class="close">×</a><p>{{ message.tags }}</p> {{ message|safe }}
+        <a class="close">×</a><span class="tags">{{ message.tags|ucwords }}</span> {{ message|safe }}
   		</div>
   		{% endfor %}
 		</div>
