@@ -65,6 +65,9 @@ def blog_home(request):
     return render(request, 'blog/blog_home.html', locals())
 
 def blog_manage(request):
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
+    
     blogs = Blog.objects.all()
     context = {
         'blogs': blogs
