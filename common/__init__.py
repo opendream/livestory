@@ -1,7 +1,23 @@
-import shutil
+from account.models import Account, AccountKey
 from django.conf import settings
+from django.contrib.auth.models import User
+import shutil
 
 def rm_user(id):
+    try:
+        user = User.objects.get(id=id)
+        try:
+            AccountKey.objects.get(user=user).delete()
+        except AccountKey.DoesNotExist:
+            pass
+        try:
+            Account.objects.get(user=user).delete()
+        except Account.DoesNotExist:
+            pass
+        user.delete()
+    except User.DoesNotExist:
+        pass
+
     try:
         shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
     except:

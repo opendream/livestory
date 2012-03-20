@@ -672,8 +672,27 @@ class TestAllPage(TestCase):
 class TestBlogManagement(TestCase):
     def setUp(self):
         self.john = factory.create_user('john.carter@example.com', 'john.carter@example.com', '1234', 'John', 'Carter', True)
+        self.adam = factory.create_user('adam.carter@example.com', 'adam.carter@example.com', '1234', 'Adam', 'Carter', True)
+        self.staff = factory.create_user('staff.carter@example.com', 'staff.carter@example.com', '1234', 'Staff', 'Carter', True)
+        self.staff.is_staff = True
+        self.staff.save()
+
+        self.category = factory.create_category('Animal', 'animal')
+        self.location = factory.create_location('Japan', 'Tokyo', '0', '0')
+
+        self.blogs = [
+            factory.create_blog('John blog 1', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 2', self.john, self.category, self.location, private=True),
+            factory.create_blog('Adam blog 1', self.adam, self.category, self.location, private=True),
+            factory.create_blog('Adam blog 2', self.adam, self.category, self.location, private=True),
+            factory.create_blog('Staff blog 1', self.staff, self.category, self.location, private=True),
+            factory.create_blog('Staff blog 2', self.staff, self.category, self.location, private=True),
+        ]
 
     def tearDown(self):
+        rm_user(self.john.id)
+        rm_user(self.adam.id)
+        rm_user(self.staff.id)
         self.client.logout()
 
     def test_anonymous_user_get(self):

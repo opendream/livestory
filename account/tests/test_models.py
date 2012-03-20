@@ -50,9 +50,6 @@ class TestAccountKey(TestCase):
     def tearDown(self):
         for user in self.users:
             rm_user(user.id)
-            AccountKey.objects.get(user=user).delete()
-            Account.objects.get(user=user).delete()
-            user.delete()
         
     def test_unicode(self):
         account_key1 = AccountKey.objects.get(user=self.users[0])
