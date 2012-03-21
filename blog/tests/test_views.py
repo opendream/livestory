@@ -813,3 +813,7 @@ class TestBlogManagement(TestCase):
         self.assertEqual(3, response.context['blogs'].count())
         self.client.logout()
 
+    def test_anonymous_user_restore_blog(self):
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[0].id]))
+        self.assertEquals(403, response.status_code)
+
