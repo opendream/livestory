@@ -127,7 +127,7 @@ def blog_restore(request, blog_id):
         blog.save()
         return redirect(reverse('blog_manage_trash'))
     except Blog.DoesNotExist:
-        pass
+        raise Http404
 
 
 def blog_create(request):

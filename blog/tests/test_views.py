@@ -846,3 +846,7 @@ class TestBlogManagement(TestCase):
         self.assertFalse(blog.trash)
         self.client.logout()
 
+    def test_restore_not_exists_blog(self):
+        response = self.client.get(reverse('blog_restore', args=[0]))
+        self.assertEquals(404, response.status_code)
+
