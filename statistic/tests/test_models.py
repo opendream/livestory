@@ -35,3 +35,7 @@ class TestViewCount(TestBaseData):
 		self.assertEqual(view.totalcount, 3)
 		self.assertEqual(view.weekcount, 2)
 		self.assertEqual(view.daycount, 1)
+
+	def test_unicode(self):
+		view = ViewCount.objects.create(blog=self.blog, totalcount=3, weekcount=2, daycount=1)
+		self.assertEqual(view.__unicode__(), 'Visit Praque has 3 view(s), 2 view(s) in week, 1 view(s) in day')
