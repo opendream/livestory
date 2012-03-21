@@ -206,6 +206,8 @@ def blog_edit(request, blog_id):
         
         if not request.user.is_staff and (not request.user.is_authenticated() or request.user.id != blog.user.id):
             return render(request, '403.html', status=403)
+        elif blog.trash:
+            return render(request, '403.html', status=403)
         
         location = Location.objects.get(pk=blog.location_id)
         action = reverse('blog_edit', args=[blog_id])

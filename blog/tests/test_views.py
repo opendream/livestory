@@ -783,6 +783,14 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, reverse('blog_restore', args=[self.blogs[0].id]) + '?section=trash')
         self.client.logout()
 
+    def test_blog_trash_cannot_edit(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertEqual(403, response.status_code)
+        self.client.logout()
+
     def test_authenticated_user_trash_other_blog(self):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))
