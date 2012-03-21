@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load common_tags %}
 
 {% block base_body_class %}single{% endblock %}
 
@@ -10,12 +11,18 @@
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
   </h1>
   {% if not PRIVATE or user.is_authenticated %}
+  
+  {% url blog_home as blog_home %}
+  {% url blog_all as blog_all %}
+  {% url blog_mood 'arg' as blog_mood %}
+  {% url blog_category  'arg' as blog_category %}
+  
   <ul class="menu">
-    <li><a href="{% url blog_home %}" class="popular active">Popular</a></li>
-    <li><a href="{% url blog_all %}" class="stories">All Stories</a></li>
+    <li><a href="{{ blog_home }}" class="popular{% active request blog_home %}">Popular</a></li>
+    <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
     <li><a href="#" class="place has-filter">Place</a></li>
-    <li><a href="#filter-menu-mood" class="moods has-filter">Moods</a></li>
-    <li><a href="#filter-menu-category" class="categories has-filter">Categories</a></li>
+    <li><a href="#filter-menu-mood" class="moods has-filter{% active request blog_mood %}">Moods</a></li>
+    <li><a href="#filter-menu-category" class="categories has-filter{% active request blog_category %}">Categories</a></li>
   </ul>
   {% endif %}
 </div>

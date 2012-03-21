@@ -149,4 +149,17 @@ def crop(imagefield, size):
 @register.filter('ucwords')
 def ucwords_tag(string):
     return ucwords(string)
-    
+
+@register.simple_tag
+def active(request, pattern):
+    pattern = pattern.split('/')
+    path = request.path.split('/')
+    yes = True
+    for i, v in enumerate(pattern):
+        try:
+            if v != 'arg' and v != '0' and v != path[i]:
+                return ''
+        except:
+            return ''
+            
+    return ' active'
