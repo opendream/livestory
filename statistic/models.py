@@ -20,5 +20,11 @@ class ViewCount(models.Model):
 	weekcount = models.IntegerField(default=0)
 	daycount = models.IntegerField(default=0)
 
+	def update(self):
+		self.totalcount = self.totalcount + 1
+		self.weekcount = self.weekcount + 1
+		self.daycount = self.daycount + 1
+		self.save()
+
 	def __unicode__(self):
 		return '%s has %s view(s), %s view(s) in week, %s view(s) in day' % (self.blog.title, self.totalcount, self.weekcount, self.daycount)

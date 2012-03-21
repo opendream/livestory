@@ -42,3 +42,9 @@ class TestViewCount(TestBaseData):
 
 	def test_unicode(self):
 		self.assertEqual(self.blog.viewcount.__unicode__(), 'Visit Praque has 0 view(s), 0 view(s) in week, 0 view(s) in day')
+
+	def test_update(self):
+		self.blog.viewcount.update()
+		self.assertEqual(self.blog.viewcount.totalcount, 1)
+		self.assertEqual(self.blog.viewcount.weekcount, 1)
+		self.assertEqual(self.blog.viewcount.daycount, 1)
