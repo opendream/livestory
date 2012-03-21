@@ -743,6 +743,14 @@ class TestBlogManagement(TestCase):
         self.assertTrue(blog.trash)
         self.client.logout()
 
+    def test_authenticated_user_trash_own_blog_on_draft_section(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id])+'?section=draft')
+        self.assertRedirects(response, reverse('blog_manage_draft'))
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertTrue(blog.trash)
+        self.client.logout()
+
     def test_authenticated_user_trash_other_blog(self):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))

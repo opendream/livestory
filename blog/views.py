@@ -118,6 +118,8 @@ def blog_trash(request, blog_id):
         if section:
             if section == 'published':
                 return redirect(reverse('blog_manage_published'))
+            elif section == 'draft':
+                return redirect(reverse('blog_manage_draft'))
         return redirect(reverse('blog_manage'))
     except Blog.DoesNotExist:
         raise Http404
