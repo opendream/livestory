@@ -84,14 +84,19 @@ def blog_manage(request, section=None, page=0, sort='created', order='desc'):
         'num_draft': blog_draft.count(),
         'num_trash': blog_trash.count()
     }
-    if section == None:
-        context['blogs'] = blog_all
-    elif section == 'published':
+    if section == 'published':
         context['blogs'] = blog_published
+    elif section == 'draft':
+        context['blogs'] = blog_draft
+    else:
+        context['blogs'] = blog_all
     return render(request, 'blog/blog_manage.html', context)
 
 def blog_manage_published(request):
     return blog_manage(request, 'published')
+
+def blog_manage_draft(request):
+    return blog_manage(request, 'draft')
 
 def blog_trash(request, blog_id):
     try:
