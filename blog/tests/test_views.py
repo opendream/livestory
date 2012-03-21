@@ -850,3 +850,11 @@ class TestBlogManagement(TestCase):
         response = self.client.get(reverse('blog_restore', args=[0]))
         self.assertEquals(404, response.status_code)
 
+    def test_restore_success_must_hide_blog_on_table(self):
+        self.blogs[0].trash = False
+        self.blogs[0].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[0].id]), follow=True)
+        self.assertNotContains(response, reverse('blog_restore', args=[self.blogs[0].id]))
+        self.client.logout()
+
