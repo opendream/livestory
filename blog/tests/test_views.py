@@ -774,4 +774,16 @@ class TestBlogManagement(TestCase):
         self.assertEqual(1, response.context['num_trash'])
         self.client.logout()
 
+    def test_view_manage_published(self):
+        self.blogs[0].draft = False
+        self.blogs[0].save()
+        self.blogs[1].draft = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, response.context['blogs'].count())
+        self.client.logout()
 

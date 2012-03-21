@@ -65,7 +65,7 @@ def blog_home(request):
 
     return render(request, 'blog/blog_home.html', locals())
 
-def blog_manage(request):
+def blog_manage(request, section=None, page=0, sort='created', order='desc'):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
 
@@ -79,13 +79,19 @@ def blog_manage(request):
     blog_trash = blogs.filter(trash=True)
 
     context = {
-        'blogs': blog_all,
         'num_all': blog_all.count(),
         'num_published': blog_published.count(),
         'num_draft': blog_draft.count(),
         'num_trash': blog_trash.count()
     }
+    if section == None:
+        context['blogs'] = blog_all
+    elif section == 'published':
+        context['blogs'] = blog_published
     return render(request, 'blog/blog_manage.html', context)
+
+def blog_manage_published(request):
+    return blog_manage(request, 'published')
 
 def blog_trash(request, blog_id):
     try:
