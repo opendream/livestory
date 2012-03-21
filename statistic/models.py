@@ -10,7 +10,7 @@ class History(models.Model):
 	blog = models.ForeignKey(Blog)
 
 	def __unicode__(self):
-		return '%s viewed %s on %s' % (self.user.get_profile().get_fullname(), self.blog.title, self.datetime.strftime('%Y/%m/%d'))
+		return '%s(%s) viewed %s(%s) on %s' % (self.user.get_profile().get_fullname(), self.user.id, self.blog.title, self.blog.id, self.datetime.strftime('%Y/%m/%d'))
 
 
 class ViewCount(models.Model):

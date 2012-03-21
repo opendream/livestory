@@ -25,7 +25,7 @@ class TestHistory(TestBaseData):
 
 	def test_unicode(self):
 		history = History.objects.create(user=self.user, blog=self.blog)
-		self.assertEqual(history.__unicode__(), 'John Doe viewed Visit Praque on %s' % history.datetime.strftime('%Y/%m/%d'))
+		self.assertEqual(history.__unicode__(), 'John Doe(%s) viewed Visit Praque(%s) on %s' % (self.user.id, self.blog.id, history.datetime.strftime('%Y/%m/%d')))
 
 
 class TestViewCount(TestBaseData):
