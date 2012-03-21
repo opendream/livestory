@@ -69,12 +69,21 @@ def blog_manage(request):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
 
-    blogs = Blog.objects.filter(trash=False).order_by('-created')
+    blogs = Blog.objects.all().order_by('-created')
     if not request.user.is_staff:
         blogs = blogs.filter(user=request.user)
 
+    blog_all = blogs.filter(trash=False)
+    blog_published = blogs.filter(draft=False, trash=False)
+    blog_draft = blogs.filter(draft=True, trash=False)
+    blog_trash = blogs.filter(trash=True)
+
     context = {
-        'blogs': blogs
+        'blogs': blog_all,
+        'num_all': blog_all.count(),
+        'num_published': blog_published.count(),
+        'num_draft': blog_draft.count(),
+        'num_trash': blog_trash.count()
     }
     return render(request, 'blog/blog_manage.html', context)
 

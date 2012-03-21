@@ -690,6 +690,8 @@ class TestBlogManagement(TestCase):
         ]
 
     def tearDown(self):
+        for blog in self.blogs:
+            blog.delete()
         rm_user(self.john.id)
         rm_user(self.adam.id)
         rm_user(self.staff.id)
@@ -756,4 +758,20 @@ class TestBlogManagement(TestCase):
         response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), follow=True)
         self.assertNotContains(response, reverse('blog_trash', args=[self.blogs[0].id]))
         self.client.logout()
+
+    def test_number_of_blog_of_all_published_draft_trash(self):
+        self.blogs[0].draft = False
+        self.blogs[0].save()
+        self.blogs[1].draft = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(2, response.context['num_all'])
+        self.assertEqual(1, response.context['num_published'])
+        self.assertEqual(1, response.context['num_draft'])
+        self.assertEqual(1, response.context['num_trash'])
+        self.client.logout()
+
 
