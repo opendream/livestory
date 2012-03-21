@@ -88,6 +88,8 @@ def blog_manage(request, section=None, page=0, sort='created', order='desc'):
         context['blogs'] = blog_published
     elif section == 'draft':
         context['blogs'] = blog_draft
+    elif section == 'trash':
+        context['blogs'] = blog_trash
     else:
         context['blogs'] = blog_all
     return render(request, 'blog/blog_manage.html', context)
@@ -97,6 +99,9 @@ def blog_manage_published(request):
 
 def blog_manage_draft(request):
     return blog_manage(request, 'draft')
+
+def blog_manage_trash(request):
+    return blog_manage(request, 'trash')
 
 def blog_trash(request, blog_id):
     try:

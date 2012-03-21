@@ -800,3 +800,16 @@ class TestBlogManagement(TestCase):
         self.assertEqual(2, response.context['blogs'].count())
         self.client.logout()
 
+    def test_view_manage_trash(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.blogs[1].trash = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(3, response.context['blogs'].count())
+        self.client.logout()
+
