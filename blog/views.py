@@ -82,6 +82,15 @@ def blog_manage(request):
 def blog_trash(request, blog_id):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
+    try:
+        blog = Blog.objects.get(id=blog_id)
+        blog.trash = True
+        blog.save()
+        print 'saved'
+    except Blog.DoesNotExist:
+        print 'error'
+        pass
+    return redirect(reverse('blog_manage'))
 
 def blog_create(request):
     if not request.user.is_authenticated():

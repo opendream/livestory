@@ -62,6 +62,7 @@ class Blog(models.Model):
     mood        = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private     = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
     draft       = models.BooleanField(default=False, choices=DRAFT_CHOICES)
+    trash       = models.BooleanField(default=False)
     created     = models.DateTimeField(auto_now_add=True)
     modified    = models.DateTimeField(auto_now=True)
                 
