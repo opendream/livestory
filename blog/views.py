@@ -84,14 +84,14 @@ def blog_trash(request, blog_id):
         return render(request, '403.html', status=403)
     try:
         blog = Blog.objects.get(id=blog_id)
-        if blog.user.id != request.user.id:
+        if blog.user.id != request.user.id and not request.user.is_staff:
             return render(request, '403.html', status=403)
-        
+
         blog.trash = True
         blog.save()
+        return redirect(reverse('blog_manage'))
     except Blog.DoesNotExist:
         pass
-    return redirect(reverse('blog_manage'))
 
 def blog_create(request):
     if not request.user.is_authenticated():

@@ -738,3 +738,11 @@ class TestBlogManagement(TestCase):
         response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))
         self.assertEqual(403, response.status_code)
 
+    def test_staff_user_trash_other_blog(self):
+        self.client.login(username=self.staff.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))
+        self.assertRedirects(response, reverse('blog_manage'))
+        blog = Blog.objects.get(id=self.blogs[3].id)
+        self.assertTrue(blog.trash)
+        self.client.logout()
+
