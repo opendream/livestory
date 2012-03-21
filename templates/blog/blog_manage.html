@@ -69,7 +69,7 @@ $(document).ready(function() {
 					<td class="centered">{{ blog.viewcount.totalcount }}</td>
 					<td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
 					{% if can_restore %}
-					<td class="centered"><a href="{% url blog_restore blog.id %}" class="ic-action-story ic-delete-story">Restore</a></td>
+					<td class="centered"><a href="{% url blog_restore blog.id %}?section=trash" class="ic-action-story ic-delete-story">Restore</a></td>
 					{% else %}
 					<td class="centered"><a href="{% url blog_trash blog.id %}?section={{ section }}" class="ic-action-story ic-delete-story">Trash</a></td>
 					{% endif %}
