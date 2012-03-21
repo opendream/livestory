@@ -34,6 +34,7 @@ class ViewCount(models.Model):
 			self.daycount = 1
 		else:
 			self.daycount = self.daycount + 1
+		self.updated = datetime.now()
 		self.save()
 
 	def __unicode__(self):

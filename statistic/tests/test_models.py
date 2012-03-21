@@ -74,3 +74,10 @@ class TestViewCount(TestBaseData):
 		self.assertEqual(blog.viewcount.weekcount, 3)
 		self.assertEqual(blog.viewcount.daycount, 1)
 		blog.delete()
+
+	def test_update_updated_must_be_updated(self):
+		self.blog.viewcount.updated = self.blog.viewcount.updated - timedelta(2)
+		self.blog.viewcount.save()
+		updated = self.blog.viewcount.updated
+		self.blog.viewcount.update()
+		self.assertGreater(self.blog.viewcount.updated, updated)
