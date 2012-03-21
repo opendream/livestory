@@ -118,8 +118,17 @@ def blog_trash(request, blog_id):
         raise Http404
 
 def blog_restore(request, blog_id):
-    if not request.user.is_authenticated():
-        return render(request, '403.html', status=403)
+    try:
+        blog = Blog.objects.get(id=blog_id)
+        if not request.user.is_authenticated():
+            return render(request, '403.html', status=403)
+        
+        blog.trash = False
+        blog.save()
+        return redirect(reverse('blog_manage_trash'))
+    except Blog.DoesNotExist:
+        pass
+
 
 def blog_create(request):
     if not request.user.is_authenticated():
