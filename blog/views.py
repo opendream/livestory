@@ -113,6 +113,11 @@ def blog_trash(request, blog_id):
 
         blog.trash = True
         blog.save()
+
+        section = request.GET.get('section')
+        if section:
+            if section == 'published':
+                return redirect(reverse('blog_manage_published'))
         return redirect(reverse('blog_manage'))
     except Blog.DoesNotExist:
         raise Http404
