@@ -36,10 +36,10 @@ $(document).ready(function() {
 {% block content %}
 	<h1 class="page-title block">All Stories</h1>
 	<div class="block">
-		<a href="" class="active-b">All </a><span class="grey">(24)</span> | 
-		<a href="">Published </a><span class="grey">(24)</span> | 
-		<a href="">Drafts </a><span class="grey">(24)</span> | 
-		<a href="">Trash </a><span class="grey">(24)</span>
+		<a href="" class="active-b">All </a><span class="grey">({{ num_all }})</span> | 
+		<a href="">Published </a><span class="grey">({{ num_published }})</span> | 
+		<a href="">Drafts </a><span class="grey">({{ num_draft }})</span> | 
+		<a href="">Trash </a><span class="grey">({{ num_trash }})</span>
 	</div>
 	<form class="form-inline" action="{% url blog_manage_bulk %}">
 		<select id="op">
