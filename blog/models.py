@@ -5,9 +5,12 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 
+from common.templatetags.common_tags import cache_path
 from location.models import Location
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItem
+
+import shutil
 
 MOOD_CHOICES = (
     (1, 'Happy'     ), 
@@ -91,6 +94,22 @@ class Blog(models.Model):
         for item in TaggedItem.objects.filter(object_id=self.id).order_by('id'):
             tags.append(item.tag.name)
         return ", ".join(tags)
+
+    def delete(self, **kwargs):
+        if not 'with_file' in kwargs:
+            with_file = True
+        else:
+            with_file = kwargs['with_file']
+
+        if with_file:
+            blog_image_path = '%sblog/%s/%s' % (settings.IMAGE_ROOT, self.user.id, self.id)
+            if os.path.exists(blog_image_path):
+                shutil.rmtree(blog_image_path)
+            cache_image_path = cache_path(blog_image_path)
+            if os.path.exists(cache_image_path):
+                shutil.rmtree(cache_image_path)
+        super(Blog, self).delete()
+
 
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)

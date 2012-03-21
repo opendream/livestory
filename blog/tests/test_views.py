@@ -593,7 +593,7 @@ class TestAllPage(TestCase):
         
         blogs = Blog.objects.all()
         for blog in blogs:
-            blog.delete()
+            blog.delete(with_file=False)
         
         self.blogs = [
             factory.create_blog('Blog 1', self.user1, self.category1, self.location1, private=True ), 

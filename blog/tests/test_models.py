@@ -1,5 +1,7 @@
 from blog.models import Blog, Love, blog_image_path
+from django.core.urlresolvers import reverse
 from django.test import TestCase
+from statistic.models import ViewCount
 from tests import factory
 from common import rm_user
 
@@ -80,6 +82,21 @@ class TestBlog(TestCase):
         self.blogs[0].save_tags(u'Red, Green, Blue')
         self.blogs[0].save()
         self.assertEqual('Red, Green, Blue', self.blogs[0].get_tags())
+
+    def test_blog_delete(self):
+        # to generate image cache
+        self.client.login(username=self.user.username, password='testuser')
+        self.client.get(reverse('blog_view', args=[self.blogs[0].id]))
+        self.client.logout()
+
+        blog_id = self.blogs[0].id
+        self.blogs[0].delete()
+        expected = os.path.exists('%sblog/%s/%s' % (settings.IMAGE_ROOT, self.user.id, blog_id))
+        self.assertFalse(expected)
+        expected = os.path.exists('%scache/images/blog/%s/%s' % (settings.MEDIA_ROOT, self.user.id, blog_id))
+        self.assertFalse(expected)
+        with self.assertRaises(ViewCount.DoesNotExist):
+            ViewCount.objects.get(blog__id=blog_id)
         
 
 class TestLove(TestCase):
