@@ -66,7 +66,7 @@ $(document).ready(function() {
 					<td><a href="{% url blog_view blog.id %}">{{ blog.title }}</a></td>
 					<td class="centered">{{ blog.created|localtime|date:"m/d/Y" }}</td>
 					<td class="centered">{{ blog.love_set.all.count }}</td>
-					<td class="centered">355</td>
+					<td class="centered">{{ blog.viewcount.totalcount }}</td>
 					<td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
 					<td class="centered"><a href="#" class="ic-action-story ic-delete-story">Delete</a></td>
 				</tr>
