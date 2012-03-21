@@ -827,3 +827,12 @@ class TestBlogManagement(TestCase):
         self.assertFalse(blog.trash)
         self.client.logout()
 
+    def test_authenticated_user_restore_other_blog(self):
+        self.blogs[3].trash = True
+        self.blogs[3].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[3].id]))
+        self.assertEqual(403, response.status_code)
+        self.assertTrue(self.blogs[3].trash)
+        self.client.logout()
+
