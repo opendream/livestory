@@ -69,10 +69,9 @@ def blog_manage(request):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
 
-    if request.user.is_staff:
-        blogs = Blog.objects.all()
-    else:
-        blogs = Blog.objects.filter(user=request.user).order_by('-created')
+    blogs = Blog.objects.filter(trash=False).order_by('-created')
+    if not request.user.is_staff:
+        blogs = blogs.filter(user=request.user)
 
     context = {
         'blogs': blogs

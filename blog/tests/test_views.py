@@ -737,6 +737,7 @@ class TestBlogManagement(TestCase):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))
         self.assertEqual(403, response.status_code)
+        self.client.logout()
 
     def test_staff_user_trash_other_blog(self):
         self.client.login(username=self.staff.username, password='1234')
@@ -749,4 +750,10 @@ class TestBlogManagement(TestCase):
     def test_trash_not_exists_blog(self):
         response = self.client.get(reverse('blog_trash', args=[0]))
         self.assertEquals(404, response.status_code)
+
+    def test_trash_success_must_hide_blog_on_table(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), follow=True)
+        self.assertNotContains(response, reverse('blog_trash', args=[self.blogs[0].id]))
+        self.client.logout()
 
