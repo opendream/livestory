@@ -68,7 +68,7 @@ $(document).ready(function() {
 					<td class="centered">{{ blog.love_set.all.count }}</td>
 					<td class="centered">{{ blog.viewcount.totalcount }}</td>
 					<td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
-					<td class="centered"><a href="#" class="ic-action-story ic-delete-story">Trash</a></td>
+					<td class="centered"><a href="{% url blog_trash blog.id %}" class="ic-action-story ic-delete-story">Trash</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>
