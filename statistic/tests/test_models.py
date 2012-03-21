@@ -19,3 +19,7 @@ class TestHistory(TestCase):
 
 	def test_create(self):
 		History.objects.create(user=self.user, blog=self.blog)
+
+	def test_query(self):
+		History.objects.create(user=self.user, blog=self.blog)
+		self.assertEqual(1, History.objects.filter(blog=self.blog).count())
