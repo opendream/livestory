@@ -82,20 +82,5 @@ $(document).ready(function() {
 			</tbody>
 		</table>
     </form>  
-	<select name="op"><option value="set_private">Private</option><option value="set_public">Public</option></select> 
-		<input type="submit" value="Apply">
-		<table>
-		{% for blog in blogs %}
-				<tr>
-						<td class="blog_id"><input type="checkbox" name="blog_id" value="{{ blog.id }}"></td>
-					<td class="title">{{ blog.title }}</td>
-					<td class="loves">{{ blog.love_set.count }}</td>
-					<td class="mood">
-						<div class="mood-{{ blog.mood }}">{{ blog.get_mood_text }}</div>
-					</td>
-					<td class="created">{{ blog.created|date:"Y-m-d" }}</td>
-				</tr>
-		{% endfor %}
-		</table>
 {% endblock %}
 
