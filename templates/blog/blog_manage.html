@@ -36,10 +36,10 @@ $(document).ready(function() {
 {% block content %}
 	<h1 class="page-title block">All Stories</h1>
 	<div class="block">
-		<a href="" class="active-b">All </a><span class="grey">({{ num_all }})</span> | 
-		<a href="">Published </a><span class="grey">({{ num_published }})</span> | 
-		<a href="">Drafts </a><span class="grey">({{ num_draft }})</span> | 
-		<a href="">Trash </a><span class="grey">({{ num_trash }})</span>
+		<a href="{% url blog_manage %}" class="active-b">All </a><span class="grey">({{ num_all }})</span> | 
+		<a href="{% url blog_manage_published %}">Published </a><span class="grey">({{ num_published }})</span> | 
+		<a href="{% url blog_manage_draft %}">Drafts </a><span class="grey">({{ num_draft }})</span> | 
+		<a href="{% url blog_manage_trash %}">Trash </a><span class="grey">({{ num_trash }})</span>
 	</div>
 	<form class="form-inline" action="{% url blog_manage_bulk %}">
 		<select id="op">
@@ -56,7 +56,7 @@ $(document).ready(function() {
 					<th class="centered">Love</th>
 					<th class="centered">Views</th>
 					<th class="centered">Edit</th>
-					<th class="centered">Delete</th>
+					<th class="centered">{% if can_restore %}Restore{% else %}Trash{% endif %}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -68,7 +68,11 @@ $(document).ready(function() {
 					<td class="centered">{{ blog.love_set.all.count }}</td>
 					<td class="centered">{{ blog.viewcount.totalcount }}</td>
 					<td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
+					{% if can_restore %}
+					<td class="centered"><a href="" class="ic-action-story ic-delete-story">Restore</a></td>
+					{% else %}
 					<td class="centered"><a href="{% url blog_trash blog.id %}" class="ic-action-story ic-delete-story">Trash</a></td>
+					{% endif %}
 				</tr>
 				{% endfor %}
 			</tbody>

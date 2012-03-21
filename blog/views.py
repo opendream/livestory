@@ -82,7 +82,8 @@ def blog_manage(request, section=None, page=0, sort='created', order='desc'):
         'num_all': blog_all.count(),
         'num_published': blog_published.count(),
         'num_draft': blog_draft.count(),
-        'num_trash': blog_trash.count()
+        'num_trash': blog_trash.count(),
+        'can_restore': False
     }
     if section == 'published':
         context['blogs'] = blog_published
@@ -90,6 +91,7 @@ def blog_manage(request, section=None, page=0, sort='created', order='desc'):
         context['blogs'] = blog_draft
     elif section == 'trash':
         context['blogs'] = blog_trash
+        context['can_restore'] = True
     else:
         context['blogs'] = blog_all
     return render(request, 'blog/blog_manage.html', context)
