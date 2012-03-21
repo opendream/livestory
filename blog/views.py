@@ -87,6 +87,7 @@ def blog_manage(request, section=None, page=0, sort='created', order='desc'):
     }
     if section == 'published':
         context['blogs'] = blog_published
+        context['section'] = section
     elif section == 'draft':
         context['blogs'] = blog_draft
     elif section == 'trash':

@@ -758,6 +758,13 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]))
         self.client.logout()
 
+    def test_link_that_must_be_displayed_on_published_section_page(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]) + '?section=published')
+        self.client.logout()
+
     def test_authenticated_user_trash_other_blog(self):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))
