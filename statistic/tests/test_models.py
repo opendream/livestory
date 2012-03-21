@@ -51,7 +51,7 @@ class TestViewCount(TestBaseData):
 		self.assertEqual(self.blog.viewcount.weekcount, 1)
 		self.assertEqual(self.blog.viewcount.daycount, 1)
 
-	def test_update_get_week(self):
+	def test_update_get_weekcount(self):
 		blog = Blog.objects.create(title='Visit Pattaya', user=self.user, category=self.category, location=self.location)
 		view = ViewCount.objects.create(blog=blog, totalcount=3, weekcount=2, daycount=1)
 		view.updated = view.updated - timedelta(days=7)
@@ -60,5 +60,17 @@ class TestViewCount(TestBaseData):
 		blog.viewcount.update()
 		self.assertEqual(blog.viewcount.totalcount, 4)
 		self.assertEqual(blog.viewcount.weekcount, 1)
+		self.assertEqual(blog.viewcount.daycount, 1)
+		blog.delete()
+
+	def test_update_get_daycount(self):
+		blog = Blog.objects.create(title='Visit Pattaya', user=self.user, category=self.category, location=self.location)
+		view = ViewCount.objects.create(blog=blog, totalcount=3, weekcount=2, daycount=1)
+		view.updated = view.updated - timedelta(days=1)
+		view.save()
+
+		blog.viewcount.update()
+		self.assertEqual(blog.viewcount.totalcount, 4)
+		self.assertEqual(blog.viewcount.weekcount, 3)
 		self.assertEqual(blog.viewcount.daycount, 1)
 		blog.delete()
