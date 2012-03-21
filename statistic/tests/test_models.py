@@ -19,8 +19,9 @@ class TestBaseData(TestCase):
 
 class TestHistory(TestBaseData):
 	def test_create(self):
-		History.objects.create(user=self.user, blog=self.blog)
-		self.assertEqual(1, History.objects.filter(blog=self.blog).count())
+		history = History.objects.create(user=self.user, blog=self.blog)
+		self.assertEqual(history.user.id, self.user.id)
+		self.assertEqual(history.blog.id, self.blog.id)
 
 
 class TestViewCount(TestBaseData):
