@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from blog.models import Blog
+from datetime import datetime
 
 
 class History(models.Model):
@@ -14,7 +15,7 @@ class History(models.Model):
 
 
 class ViewCount(models.Model):
-	datetime = models.DateTimeField(auto_now_add=True)
+	updated = models.DateTimeField(editable=False)
 	blog = models.OneToOneField(Blog)
 	totalcount = models.IntegerField(default=0)
 	weekcount = models.IntegerField(default=0)
@@ -22,9 +23,20 @@ class ViewCount(models.Model):
 
 	def update(self):
 		self.totalcount = self.totalcount + 1
-		self.weekcount = self.weekcount + 1
+		now = datetime.now()
+		diff = now - self.updated
+		days_diff = float(int(diff.total_seconds() + 3)) / (60 * 60 * 24)
+		if days_diff > 7:
+			self.weekcount = 1
+		else:
+			self.weekcount = self.weekcount + 1
 		self.daycount = self.daycount + 1
 		self.save()
 
 	def __unicode__(self):
 		return '%s has %s view(s), %s view(s) in week, %s view(s) in day' % (self.blog.title, self.totalcount, self.weekcount, self.daycount)
+
+	def save(self, *args, **kwargs):
+		if not self.id:
+			self.updated = datetime.now()
+		super(ViewCount, self).save(*args, **kwargs)

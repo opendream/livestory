@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from blog.models import Blog
 from common import rm_user
+from datetime import datetime, timedelta
 from statistic.models import History, ViewCount
 from tests import factory
 
@@ -34,6 +35,7 @@ class TestViewCount(TestBaseData):
 		self.assertEqual(view.totalcount, 3)
 		self.assertEqual(view.weekcount, 2)
 		self.assertEqual(view.daycount, 1)
+		blog.delete()
 
 	def test_get_from_blog(self):
 		self.assertEqual(self.blog.viewcount.totalcount, 0)
@@ -48,3 +50,14 @@ class TestViewCount(TestBaseData):
 		self.assertEqual(self.blog.viewcount.totalcount, 1)
 		self.assertEqual(self.blog.viewcount.weekcount, 1)
 		self.assertEqual(self.blog.viewcount.daycount, 1)
+
+	def test_update_get_week(self):
+		blog = Blog.objects.create(title='Visit Pattaya', user=self.user, category=self.category, location=self.location)
+		view = ViewCount.objects.create(blog=blog, totalcount=3, weekcount=2, daycount=1)
+		view.updated = view.updated - timedelta(days=7)
+		view.save()
+
+		blog.viewcount.update()
+		self.assertEqual(blog.viewcount.totalcount, 4)
+		self.assertEqual(blog.viewcount.weekcount, 1)
+		blog.delete()
