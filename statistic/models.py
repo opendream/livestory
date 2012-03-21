@@ -30,7 +30,10 @@ class ViewCount(models.Model):
 			self.weekcount = 1
 		else:
 			self.weekcount = self.weekcount + 1
-		self.daycount = self.daycount + 1
+		if days_diff > 1:
+			self.daycount = 1
+		else:
+			self.daycount = self.daycount + 1
 		self.save()
 
 	def __unicode__(self):

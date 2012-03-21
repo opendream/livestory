@@ -60,4 +60,5 @@ class TestViewCount(TestBaseData):
 		blog.viewcount.update()
 		self.assertEqual(blog.viewcount.totalcount, 4)
 		self.assertEqual(blog.viewcount.weekcount, 1)
+		self.assertEqual(blog.viewcount.daycount, 1)
 		blog.delete()
