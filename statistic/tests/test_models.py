@@ -1,5 +1,6 @@
 from django.test import TestCase
 
+from blog.models import Blog
 from common import rm_user
 from statistic.models import History, ViewCount
 from tests import factory
@@ -13,9 +14,6 @@ class TestBaseData(TestCase):
 
 	def tearDown(self):
 		rm_user(self.user.id)
-		self.category.delete()
-		self.location.delete()
-		self.blog.delete()
 
 class TestHistory(TestBaseData):
 	def test_create(self):
@@ -30,12 +28,17 @@ class TestHistory(TestBaseData):
 
 class TestViewCount(TestBaseData):
 	def test_create(self):
-		view = ViewCount.objects.create(blog=self.blog, totalcount=3, weekcount=2, daycount=1)
-		self.assertEqual(view.blog.id, self.blog.id)
+		blog = Blog.objects.create(title='Visit Pattaya', user=self.user, category=self.category, location=self.location)
+		view = ViewCount.objects.create(blog=blog, totalcount=3, weekcount=2, daycount=1)
+		self.assertEqual(view.blog.id, blog.id)
 		self.assertEqual(view.totalcount, 3)
 		self.assertEqual(view.weekcount, 2)
 		self.assertEqual(view.daycount, 1)
 
+	def test_get_from_blog(self):
+		self.assertEqual(self.blog.viewcount.totalcount, 0)
+		self.assertEqual(self.blog.viewcount.weekcount, 0)
+		self.assertEqual(self.blog.viewcount.daycount, 0)
+
 	def test_unicode(self):
-		view = ViewCount.objects.create(blog=self.blog, totalcount=3, weekcount=2, daycount=1)
-		self.assertEqual(view.__unicode__(), 'Visit Praque has 3 view(s), 2 view(s) in week, 1 view(s) in day')
+		self.assertEqual(self.blog.viewcount.__unicode__(), 'Visit Praque has 0 view(s), 0 view(s) in week, 0 view(s) in day')

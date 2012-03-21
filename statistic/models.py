@@ -15,10 +15,10 @@ class History(models.Model):
 
 class ViewCount(models.Model):
 	datetime = models.DateTimeField(auto_now_add=True)
-	blog = models.ForeignKey(Blog)
-	totalcount = models.IntegerField(default=1)
-	weekcount = models.IntegerField(default=1)
-	daycount = models.IntegerField(default=1)
+	blog = models.OneToOneField(Blog)
+	totalcount = models.IntegerField(default=0)
+	weekcount = models.IntegerField(default=0)
+	daycount = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return '%s has %s view(s), %s view(s) in week, %s view(s) in day' % (self.blog.title, self.totalcount, self.weekcount, self.daycount)
