@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from account.models import Account
 from blog.models import *
 from blog.forms import *
+from statistic.models import ViewCount
 from notification.models import Notification
 
 from location.models import Location
@@ -109,6 +110,8 @@ def blog_create(request):
                 
                 blog.image = blog_save_image(image_path, blog)
                 blog.save()
+
+                ViewCount.objects.create(blog=blog)
                 
                 # There is image uploaded.
                 if image_path.split('/')[-2] == 'temp':
@@ -217,6 +220,7 @@ def blog_edit(request, blog_id):
 def blog_view(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
+        blog.viewcount.update()
         if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
             return render(request, '403.html', status=403)
             
