@@ -55,7 +55,9 @@ $(document).ready(function() {
 					<th class="centered">Date</th>
 					<th class="centered">Love</th>
 					<th class="centered">Views</th>
+					{% ifnotequal section 'trash' %}
 					<th class="centered">Edit</th>
+					{% endifnotequal %}
 					<th class="centered">{% if can_restore %}Restore{% else %}Trash{% endif %}</th>
 				</tr>
 			</thead>
@@ -67,7 +69,9 @@ $(document).ready(function() {
 					<td class="centered">{{ blog.created|localtime|date:"m/d/Y" }}</td>
 					<td class="centered">{{ blog.love_set.all.count }}</td>
 					<td class="centered">{{ blog.viewcount.totalcount }}</td>
+					{% ifnotequal section 'trash' %}
 					<td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
+					{% endifnotequal %}
 					{% if can_restore %}
 					<td class="centered"><a href="{% url blog_restore blog.id %}{% if section %}?section={{ section }}{% endif %}" class="ic-action-story ic-delete-story">Restore</a></td>
 					{% else %}

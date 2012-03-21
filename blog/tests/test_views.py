@@ -779,7 +779,7 @@ class TestBlogManagement(TestCase):
         self.blogs[0].save()
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_manage_trash'))
-        self.assertContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertNotContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
         self.assertContains(response, reverse('blog_restore', args=[self.blogs[0].id]) + '?section=trash')
         self.client.logout()
 
