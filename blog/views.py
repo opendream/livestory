@@ -90,6 +90,7 @@ def blog_manage(request, section=None, page=0, sort='created', order='desc'):
         context['section'] = section
     elif section == 'draft':
         context['blogs'] = blog_draft
+        context['section'] = section
     elif section == 'trash':
         context['blogs'] = blog_trash
         context['can_restore'] = True
