@@ -721,3 +721,8 @@ class TestBlogManagement(TestCase):
         all_blogs = Blog.objects.all()
         self.assertEqual(all_blogs.count(), response.context['blogs'].count())
 
+    def test_anonymous_user_trash_blog(self):
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]))
+        self.assertEquals(403, response.status_code)
+
+
