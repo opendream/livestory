@@ -1129,3 +1129,15 @@ class TestBlogManagement(TestCase):
             Blog.objects.get(id=self.blogs[2].id)
         self.client.logout()
 
+    def test_bulk_action_delete_own_not_trash_blog_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'delete',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[0].id).id) is int)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[1].id).id) is int)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[2].id).id) is int)
+        self.client.logout()
+

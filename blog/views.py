@@ -433,7 +433,7 @@ def blog_manage_bulk(request):
                 elif operation == 'restore':
                     blog.trash = False
                     blog.save()
-                elif operation == 'delete':
+                elif operation == 'delete' and blog.trash:
                     blog.delete()
         if section == 'published':
             return redirect(reverse('blog_manage_published'))
