@@ -989,3 +989,9 @@ class TestBlogManagement(TestCase):
         self.assertFalse(blog.trash)
         self.assertEqual(403, response.status_code)
 
+    def test_bulk_action_trash_get_by_anonymous_user(self):
+        response = self.client.get(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0]})
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(blog.trash)
+        self.assertEqual(403, response.status_code)
+
