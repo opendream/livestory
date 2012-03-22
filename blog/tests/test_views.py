@@ -954,4 +954,35 @@ class TestBlogManagement(TestCase):
 
         self.client.logout()
 
+    def test_bulk_checkboxes_tags_on_each_sections(self):
+        self.blogs[0].draft = False
+        self.blogs[0].save()
+        self.blogs[1].draft = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        self.client.logout()
+
 
