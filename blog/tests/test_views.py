@@ -1077,3 +1077,24 @@ class TestBlogManagement(TestCase):
         self.assertTrue(self.blogs[4].trash)
         self.client.logout()
 
+    def test_bulk_action_restore_own_blog_by_authenticated_user(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.blogs[1].trash = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'restore',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        self.blogs[0] = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(self.blogs[0].trash)
+        self.blogs[1] = Blog.objects.get(id=self.blogs[1].id)
+        self.assertFalse(self.blogs[1].trash)
+        self.blogs[2] = Blog.objects.get(id=self.blogs[2].id)
+        self.assertFalse(self.blogs[2].trash)
+        self.client.logout()
+

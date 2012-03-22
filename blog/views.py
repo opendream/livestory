@@ -425,7 +425,10 @@ def blog_manage_bulk(request):
         for blog_id in blog_ids:
             blog = Blog.objects.get(id=blog_id)
             if blog.user == request.user or request.user.is_staff:
-                blog.trash = True
+                if request.POST.get('op') == 'trash':
+                    blog.trash = True
+                elif request.POST.get('op') == 'restore':
+                    blog.trash = False
                 blog.save()
         if request.GET.get('section') == 'published':
             return redirect(reverse('blog_manage_published'))
