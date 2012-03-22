@@ -1146,7 +1146,7 @@ class TestBlogManagement(TestCase):
         response = self.client.get(reverse('blog_manage'))
         self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage'))
-        self.assertContains(response, '%s?sort=love&order=asc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=view&order=asc' % reverse('blog_manage'))
         self.client.logout()
 
@@ -1155,7 +1155,7 @@ class TestBlogManagement(TestCase):
         response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage'))
-        self.assertContains(response, '%s?sort=love&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=view&order=desc' % reverse('blog_manage'))
         self.client.logout()
 
@@ -1189,5 +1189,16 @@ class TestBlogManagement(TestCase):
         self.assertEqual(response.context['blogs'][0], self.blogs[0])
         self.assertEqual(response.context['blogs'][1], self.blogs[1])
         self.assertEqual(response.context['blogs'][2], self.blogs[2])
+        self.client.logout()
+
+    def test_sort_loves_by_desc(self):
+        Love.objects.create(blog=self.blogs[1], user=self.john)
+        Love.objects.create(blog=self.blogs[1], user=self.staff)
+        Love.objects.create(blog=self.blogs[2], user=self.john)
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=num_loves&order=desc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[1])
+        self.assertEqual(response.context['blogs'][1], self.blogs[2])
+        self.assertEqual(response.context['blogs'][2], self.blogs[0])
         self.client.logout() 
 
