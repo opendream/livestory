@@ -422,19 +422,21 @@ def blog_manage_bulk(request):
 
     if request.method == 'POST':
         blog_ids = request.POST.getlist('blog_id')
+        operation = request.POST.get('op')
+        section = request.GET.get('section')
         for blog_id in blog_ids:
             blog = Blog.objects.get(id=blog_id)
             if blog.user == request.user or request.user.is_staff:
-                if request.POST.get('op') == 'trash':
+                if operation == 'trash':
                     blog.trash = True
-                elif request.POST.get('op') == 'restore':
+                elif operation == 'restore':
                     blog.trash = False
                 blog.save()
-        if request.GET.get('section') == 'published':
+        if section == 'published':
             return redirect(reverse('blog_manage_published'))
-        elif request.GET.get('section') == 'draft':
+        elif section == 'draft':
             return redirect(reverse('blog_manage_draft'))
-        elif request.GET.get('section') == 'trash':
+        elif section == 'trash':
             return redirect(reverse('blog_manage_trash'))
         return redirect(reverse('blog_manage'))
 
