@@ -930,3 +930,28 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, 'action="%s?section=trash"' % reverse('blog_manage_bulk'))
         self.client.logout()
 
+    def test_bulk_actions_available_on_each_sections(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, '<option value="trash">Trash</option>')
+        self.assertNotContains(response, '<option value="restore">Restore</option>')
+        self.assertNotContains(response, '<option value="delete">Delete Permanently</option>')
+
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, '<option value="trash">Trash</option>')
+        self.assertNotContains(response, '<option value="restore">Restore</option>')
+        self.assertNotContains(response, '<option value="delete">Delete Permanently</option>')
+
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertContains(response, '<option value="trash">Trash</option>')
+        self.assertNotContains(response, '<option value="restore">Restore</option>')
+        self.assertNotContains(response, '<option value="delete">Delete Permanently</option>')
+
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertNotContains(response, '<option value="trash">Trash</option>')
+        self.assertContains(response, '<option value="restore">Restore</option>')
+        self.assertContains(response, '<option value="delete">Delete Permanently</option>')
+
+        self.client.logout()
+
+
