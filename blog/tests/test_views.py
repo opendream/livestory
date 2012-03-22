@@ -7,6 +7,7 @@ from django.utils import simplejson as json
 from blog.models import Blog, Love
 from location.models import Location
 from mock import Mock, patch
+from math import ceil
 from tests import factory
 from bs4 import BeautifulSoup
 
@@ -719,7 +720,7 @@ class TestBlogManagement(TestCase):
         self.client.login(username=self.staff.username, password='1234')
         response = self.client.get(reverse('blog_manage'))
         all_blogs = Blog.objects.all()
-        self.assertEqual(all_blogs.count(), response.context['blogs'].count())
+        self.assertEqual(ceil(all_blogs.count() / 10.0), len(response.context['page_range']))
 
     def test_anonymous_user_trash_blog(self):
         response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]))
@@ -1290,4 +1291,27 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage_trash'))
         self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage_trash'))
         self.client.logout()
+
+    def test_has_pager(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        print response.context['page_range']
+        self.assertFalse(response.context['has_pager'])
+        blogs = [
+            factory.create_blog('John blog 4', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 5', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 6', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 7', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 8', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 9', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 10', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 11', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 12', self.john, self.category, self.location, private=True),
+        ]
+        print response.context['page_range']
+        response = self.client.get(reverse('blog_manage'))
+        self.assertTrue(response.context['has_pager'])
+        self.client.logout()
+        for blog in blogs:
+            blog.delete()
 

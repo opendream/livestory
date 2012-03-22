@@ -101,29 +101,47 @@ def blog_manage(request, section=None):
     else:
         url = reverse('blog_manage')
 
-    print url
+    can_restore = False
+    if section == 'published':
+        blogs = blog_published
+    elif section == 'draft':
+        blogs = blog_draft
+    elif section == 'trash':
+        blogs = blog_trash
+        can_restore = True
+    else:
+        blogs = blog_all
+
+    pager = Paginator(blogs, 10)
+    p = request.GET.get('page') or 1
+
+    try:
+        pagination = pager.page(p)
+        blogs = pagination.object_list
+    except (PageNotAnInteger, EmptyPage):
+        raise Http404
+
+    p = int(p)
+
+    page_range = get_page_range(pagination)
 
     context = {
+        'blogs': blogs,
+        'can_restore': can_restore,
         'num_all': blog_all.count(),
         'num_published': blog_published.count(),
         'num_draft': blog_draft.count(),
         'num_trash': blog_trash.count(),
-        'can_restore': False,
+        'has_pager': len(page_range) > 1,
+        'pagination': pagination,
+        'page': p,
+        'pager': pager,
+        'page_range': page_range,
         'url': url,
-        'order': order == 'desc' and 'asc' or 'desc'
+        'order': order == 'desc' and 'asc' or 'desc',
+        'section': section,
     }
-    if section == 'published':
-        context['blogs'] = blog_published
-        context['section'] = section
-    elif section == 'draft':
-        context['blogs'] = blog_draft
-        context['section'] = section
-    elif section == 'trash':
-        context['blogs'] = blog_trash
-        context['section'] = section
-        context['can_restore'] = True
-    else:
-        context['blogs'] = blog_all
+
     return render(request, 'blog/blog_manage.html', context)
 
 def blog_manage_published(request):
