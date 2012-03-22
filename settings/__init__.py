@@ -163,6 +163,7 @@ INSTALLED_APPS = (
     'common',
     'location',
     'notification',
+    'statistic',
     'taggit',
 )
 
@@ -234,6 +235,7 @@ NOSE_ARGS = [
         'account,'
         'blog,'
         'location,'
-        'notification',
+        'notification,'
+        'statistic',
 ]
 

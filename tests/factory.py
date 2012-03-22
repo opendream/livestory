@@ -1,6 +1,7 @@
 from account.models import Account, AccountKey
 from blog.models import Blog, Category, Location, Love
 from notification.models import Notification
+from statistic.models import ViewCount
 from django.contrib.auth.models import User
 from django.core.files.base import File as DjangoFile
 
@@ -45,6 +46,8 @@ def create_blog(title='Icecream', user = None, category = None, location = None,
     blog.save()
     blog.image.save('blog_%s.jpg' % blog.id, DjangoFile(open('static/tests/blog.jpg'), 'blog.jpg'))
     blog.save()
+
+    viewcount = ViewCount.objects.create(blog=blog)
     
     return blog
 

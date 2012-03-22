@@ -5,10 +5,9 @@ from django.test import TestCase
 from django.utils import simplejson as json
 
 from blog.models import Blog, Love
-from blog.views import blog_bulk_update_private
-from blog.views import blog_bulk_update_public
 from location.models import Location
 from mock import Mock, patch
+from math import ceil
 from tests import factory
 from bs4 import BeautifulSoup
 
@@ -17,187 +16,6 @@ from django.conf import settings
 from override_settings import override_settings
 import shutil
 
-class MyMock(object):
-    def __init__(self, **kwargs):
-        for key in kwargs.keys():
-            setattr(self, key, kwargs[key])
-
-class BaseTestBlogManagement(TestCase):
-    def setUp(self):
-        sprite = MyMock(title = 'Sprite')
-        coke = MyMock(title = 'Coke')
-        pepsi = MyMock(title = 'Pepsi')
-        self.blogs = [sprite, coke, pepsi]
-    
-class TestBlogManagementUsingPatch(BaseTestBlogManagement):
-    # Test only view function, model layer is mocked
-    @patch('blog.models.Blog.objects.all')
-    def test_simple_get(self, mocked_all):
-        # Act
-        mocked_all.return_value = self.blogs
-        response = self.client.get('/blog/manage/')
-        # Assert
-        self.assertContains(response, 'Sprite')
-        self.assertContains(response, 'Coke')
-        self.assertContains(response, 'Pepsi')
- 
-
-class TestBlogManagementUsingMock(BaseTestBlogManagement):
-    # Test only view function, model layer is mocked
-    def setUp(self):
-        super(TestBlogManagementUsingMock, self).setUp()
-        self.mock_blog_manager()
-
-    def tearDown(self):
-        self.unmock_blog_manager()
-        super(TestBlogManagementUsingMock, self).tearDown()
-    
-    def mock_blog_manager(self):
-        self.original_manager = Blog.objects
-        Blog.objects = self.mock_manager = Mock()
-        Blog.objects.all = Mock(return_value = self.blogs)
-
-    def unmock_blog_manager(self):
-        Blog.objects = self.original_manager
-
-    def test_simple_get(self):
-        # Act
-        response = self.client.get('/blog/manage/')
-        # Assert
-        self.assertContains(response, 'Sprite')
-        self.assertContains(response, 'Coke')
-        self.assertContains(response, 'Pepsi')
-
-    def test_manage_blog__GET__parameters_passed_in_blog_manager(self):
-        """
-        Scenario: GET method to /blog/manage/
-        Expected:
-        - Blog.objects.all is called with no parameters
-        """
-        # Act
-        response = self.client.get('/blog/manage/')
-        # Assert
-        Blog.objects.all.assert_called_once_with()
-
-class TestBlogUpdate(TestCase):
-    def setUp(self):
-        user = factory.create_user()
-        category = factory.create_category()
-        location = factory.create_location()
-        self.blogs = [
-            factory.create_blog('Sprite', user, category, location),
-            factory.create_blog('Coke', user, category, location),
-            factory.create_blog('Pepsi', user, category, location)
-        ]
-        self.blogs[0].private = True
-        self.blogs[0].save()
-        self.blogs[1].private = False
-        self.blogs[1].save()
-        self.blogs[2].private = True
-        self.blogs[2].save()
-        
-        self.user = user
-    
-    def tearDown(self):
-        rm_user(self.user.id)
-
-    def test_simple_get(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'Sprite')
-
-    def test_post_bulk_private(self):
-        blog_ids = [ blog.id for blog in self.blogs]
-        response = self.client.post('/blog/manage/bulk/', {'blog_id': blog_ids, 'op': 'set_private'})
-        self.assertEquals(302, response.status_code) # redirect code
-        for blog in self.blogs:
-            b = Blog.objects.get(id=blog.id)
-            self.assertEquals(True, b.private)
-
-    def test_post_bulk_public(self):
-        blog_ids = [ blog.id for blog in self.blogs]
-        response = self.client.post('/blog/manage/bulk/', {'blog_id': blog_ids, 'op': 'set_public'})
-        self.assertEquals(302, response.status_code) # redirect code
-        for blog in self.blogs:
-            b = Blog.objects.get(id=blog.id)
-            self.assertEquals(False, b.private)
-
-    def test_blog_bulk_update_private(self):
-        blog_bulk_update_private(self.blogs)
-        for blog in self.blogs:
-            b = Blog.objects.get(id=blog.id)
-            self.assertEquals(True, b.private)
-
-    def test_blog_bulk_update_public(self):
-        blog_bulk_update_public(self.blogs)
-        for blog in self.blogs:
-            b = Blog.objects.get(id=blog.id)
-            self.assertEquals(False, b.private)
-            
-class TestGetBlogManagementWithModel(TestCase):
-    def setUp(self):
-        user = factory.create_user()
-        category = factory.create_category()
-        location = factory.create_location()
-
-        self.blogs = [
-            factory.create_blog('Sprite', user, category, location, mood=1),
-            factory.create_blog('Coke', user, category, location),
-            factory.create_blog('Pepsi', user, category, location, mood=3)
-        ]
-        
-        user1 = factory.create_user('testlove1', 'tester1@example.com', 'testuser1')
-        user2 = factory.create_user('testlove2', 'tester2@example.com', 'testuser2')
-
-        love1 = Love(user=user1, blog=self.blogs[0])
-        love1.save()
-        love2 = Love(user=user2, blog=self.blogs[0])
-        love2.save()
-        love3 = Love(user=user2, blog=self.blogs[1])
-        love3.save()
-        
-        self.blogs[0].created = '2012-03-02'
-        self.blogs[0].save()
-        self.blogs[2].created = '2012-02-14'
-        self.blogs[2].save()
-
-        
-        self.user = user
-        self.user1 = user1
-        self.user2 = user2
-        
-    def tearDown(self):
-        rm_user(self.user.id )
-        rm_user(self.user1.id)
-        rm_user(self.user2.id)
-            
-    def test_names(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="title">Sprite</')
-        self.assertContains(response, 'class="title">Coke</')
-        self.assertContains(response, 'class="title">Pepsi</')
-        
-    def test_loves(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="loves">2</')
-        self.assertContains(response, 'class="loves">1</')
-        
-    def test_mood(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="mood-3">Excited</')
-        self.assertContains(response, 'class="mood-1">Happy</')
-        
-    def test_created(self):
-        response = self.client.get('/blog/manage/')
-        self.assertContains(response, 'class="created">2012-03-02</')
-        self.assertContains(response, 'class="created">2012-02-14</')
-        
-    def test_columns_order(self):
-        response = self.client.get('/blog/manage/')
-        soup = BeautifulSoup(response.content)
-        tr = soup.find('tr')
-        classes = [td.attrs['class'][0] for td in tr.find_all('td')]
-        
-        self.assertEqual(classes, ['blog_id', 'title', 'loves', 'mood', 'created'])
         
 class TestBlogCreate(TestCase):
     def setUp(self):
@@ -357,7 +175,8 @@ class TestBlogCreate(TestCase):
 
         self.assertEquals(True, response.context['location_error'])
         self.client.logout()
-        
+
+
 class TestBlogEdit(TestCase):
     def setUp(self):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
@@ -773,7 +592,7 @@ class TestAllPage(TestCase):
         
         blogs = Blog.objects.all()
         for blog in blogs:
-            blog.delete()
+            blog.delete(with_file=False)
         
         self.blogs = [
             factory.create_blog('Blog 1', self.user1, self.category1, self.location1, private=True ), 
@@ -847,4 +666,652 @@ class TestAllPage(TestCase):
         self.assertEquals(404, response.status_code)
         
         self.client.logout()
-        
+
+
+class TestBlogManagement(TestCase):
+    def setUp(self):
+        self.john = factory.create_user('john.carter@example.com', 'john.carter@example.com', '1234', 'John', 'Carter', True)
+        self.adam = factory.create_user('adam.carter@example.com', 'adam.carter@example.com', '1234', 'Adam', 'Carter', True)
+        self.staff = factory.create_user('staff.carter@example.com', 'staff.carter@example.com', '1234', 'Staff', 'Carter', True)
+        self.staff.is_staff = True
+        self.staff.save()
+
+        self.category = factory.create_category('Animal', 'animal')
+        self.location = factory.create_location('Japan', 'Tokyo', '0', '0')
+
+        self.blogs = [
+            factory.create_blog('John blog 1', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 2', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 3', self.john, self.category, self.location, private=True),
+            factory.create_blog('Adam blog 1', self.adam, self.category, self.location, private=True),
+            factory.create_blog('Adam blog 2', self.adam, self.category, self.location, private=True),
+            factory.create_blog('Staff blog 1', self.staff, self.category, self.location, private=True),
+        ]
+
+    def tearDown(self):
+        for blog in self.blogs:
+            blog.delete()
+        rm_user(self.john.id)
+        rm_user(self.adam.id)
+        rm_user(self.staff.id)
+        self.client.logout()
+
+    def test_anonymous_user_get(self):
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(403, response.status_code)
+
+    def test_authenticated_user_get(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(200, response.status_code)
+
+    def test_authenticated_user_can_see_only_own_story(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(3, response.context['blogs'].count())
+        self.client.logout()
+
+        self.client.login(username=self.adam.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(2, response.context['blogs'].count())
+        self.client.logout()
+
+    def test_staff_can_see_all_story(self):
+        self.client.login(username=self.staff.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        all_blogs = Blog.objects.all()
+        self.assertEqual(ceil(all_blogs.count() / 10.0), len(response.context['page_range']))
+
+    def test_anonymous_user_trash_blog(self):
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]))
+        self.assertEquals(403, response.status_code)
+
+    def test_authenticated_user_trash_own_blog_on_all_section(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]))
+        self.assertRedirects(response, reverse('blog_manage'))
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertTrue(blog.trash)
+        self.client.logout()
+
+    def test_authenticated_user_trash_own_blog_on_published_section(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), {'section': 'published'})
+        self.assertRedirects(response, reverse('blog_manage_published'))
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertTrue(blog.trash)
+        self.client.logout()
+
+    def test_authenticated_user_trash_own_blog_on_draft_section(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), {'section': 'draft'})
+        self.assertRedirects(response, reverse('blog_manage_draft'))
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertTrue(blog.trash)
+        self.client.logout()
+
+    def test_link_that_must_be_displayed_on_all_section_page(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]))
+        self.client.logout()
+
+    def test_link_that_must_be_displayed_on_published_section_page(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]) + '?section=published')
+        self.client.logout()
+
+    def test_link_that_must_be_displayed_on_draft_section_page(self):
+        self.blogs[0].draft = True
+        self.blogs[0].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]) + '?section=draft')
+        self.client.logout()
+
+    def test_link_that_must_be_displayed_on_trash_section_page(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertNotContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertContains(response, reverse('blog_restore', args=[self.blogs[0].id]) + '?section=trash')
+        self.client.logout()
+
+    def test_blog_trash_cannot_edit(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_edit', args=[self.blogs[0].id]))
+        self.assertEqual(403, response.status_code)
+        self.client.logout()
+
+    def test_authenticated_user_trash_other_blog(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))
+        self.assertEqual(403, response.status_code)
+        self.client.logout()
+
+    def test_staff_user_trash_other_blog(self):
+        self.client.login(username=self.staff.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[3].id]))
+        self.assertRedirects(response, reverse('blog_manage'))
+        blog = Blog.objects.get(id=self.blogs[3].id)
+        self.assertTrue(blog.trash)
+        self.client.logout()
+
+    def test_trash_not_exists_blog(self):
+        response = self.client.get(reverse('blog_trash', args=[0]))
+        self.assertEquals(404, response.status_code)
+
+    def test_trash_success_must_hide_blog_on_table(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), follow=True)
+        self.assertNotContains(response, reverse('blog_trash', args=[self.blogs[0].id]))
+        self.client.logout()
+
+    def test_number_of_blog_of_all_published_draft_trash(self):
+        self.blogs[0].draft = False
+        self.blogs[0].save()
+        self.blogs[1].draft = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertEqual(2, response.context['num_all'])
+        self.assertEqual(1, response.context['num_published'])
+        self.assertEqual(1, response.context['num_draft'])
+        self.assertEqual(1, response.context['num_trash'])
+        self.client.logout()
+
+    def test_view_manage_published(self):
+        self.blogs[0].draft = False
+        self.blogs[0].save()
+        self.blogs[1].draft = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, response.context['blogs'].count())
+        self.client.logout()
+
+    def test_view_manage_draft(self):
+        self.blogs[0].draft = True
+        self.blogs[0].save()
+        self.blogs[1].draft = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(2, response.context['blogs'].count())
+        self.client.logout()
+
+    def test_view_manage_trash(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.blogs[1].trash = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(3, response.context['blogs'].count())
+        self.client.logout()
+
+    def test_anonymous_user_restore_blog(self):
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[0].id]))
+        self.assertEquals(403, response.status_code)
+
+    def test_authenticated_user_restore_own_blog(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[0].id]))
+        self.assertRedirects(response, reverse('blog_manage_trash'))
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(blog.trash)
+        self.client.logout()
+
+    def test_authenticated_user_restore_other_blog(self):
+        self.blogs[3].trash = True
+        self.blogs[3].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[3].id]))
+        self.assertEqual(403, response.status_code)
+        self.assertTrue(self.blogs[3].trash)
+        self.client.logout()
+
+    def test_staff_user_restore_other_blog(self):
+        self.blogs[3].trash = True
+        self.blogs[3].save()
+        self.client.login(username=self.staff.username, password='1234')
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[3].id]))
+        self.assertRedirects(response, reverse('blog_manage_trash'))
+        blog = Blog.objects.get(id=self.blogs[3].id)
+        self.assertFalse(blog.trash)
+        self.client.logout()
+
+    def test_restore_not_exists_blog(self):
+        response = self.client.get(reverse('blog_restore', args=[0]))
+        self.assertEquals(404, response.status_code)
+
+    def test_restore_success_must_hide_blog_on_table(self):
+        self.blogs[0].trash = False
+        self.blogs[0].save()
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_restore', args=[self.blogs[0].id]), follow=True)
+        self.assertNotContains(response, reverse('blog_restore', args=[self.blogs[0].id]))
+        self.client.logout()
+
+    def test_bulk_form_action_on_all_section(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, 'action="%s"' % reverse('blog_manage_bulk'))
+        self.client.logout()
+
+    def test_bulk_form_action_on_other_sections(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, 'action="%s?section=published"' % reverse('blog_manage_bulk'))
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertContains(response, 'action="%s?section=draft"' % reverse('blog_manage_bulk'))
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertContains(response, 'action="%s?section=trash"' % reverse('blog_manage_bulk'))
+        self.client.logout()
+
+    def test_bulk_actions_available_on_each_sections(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, '<option value="trash">Trash</option>')
+        self.assertNotContains(response, '<option value="restore">Restore</option>')
+        self.assertNotContains(response, '<option value="delete">Delete Permanently</option>')
+
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, '<option value="trash">Trash</option>')
+        self.assertNotContains(response, '<option value="restore">Restore</option>')
+        self.assertNotContains(response, '<option value="delete">Delete Permanently</option>')
+
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertContains(response, '<option value="trash">Trash</option>')
+        self.assertNotContains(response, '<option value="restore">Restore</option>')
+        self.assertNotContains(response, '<option value="delete">Delete Permanently</option>')
+
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertNotContains(response, '<option value="trash">Trash</option>')
+        self.assertContains(response, '<option value="restore">Restore</option>')
+        self.assertContains(response, '<option value="delete">Delete Permanently</option>')
+
+        self.client.logout()
+
+    def test_bulk_checkboxes_tags_on_each_sections(self):
+        self.blogs[0].draft = False
+        self.blogs[0].save()
+        self.blogs[1].draft = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[0].id)
+        self.assertNotContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[1].id)
+        self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
+
+        self.client.logout()
+
+    def test_bulk_action_trash_post_by_anonymous_user(self):
+        response = self.client.post(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0].id})
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(blog.trash)
+        self.assertEqual(403, response.status_code)
+
+    def test_bulk_action_trash_get_by_anonymous_user(self):
+        response = self.client.get(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0].id})
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(blog.trash)
+        self.assertEqual(403, response.status_code)
+
+    def test_bulk_action_trash_get_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0].id})
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(blog.trash)
+        self.assertEqual(403, response.status_code)
+        self.client.logout()
+
+    def test_bulk_action_trash_own_blog_on_all_section_post_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'trash',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        self.blogs[0] = Blog.objects.get(id=self.blogs[0].id)
+        self.assertTrue(self.blogs[0].trash)
+        self.blogs[1] = Blog.objects.get(id=self.blogs[1].id)
+        self.assertTrue(self.blogs[1].trash)
+        self.blogs[2] = Blog.objects.get(id=self.blogs[2].id)
+        self.assertTrue(self.blogs[2].trash)
+        self.assertRedirects(response, reverse('blog_manage'))
+        self.client.logout()
+
+    def test_bulk_action_trash_own_blog_on_published_section_post_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'trash',
+            'blog_id': [self.blogs[0].id, self.blogs[2].id]
+        }
+        response = self.client.post('%s?section=published' % reverse('blog_manage_bulk'), params, follow=True)
+        self.blogs[0] = Blog.objects.get(id=self.blogs[0].id)
+        self.assertTrue(self.blogs[0].trash)
+        self.blogs[1] = Blog.objects.get(id=self.blogs[1].id)
+        self.assertFalse(self.blogs[1].trash)
+        self.blogs[2] = Blog.objects.get(id=self.blogs[2].id)
+        self.assertTrue(self.blogs[2].trash)
+        self.assertRedirects(response, reverse('blog_manage_published'))
+        self.client.logout()
+
+    def test_bulk_action_trash_own_blog_on_draft_section_post_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'trash',
+            'blog_id': [self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post('%s?section=draft' % reverse('blog_manage_bulk'), params, follow=True)
+        self.blogs[0] = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(self.blogs[0].trash)
+        self.blogs[1] = Blog.objects.get(id=self.blogs[1].id)
+        self.assertTrue(self.blogs[1].trash)
+        self.blogs[2] = Blog.objects.get(id=self.blogs[2].id)
+        self.assertTrue(self.blogs[2].trash)
+        self.assertRedirects(response, reverse('blog_manage_draft'))
+        self.client.logout()
+
+    def test_bulk_action_trash_other_blog_post_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'trash',
+            'blog_id': [self.blogs[3].id, self.blogs[4].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        self.blogs[3] = Blog.objects.get(id=self.blogs[3].id)
+        self.assertFalse(self.blogs[3].trash)
+        self.blogs[4] = Blog.objects.get(id=self.blogs[4].id)
+        self.assertFalse(self.blogs[4].trash)
+        self.client.logout()
+
+    def test_bulk_action_trash_other_blog_post_by_staff_user(self):
+        self.client.login(username=self.staff.username, password='1234')
+        params = {
+            'op': 'trash',
+            'blog_id': [self.blogs[3].id, self.blogs[4].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        self.blogs[3] = Blog.objects.get(id=self.blogs[3].id)
+        self.assertTrue(self.blogs[3].trash)
+        self.blogs[4] = Blog.objects.get(id=self.blogs[4].id)
+        self.assertTrue(self.blogs[4].trash)
+        self.client.logout()
+
+    def test_bulk_action_restore_own_blog_by_authenticated_user(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.blogs[1].trash = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'restore',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        self.blogs[0] = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(self.blogs[0].trash)
+        self.blogs[1] = Blog.objects.get(id=self.blogs[1].id)
+        self.assertFalse(self.blogs[1].trash)
+        self.blogs[2] = Blog.objects.get(id=self.blogs[2].id)
+        self.assertFalse(self.blogs[2].trash)
+        self.client.logout()
+
+    def test_bulk_action_restore_redirect_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'restore',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post('%s?section=trash' % reverse('blog_manage_bulk'), params, follow=True)
+        self.assertRedirects(response, reverse('blog_manage_trash'))
+        self.client.logout()
+
+    def test_bulk_action_delete_own_trashed_blog_by_authenticated_user(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.blogs[1].trash = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'delete',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        with self.assertRaises(Blog.DoesNotExist):
+            Blog.objects.get(id=self.blogs[0].id)
+        with self.assertRaises(Blog.DoesNotExist):
+            Blog.objects.get(id=self.blogs[1].id)
+        with self.assertRaises(Blog.DoesNotExist):
+            Blog.objects.get(id=self.blogs[2].id)
+        self.client.logout()
+
+    def test_bulk_action_delete_own_not_trash_blog_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'delete',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[0].id)) is Blog)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[1].id)) is Blog)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[2].id)) is Blog)
+        self.client.logout()
+
+    def test_sort_links_displayed_on_all_section_by_default(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage'))
+        self.client.logout()
+
+    def test_sort_links_displayed_on_all_section_when_order_by_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage'))
+        self.client.logout()
+
+    def test_sort_title_by_desc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=desc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[2])
+        self.assertEqual(response.context['blogs'][1], self.blogs[1])
+        self.assertEqual(response.context['blogs'][2], self.blogs[0])
+        self.client.logout()
+
+    def test_sort_title_by_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[0])
+        self.assertEqual(response.context['blogs'][1], self.blogs[1])
+        self.assertEqual(response.context['blogs'][2], self.blogs[2])
+        self.client.logout()
+
+    def test_sort_date_by_desc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=created&order=desc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[2])
+        self.assertEqual(response.context['blogs'][1], self.blogs[1])
+        self.assertEqual(response.context['blogs'][2], self.blogs[0])
+        self.client.logout()
+
+    def test_sort_date_by_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=created&order=asc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[0])
+        self.assertEqual(response.context['blogs'][1], self.blogs[1])
+        self.assertEqual(response.context['blogs'][2], self.blogs[2])
+        self.client.logout()
+
+    def test_sort_loves_by_desc(self):
+        Love.objects.create(blog=self.blogs[1], user=self.john)
+        Love.objects.create(blog=self.blogs[1], user=self.staff)
+        Love.objects.create(blog=self.blogs[2], user=self.john)
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=num_loves&order=desc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[1])
+        self.assertEqual(response.context['blogs'][1], self.blogs[2])
+        self.assertEqual(response.context['blogs'][2], self.blogs[0])
+        self.client.logout()
+
+    def test_sort_loves_by_asc(self):
+        Love.objects.create(blog=self.blogs[1], user=self.john)
+        Love.objects.create(blog=self.blogs[1], user=self.staff)
+        Love.objects.create(blog=self.blogs[2], user=self.john)
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=num_loves&order=asc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[0])
+        self.assertEqual(response.context['blogs'][1], self.blogs[2])
+        self.assertEqual(response.context['blogs'][2], self.blogs[1])
+        self.client.logout()
+
+    def test_sort_views_by_desc(self):
+        self.client.login(username=self.john.username, password='1234')
+        self.client.get(reverse('blog_view', args=[self.blogs[0].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        response = self.client.get('%s?sort=num_views&order=desc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[2])
+        self.assertEqual(response.context['blogs'][1], self.blogs[0])
+        self.assertEqual(response.context['blogs'][2], self.blogs[1])
+        self.client.logout()
+
+    def test_sort_views_by_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        self.client.get(reverse('blog_view', args=[self.blogs[0].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        response = self.client.get('%s?sort=num_views&order=asc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[1])
+        self.assertEqual(response.context['blogs'][1], self.blogs[0])
+        self.assertEqual(response.context['blogs'][2], self.blogs[2])
+        self.client.logout()
+
+    def test_sort_links_displayed_on_published_section_by_default(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage_published'))
+        self.client.logout()
+
+    def test_sort_links_displayed_on_published_section_when_orderby_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage_published'))
+        self.client.logout()
+
+    def test_sort_links_displayed_on_draft_section_by_default(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage_draft'))
+        self.client.logout()
+
+    def test_sort_links_displayed_on_draft_section_when_orderby_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage_draft'))
+        self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage_draft'))
+        self.client.logout()
+
+    def test_sort_links_displayed_on_trash_section_by_default(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage_trash'))
+        self.client.logout()
+
+    def test_sort_links_displayed_on_trash_section_when_orderby_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage_trash'))
+        self.client.logout()
+
+    def test_has_pager(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        print response.context['page_range']
+        self.assertFalse(response.context['has_pager'])
+        blogs = [
+            factory.create_blog('John blog 4', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 5', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 6', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 7', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 8', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 9', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 10', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 11', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 12', self.john, self.category, self.location, private=True),
+        ]
+        print response.context['page_range']
+        response = self.client.get(reverse('blog_manage'))
+        self.assertTrue(response.context['has_pager'])
+        self.client.logout()
+        for blog in blogs:
+            blog.delete()
+

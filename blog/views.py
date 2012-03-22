@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from account.models import Account
 from blog.models import *
 from blog.forms import *
+from statistic.models import History, ViewCount
 from notification.models import Notification
 
 from location.models import Location
@@ -64,12 +65,125 @@ def blog_home(request):
 
     return render(request, 'blog/blog_home.html', locals())
 
-def blog_manage(request):
-    blogs = Blog.objects.all()
+def blog_manage(request, section=None):
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
+
+    blogs = Blog.objects.all().annotate(num_loves=Count('love'))
+
+    if request.GET.get('sort') and request.GET.get('order'):
+        sort = request.GET.get('sort')
+        order = request.GET.get('order')
+        if sort == 'num_views':
+            sort = 'viewcount__totalcount'
+        if order == 'desc':
+            blogs = blogs.order_by('-%s' % sort)
+        else:
+            blogs = blogs.order_by('%s' % sort)
+    else:
+        order = 'desc'
+        blogs = blogs.order_by('-created')
+
+    if not request.user.is_staff:
+        blogs = blogs.filter(user=request.user)
+
+    blog_all = blogs.filter(trash=False)
+    blog_published = blogs.filter(draft=False, trash=False)
+    blog_draft = blogs.filter(draft=True, trash=False)
+    blog_trash = blogs.filter(trash=True)
+
+    if section == 'published':
+        url = reverse('blog_manage_published')
+    elif section == 'draft':
+        url = reverse('blog_manage_draft')
+    elif section == 'trash':
+        url = reverse('blog_manage_trash')
+    else:
+        url = reverse('blog_manage')
+
+    can_restore = False
+    if section == 'published':
+        blogs = blog_published
+    elif section == 'draft':
+        blogs = blog_draft
+    elif section == 'trash':
+        blogs = blog_trash
+        can_restore = True
+    else:
+        blogs = blog_all
+
+    pager = Paginator(blogs, 10)
+    p = request.GET.get('page') or 1
+
+    try:
+        pagination = pager.page(p)
+        blogs = pagination.object_list
+    except (PageNotAnInteger, EmptyPage):
+        raise Http404
+
+    p = int(p)
+
+    page_range = get_page_range(pagination)
+
     context = {
-        'blogs': blogs
+        'blogs': blogs,
+        'can_restore': can_restore,
+        'num_all': blog_all.count(),
+        'num_published': blog_published.count(),
+        'num_draft': blog_draft.count(),
+        'num_trash': blog_trash.count(),
+        'has_pager': len(page_range) > 1,
+        'pagination': pagination,
+        'page': p,
+        'pager': pager,
+        'page_range': page_range,
+        'url': url,
+        'order': order == 'desc' and 'asc' or 'desc',
+        'section': section,
     }
+
     return render(request, 'blog/blog_manage.html', context)
+
+def blog_manage_published(request):
+    return blog_manage(request, 'published')
+
+def blog_manage_draft(request):
+    return blog_manage(request, 'draft')
+
+def blog_manage_trash(request):
+    return blog_manage(request, 'trash')
+
+def blog_trash(request, blog_id):
+    try:
+        blog = Blog.objects.get(id=blog_id)
+        if not request.user.is_authenticated() or (blog.user.id != request.user.id and not request.user.is_staff):
+            return render(request, '403.html', status=403)
+
+        blog.trash = True
+        blog.save()
+
+        section = request.GET.get('section')
+        if section:
+            if section == 'published':
+                return redirect(reverse('blog_manage_published'))
+            elif section == 'draft':
+                return redirect(reverse('blog_manage_draft'))
+        return redirect(reverse('blog_manage'))
+    except Blog.DoesNotExist:
+        raise Http404
+
+def blog_restore(request, blog_id):
+    try:
+        blog = Blog.objects.get(id=blog_id)
+        if not request.user.is_authenticated() or (blog.user != request.user and not request.user.is_staff):
+            return render(request, '403.html', status=403)
+
+        blog.trash = False
+        blog.save()
+        return redirect(reverse('blog_manage_trash'))
+    except Blog.DoesNotExist:
+        raise Http404
+
 
 def blog_create(request):
     if not request.user.is_authenticated():
@@ -102,6 +216,8 @@ def blog_create(request):
                 
                 blog.image = blog_save_image(image_path, blog)
                 blog.save()
+
+                ViewCount.objects.create(blog=blog)
                 
                 # There is image uploaded.
                 if image_path.split('/')[-2] == 'temp':
@@ -134,6 +250,8 @@ def blog_edit(request, blog_id):
         blog = Blog.objects.get(pk=blog_id)
         
         if not request.user.is_staff and (not request.user.is_authenticated() or request.user.id != blog.user.id):
+            return render(request, '403.html', status=403)
+        elif blog.trash:
             return render(request, '403.html', status=403)
         
         location = Location.objects.get(pk=blog.location_id)
@@ -210,8 +328,11 @@ def blog_edit(request, blog_id):
 def blog_view(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
+        blog.viewcount.update()
         if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
             return render(request, '403.html', status=403)
+
+        # History.objects.create(user=request.user, blog=blog)
             
         love_path = '/blog/%s/love/'
         button_type = 'love'
@@ -343,26 +464,31 @@ def blog_save_location(country, city):
     return location
 
 def blog_manage_bulk(request):
+    if not request.user.is_authenticated() or request.method == 'GET':
+        return render(request, '403.html', status=403)
+
     if request.method == 'POST':
-        blogs = [ Blog.objects.get(id=blog_id) for blog_id in request.POST.getlist('blog_id') ]
-
-        op = request.POST.get('op')
-        if op == 'set_private':
-            blog_bulk_update_private(blogs)
-        elif op == 'set_public':
-            blog_bulk_update_public(blogs)
-
-    return redirect('/blog/manage/')
-
-def blog_bulk_update_private(blogs):
-    for blog in blogs:
-        blog.private = True
-        blog.save()
-
-def blog_bulk_update_public(blogs):
-    for blog in blogs:
-        blog.private = False
-        blog.save()
+        blog_ids = request.POST.getlist('blog_id')
+        operation = request.POST.get('op')
+        section = request.GET.get('section')
+        for blog_id in blog_ids:
+            blog = Blog.objects.get(id=blog_id)
+            if blog.user == request.user or request.user.is_staff:
+                if operation == 'trash':
+                    blog.trash = True
+                    blog.save()
+                elif operation == 'restore':
+                    blog.trash = False
+                    blog.save()
+                elif operation == 'delete' and blog.trash:
+                    blog.delete()
+        if section == 'published':
+            return redirect(reverse('blog_manage_published'))
+        elif section == 'draft':
+            return redirect(reverse('blog_manage_draft'))
+        elif section == 'trash':
+            return redirect(reverse('blog_manage_trash'))
+        return redirect(reverse('blog_manage'))
 
 def blog_save_image(image_path, blog):
     directory, name = os.path.split(image_path)
