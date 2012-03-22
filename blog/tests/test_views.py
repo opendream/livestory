@@ -1098,3 +1098,13 @@ class TestBlogManagement(TestCase):
         self.assertFalse(self.blogs[2].trash)
         self.client.logout()
 
+    def test_bulk_action_restore_redirect_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'restore',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post('%s?section=trash' % reverse('blog_manage_bulk'), params, follow=True)
+        self.assertRedirects(response, reverse('blog_manage_trash'))
+        self.client.logout()
+

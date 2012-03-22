@@ -434,6 +434,8 @@ def blog_manage_bulk(request):
             return redirect(reverse('blog_manage_published'))
         elif request.GET.get('section') == 'draft':
             return redirect(reverse('blog_manage_draft'))
+        elif request.GET.get('section') == 'trash':
+            return redirect(reverse('blog_manage_trash'))
         return redirect(reverse('blog_manage'))
 
 def blog_save_image(image_path, blog):
