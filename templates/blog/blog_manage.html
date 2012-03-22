@@ -56,10 +56,10 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 					<th><input type="checkbox"></th>
-					<th>Title</th>
-					<th class="centered">Date</th>
-					<th class="centered">Love</th>
-					<th class="centered">Views</th>
+					<th><a href="/blog/manage/?sort=title&order=asc">Title</a></th>
+					<th class="centered"><a href="/blog/manage/?sort=created&order=asc">Date</a></th>
+					<th class="centered"><a href="/blog/manage/?sort=love&order=asc">Love</a></th>
+					<th class="centered"><a href="/blog/manage/?sort=view&order=asc">Views</a></th>
 					{% ifnotequal section 'trash' %}
 					<th class="centered">Edit</th>
 					{% endifnotequal %}
