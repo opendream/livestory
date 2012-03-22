@@ -417,26 +417,8 @@ def blog_save_location(country, city):
     return location
 
 def blog_manage_bulk(request):
-    if request.method == 'POST':
-        blogs = [ Blog.objects.get(id=blog_id) for blog_id in request.POST.getlist('blog_id') ]
-
-        op = request.POST.get('op')
-        if op == 'set_private':
-            blog_bulk_update_private(blogs)
-        elif op == 'set_public':
-            blog_bulk_update_public(blogs)
-
-    return redirect('/blog/manage/')
-
-def blog_bulk_update_private(blogs):
-    for blog in blogs:
-        blog.private = True
-        blog.save()
-
-def blog_bulk_update_public(blogs):
-    for blog in blogs:
-        blog.private = False
-        blog.save()
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
 
 def blog_save_image(image_path, blog):
     directory, name = os.path.split(image_path)

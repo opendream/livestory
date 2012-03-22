@@ -5,8 +5,6 @@ from django.test import TestCase
 from django.utils import simplejson as json
 
 from blog.models import Blog, Love
-from blog.views import blog_bulk_update_private
-from blog.views import blog_bulk_update_public
 from location.models import Location
 from mock import Mock, patch
 from tests import factory
@@ -984,5 +982,9 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '<input type="checkbox" name="blog_id" value="%s">' % self.blogs[2].id)
 
         self.client.logout()
+
+    def test_bulk_action_trash_post_by_anonymous(self):
+        response = self.client.post(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0]})
+        self.assertEqual(403, response.status_code)
 
 
