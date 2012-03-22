@@ -995,3 +995,11 @@ class TestBlogManagement(TestCase):
         self.assertFalse(blog.trash)
         self.assertEqual(403, response.status_code)
 
+    def test_bulk_action_trash_get_by_authenticated_user(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0]})
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(blog.trash)
+        self.assertEqual(403, response.status_code)
+        self.client.logout()
+

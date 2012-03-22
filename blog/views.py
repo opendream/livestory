@@ -417,7 +417,7 @@ def blog_save_location(country, city):
     return location
 
 def blog_manage_bulk(request):
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated() or request.method == 'GET':
         return render(request, '403.html', status=403)
 
 def blog_save_image(image_path, blog):
