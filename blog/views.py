@@ -426,6 +426,8 @@ def blog_manage_bulk(request):
             blog = Blog.objects.get(id=blog_id)
             blog.trash = True
             blog.save()
+        if request.GET.get('section') == 'published':
+            return redirect(reverse('blog_manage_published'))
         return redirect(reverse('blog_manage'))
 
 def blog_save_image(image_path, blog):
