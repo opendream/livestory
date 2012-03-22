@@ -94,8 +94,12 @@ def blog_manage(request, section=None):
 
     if section == 'published':
         url = reverse('blog_manage_published')
+    elif section == 'draft':
+        url = reverse('blog_manage_draft')
     else:
         url = reverse('blog_manage')
+
+    print url
 
     context = {
         'num_all': blog_all.count(),
