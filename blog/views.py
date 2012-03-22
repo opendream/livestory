@@ -424,8 +424,9 @@ def blog_manage_bulk(request):
         blog_ids = request.POST.getlist('blog_id')
         for blog_id in blog_ids:
             blog = Blog.objects.get(id=blog_id)
-            blog.trash = True
-            blog.save()
+            if blog.user == request.user:
+                blog.trash = True
+                blog.save()
         if request.GET.get('section') == 'published':
             return redirect(reverse('blog_manage_published'))
         elif request.GET.get('section') == 'draft':
