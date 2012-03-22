@@ -421,7 +421,8 @@ def blog_manage_bulk(request):
         return render(request, '403.html', status=403)
 
     if request.method == 'POST':
-        for blog_id in request.POST.getlist('blog_id'):
+        blog_ids = request.POST.getlist('blog_id')
+        for blog_id in blog_ids:
             blog = Blog.objects.get(id=blog_id)
             blog.trash = True
             blog.save()

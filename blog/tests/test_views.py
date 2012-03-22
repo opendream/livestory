@@ -1015,7 +1015,7 @@ class TestBlogManagement(TestCase):
         self.blogs[1] = Blog.objects.get(id=self.blogs[1].id)
         self.assertTrue(self.blogs[1].trash)
         self.blogs[2] = Blog.objects.get(id=self.blogs[2].id)
-        self.assertTrue(self.blogs[1].trash)
+        self.assertTrue(self.blogs[2].trash)
         self.assertRedirects(response, reverse('blog_manage'))
         self.client.logout()
 
