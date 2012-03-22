@@ -920,3 +920,13 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, 'action="%s"' % reverse('blog_manage_bulk'))
         self.client.logout()
 
+    def test_bulk_form_action_on_other_sections(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, 'action="%s?section=published"' % reverse('blog_manage_bulk'))
+        response = self.client.get(reverse('blog_manage_draft'))
+        self.assertContains(response, 'action="%s?section=draft"' % reverse('blog_manage_bulk'))
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertContains(response, 'action="%s?section=trash"' % reverse('blog_manage_bulk'))
+        self.client.logout()
+
