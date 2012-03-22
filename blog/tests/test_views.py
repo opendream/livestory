@@ -357,6 +357,30 @@ class TestBlogCreate(TestCase):
 
         self.assertEquals(True, response.context['location_error'])
         self.client.logout()
+    
+    def test_blog_create_post_group_of_country(self):
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
+        dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello London',
+            'image_path': dst,
+            'description': 'lorem ipsum (Draft)',
+            'mood': '3',
+            'country': 'england',
+            'city': 'london',
+            'private': '0',
+            'draft': '1',
+            'category': str(self.category.id)
+        }
+
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/create/', params, follow=True)
+        blog = response.context['blog']
+        self.assertEquals('United Kingdom', blog.location.country)
+        self.assertEquals('London', blog.location.city)
+        
+        self.client.logout()
         
 class TestBlogEdit(TestCase):
     def setUp(self):
@@ -764,16 +788,16 @@ class TestHomePage(TestCase):
 
 class TestAllPage(TestCase):
     def setUp(self):
+        Blog.objects.all().delete()
+        Location.objects.all().delete()
+        
         self.user1 = factory.create_user('testuser1@example.com', 'testuser1@example.com', 'password', 'John', 'Doe 1', True)
         self.user2 = factory.create_user('testuser2@example.com', 'testuser2@example.com', 'password', 'John', 'Doe 2', True)
         self.category1 = factory.create_category('Animal', 'animal')
         self.category2 = factory.create_category('Food', 'food')
         self.location1 = factory.create_location('Japan', 'Tokyo', '0', '0')
         self.location2 = factory.create_location('Thailand', 'Bangkok', '0', '0')
-        
-        blogs = Blog.objects.all()
-        for blog in blogs:
-            blog.delete()
+        self.location3 = factory.create_location('Thailand', 'Chiangmai', '0', '0')
         
         self.blogs = [
             factory.create_blog('Blog 1', self.user1, self.category1, self.location1, mood=2, private=True ), 
@@ -781,8 +805,8 @@ class TestAllPage(TestCase):
             factory.create_blog('Blog 3', self.user1, self.category1, self.location1, mood=2, private=True ), 
             factory.create_blog('Blog 4', self.user1, self.category2, self.location2, mood=2, private=False), 
             factory.create_blog('Blog 5', self.user1, self.category2, self.location1, mood=3, private=False), 
-            factory.create_blog('Blog 6', self.user1, self.category2, self.location2, mood=3, private=False), 
-            factory.create_blog('Blog 7', self.user2, self.category1, self.location1, mood=3, private=False), 
+            factory.create_blog('Blog 6', self.user1, self.category2, self.location3, mood=3, private=False), 
+            factory.create_blog('Blog 7', self.user2, self.category1, self.location3, mood=3, private=False), 
             factory.create_blog('Blog 8', self.user2, self.category1, self.location2, mood=4, private=False), 
             factory.create_blog('Blog 9', self.user2, self.category1, self.location1, mood=4, private=False), 
             factory.create_blog('Blog10', self.user2, self.category2, self.location2, mood=5, private=True ), 
@@ -900,3 +924,91 @@ class TestAllPage(TestCase):
         self.assertEquals(3, context['blogs'].count())
         self.assertEquals('Food', context['title'])
         self.assertEquals({'category': self.category2.code}, context['filter'])
+        
+    def test_blog_place_get(self):
+                
+        response = self.client.get('/blog/place/?country=&city=')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(6, context['blogs'].count())
+        self.assertEquals('All Countries, All Cities', context['title'])
+        self.assertEquals({'location': {'country': '', 'city': ''}}, context['filter'])
+        self.assertEquals('/blog/place/', context['url'])
+        self.assertEquals('country=&city=', context['param'])
+
+        response = self.client.get('/blog/place/?country=Thailand&city=Foo')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(0, context['blogs'].count())
+        self.assertEquals('Thailand, Foo (Miss match)', context['title'])
+        self.assertEquals({'location': {'country': 'Thailand', 'city': 'Foo'}}, context['filter'])
+        self.assertEquals('/blog/place/', context['url'])
+        self.assertEquals('country=Thailand&city=Foo', context['param'])
+        
+        response = self.client.get('/blog/place/?country=Thailand&city=')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(4, context['blogs'].count())
+        self.assertEquals('Thailand, All Cities', context['title'])
+        self.assertEquals({'location': {'country': 'Thailand', 'city': ''}}, context['filter'])
+        self.assertEquals('/blog/place/', context['url'])
+        self.assertEquals('country=Thailand&city=', context['param'])
+        
+        response = self.client.get('/blog/place/?country=&city=Bangkok')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(2, context['blogs'].count())
+        self.assertEquals('All Countries, Bangkok', context['title'])
+        self.assertEquals({'location': {'country': '', 'city': 'Bangkok'}}, context['filter'])
+        self.assertEquals('/blog/place/', context['url'])
+        self.assertEquals('country=&city=Bangkok', context['param'])
+        
+        response = self.client.get('/blog/place/?country=&city=')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(6, context['blogs'].count())
+        self.assertEquals('All Countries, All Cities', context['title'])
+        self.assertEquals({'location': {'country': '', 'city': ''}}, context['filter'])
+        self.assertEquals('/blog/place/', context['url'])
+        self.assertEquals('country=&city=', context['param'])
+        
+        response = self.client.get('/blog/place/?country=Thailand&city=Bangkok')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(2, context['blogs'].count())
+        self.assertEquals('Thailand, Bangkok', context['title'])
+        self.assertEquals({'location': {'country': 'Thailand', 'city': 'Bangkok'}}, context['filter'])
+        self.assertEquals('/blog/place/', context['url'])
+        self.assertEquals('country=Thailand&city=Bangkok', context['param'])
+        
+        response = self.client.get('/blog/place/?country=Japan&city=Tokyo')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(2, context['blogs'].count())
+        self.assertEquals('Japan, Tokyo', context['title'])
+        self.assertEquals({'location': {'country': 'Japan', 'city': 'Tokyo'}}, context['filter'])
+        self.assertEquals('/blog/place/', context['url'])
+        self.assertEquals('country=Japan&city=Tokyo', context['param'])
+    
+    def test_blog_tags_get(self):
+        response = self.client.get('/blog/tags/')
+        self.assertEquals(404, response.status_code)
+        
+        response = self.client.get('/blog/tags/?tags=notagsddffgghhjk')
+        self.assertEquals(404, response.status_code)
+
+        response = self.client.get('/blog/tags/?tags=hastags')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(6, context['blogs'].count())
+        self.assertEquals('Tagged with "hastags"', context['title'])
+        self.assertEquals({'tags': 'hastags'}, context['filter'])
+        self.assertEquals('/blog/tags/', context['url'])
+        
+        response = self.client.get('/blog/tags/?tags=foo')
+        self.assertEquals(200, response.status_code)
+        context = response.context
+        self.assertEquals(6, context['blogs'].count())
+        self.assertEquals('Tagged with "foo"', context['title'])
+        self.assertEquals({'tags': 'foo'}, context['filter'])
+        self.assertEquals('/blog/tags/', context['url'])

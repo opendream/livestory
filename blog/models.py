@@ -76,7 +76,7 @@ class Blog(models.Model):
 
     def save_tags(self, tags):
         if tags:
-            if type(tags) is unicode:
+            if type(tags) is unicode or type(tags) is str:
                 tags = tags.split(',')
 
             if self.id:

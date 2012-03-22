@@ -1,8 +1,13 @@
 from django.conf import settings
 from notification.views import get_notifications
 from blog.models import Category
+from blog.forms import BlogPlaceFilterForm
 
 def site_information(request):
+    place_form = BlogPlaceFilterForm()
+    if request.GET.get('country') or request.GET.get('city'):
+         place_form = BlogPlaceFilterForm(request.GET)
+         
     return {
         'SITE_NAME': settings.SITE_NAME,
         'SITE_LOGO': settings.SITE_LOGO,
@@ -14,4 +19,5 @@ def site_information(request):
         'PRIVATE': settings.PRIVATE,
         'notifications': get_notifications(request.user)[:settings.NOTIFICATION_POPUP_NUM],
         'category_filter': Category.objects.all(),
+        'place_form': place_form,
     }

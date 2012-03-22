@@ -28,12 +28,16 @@ class Location(models.Model):
                 
                 location = data['results'][0]
                 for com in location['address_components']:
-                    if 'country' in com['types']:
+                    if not match_country and 'country' in com['types']:
                         self.country = com['long_name']
                         match_country = True
-                    if 'country' not in com['types'] and ('administrative_area_level_1' in com['types'] or 'locality' in com['types']):
-                        self.city = com['long_name']
-                        match_city = True
+                    elif not match_city and 'country' not in com['types']:
+                        if 'locality' in com['types']:
+                            self.city = com['long_name']
+                            match_city = True
+                        elif 'administrative_area_level_1' in com['types']:
+                            self.city = com['long_name']
+                            match_city = True
                         
                 if not match_country or not match_city:
                     raise self.DoesNotExist

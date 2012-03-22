@@ -25,3 +25,7 @@ class BlogCreateForm(forms.ModelForm):
 	class Meta:
 		model = Blog
 		exclude = ('user', 'location', 'draft')
+
+class BlogPlaceFilterForm(forms.Form):
+    country = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'span2', 'placeHolder': 'Country'}))
+    city = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class': 'span2', 'placeHolder': 'City'}))
