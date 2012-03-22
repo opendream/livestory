@@ -1147,7 +1147,7 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage'))
-        self.assertContains(response, '%s?sort=view&order=asc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage'))
         self.client.logout()
 
     def test_sort_links_displayed_on_all_section_when_order_by_asc(self):
@@ -1156,7 +1156,7 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage'))
-        self.assertContains(response, '%s?sort=view&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage'))
         self.client.logout()
 
     def test_sort_title_by_desc(self):
@@ -1210,6 +1210,18 @@ class TestBlogManagement(TestCase):
         response = self.client.get('%s?sort=num_loves&order=asc' % reverse('blog_manage'))
         self.assertEqual(response.context['blogs'][0], self.blogs[0])
         self.assertEqual(response.context['blogs'][1], self.blogs[2])
+        self.assertEqual(response.context['blogs'][2], self.blogs[1])
+        self.client.logout()
+
+    def test_sort_views_by_desc(self):
+        self.client.login(username=self.john.username, password='1234')
+        self.client.get(reverse('blog_view', args=[self.blogs[0].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        response = self.client.get('%s?sort=num_views&order=desc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[2])
+        self.assertEqual(response.context['blogs'][1], self.blogs[0])
         self.assertEqual(response.context['blogs'][2], self.blogs[1])
         self.client.logout()
 

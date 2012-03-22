@@ -59,7 +59,7 @@ $(document).ready(function() {
 					<th><a href="/blog/manage/?sort=title&order={{ order }}">Title</a></th>
 					<th class="centered"><a href="/blog/manage/?sort=created&order={{ order }}">Date</a></th>
 					<th class="centered"><a href="/blog/manage/?sort=num_loves&order={{ order }}">Love</a></th>
-					<th class="centered"><a href="/blog/manage/?sort=view&order={{ order }}">Views</a></th>
+					<th class="centered"><a href="/blog/manage/?sort=num_views&order={{ order }}">Views</a></th>
 					{% ifnotequal section 'trash' %}
 					<th class="centered">Edit</th>
 					{% endifnotequal %}

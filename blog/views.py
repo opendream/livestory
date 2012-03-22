@@ -69,11 +69,13 @@ def blog_manage(request, section=None):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
 
-    blogs = Blog.objects.all().annotate(num_loves=Count('love'), num_views=Count('viewcount'))
+    blogs = Blog.objects.all().annotate(num_loves=Count('love'))
 
     if request.GET.get('sort') and request.GET.get('order'):
         sort = request.GET.get('sort')
         order = request.GET.get('order')
+        if sort == 'num_views':
+            sort = 'viewcount__totalcount'
         if order == 'desc':
             blogs = blogs.order_by('-%s' % sort)
         else:
