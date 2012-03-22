@@ -1246,3 +1246,12 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage_published'))
         self.client.logout()
 
+    def test_sort_links_displayed_on_published_section_when_orderby_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_loves&order=desc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage_published'))
+        self.client.logout()
+
