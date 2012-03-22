@@ -15,7 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from account.models import Account
 from blog.models import *
 from blog.forms import *
-from statistic.models import ViewCount
+from statistic.models import History, ViewCount
 from notification.models import Notification
 
 from location.models import Location
@@ -286,6 +286,8 @@ def blog_view(request, blog_id):
         blog.viewcount.update()
         if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
             return render(request, '403.html', status=403)
+        
+        # History.objects.create(user=request.user, blog=blog)
             
         love_path = '/blog/%s/love/'
         button_type = 'love'
