@@ -429,9 +429,12 @@ def blog_manage_bulk(request):
             if blog.user == request.user or request.user.is_staff:
                 if operation == 'trash':
                     blog.trash = True
+                    blog.save()
                 elif operation == 'restore':
                     blog.trash = False
-                blog.save()
+                    blog.save()
+                elif operation == 'delete':
+                    blog.delete()
         if section == 'published':
             return redirect(reverse('blog_manage_published'))
         elif section == 'draft':

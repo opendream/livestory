@@ -1108,3 +1108,24 @@ class TestBlogManagement(TestCase):
         self.assertRedirects(response, reverse('blog_manage_trash'))
         self.client.logout()
 
+    def test_bulk_action_delete_own_trashed_blog_by_authenticated_user(self):
+        self.blogs[0].trash = True
+        self.blogs[0].save()
+        self.blogs[1].trash = True
+        self.blogs[1].save()
+        self.blogs[2].trash = True
+        self.blogs[2].save()
+        self.client.login(username=self.john.username, password='1234')
+        params = {
+            'op': 'delete',
+            'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
+        }
+        response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
+        with self.assertRaises(Blog.DoesNotExist):
+            Blog.objects.get(id=self.blogs[0].id)
+        with self.assertRaises(Blog.DoesNotExist):
+            Blog.objects.get(id=self.blogs[1].id)
+        with self.assertRaises(Blog.DoesNotExist):
+            Blog.objects.get(id=self.blogs[2].id)
+        self.client.logout()
+
