@@ -41,7 +41,7 @@ $(document).ready(function() {
 		<a href="{% url blog_manage_draft %}">Drafts </a><span class="grey">({{ num_draft }})</span> | 
 		<a href="{% url blog_manage_trash %}">Trash </a><span class="grey">({{ num_trash }})</span>
 	</div>
-	<form class="form-inline" action="{% url blog_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">
+	<form class="form-inline" method="POST" action="{% url blog_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">{% csrf_token %}
 		<select id="op">
 			<option>Bulk Actions</option>
 			{% if section == 'trash' %}
