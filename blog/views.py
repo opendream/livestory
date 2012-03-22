@@ -428,6 +428,8 @@ def blog_manage_bulk(request):
             blog.save()
         if request.GET.get('section') == 'published':
             return redirect(reverse('blog_manage_published'))
+        elif request.GET.get('section') == 'draft':
+            return redirect(reverse('blog_manage_draft'))
         return redirect(reverse('blog_manage'))
 
 def blog_save_image(image_path, blog):
