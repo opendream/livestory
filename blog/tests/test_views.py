@@ -1136,8 +1136,8 @@ class TestBlogManagement(TestCase):
             'blog_id': [self.blogs[0].id, self.blogs[1].id, self.blogs[2].id]
         }
         response = self.client.post(reverse('blog_manage_bulk'), params, follow=True)
-        self.assertTrue(type(Blog.objects.get(id=self.blogs[0].id).id) is int)
-        self.assertTrue(type(Blog.objects.get(id=self.blogs[1].id).id) is int)
-        self.assertTrue(type(Blog.objects.get(id=self.blogs[2].id).id) is int)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[0].id)) is Blog)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[1].id)) is Blog)
+        self.assertTrue(type(Blog.objects.get(id=self.blogs[2].id)) is Blog)
         self.client.logout()
 
