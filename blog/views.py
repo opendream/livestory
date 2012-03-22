@@ -424,7 +424,7 @@ def blog_manage_bulk(request):
         blog_ids = request.POST.getlist('blog_id')
         for blog_id in blog_ids:
             blog = Blog.objects.get(id=blog_id)
-            if blog.user == request.user:
+            if blog.user == request.user or request.user.is_staff:
                 blog.trash = True
                 blog.save()
         if request.GET.get('section') == 'published':
