@@ -16,7 +16,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/tag-it/js/tag-it.js"></script>
 {% tags_js %}
-{% location_js %}
 {% textcounter_js %}
 {% endblock %}
 
@@ -100,7 +99,7 @@
       <label class="control-label" for="mood_1">Mood</label>
       <div class="controls"> 
         {% for value, text in moods %}
-        <label class="radio mood-list{% if value == 6 %} clear-both{% endif %}">
+        <label class="radio mood-list">
           <input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% ifequal form.mood.data value|lower %} checked="checked"{% endifequal %}>
           <span class="mood-{{ text|lower }} mood-icon{% ifequal form.mood.data value|lower %} active{% endifequal %}"></span>{{ text }}
         </label>

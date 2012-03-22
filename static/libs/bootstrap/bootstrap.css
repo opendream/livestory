@@ -1153,7 +1153,7 @@ input:focus:required:invalid:focus, textarea:focus:required:invalid:focus, selec
   background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
   background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
   background-repeat: no-repeat;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
+/*   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0); */
   border: 1px solid #ccc;
   border-bottom-color: #bbb;
   -webkit-border-radius: 4px;
@@ -3687,14 +3687,21 @@ a.thumbnail:hover {
     -moz-border-radius: 3px;
     border-radius: 3px;
   }
+  .navbar .dropdown-list a{
+	  padding: 0;
+  }
+  
   .navbar .dropdown-menu li + li a {
     margin-bottom: 2px;
   }
+  
+  /* Comment for disable responsive dropdown menu */
   .navbar .nav > li > a:hover, .navbar .dropdown-menu a:hover {
-    background-color: #222222;
+    /* background-color: #222222; */
   }
   .navbar .dropdown-menu {
-    position: static;
+    /*
+position: static;
     top: auto;
     left: auto;
     float: none;
@@ -3710,9 +3717,10 @@ a.thumbnail:hover {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+*/
   }
   .navbar .dropdown-menu:before, .navbar .dropdown-menu:after {
-    display: none;
+    /* display: none; */
   }
   .navbar .dropdown-menu .divider {
     display: none;
@@ -3727,8 +3735,10 @@ a.thumbnail:hover {
     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
   }
+  
+  /* Comment for disable responsive dropdown menu */
   .navbar .nav.pull-right {
-    float: none;
+    /* float: none; */
     margin-left: 0;
   }
   .navbar-static .navbar-inner {
