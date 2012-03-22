@@ -914,3 +914,9 @@ class TestBlogManagement(TestCase):
         self.assertNotContains(response, reverse('blog_restore', args=[self.blogs[0].id]))
         self.client.logout()
 
+    def test_bulk_form_action_on_all_section(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage'))
+        self.assertContains(response, 'action="%s"' % reverse('blog_manage_bulk'))
+        self.client.logout()
+
