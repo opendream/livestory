@@ -96,6 +96,8 @@ def blog_manage(request, section=None):
         url = reverse('blog_manage_published')
     elif section == 'draft':
         url = reverse('blog_manage_draft')
+    elif section == 'trash':
+        url = reverse('blog_manage_trash')
     else:
         url = reverse('blog_manage')
 

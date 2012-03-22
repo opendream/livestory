@@ -1273,3 +1273,12 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '%s?sort=num_views&order=desc' % reverse('blog_manage_draft'))
         self.client.logout()
 
+    def test_sort_links_displayed_on_trash_section_by_default(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage_trash'))
+        self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage_trash'))
+        self.client.logout()
+
