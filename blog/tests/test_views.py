@@ -1141,7 +1141,7 @@ class TestBlogManagement(TestCase):
         self.assertTrue(type(Blog.objects.get(id=self.blogs[2].id)) is Blog)
         self.client.logout()
 
-    def test_sort_links_displayed_on_all_section(self):
+    def test_sort_links_displayed_on_all_section_by_default(self):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_manage'))
         self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage'))
@@ -1150,12 +1150,20 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '%s?sort=view&order=asc' % reverse('blog_manage'))
         self.client.logout()
 
-    def test_sort_links_displayed_when_title_order_asc_on_all_section(self):
+    def test_sort_links_displayed_on_all_section_when_order_by_asc(self):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=love&order=desc' % reverse('blog_manage'))
         self.assertContains(response, '%s?sort=view&order=desc' % reverse('blog_manage'))
+        self.client.logout()
+
+    def test_sort_title_by_desc(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=desc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[2])
+        self.assertEqual(response.context['blogs'][1], self.blogs[1])
+        self.assertEqual(response.context['blogs'][2], self.blogs[0])
         self.client.logout()
 
