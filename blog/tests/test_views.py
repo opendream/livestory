@@ -983,8 +983,9 @@ class TestBlogManagement(TestCase):
 
         self.client.logout()
 
-    def test_bulk_action_trash_post_by_anonymous(self):
+    def test_bulk_action_trash_post_by_anonymous_user(self):
         response = self.client.post(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0]})
+        blog = Blog.objects.get(id=self.blogs[0].id)
+        self.assertFalse(blog.trash)
         self.assertEqual(403, response.status_code)
-
 
