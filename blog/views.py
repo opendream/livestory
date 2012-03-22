@@ -420,6 +420,13 @@ def blog_manage_bulk(request):
     if not request.user.is_authenticated() or request.method == 'GET':
         return render(request, '403.html', status=403)
 
+    if request.method == 'POST':
+        for blog_id in request.POST.getlist('blog_id'):
+            blog = Blog.objects.get(id=blog_id)
+            blog.trash = True
+            blog.save()
+        return redirect(reverse('blog_manage'))
+
 def blog_save_image(image_path, blog):
     directory, name = os.path.split(image_path)
     real_path = blog_image_url(blog, 'blog_%s.jpg' % blog.id)
