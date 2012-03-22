@@ -1237,3 +1237,12 @@ class TestBlogManagement(TestCase):
         self.assertEqual(response.context['blogs'][2], self.blogs[2])
         self.client.logout()
 
+    def test_sort_links_displayed_on_published_section_by_default(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get(reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=title&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=created&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_loves&order=asc' % reverse('blog_manage_published'))
+        self.assertContains(response, '%s?sort=num_views&order=asc' % reverse('blog_manage_published'))
+        self.client.logout()
+

@@ -92,12 +92,18 @@ def blog_manage(request, section=None):
     blog_draft = blogs.filter(draft=True, trash=False)
     blog_trash = blogs.filter(trash=True)
 
+    if section == 'published':
+        url = reverse('blog_manage_published')
+    else:
+        url = reverse('blog_manage')
+
     context = {
         'num_all': blog_all.count(),
         'num_published': blog_published.count(),
         'num_draft': blog_draft.count(),
         'num_trash': blog_trash.count(),
         'can_restore': False,
+        'url': url,
         'order': order == 'desc' and 'asc' or 'desc'
     }
     if section == 'published':
