@@ -1150,3 +1150,12 @@ class TestBlogManagement(TestCase):
         self.assertContains(response, '%s?sort=view&order=asc' % reverse('blog_manage'))
         self.client.logout()
 
+    def test_sort_links_displayed_when_title_order_asc_on_all_section(self):
+        self.client.login(username=self.john.username, password='1234')
+        response = self.client.get('%s?sort=title&order=asc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=title&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=created&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=love&order=desc' % reverse('blog_manage'))
+        self.assertContains(response, '%s?sort=view&order=desc' % reverse('blog_manage'))
+        self.client.logout()
+

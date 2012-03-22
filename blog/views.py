@@ -65,11 +65,23 @@ def blog_home(request):
 
     return render(request, 'blog/blog_home.html', locals())
 
-def blog_manage(request, section=None, page=0, sort='created', order='desc'):
+def blog_manage(request, section=None):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
 
-    blogs = Blog.objects.all().order_by('-created')
+    blogs = Blog.objects.all().annotate(num_loves=Count('love'), num_views=Count('viewcount'))
+
+    if request.GET.get('sort') and request.GET.get('order'):
+        sort = request.GET.get('sort')
+        order = request.GET.get('order')
+        if order == 'desc':
+            blogs = blogs.order_by('-%s' % sort)
+        else:
+            blogs = blogs.order_by('%s' % sort)
+    else:
+        order = 'desc'
+        blogs = blogs.order_by('-created')
+
     if not request.user.is_staff:
         blogs = blogs.filter(user=request.user)
 
@@ -83,7 +95,8 @@ def blog_manage(request, section=None, page=0, sort='created', order='desc'):
         'num_published': blog_published.count(),
         'num_draft': blog_draft.count(),
         'num_trash': blog_trash.count(),
-        'can_restore': False
+        'can_restore': False,
+        'order': order == 'desc' and 'asc' or 'desc'
     }
     if section == 'published':
         context['blogs'] = blog_published
@@ -286,7 +299,7 @@ def blog_view(request, blog_id):
         blog.viewcount.update()
         if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
             return render(request, '403.html', status=403)
-        
+
         # History.objects.create(user=request.user, blog=blog)
             
         love_path = '/blog/%s/love/'
