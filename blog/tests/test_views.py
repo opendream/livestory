@@ -1225,3 +1225,15 @@ class TestBlogManagement(TestCase):
         self.assertEqual(response.context['blogs'][2], self.blogs[1])
         self.client.logout()
 
+    def test_sort_views_by_asc(self):
+        self.client.login(username=self.john.username, password='1234')
+        self.client.get(reverse('blog_view', args=[self.blogs[0].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        self.client.get(reverse('blog_view', args=[self.blogs[2].id]))
+        response = self.client.get('%s?sort=num_views&order=asc' % reverse('blog_manage'))
+        self.assertEqual(response.context['blogs'][0], self.blogs[1])
+        self.assertEqual(response.context['blogs'][1], self.blogs[0])
+        self.assertEqual(response.context['blogs'][2], self.blogs[2])
+        self.client.logout()
+
