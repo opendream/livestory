@@ -1,4 +1,5 @@
 from account.models import Account, AccountKey
+from common.templatetags.common_tags import ucwords_tag
 from django.conf import settings
 from django.contrib.auth.models import User
 import shutil
@@ -37,12 +38,7 @@ def rm_user(id):
         pass
         
 def ucwords(string):
-    """ucwords -- Converts first letter of each word
-    within a string into an uppercase all other to lowercase.
-
-    (string) ucwords( (string) string )"""
-    erg=[ item.capitalize() for item in string.split( ' ' ) ]
-    return ' '.join( erg )
+    return ucwords_tag(string)
     
 def get_page_range(pagination, padding=3):
     page_range = pagination.paginator.page_range

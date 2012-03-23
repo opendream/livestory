@@ -144,5 +144,26 @@ def crop(imagefield, size):
     """
     
     return scale(imagefield, size, 'crop')
-    
 
+@register.filter('ucwords')
+def ucwords_tag(string):
+    """ucwords -- Converts first letter of each word
+    within a string into an uppercase all other to lowercase.
+
+    (string) ucwords( (string) string )"""
+    erg=[ item.capitalize() for item in string.split( ' ' ) ]
+    return ' '.join( erg )
+
+@register.simple_tag
+def active(request, pattern):
+    pattern = pattern.split('/')
+    path = request.path.split('/')
+    yes = True
+    for i, v in enumerate(pattern):
+        try:
+            if v != 'arg' and v != '0' and v != path[i]:
+                return ''
+        except:
+            return ''
+            
+    return ' active'

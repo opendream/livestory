@@ -424,10 +424,12 @@ def blog_unlove(request, blog_id):
         else:
             raise Http404
             
-def blog_all(request):
+def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None, param='', color='blue'):
     items = Blog.objects.filter(draft=False)
     if not request.user.is_authenticated():
         items = items.filter(private=False)
+    
+    items = items.filter(**filter)
     items = items.order_by('-created')
     
     pager = Paginator(items, 8)
@@ -441,15 +443,85 @@ def blog_all(request):
     
     p = int(p)
     
+    filter = filter_text if filter_text else filter
+    
+    if not url:
+        url = reverse('blog_all')
+    
+    print color
+    page_range = get_page_range(pagination)
     context = {
+        'title': title,
         'blogs': blogs,
+        'has_pager': len(page_range) > 1,
         'pagination': pagination,
         'page': p,
         'pager': pager,
-        'page_range': get_page_range(pagination)
+        'page_range': page_range,
+        'filter': filter,
+        'url': url,
+        'param': param,
+        'color': color,
     }
     
-    return render(request, 'blog/blog_all.html', context)
+    return render(request, 'blog/blog_list.html', context)
+    
+def blog_mood(request, mood):
+    title = ucwords(mood)
+    try: 
+        fmood = dict([(m[1], m[0]) for m in MOOD_CHOICES])[title]
+    except KeyError:
+        raise Http404
+    return blog_all(request, title, {'mood': fmood}, {'mood': mood}, reverse('blog_mood', args=[mood]), color='purple')
+    
+def blog_category(request, category):
+    try: 
+        fcategory = Category.objects.get(code=category)
+    except Category.DoesNotExist:
+        raise Http404
+        
+    title = fcategory.name
+    
+    return blog_all(request, title, {'category': fcategory}, {'category': category}, reverse('blog_category', args=[category]), color='pink')
+    
+def blog_place(request):
+    country = request.GET.get('country') or ''
+    city = request.GET.get('city') or ''
+        
+    country = ucwords(country)
+    city = ucwords(city)
+    
+    title_country = country if country else 'All Countries'
+    title_city = city if city else 'All Cities'
+    title = '%s, %s' % (title_country, title_city)
+    
+    locations = Location.objects.all()
+    if country and city:
+        locations = locations.filter(country=country, city=city)
+    elif country:
+        locations = locations.filter(country=country)
+    elif city:
+        locations = locations.filter(city=city)
+        
+    filter = {}
+    if (country or city) and locations.count():
+        filter = {'location__in': locations}
+    elif (country or city) and not locations.count():
+        title = '%s (Miss match)'% title
+        filter = {'location__in': locations}
+    
+    param = 'country=%s&city=%s' % (country, city)
+        
+    return blog_all(request, title, filter, {'location': {'country': country, 'city': city}}, reverse('blog_place'), param, color='yellow')
+    
+def blog_tags(request):
+    tags = request.GET.get('tags')
+    if not tags or not Blog.objects.filter(tags__name=tags).count():
+        raise Http404
+        
+    title = 'Tagged with "%s"' % tags
+    
+    return blog_all(request, title, {'tags__name': tags}, {'tags': tags}, reverse('blog_tags'), color='grey')
 
 def blog_save_location(country, city):
     try:

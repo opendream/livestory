@@ -15,4 +15,8 @@ urlpatterns = patterns('blog.views',
     url(r'(?P<blog_id>\d+)/trash/$', 'blog_trash', name='blog_trash'),
     url(r'(?P<blog_id>\d+)/restore/$', 'blog_restore', name='blog_restore'),
     url(r'all/$', 'blog_all', name='blog_all'),
+    url(r'mood/(?P<mood>\w+)/$', 'blog_mood', name='blog_mood'),
+    url(r'category/(?P<category>[0-9A-Za-z,-]+)/$', 'blog_category', name='blog_category'),
+    url(r'place/$', 'blog_place', name='blog_place'),
+    url(r'tags/$', 'blog_tags', name='blog_tags'),
 )

@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="scour" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
+<div class="scour blog-list" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
   {% for rect in rects %}
   <div class="rect {{ rect.placement }}{% if rect.blog %} has_blog{% endif %}" style="
     left:{{ rect.rect.left }}px;
@@ -56,4 +56,10 @@
     
   </script>
 </div>
+
+<div class="sologan" style="line-height: 30px;text-align:center;margin:40px 0 20px;font-size: 24px;">
+	<span class="" style="font-size: 18px;color: #767676;">Oxfam Live Stories...</span> <span class="">a photo micro blog with <strong>inspiring stories of 300 characters.</strong></span>
+</div>
+
 {% endblock %}
+
