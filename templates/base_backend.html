@@ -7,13 +7,21 @@
 {% block base_content %}
 <div class="row">
   <div class="span3 block">
+    {% url blog_manage as blog_manage %}
+    {% url blog_create as blog_create %}
+    {% url account_profile_edit as account_profile_edit %}
+    {% url notification_view as notification_view %}
     <ul class="nav nav-list nav-admin">
-      <li class="nav-header"><a href ="#">Post</a></li>
-      <li><a href="#"><i class="icon-th-list"></i> All Post</a></li>
-      <li class="active"><a href="{% url blog_create %}"><i class="icon-white icon-plus"></i> Add New Post</a></li>
-      <li class="nav-header"><a href ="#">Love <span class="rounded">24</span></a></li>
-      <li class="nav-header"><a href ="#">User</a></li></li>
-      <li><a href="{% url account_profile_edit %}"><i class="icon-user"></i> Your Profile</a></li>
+      <li class="nav-header"><a href ="{{ blog_manage }}">Post</a></li>
+      <li class="{% active request blog_manage %}"><a href="{{ blog_manage }}"><i class="icon-th-list"></i> All Post</a></li>
+      <li class="{% active request blog_create %}"><a href="{{ blog_create }}"><i class="icon-white icon-plus"></i> Add New Post</a></li>
+      <li class="nav-header{% active request notification_view %}">
+        <a href ="{{ notification_view }}" class="">
+          Notifications<span class="rounded {% if notifications|length == 0 %} no-notify{% endif %}">{{ notifications|length }}</span>
+        </a>
+      </li>      
+      <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li></li>
+      <li class="{% active request account_profile_edit %}"><a href="{{ account_profile_edit }}"><i class="icon-user"></i> Your Profile</a></li>
     </ul>
   </div>
   <div class="span9 block">

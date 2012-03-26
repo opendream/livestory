@@ -90,8 +90,8 @@ $(document).ready(function() {
       <div class="blog-container-photo">
         <div class="blog-photo rounded5">
           <img src="{{ blog.image|scale:'748x1000' }}" alt="{{ blog.title }}" />
-          <div class="status rounded">
-            <span class="emoticon-icon emo_{{ blog.get_mood_text|lower }}">Mood: {{ blog.get_mood_text }}</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
+          <div class="status">
+            <span class="mood-icon-s mood-{{ blog.get_mood_text|lower }}-s">Mood: {{ blog.get_mood_text }}</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
           </div>
         </div>
       </div>

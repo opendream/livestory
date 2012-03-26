@@ -30,14 +30,7 @@
         <div class="caption">
           <h4><a href="{% url blog_view blog.id %}">{{ blog.title }}</a></h4>
           <p class="posted">
-            <span class="grey">Posted on {{ blog.created|localtime|date:"m.d.Y f a" }}
-            {% if blog.tags.all %}
-            in 
-            {% for tag in blog.tags.all %}
-            <a href="{% url blog_tags %}?tags={{ tag.name }}" class="tag">{{ tag.name }}</a> 
-            {% endfor %}
-            {% endif %}
-            </span>
+            <span class="grey">Posted on {{ blog.created|localtime|date:"m.d.Y f a" }} in <a href="{% url blog_category blog.category.code %}" class="tag">{{ blog.category.name }}</a></span>
           </p>
         </div>
       </div>

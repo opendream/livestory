@@ -146,8 +146,9 @@ $(function () {
     
     $('a.has-filter').click(function (e) {
         e.preventDefault();
-        
+
         var href = $(this).attr('href');
+        $('a.filter-close').attr('href', href);
         if (current_filter == href) {
             return false;
         }
@@ -156,32 +157,31 @@ $(function () {
             obj.addClass('dshow');
         }
         
-        var height = obj.height();
-        var oheight = height-$(current_filter).height();
+        $('.filter-menu').hide();
+        obj.show();
+        
+        setTimeout(function () {
+            var height = obj.height();
 
-        $('.blog-list').stop().animate({'margin-top': oheight}, {'queue': false, 'duration': duration});
+            $('.filter-block-append').css('overflow', 'hidden');
+            $('.filter-block-append').animate({'height': height+40}, {
+                'queue': false, 
+                'duration': duration
+            });
+        }, 100);
         
-        $('.filter-menu').stop().hide();
         current_filter = href;
-        
-        obj.stop().slideDown(duration, function () {
-            $('.blog-list').css('margin-top', 0);
-            $('.filter-block-append').css('height', height);
-        });
     });
     $('a.filter-close').click(function (e) {
         e.preventDefault();
         var href = $(this).attr('href');
         var obj = $(href);
-        
 
-        
         if (obj.hasClass('dshow')) {
             obj.removeClass('dshow');
         }
         
         var height = obj.height();
-        var oheight = $(current_filter).height() - height;
         
         current_filter = default_current_filter;
         
@@ -191,37 +191,28 @@ $(function () {
         
         var dshow = $('.filter-menu.dshow');
         if (dshow.length) {
-            $('.filter-block-append').animate({'height': dshow.height()}, {'queue': false, 'duration': duration});
-            $('.blog-list').stop().animate({'margin-top': -oheight}, {'queue': false, 'duration': duration});
-            
-            //$('.filter-block-append').height(dshow.height());
-            $('.filter-menu').css('position', 'absolute');
-            dshow.show()
+            $('.filter-block-append').animate({'height': dshow.height()+40}, {'queue': false, 'duration': duration});
+            $('.filter-menu').hide();
+            dshow.show();
+            $('a.filter-close').attr('href', '#' + dshow.attr('id'));
         }
         else {
-            $('.blog-list').stop().animate({'margin-top': -height}, {'queue': false, 'duration': duration});
+            $('.filter-block-append').stop().animate({'height': 0}, {'queue': false, 'duration': duration});
         }
-
-        
-        obj.stop().slideUp(duration, function () {
-            $('.blog-list').css('margin-top', 0);
-            if (!dshow.length) {
-                $('.filter-block-append').css('height', 0);
-            }
-            $('.filter-menu').css('position', 'relative');
-        });
 
     });
     
     setTimeout(function () {
         var dshow = $('.filter-menu.dshow');
         if (dshow.length) {
-            $('.filter-block-append').css('height', dshow.height());
+            $('.filter-block-append').css('height', dshow.height() + 40);
         }
         else {
             $('.filter-block-append').css('height', 0);
         }
     }, 500);
+    
+    $('a.filter-close').attr('href', '#' + $('.filter-menu.dshow').attr('id'));
 
     // End Filter =====================
 });

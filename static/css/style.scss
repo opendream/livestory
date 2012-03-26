@@ -103,6 +103,9 @@
 	.hide{ display: none !important;}
 	.active-b{ font-weight: bold; color: #000 !important;}
 	.mood-res{ width: 550px;}
+	.typeahead a{ background: #fff !important;
+		&:hover{ background: #F2F2F2 !important; text-decoration: underline !important;}
+	}
 	
 	/*----- Form -----*/
 	legend, .page-title{ padding: 10px 7px 10px; border-bottom: 1px solid #EEE;}
@@ -133,8 +136,8 @@
   .btn-green{
     display: inline-block;
     color: white;
-    font: bold 14px arial;
-    padding: 10px 20px;
+    font: bold 13px arial;
+    padding: 7px 12px;
     text-decoration: none;
     border-radius: 6px;
     border: 1px solid #089D4B;
@@ -156,8 +159,8 @@
   .btn-grey {
     display: inline-block;
     color: white;
-    font: bold 14px arial;
-    padding: 10px 20px;
+    font: bold 13px arial;
+    padding: 7px 12px;
     text-decoration: none;
     border: 1px solid #787878;
     -moz-box-shadow: inset -1px -2px 0px 0px #636363;
@@ -278,7 +281,7 @@
 	}
 	.no-notify{
 		color: #afafaf !important;
-		background: #585858;
+		background: #585858 ;
 	}
 	.notify-bottom{
 		display: block;
@@ -441,7 +444,7 @@
 	}
 	.status{
 		position: absolute;
-		bottom: 5px;
+		bottom: 10px;
 		right: 10px;
 		padding: 3px 5px 3px 3px;;
 		color: #ddd;
@@ -841,7 +844,15 @@
 		*display: inline;
 		_height: 255px;
 	}
-	
+	.caption {
+		a {
+			color: #333;
+			text-decoration: none;
+			&:hover {
+				color: #999;
+			}
+		}
+	}
 	
 /****************/
 /* manage story */
@@ -1198,11 +1209,12 @@
     }
     
     
-    
+/*  tag blog    */
 
     div.controls ul.tagit { 
         margin: 0;
-        width: 400px;
+        width: 300px;
+        font-size: 12px;
     }
     ul.tagit input[type="text"] {
         -moz-box-shadow: none; 
@@ -1282,7 +1294,7 @@
       padding-right: 5px;
 }
 .filter-block-append {
-    position: relative;
+    overflow: hidden;
 }
 .filter-block-append .default {
     z-index: 5;
@@ -1290,6 +1302,5 @@
 .filter-menu {
     background-color: #FFF;
     z-index: 10;
-    position: relative;
     width: 100%;
 }

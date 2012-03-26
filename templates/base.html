@@ -14,8 +14,11 @@
   
   <script type="text/javascript" src="{{STATIC_URL}}libs/jquery-1.7.1.min.js"></script>
   <script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.js" type="text/javascript"></script>
+  <script src="{{STATIC_URL}}libs/respond/respond.min.js" type="text/javascript"></script>
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/bootstrap/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css">
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/dev.css">
+  
   {% location_js %}
   {% block html_head %}{% endblock %}
   
@@ -34,6 +37,7 @@
 	        <b class="caret"></b></a>
 	        <ul class="dropdown-menu">
 	          <li><a href="{% url account_profile_edit %}">Edit Profile</a></li>
+	          <li><a href="{% url blog_manage %}">Manage Stories</a></li>
             <li><a href="{% url account_logout %}">Logout</a></li>
 	        </ul>
 	      </div>
