@@ -31,17 +31,13 @@
   <div id="topbar">
     <div class="container navbar">
       <a class="home" href="{% url blog_home %}">Home</a>
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
-      <div class="topbar-widget nav-collapse">
+
+      <div class="topbar-widget">
       
 	      <!-- New Nav -->
-	      <ul class="nav">
+	      <ul class="">
 		      <li>
-			      {% if user.get_profile.image %}
+						{% if user.get_profile.image %}
 	          <img src="{{ user.get_profile.get_image|crop:AVATAR_TOP_SIZE }}" alt="" class="img-vertical"/>
 	          {% endif %}
 	          
@@ -51,8 +47,35 @@
 		          <a href="#">{{ user.username }}</a>
 	          {% endif %}
 		      </li>
-		      <li></li>
-		      <li></li>
+		      <li class="nav dropdown">
+			      <a id="notification-section" class="dropdown-toggle" data-toggle="dropdown" href="#">
+	          <div class="notify rounded{% if notifications|length == 0 %} no-notify{% endif %}">{{ notifications|length }}</div>{% if notifications %}<span class="notify-bottom"></span>{% endif %}
+	          </a>
+	          <ul class="dropdown-menu dropdown-list">
+	            {% if notifications %}
+	            {% for notification in notifications %}
+	            <li class="clearfix">
+	              <div class="avatar">
+	                <a href="#"><img src="{{ notification.subject.get_profile.get_image|crop:AVATAR_TOP_SIZE }}"/></a>
+	              </div>
+	              <div class="info"> 
+	                <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
+	                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span> {{ notification.datetime|localtime|timeago }}.</span>
+	              </div>
+	            </li>
+	            <li class="divider"></li>
+	            {% endfor %}
+	            {% else %}
+	            <li class="clearfix">No notifications.</li>
+	            <li class="divider"></li>
+	            {% endif %}
+	            <li class="view-all"><a href="{% url notification_view %}">View all notifications</a></li>
+	          </ul>
+		      </li>
+		      
+		      <li>
+		      
+		      </li>
 		      <li></li>
 		      <li></li>
 		      <li></li>

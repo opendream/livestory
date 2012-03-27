@@ -162,6 +162,24 @@ $(document).ready(function() {
         </ul>
       </div>
       
+      {% if blog.tags.all %}
+      <div class="blog-tag block">
+				<h3>Tags</h3>
+				{% for tag in blog.tags.all %}
+				<a href="{% url blog_tags %}?tags={{ tag.name }}" class="badge">{{ tag.name }}</a>
+				{% endfor %}
+			</div>
+			{% endif %}
+			
+			<div class="download-photo block">
+				<h3>Photo</h3>
+				<ul>
+					<li><span class="col-left ic-download">Download</span> <span class="col-right grey">The owner has disabled downloading of their photos</span></li>
+					<li><span class="col-left ic-download">Download</span> <a href="" class="col-right">Download the Original size</a></li>
+					<li><span class="col-left ic-size">Size</span> <span class="col-right">1280x768</span></li>
+				</ul>
+			</div>
+			
       {% if CAN_SHARE_SN %}
       <div class="blog-share">
         <!-- AddThis Button BEGIN -->
