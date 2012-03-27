@@ -834,6 +834,31 @@ class TestAllPage(TestCase):
         self.assertEquals({'tags': 'foo'}, context['filter'])
         self.assertEquals('/blog/tags/', context['url'])
 
+class TestAllPageTrash(TestCase):
+    def setUp(self):
+        blogs = Blog.objects.all()
+        for blog in blogs:
+            blog.delete(with_file=False)
+        
+        self.user = factory.create_user('testuser1@example.com', 'testuser1@example.com', 'password', 'John', 'Doe 1', True)
+        self.category = factory.create_category('Food', 'food')
+        self.location = factory.create_location('Japan', 'Tokyo', '0', '0')
+        
+        self.blogs = [
+            factory.create_blog('Blog 1', self.user, self.category, self.location, mood=2, private=False, trash=False), 
+            factory.create_blog('Blog 2', self.user, self.category, self.location, mood=2, private=False, trash=False), 
+            factory.create_blog('Blog 3', self.user, self.category, self.location, mood=2, private=False, trash=True), 
+            factory.create_blog('Blog 4', self.user, self.category, self.location, mood=2, private=False, trash=True), 
+            factory.create_blog('Blog 5', self.user, self.category, self.location, mood=3, private=False, trash=True), 
+        ]
+
+    def tearDown(self):
+        rm_user(self.user.id)
+        
+    def test_blog_all_trash_get(self):
+        response = self.client.get('/blog/all/')
+        context = response.context
+        self.assertEquals(2, context['blogs'].count())
 
 class TestBlogManagement(TestCase):
     def setUp(self):

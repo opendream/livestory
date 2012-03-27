@@ -281,7 +281,7 @@
 	}
 	.no-notify{
 		color: #afafaf !important;
-		background: #585858 ;
+		background: #585858 !important;
 	}
 	.notify-bottom{
 		display: block;
@@ -373,7 +373,8 @@
 	/*----- Admin Menu Sidebar -----*/
 	.nav-admin .active > a, .nav-admin .active > a:hover{ background: #72b64a; }
 	
-	.nav-admin .nav-header a{ color: #999; }
+	.nav-admin .nav-header a{ color: #999; padding-top: 6px; padding-bottom: 6px;}
+	.nav-admin .nav-header.active a{ color: #fff !important;}
 	.nav-admin .nav-header a span{
 		float: right;
 		padding: 0px 7px;
@@ -383,7 +384,10 @@
 		background: #EA1515;
 	}
 	.nav-admin > li + .nav-header { margin-top: 0; }
-	.nav-admin .nav-header{ border-top: 1px dotted #AAA; }
+	.nav-admin .nav-header{
+		border-top: 1px dotted #AAA; 
+		padding: 0 15px;
+	}
 	.nav-admin > li:hover { background-color: #ebebeb; }
         
 	/*----- Search -----*/
@@ -436,20 +440,25 @@
 	}
 	.blog-photo{
 		position: relative;
+		overflow: hidden;
 		padding: 10px;
 		border: 1px solid #d6d6d6;
 		-moz-box-shadow: 3px 3px 0px #e3e3e3;
 		-webkit-box-shadow: 3px 3px 0px #e3e3e3;
 		box-shadow: 3px 3px 0px #e3e3e3;
+		
+		img{ float: left; }
 	}
 	.status{
 		position: absolute;
 		bottom: 10px;
 		right: 10px;
+		overflow: hidden;
 		padding: 3px 5px 3px 3px;;
 		color: #ddd;
 		font-size: 11px;
 		line-height: 16px;
+		background: #000;
 		background: rgba(0,0,0,0.5);
 	}
 	#title-blog{
@@ -493,10 +502,12 @@
 	.love:hover{ background-position: 0 -33px; }
 	
 	.people-love{
+		float: left;
+		height: 32px;
 		padding: 0 0 0 20px;
 		font-size: 12px;
 		line-height: 28px;
-		background: url('../img/ic-loveit.png') no-repeat ;
+		background: url('../img/ic-loveit.png') 0 8px no-repeat ;
 	}
 	.love-sum{
 		font-weight: bold;
@@ -506,6 +517,9 @@
     
 	/*----- Friends -----*/
 	.friends{
+		float: left;
+		clear: both;
+		width: 100%;
 		margin: 20px 0 0;
 		li{
 			position: relative;
@@ -629,7 +643,7 @@
 	
 	/*----- Small icon -----*/
 	.mood-icon-s{
-		display: inline-block;
+		float: left;
     overflow: hidden;
 		width: 16px;
 		height: 16px;
@@ -757,11 +771,11 @@
 /* Notification */
 /****************/
 	.ic-status{
-		display: inline-block;
+		float: left;
 		width: 12px;
 		height: 12px;
+		margin: 3px 5px 0 0;
 		text-indent: -999em;
-		vertical-align: text-bottom;
 		background: url('../img/ic-notify.png') no-repeat ;
 	}
 	.ic-download-notify{ background-position: 0 -12px;}
@@ -852,6 +866,10 @@
 				color: #999;
 			}
 		}
+		.posted a {
+			color: #61A534;
+			&:hover {text-decoration: underline;}
+		}
 	}
 	
 /****************/
@@ -859,7 +877,7 @@
 /****************/
 	.ic-action-story {
 		background: url("../img/btn.png") no-repeat;
-		display: inline-block;
+		display: block;
 		height: 16px;
 		width: 16px;
 		text-indent: -9999px;
@@ -874,6 +892,7 @@
 /* Filter place */
 /**************/
 .filter-place {
+	float: left;
 	margin-left: 30px;
 }
 	
@@ -1281,7 +1300,54 @@
     font-size: 1em;
 }
 
+/* view blog : tag */
+.blog-tag h3, .download-photo h3 {
+	border-bottom: 1px solid #ddd;
+	font-size: 16px;
+	margin-bottom: 10px;
+	padding-bottom: 5px;
+}
 
+.blog-tag {
+	overflow: hidden;
+	width: 370px;
+	.badge {
+		color: #fff !important;
+		margin: 0 5px 5px 0;
+		float: left;
+		&:hover {
+			background-color: #666;
+		}
+	}
+}
+
+/* view blog : photo */
+.download-photo {
+	ul {
+		margin-left: 0;
+	}
+	li {
+		list-style-type: none;
+		border-bottom: 1px solid #ddd;
+		padding: 10px 0;
+		overflow: hidden;
+		width: 370px;
+	}
+	.ic-size {
+		background-position: 0 -50px !important;
+	}
+	.ic-download {
+		background-position: 4px 3px !important;
+	}
+	.col-left {
+		padding-left: 25px;
+		background: url("../img/ic-blog.png") no-repeat;
+	}
+}
+
+.col-left, .col-right{ float: left; vertical-align: top;}
+.col-left{ width: 25%;}
+.col-right{ width: 65%;}
 
 
 /*****************/

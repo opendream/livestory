@@ -43,6 +43,7 @@ def blog_home(request):
         FROM blog_blog \
         LEFT JOIN blog_love \
         ON blog_blog.id = blog_love.blog_id \
+        WHERE NOT blog_blog.draft AND NOT blog_blog.trash \
     ) AS tmp \
     GROUP BY tmp.bid \
     ORDER BY love_rate DESC")[0: len(borders)]
@@ -62,8 +63,15 @@ def blog_home(request):
             'widthxheight': '%sx%s' % (rect['width'], rect['height']),
             'placement': 'right' if rect['left'] <= scour_width/2 else 'left'
         })
-
-    return render(request, 'blog/blog_home.html', locals())
+    
+    context = {
+        'scour_width': scour_width,
+        'scour_height': scour_height,
+        'blogs': blogs,
+        'rects': rects,
+    }
+    
+    return render(request, 'blog/blog_home.html', context)
 
 def blog_manage(request, section=None):
     if not request.user.is_authenticated():
@@ -225,8 +233,8 @@ def blog_create(request):
                     if os.path.exists(cpath):
                         shutil.rmtree(cpath)
             
-                messages.success(request, 'Blog post created. <a href="/blog/%s/view/">View post</a>' % blog.id)
-                return redirect('/blog/%s/edit' % blog.pk)
+                messages.success(request, 'Blog post created. <a href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+                return redirect(reverse('blog_edit', args=[blog.id]))
             except Location.DoesNotExist:
                 location_error = True
                 
@@ -292,8 +300,8 @@ def blog_edit(request, blog_id):
                         blog.image = blog_save_image(image_path, blog)
                 
                     blog.save()
-                    messages.success(request, 'Blog post updated. <a href="/blog/%s/view/">View post</a>' % blog.id)
-                    return redirect('/blog/%s/edit' % blog.pk)
+                    messages.success(request, 'Blog post updated. <a href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+                    return redirect(reverse('blog_edit', args=[blog.id]))
                     
                 except Location.DoesNotExist:
                     location_error = True
@@ -425,7 +433,7 @@ def blog_unlove(request, blog_id):
             raise Http404
             
 def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None, param='', color='blue'):
-    items = Blog.objects.filter(draft=False)
+    items = Blog.objects.filter(draft=False, trash=False)
     if not request.user.is_authenticated():
         items = items.filter(private=False)
     
@@ -448,7 +456,6 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
     if not url:
         url = reverse('blog_all')
     
-    print color
     page_range = get_page_range(pagination)
     context = {
         'title': title,

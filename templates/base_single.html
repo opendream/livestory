@@ -17,12 +17,13 @@
   
   {% url blog_home as blog_home %}
   {% url blog_all as blog_all %}
+  {% url blog_place as blog_place %}
   {% url blog_mood 'arg' as blog_mood %}
   {% url blog_category  'arg' as blog_category %}
   
   <ul class="menu">
     <li><a href="{{ blog_home }}" class="popular{% active request blog_home %}">Popular</a></li>
-    <li><a href="#filter-menu-place" class="place has-filter">Place</a></li>
+    <li><a href="#filter-menu-place" class="place has-filter{% active request blog_place %}">Place</a></li>
     <li><a href="#filter-menu-mood" class="moods has-filter{% active request blog_mood %}">Moods</a></li>
     <li><a href="#filter-menu-category" class="categories has-filter{% active request blog_category %}">Categories</a></li>
     <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
@@ -74,7 +75,7 @@
     		<h3 class="filter-title futura-font yellow">Filter by place</h3>
     		<form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">
     			<div class="control-group">
-            <div class="controls">
+            <div class="">
               {{ place_form.country }}
               {{ place_form.city }}
               {% if place_form.country.errors or form.city.errors %}

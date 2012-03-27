@@ -1,6 +1,7 @@
 {% extends 'base_backend.html' %}
 
 {% load tz %}
+{% load common_tags %}
 
 {% block head_title %}All Stories{% endblock %}
 
@@ -36,10 +37,14 @@ $(document).ready(function() {
 {% block content %}
   <h1 class="page-title block">All Stories</h1>
   <div class="block">
-    <a href="{% url blog_manage %}" class="active-b">All </a><span class="grey">({{ num_all }})</span> | 
-    <a href="{% url blog_manage_published %}">Published </a><span class="grey">({{ num_published }})</span> | 
-    <a href="{% url blog_manage_draft %}">Drafts </a><span class="grey">({{ num_draft }})</span> | 
-    <a href="{% url blog_manage_trash %}">Trash </a><span class="grey">({{ num_trash }})</span>
+    {% url blog_manage as blog_manage %}
+    {% url blog_manage_published as blog_manage_published %}
+    {% url blog_manage_draft as blog_manage_draft %}
+    {% url blog_manage_trash as blog_manage_trash %}
+    <a href="{{ blog_manage }}" class="{% if request.path == blog_manage %}active-b{% endif %}">All </a><span class="grey">({{ num_all }})</span> | 
+    <a href="{{ blog_manage_published }}" class="{% active request blog_manage_published 'active-b' %}">Published </a><span class="grey">({{ num_published }})</span> | 
+    <a href="{{ blog_manage_draft }}" class="{% active request blog_manage_draft 'active-b' %}">Drafts </a><span class="grey">({{ num_draft }})</span> | 
+    <a href="{{ blog_manage_trash }}" class="{% active request blog_manage_trash 'active-b' %}">Trash </a><span class="grey">({{ num_trash }})</span>
   </div>
   <form class="form-inline" method="POST" action="{% url blog_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">{% csrf_token %}
     <select name="op" id="op">

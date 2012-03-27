@@ -155,15 +155,23 @@ def ucwords_tag(string):
     return ' '.join( erg )
 
 @register.simple_tag
-def active(request, pattern):
-    pattern = pattern.split('/')
-    path = request.path.split('/')
-    yes = True
-    for i, v in enumerate(pattern):
-        try:
-            if v != 'arg' and v != '0' and v != path[i]:
+def active(request, pattern, text=' active'):
+    pattern = pattern.split('/')[1:-1]
+    path = request.path.split('/')[1:-1]
+    
+    if len(pattern) < len(path):        
+        for i, v in enumerate(pattern):
+            if v != path[i]:
                 return ''
-        except:
-            return ''
-            
-    return ' active'
+        
+        return text
+        
+    else:
+        for i, v in enumerate(pattern):
+            try:
+                if v != 'arg' and v != '0' and v != path[i]:
+                    return ''
+            except:
+                return ''
+  
+        return text
