@@ -12,9 +12,7 @@
 <div id="navigation" class="clearfix">
   <h1 class="oxfam-font">
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
-  </h1>
-  {% if not PRIVATE or user.is_authenticated %}
-  
+  </h1>  
   {% url blog_home as blog_home %}
   {% url blog_all as blog_all %}
   {% url blog_place as blog_place %}
@@ -28,7 +26,6 @@
     <li><a href="#filter-menu-category" class="categories has-filter{% active request blog_category %}">Categories</a></li>
     <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
   </ul>
-  {% endif %}
 </div>
 
 {% endblock %}

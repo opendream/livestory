@@ -1,11 +1,14 @@
 from account.models import Account, AccountKey
 from django.test import TestCase
 from tests import factory
+from override_settings import override_settings
+
 
 from common import rm_user
 
 from django.conf import settings
 
+@override_settings(PRIVATE=False)
 class TestAccount(TestCase):
     def setUp(self):
         self.users = [

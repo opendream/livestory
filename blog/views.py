@@ -11,6 +11,7 @@ from django.forms.models import model_to_dict
 from django.utils import simplejson as json
 from django.db.models import Count, Sum
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.servers.basehttp import FileWrapper
 
 from account.models import Account
 from blog.models import *
@@ -26,8 +27,8 @@ from common import ucwords, get_page_range
 from taggit.models import TaggedItem
 
 def blog_home(request):
-    if not request.user.is_authenticated() and settings.PRIVATE:
-        return render(request, 'blog/blog_static.html')
+    #if not request.user.is_authenticated() and settings.PRIVATE:
+    #    return render(request, 'blog/blog_static.html')
     
     scour_width = 960
     scour_height = 660
@@ -216,6 +217,8 @@ def blog_create(request):
             blog.description = form.cleaned_data.get('description')[:300]
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
+            blog.allow_download = bool(int(form.data.get('allow_download')))
+            
             try:
                 blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
                 blog.save()
@@ -233,7 +236,7 @@ def blog_create(request):
                     if os.path.exists(cpath):
                         shutil.rmtree(cpath)
             
-                messages.success(request, 'Blog post created. <a href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+                messages.success(request, 'Blog post created. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
                 return redirect(reverse('blog_edit', args=[blog.id]))
             except Location.DoesNotExist:
                 location_error = True
@@ -275,11 +278,12 @@ def blog_edit(request, blog_id):
             image_path = form.data.get('image_path')
             if not image_path or not os.path.exists(image_path):
                 imagefield_error = True
-
+                        
             if form.is_valid() and not imagefield_error:
                 blog.title = form.cleaned_data.get('title')
                 blog.description = form.cleaned_data.get('description')[:300]
                 blog.mood = form.cleaned_data.get('mood')
+                blog.allow_download = bool(int(form.data.get('allow_download')))
                 blog.category = form.cleaned_data.get('category')
                 blog.save_tags(form.data.get('tags'))
                 try:
@@ -300,7 +304,7 @@ def blog_edit(request, blog_id):
                         blog.image = blog_save_image(image_path, blog)
                 
                     blog.save()
-                    messages.success(request, 'Blog post updated. <a href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+                    messages.success(request, 'Blog post updated. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
                     return redirect(reverse('blog_edit', args=[blog.id]))
                     
                 except Location.DoesNotExist:
@@ -314,6 +318,7 @@ def blog_edit(request, blog_id):
                 'mood': str(blog.mood),
                 'category': blog.category,
                 'private': str(int(blog.private)),
+                'allow_download': str(int(blog.allow_download)),
                 'tags': blog.get_tags()
             }
             form = BlogCreateForm(defaults)
@@ -357,6 +362,8 @@ def blog_view(request, blog_id):
         loved_users = []
         for l in love_set:
             loved_users.append(l.user.get_profile())
+                
+        blog.allow_download = False if blog.draft and request.user != blog.user else blog.allow_download
 
         context = {
             'blog': blog,
@@ -372,6 +379,24 @@ def blog_view(request, blog_id):
     except Blog.DoesNotExist:
         raise Http404
 
+def blog_download(request, blog_id):
+    try:
+        blog = Blog.objects.get(id=blog_id)
+    except Blog.DoesNotExist:
+        raise Http404
+        
+    if (blog.draft and request.user != blog.user) or not blog.allow_download or (blog.private and not request.user.is_authenticated()):
+        return render(request, '403.html', status=403)
+    
+    response = HttpResponse(FileWrapper(blog.image.file), mimetype='application/force-download')    
+    response['Content-Disposition'] = 'attachment; filename=%s-%s.%s' % (blog.created.strftime('%Y%m%d') , blog.id, blog.image.name.split('.')[-1])
+    
+    # Nofify
+    if request.user.is_authenticated() and request.user != blog.user:
+        Notification(subject=request.user, action=2, blog=blog).save()
+    
+    return response
+        
 def blog_love(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
@@ -579,3 +604,11 @@ def blog_save_image(image_path, blog):
         
     shutil.copy2(image_path, final_path)
     return real_path
+
+
+# Static page
+def blog_about(request):
+    return render(request, 'about.html')
+
+def blog_term(request):
+    return render(request, 'term.html')

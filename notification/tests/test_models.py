@@ -1,9 +1,12 @@
 from account.models import Account, AccountKey
 from django.test import TestCase
 from notification.models import Notification
+from override_settings import override_settings
+
 
 from tests import factory
 
+@override_settings(PRIVATE=False)
 class TestNotification(TestCase):
 	def setUp(self):
 		self.user = factory.create_user('john.doe@example.com', 'john.doe@example.com', 'john123', 'John', 'Doe')

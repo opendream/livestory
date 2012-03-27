@@ -4,11 +4,14 @@ from django.test import TestCase
 from statistic.models import ViewCount
 from tests import factory
 from common import rm_user
+from override_settings import override_settings
+
 
 import os
 from django.conf import settings
 import shutil
-        
+
+@override_settings(PRIVATE=False)        
 class TestBlog(TestCase):
     def setUp(self):
         self.category = factory.create_category()
@@ -98,7 +101,7 @@ class TestBlog(TestCase):
         with self.assertRaises(ViewCount.DoesNotExist):
             ViewCount.objects.get(blog__id=blog_id)
         
-
+@override_settings(PRIVATE=False)
 class TestLove(TestCase):
     
     def test_unicode(self):
@@ -109,7 +112,7 @@ class TestLove(TestCase):
         
         rm_user(user.id)
 
-
+@override_settings(PRIVATE=False)
 class TestCategory(TestCase):
     def test_unicode(self):
         category = factory.create_category('Animals', 'animals')

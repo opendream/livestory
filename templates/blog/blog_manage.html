@@ -68,9 +68,9 @@ $(document).ready(function() {
               Title
               {% if request.GET.sort == 'title' %}
               {% if request.GET.order == 'asc' or not request.GET.order %}
-              <i class="icon-chevron-up"></i>
+              <i class="sort-asc"></i>
               {% else %}
-              <i class="icon-chevron-down"></i>
+              <i class="sort-desc"></i>
               {% endif %}
               {% endif %}
             </a>
@@ -80,9 +80,9 @@ $(document).ready(function() {
               Date
               {% if request.GET.sort == 'created' or not request.GET.sort %}
               {% if request.GET.order == 'desc' or not request.GET.order %}
-              <i class="icon-chevron-down"></i>
+              <i class="sort-desc"></i>
               {% else %}
-              <i class="icon-chevron-up"></i>
+              <i class="sort-asc"></i>
               {% endif %}
               {% endif %}
             </a>
@@ -92,9 +92,9 @@ $(document).ready(function() {
               Love
               {% if request.GET.sort == 'num_loves' %}
               {% if request.GET.order == 'desc' or not request.GET.order %}
-              <i class="icon-chevron-down"></i>
+              <i class="sort-desc"></i>
               {% else %}
-              <i class="icon-chevron-up"></i>
+              <i class="sort-asc"></i>
               {% endif %}
               {% endif %}
             </a>
@@ -104,9 +104,9 @@ $(document).ready(function() {
               Views
               {% if request.GET.sort == 'num_views' %}
               {% if request.GET.order == 'desc' or not request.GET.order %}
-              <i class="icon-chevron-down"></i>
+              <i class="sort-desc"></i>
               {% else %}
-              <i class="icon-chevron-up"></i>
+              <i class="sort-asc"></i>
               {% endif %}
               {% endif %}
             </a>

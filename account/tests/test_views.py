@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 from tests import factory
 
 from django.conf import settings
+from override_settings import override_settings
 
+
+@override_settings(PRIVATE=False)
 class TestAccount(TestCase):
     def setUp(self):
         self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load common_tags %}
+{% load blog_tags %}
+
+{% block base_body_class %}single{% endblock %}
+
+{% block html_head %}
+{% endblock %}
+
+{% block base_navi %}
+<!------- Navigation -->
+<div id="navigation" class="clearfix">
+  <h1 class="oxfam-font">
+    <span class="brand">oxfam</span><span class="slogan">live stories</span>
+  </h1>
+</div>
+
+{% endblock %}
+{% block base_content %}
+<div class="clear-both">
+    {% block content %}{% endblock %}
+</div>
+{% endblock %}

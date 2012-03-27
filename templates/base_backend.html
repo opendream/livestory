@@ -12,17 +12,17 @@
     {% url account_profile_edit as account_profile_edit %}
     {% url notification_view as notification_view %}
     <ul class="nav nav-list nav-admin">
-      <li class="nav-header"><a href ="{{ blog_manage }}">Post</a></li>
-      <li class="{% active request blog_manage %}"><a href="{{ blog_manage }}"><i class="icon-th-list{% active request blog_manage ' icon-white' %}"></i> All Post</a></li>
+      <li class="nav-header"><a href ="{{ blog_manage }}">Posts</a></li>
+      <li class="{% active request blog_manage %}"><a href="{{ blog_manage }}"><i class="icon-th-list{% active request blog_manage ' icon-white' %}"></i> All Posts</a></li>
       <li class="{% active request blog_create %}"><a href="{{ blog_create }}"><i class="icon-plus{% active request blog_create ' icon-white' %}"></i> Add New Post</a></li>
       <li class="nav-header"><a href ="{{ notification_view }}">Notifications</a></li>
       <li class="{% active request notification_view %}">
         <a href ="{{ notification_view }}" class="">
 	        <i class="icon-comment{% active request notification_view ' icon-white' %}"></i>
-          All Notification<span class="rounded {% if notifications|length == 0 %} notify no-notify{% endif %} pull-right"> {{ notifications|length }}</span>
+          All Notifications<span class="rounded {% if notifications|length == 0 %} notify no-notify{% endif %} pull-right"> {{ notifications|length }}</span>
         </a>
       </li>      
-      <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li></li>
+      <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li>
       <li class="{% active request account_profile_edit %}"><a href="{{ account_profile_edit }}"><i class="icon-user{% active request account_profile_edit ' icon-white' %}"></i> Your Profile</a></li>
     </ul>
   </div>

@@ -16,7 +16,8 @@ from django.conf import settings
 from override_settings import override_settings
 import shutil
 
-        
+
+@override_settings(PRIVATE=False)
 class TestBlogCreate(TestCase):
     def setUp(self):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
@@ -46,7 +47,8 @@ class TestBlogCreate(TestCase):
             'city': '',
             'private': '',
             'draft': '',
-            'category': ''
+            'category': '',
+            'allow_download': ''
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -78,7 +80,8 @@ class TestBlogCreate(TestCase):
             'city': 'Tokyo',
             'private': '1',
             'draft': '0',
-            'category': str(self.category.id)
+            'category': str(self.category.id),
+            'allow_download': '0'
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -100,6 +103,7 @@ class TestBlogCreate(TestCase):
         self.assertEquals(4, blog.mood)
         self.assertEquals(True, blog.private)
         self.assertEquals(False, blog.draft)
+        self.assertEquals(False, blog.allow_download)
         self.assertEquals(self.category, blog.category)
         self.assertEquals(self.location, blog.location)
         
@@ -118,7 +122,8 @@ class TestBlogCreate(TestCase):
             'city': city,
             'private': '0',
             'draft': '1',
-            'category': str(self.category.id)
+            'category': str(self.category.id),
+            'allow_download': '1'
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -138,6 +143,7 @@ class TestBlogCreate(TestCase):
         self.assertEquals('Hello world (Draft)', blog.title)
         self.assertEquals('lorem ipsum (Draft)', blog.description)
         self.assertEquals(3, blog.mood)
+        self.assertEquals(True, blog.allow_download)
         self.assertEquals(False, blog.private)
         self.assertEquals(True, blog.draft)
         self.assertEquals(self.category, blog.category)
@@ -165,7 +171,8 @@ class TestBlogCreate(TestCase):
             'city': 'asdfdasffdffad',
             'private': '0',
             'draft': '1',
-            'category': str(self.category.id)
+            'category': str(self.category.id),
+            'allow_download': '1'
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -189,7 +196,8 @@ class TestBlogCreate(TestCase):
             'city': 'london',
             'private': '0',
             'draft': '1',
-            'category': str(self.category.id)
+            'category': str(self.category.id),
+            'allow_download': '1'
         }
 
         self.client.login(username='test@example.com', password='test')
@@ -200,7 +208,7 @@ class TestBlogCreate(TestCase):
         
         self.client.logout()
 
-
+@override_settings(PRIVATE=False)
 class TestBlogEdit(TestCase):
     def setUp(self):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
@@ -259,6 +267,7 @@ class TestBlogEdit(TestCase):
             'private': '',
             'draft': '',
             'category': '',
+            'allow_download': ''
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params)
@@ -287,7 +296,8 @@ class TestBlogEdit(TestCase):
             'city': 'Sol',
             'private': '1',
             'draft': '0',
-            'category': str(self.cat_travel.id)
+            'category': str(self.cat_travel.id),
+            'allow_download': '0'
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
@@ -306,6 +316,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(2, blog.mood)
         self.assertEquals(True, blog.private)
         self.assertEquals(False, blog.draft)
+        self.assertEquals(False, blog.allow_download)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
 
@@ -322,7 +333,8 @@ class TestBlogEdit(TestCase):
             'city': 'Sol',
             'private': '1',
             'draft': '1',
-            'category': str(self.cat_travel.id)
+            'category': str(self.cat_travel.id),
+            'allow_download': '1'
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
@@ -341,6 +353,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(2, blog.mood)
         self.assertEquals(True, blog.private)
         self.assertEquals(False, blog.draft)
+        self.assertEquals(True, blog.allow_download)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
         
@@ -361,7 +374,8 @@ class TestBlogEdit(TestCase):
             'city': 'Sol',
             'private': '1',
             'draft': '1',
-            'category': str(self.cat_travel.id)
+            'category': str(self.cat_travel.id),
+            'allow_download': '1'
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
@@ -380,6 +394,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(2, blog.mood)
         self.assertEquals(True, blog.private)
         self.assertEquals(True, blog.draft)
+        self.assertEquals(True, blog.allow_download)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
     
@@ -396,7 +411,8 @@ class TestBlogEdit(TestCase):
             'city': 'tryeryrtytry',
             'private': '1',
             'draft': '1',
-            'category': str(self.cat_travel.id)
+            'category': str(self.cat_travel.id),
+            'allow_download': '1'
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
@@ -404,7 +420,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(True, response.context['location_error'])
         self.client.logout()
 
-
+@override_settings(PRIVATE=False)
 class TestBlogView(TestCase):
     def setUp(self):
         self.user = factory.create_user('test@example.com', 'test@example.com', 'test')
@@ -585,14 +601,15 @@ class TestBlogView(TestCase):
         self.assertContains(response, '<!-- AddThis Button BEGIN -->')
         self.client.logout()
         
-        
+@override_settings(PRIVATE=False)        
 class TestHomePage(TestCase):
     def setUp(self):
         self.user = factory.create_user('testuser@example.com', 'testuser@example.com', 'password', 'John', 'Doe', True)
 
     def tearDown(self):
         rm_user(self.user.id)
-
+    
+    @override_settings(PRIVATE=True)  
     def test_anonymous_user_get(self):
         response = self.client.get(reverse('blog_home'))
         self.assertEqual(200, response.status_code)
@@ -605,6 +622,7 @@ class TestHomePage(TestCase):
         self.assertTemplateUsed(response, 'blog/blog_home.html')
         self.client.logout()
 
+@override_settings(PRIVATE=False)
 class TestAllPage(TestCase):
     def setUp(self):
         blogs = Blog.objects.all()
@@ -834,6 +852,7 @@ class TestAllPage(TestCase):
         self.assertEquals({'tags': 'foo'}, context['filter'])
         self.assertEquals('/blog/tags/', context['url'])
 
+@override_settings(PRIVATE=False)
 class TestAllPageTrash(TestCase):
     def setUp(self):
         blogs = Blog.objects.all()
@@ -860,6 +879,7 @@ class TestAllPageTrash(TestCase):
         context = response.context
         self.assertEquals(2, context['blogs'].count())
 
+@override_settings(PRIVATE=False)
 class TestBlogManagement(TestCase):
     def setUp(self):
         self.john = factory.create_user('john.carter@example.com', 'john.carter@example.com', '1234', 'John', 'Carter', True)
@@ -1516,3 +1536,77 @@ class TestBlogManagement(TestCase):
         self.client.logout()
         for blog in blogs:
             blog.delete()
+
+@override_settings(PRIVATE=False)
+class TestBlogDownload(TestCase):
+    def setUp(self):
+        self.user1 = factory.create_user('testuser1@example.com', 'testuser1@example.com', 'password', 'John', 'Doe 1', True)
+        self.user2 = factory.create_user('testuser2@example.com', 'testuser2@example.com', 'password', 'John', 'Doe 2', True)
+        self.category1 = factory.create_category('Animal', 'animal')
+        self.category2 = factory.create_category('Food', 'food')
+        self.location1 = factory.create_location('Japan', 'Tokyo', '0', '0')
+        self.location2 = factory.create_location('Thailand', 'Bangkok', '0', '0')
+    
+        self.blogs = [
+            factory.create_blog('Blog 1', self.user1, self.category1, self.location1, mood=1, private=True, allow_download=True ), 
+            factory.create_blog('Blog 2', self.user1, self.category1, self.location2, mood=2, private=False, allow_download=True ), 
+            factory.create_blog('Blog 3', self.user1, self.category2, self.location1, mood=3, private=True, allow_download=True), 
+            factory.create_blog('Blog 4', self.user2, self.category2, self.location2, mood=4, private=False, allow_download=False), 
+            factory.create_blog('Blog 5', self.user2, self.category2, self.location2, mood=5, private=True, allow_download=True, draft=True), 
+            
+        ]
+    
+    def tearDown(self):
+        rm_user(self.user1.id)
+        rm_user(self.user2.id)
+         
+    def test_download_get(self):
+        print self.blogs
+        print 'blog/%d/download/' % self.blogs[0].id
+        response = self.client.get('/blog/%d/download/' % self.blogs[0].id)
+        self.assertEquals(403, response.status_code)
+        response = self.client.get('/blog/%d/download/' % self.blogs[1].id)
+        self.assertEquals(200, response.status_code)
+        
+        self.client.login(username='testuser1@example.com', password='password')
+        response = self.client.get('/blog/%d/download/' % self.blogs[2].id)
+        self.assertEquals(200, response.status_code)
+        response = self.client.get('/blog/%d/download/' % self.blogs[3].id)
+        self.assertEquals(403, response.status_code)
+        response = self.client.get('/blog/%d/download/' % self.blogs[4].id)
+        self.assertEquals(403, response.status_code)
+        response = self.client.get('/blog/0/download/')
+        self.assertEquals(404, response.status_code)
+        
+        self.client.logout()
+        
+        self.client.login(username='testuser2@example.com', password='password')
+        response = self.client.get('/blog/%d/download/' % self.blogs[4].id)
+        self.assertEquals(200, response.status_code)
+        
+        self.client.logout()
+    
+    def test_download_view(self):
+        
+        response = self.client.get('/blog/%d/' % self.blogs[1].id)
+        print response.status_code
+        blog = response.context['blog']
+        self.assertEquals(True, blog.allow_download)
+        
+        self.client.login(username='testuser1@example.com', password='password')
+        
+        response = self.client.get('/blog/%d/' % self.blogs[2].id)
+        blog = response.context['blog']
+        self.assertEquals(True, blog.allow_download)
+        
+        response = self.client.get('/blog/%d/' % self.blogs[3].id)
+        blog = response.context['blog']
+        self.assertEquals(False, blog.allow_download)
+        
+        self.client.login(username='testuser2@example.com', password='password')
+        
+        response = self.client.get('/blog/%d/' % self.blogs[4].id)
+        blog = response.context['blog']
+        self.assertEquals(True, blog.allow_download)
+        
+        self.client.logout()

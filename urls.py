@@ -8,6 +8,10 @@ from django.conf import settings
 
 urlpatterns = patterns('',
     url(r'^$', 'blog.views.blog_home', name='blog_home'),
+    url(r'^about/$', 'blog.views.blog_about', name='blog_about'),
+    url(r'^term/$', 'blog.views.blog_term', name='blog_term'),
+    
+    url(r'^$', 'blog.views.blog_home', name='blog_home'),
     url(r'^account/', include('account.urls')),
     url(r'^blog/', include('blog.urls')),
     url(r'^location/', include('location.urls')),

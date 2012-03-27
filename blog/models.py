@@ -56,20 +56,21 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
     
 class Blog(models.Model):
-    title       = models.CharField(max_length=200)
-    image       = models.ImageField(upload_to=blog_image_url)
-    description = models.TextField(null=True)
-    mood        = models.IntegerField(default=0, choices=MOOD_CHOICES)
-    private     = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
-    draft       = models.BooleanField(default=False, choices=DRAFT_CHOICES)
-    trash       = models.BooleanField(default=False)
-    created     = models.DateTimeField(auto_now_add=True)
-    modified    = models.DateTimeField(auto_now=True)
-                
-    user        = models.ForeignKey(User)
-    category    = models.ForeignKey(Category)
-    location    = models.ForeignKey(Location)
-    tags        = TaggableManager()
+    title          = models.CharField(max_length=200)
+    image          = models.ImageField(upload_to=blog_image_url)
+    description    = models.TextField(null=True)
+    mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
+    private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
+    draft          = models.BooleanField(default=False, choices=DRAFT_CHOICES)
+    trash          = models.BooleanField(default=False)
+    allow_download = models.BooleanField(default=True)
+    created        = models.DateTimeField(auto_now_add=True)
+    modified       = models.DateTimeField(auto_now=True)
+                   
+    user           = models.ForeignKey(User)
+    category       = models.ForeignKey(Category)
+    location       = models.ForeignKey(Location)
+    tags           = TaggableManager()
     
     def __unicode__(self):
         return '(%d) %s' % (self.id, self.title)
