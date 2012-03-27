@@ -73,7 +73,6 @@ STATIC_URL = '/static/'
 
 
 # Uniqu for your project
-SITE_NAME = 'Oxfam Live Stories'
 SITE_LOGO = 'static/img/logo-livestories.png'
 SITE_LOGO_EMAIL = 'static/img/logo-oxfam_email.png'
 
@@ -214,7 +213,9 @@ BROKER_VHOST = '/'
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 # LIVE STORY
+SITE_NAME = 'Oxfam Live Stories'
 ORGANIZATION_NAME = 'Oxfam'
+CONTACT_EMAIL = 'info@oxfam.org.uk'
 IMAGE_URL = MEDIA_URL + 'images/'
 IMAGE_ROOT = MEDIA_ROOT + 'images/'
 TEMP_ROOT = MEDIA_ROOT + 'temp/'

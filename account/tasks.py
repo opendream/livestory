@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
@@ -22,6 +23,8 @@ def send_invite(invite_list, base_url):
             'site_name': settings.SITE_NAME,
             'site_logo': settings.SITE_LOGO,
             'site_logo_email': settings.SITE_LOGO_EMAIL,
+            'organization_name': settings.ORGANIZATION_NAME,
+            'contact_email': settings.CONTACT_EMAIL,
             'base_url': base_url,
             'activate_link': activate_link
         })

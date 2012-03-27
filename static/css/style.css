@@ -245,7 +245,8 @@ a:active {
 
 .grid {
   float: left;
-  width: 186px;
+  overflow: hidden;
+  width: 184px;
   margin: 0 0 10px 10px; }
 
 .grid-colspan {
