@@ -36,6 +36,8 @@ body.admin {
   margin: 20px 0 0 0;
   color: #fff;
   background: #000; }
+  #footer .span7 {
+    text-align: right; }
 
 /**************/
 /* Base Style */
@@ -207,13 +209,12 @@ a:active {
   -webkit-box-shadow: inset -1px -2px 0px 0px #3f9303;
   box-shadow: inset -1px -2px 0px 0px #3f9303;
   background-color: #72B64A; }
-
-.btn-green:hover {
-  border: 1px solid #0A5A26;
-  -moz-box-shadow: inset -1px -2px 0px 0px #0a5a26;
-  -webkit-box-shadow: inset -1px -2px 0px 0px #0a5a26;
-  box-shadow: inset -1px -2px 0px 0px #0a5a26;
-  background-color: #0F7335; }
+  .btn-green:hover {
+    border: 1px solid #0A5A26;
+    -moz-box-shadow: inset -1px -2px 0px 0px #0a5a26;
+    -webkit-box-shadow: inset -1px -2px 0px 0px #0a5a26;
+    box-shadow: inset -1px -2px 0px 0px #0a5a26;
+    background-color: #0F7335; }
 
 .btn-grey {
   -webkit-border-radius: 6px;
@@ -231,13 +232,12 @@ a:active {
   -webkit-box-shadow: inset -1px -2px 0px 0px #636363;
   box-shadow: inset -1px -2px 0px 0px #636363;
   background-color: #A0A0A0; }
-
-.btn-grey:hover {
-  border: 1px solid #696969;
-  -moz-box-shadow: inset -1px -2px 0px 0px #535353;
-  -webkit-box-shadow: inset -1px -2px 0px 0px #535353;
-  box-shadow: inset -1px -2px 0px 0px #535353;
-  background-color: #787878; }
+  .btn-grey:hover {
+    border: 1px solid #696969;
+    -moz-box-shadow: inset -1px -2px 0px 0px #535353;
+    -webkit-box-shadow: inset -1px -2px 0px 0px #535353;
+    box-shadow: inset -1px -2px 0px 0px #535353;
+    background-color: #787878; }
 
 /*----- Grid -----*/
 .grid-row {
@@ -737,9 +737,7 @@ span.slogan {
   height: 32px;
   margin: 0 19px 5px;
   text-indent: -999em;
-  background-image: url(../img/ic-mood-32x32.png);
-  background-repeat: no-repeat;
-  background-position: 0 0; }
+  background: url(../img/ic-mood-32x32.png) 0 0 no-repeat; }
   .mood-icon:hover {
     cursor: pointer; }
 
@@ -962,6 +960,17 @@ span.slogan {
 .table-striped tbody tr:nth-child(odd) th {
   background: #f6f6f6; }
 
+.sort-asc, .sort-desc {
+  display: inline-block;
+  width: 10px;
+  height: 6px;
+  text-indent: -999em;
+  opacity: 0.65;
+  background: url("../img/btn.png") 0px -200px no-repeat; }
+
+.sort-desc {
+  background-position: 0 -250px; }
+
 .dropdown-list {
   max-width: 335px;
   width: 335px; }
@@ -1105,6 +1114,9 @@ span.slogan {
   .navbar .nav > li > a, .navbar .dropdown-menu a {
     font-weight: normal; }
 
+  .login_form input {
+    width: 150px; }
+
   /* Menu */
   .menu {
     clear: both;
@@ -1160,6 +1172,9 @@ span.slogan {
 
   .menu li {
     margin: 10px 0 20px; }
+
+  #footer .span7 {
+    text-align: left; }
 
   .blog-profile {
     margin-bottom: 20px; }
@@ -1283,6 +1298,9 @@ span.slogan {
   input[class*="span"], select[class*="span"], textarea[class*="span"], .uneditable-input {
     margin-bottom: 9px; } }
 @media (max-width: 320px) {
+  .login_form input {
+    width: 150px; }
+
   /* Grid */
   .grid {
     width: 133px; }

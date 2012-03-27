@@ -22,7 +22,7 @@
           All Notification<span class="rounded {% if notifications|length == 0 %} notify no-notify{% endif %} pull-right"> {{ notifications|length }}</span>
         </a>
       </li>      
-      <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li></li>
+      <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li>
       <li class="{% active request account_profile_edit %}"><a href="{{ account_profile_edit }}"><i class="icon-user{% active request account_profile_edit ' icon-white' %}"></i> Your Profile</a></li>
     </ul>
   </div>

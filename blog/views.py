@@ -216,6 +216,8 @@ def blog_create(request):
             blog.description = form.cleaned_data.get('description')[:300]
             blog.user = request.user
             blog.draft = bool(int(form.data.get('draft')))
+            blog.allow_download = bool(int(form.data.get('allow_download')))
+            
             try:
                 blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
                 blog.save()
@@ -280,6 +282,7 @@ def blog_edit(request, blog_id):
                 blog.title = form.cleaned_data.get('title')
                 blog.description = form.cleaned_data.get('description')[:300]
                 blog.mood = form.cleaned_data.get('mood')
+                blog.allow_download = bool(int(form.data.get('allow_download')))
                 blog.category = form.cleaned_data.get('category')
                 blog.save_tags(form.data.get('tags'))
                 try:
@@ -314,6 +317,7 @@ def blog_edit(request, blog_id):
                 'mood': str(blog.mood),
                 'category': blog.category,
                 'private': str(int(blog.private)),
+                'allow_download': str(int(blog.allow_download)),
                 'tags': blog.get_tags()
             }
             form = BlogCreateForm(defaults)
@@ -357,6 +361,8 @@ def blog_view(request, blog_id):
         loved_users = []
         for l in love_set:
             loved_users.append(l.user.get_profile())
+            
+        blog.allow_download = False if blog.draft and request.user != blog.user else blog.allow_download
 
         context = {
             'blog': blog,
@@ -372,6 +378,15 @@ def blog_view(request, blog_id):
     except Blog.DoesNotExist:
         raise Http404
 
+def blog_download(request, blog_id):
+    try:
+        blog = Blog.objects.get(pk=blog_id)
+    except Blog.DoesNotExist:
+        raise Http404
+        
+    if blog.draft:
+        return render(request, '403.html', status=403)
+        
 def blog_love(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
@@ -579,3 +594,11 @@ def blog_save_image(image_path, blog):
         
     shutil.copy2(image_path, final_path)
     return real_path
+
+
+# Static page
+def blog_about(request):
+    return render(request, 'about.html')
+
+def blog_term(request):
+    return render(request, 'term.html')

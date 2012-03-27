@@ -10,6 +10,7 @@ def site_information(request):
          
     return {
         'SITE_NAME': settings.SITE_NAME,
+        'ORGANIZATION_NAME': settings.ORGANIZATION_NAME,
         'SITE_LOGO': settings.SITE_LOGO,
         'SITE_LOGO_EMAIL': settings.SITE_LOGO_EMAIL,
         'AVATAR_SIZE': settings.AVATAR_SIZE,

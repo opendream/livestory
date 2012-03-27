@@ -142,6 +142,18 @@
       </div>
     </div>
     
+    <div class="field-allow_download control-group{% if form.allow_download.errors %} error{% endif %}">
+      <label class="control-label" for="allow_download">Download</label>
+      <div class="controls">
+        <label class="checkbox">
+          <input type="checkbox" id="allow_download" name="allow_download" value="1"{% if "1" == form.allow_download.data %} checked="checked"{% endif %}>Allow to download photo with original size
+        </label>
+        {% if form.allow_download.errors %}
+        <p class="help-block">{{ form.allow_download.errors.as_text }}</p>
+        {% endif %}
+      </div>
+    </div>
+    
     <div class="field-draft form-backend">
       {% if is_draft %}
       <button type="submit" class="btn-grey" name="draft" value="1">Save Draft</button>
