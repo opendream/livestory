@@ -912,7 +912,7 @@ class TestBlogManagement(TestCase):
         self.client.login(username=self.staff.username, password='1234')
         response = self.client.get(reverse('blog_manage'))
         all_blogs = Blog.objects.all()
-        self.assertEqual(ceil(all_blogs.count() / 10.0), len(response.context['page_range']))
+        self.assertEqual(ceil(all_blogs.count() / 20.0), len(response.context['page_range']))
 
     def test_anonymous_user_trash_blog(self):
         response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]))
@@ -1499,6 +1499,16 @@ class TestBlogManagement(TestCase):
             factory.create_blog('John blog 10', self.john, self.category, self.location, private=True),
             factory.create_blog('John blog 11', self.john, self.category, self.location, private=True),
             factory.create_blog('John blog 12', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 13', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 14', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 15', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 16', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 17', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 18', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 19', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 20', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 21', self.john, self.category, self.location, private=True),
+            factory.create_blog('John blog 22', self.john, self.category, self.location, private=True),
         ]
         print response.context['page_range']
         response = self.client.get(reverse('blog_manage'))

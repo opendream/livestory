@@ -12,7 +12,7 @@ from django.conf import settings
 
 @task()
 def send_invite(invite_list, base_url):
-    subject = 'Invite join %s' % settings.SITE_NAME
+    subject = 'You are invited to %s' % settings.SITE_NAME
         
     for invite in invite_list:
         

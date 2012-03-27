@@ -120,7 +120,7 @@ def blog_manage(request, section=None):
     else:
         blogs = blog_all
 
-    pager = Paginator(blogs, 10)
+    pager = Paginator(blogs, 20)
     p = request.GET.get('page') or 1
 
     try:

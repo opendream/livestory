@@ -56,7 +56,7 @@ $(document).ready(function() {
       <option value="trash">Trash</option>
       {% endif %}
     </select>
-    <input type="submit" value="Apply">
+    <input type="submit" value="Apply" class="btn-grey">
     <table class="table table-striped table-list">
       <thead>
         <tr>
@@ -133,7 +133,7 @@ $(document).ready(function() {
           <td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
           {% endifnotequal %}
           {% if can_restore %}
-          <td class="centered"><a href="{% url blog_restore blog.id %}{% if section %}?section={{ section }}{% endif %}" class="ic-action-story ic-restore-story">Restore</a></td>
+          <td class="centered"><a href="{% url blog_restore blog.id %}{% if section %}?section={{ section }}{% endif %}" class="">restore</a></td>
           {% else %}
           <td class="centered"><a href="{% url blog_trash blog.id %}{% if section %}?section={{ section }}{% endif %}" class="ic-action-story ic-delete-story">Trash</a></td>
           {% endif %}

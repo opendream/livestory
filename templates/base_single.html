@@ -22,7 +22,7 @@
   {% url blog_category  'arg' as blog_category %}
   
   <ul class="menu">
-    <li><a href="{{ blog_home }}" class="popular{% active request blog_home %}">Popular</a></li>
+    <li><a href="{{ blog_home }}" class="popular{% if request.path == '/' %} active{% endif %}">Popular</a></li>
     <li><a href="#filter-menu-place" class="place has-filter{% active request blog_place %}">Place</a></li>
     <li><a href="#filter-menu-mood" class="moods has-filter{% active request blog_mood %}">Moods</a></li>
     <li><a href="#filter-menu-category" class="categories has-filter{% active request blog_category %}">Categories</a></li>

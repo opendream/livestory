@@ -113,7 +113,7 @@
 	.form-backend { padding-left: 160px; }
 	
 	/*----- Link -----*/
-	a:link { color:#61a534; }
+	a:link { color:#390; }
 	a:visited { color:#339900; }
 	a:hover { text-decoration: underline;} 
 	a:active { color:#000; }
@@ -132,20 +132,22 @@
 	.blue{ color: #12a3d4;}
   
   /*----- Button -----*/
-  .btn-green, .btn-grey {margin-right: 10px;}
-  .btn-green{
-    display: inline-block;
+  @mixin btn{
+	  @include border-rounded(6px);
+	  display: inline-block;
     color: white;
     font: bold 13px arial;
     padding: 7px 12px;
+    margin-right: 10px;
     text-decoration: none;
-    border-radius: 6px;
+    *padding: 3px 12px;
+  }
+  .btn-green{
+	  @include btn;
     border: 1px solid #089D4B;
     -moz-box-shadow: inset -1px -2px 0px 0px #3f9303;
     -webkit-box-shadow: inset -1px -2px 0px 0px #3f9303;
     box-shadow: inset -1px -2px 0px 0px #3f9303;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
     background-color: #72B64A;
   }
   .btn-green:hover {
@@ -157,19 +159,12 @@
   }
   
   .btn-grey {
-    display: inline-block;
-    color: white;
-    font: bold 13px arial;
-    padding: 7px 12px;
-    text-decoration: none;
+	  @include btn;
     border: 1px solid #787878;
     -moz-box-shadow: inset -1px -2px 0px 0px #636363;
     -webkit-box-shadow: inset -1px -2px 0px 0px #636363;
     box-shadow: inset -1px -2px 0px 0px #636363;
     background-color: #A0A0A0;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    border-radius: 6px;
   }
   .btn-grey:hover {
     border: 1px solid #696969;
@@ -274,7 +269,7 @@
 		&:hover { background: #f2f2f2; text-decoration: underline; }
 	}
 	.notify{
-		padding: 2px 7px 2px 6px;
+		padding: 2px 7px 2px 6px; 
 		margin-top: 0;
 		font-size: 11px;
 		color: #fff !important;
@@ -390,6 +385,8 @@
 		padding: 0 15px;
 	}
 	.nav-admin > li:hover { background-color: #ebebeb; }
+	.nav-admin .notify{ padding: 0px 7px 0px 6px; background: #777;}
+	*+html .nav-admin .notify{ margin-top: -21px; margin-right: 3px;} /* IE7 */
         
 	/*----- Search -----*/
 	.search-stories{
@@ -881,6 +878,7 @@
 		display: block;
 		height: 16px;
 		width: 16px;
+		margin: 0 auto;
 		text-indent: -9999px;
 		overflow: hidden;
 	}
@@ -931,7 +929,10 @@
   }
 	
 	/*----- Portrait tablet to landscape and desktop -----*/
-  @media (min-width: 768px) and (max-width: 980px) { 
+  @media (min-width: 768px) and (max-width: 980px) {
+	  /* Bootstrap override */
+	  .navbar .nav > li > a, .navbar .dropdown-menu a{ font-weight: normal;}
+  
 	  /* Menu */
 	  .menu{ clear: both; float: none;}
 	  .menu li{ margin: 10px 0 20px;}
@@ -962,6 +963,9 @@
 	
 	/*----- Landscape phone to portrait tablet -----*/
   @media (max-width: 768px) {
+	  /* Bootstrap override */
+	  .navbar .nav > li > a, .navbar .dropdown-menu a{ font-weight: normal;}
+  
 	  /* Menu */
 	  .menu{ clear: both; float: none;}
 	  .menu li{ margin: 10px 0 20px;}
