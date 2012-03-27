@@ -6,8 +6,10 @@ from django.conf import settings as project_settings
 from account.tasks import send_invite
 from tests import factory
 from account.models import AccountKey
+from override_settings import override_settings
 
 
+@override_settings(PRIVATE=False)
 class TestSendInvite(TestCase):
         
     def test_send_invite(self):

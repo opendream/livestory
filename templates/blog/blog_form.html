@@ -131,10 +131,14 @@
       <label class="control-label" for="visibility_0">Visibility</label>
       <div class="controls">
         <label class="radio">
+          {% if PRIVATE %}
+          <input type="hidden" name="private" value="0">
+          {% else %}
           <input type="radio" id="visibility_0" name="private" value="0"{% if "0" == form.private.data %} checked="checked"{% endif %}>{{ visibilities.0.1 }}
         </label>
         <label class="radio">
-          <input type="radio" id="visibility_1" name="private" value="1"{% if form.private.data == 1 or form.private.data == None and PRIVATE %} checked="checked"{% endif %}>{{ visibilities.1.1 }}
+          <input type="radio" id="visibility_1" name="private" value="1"{% if "1" == form.private.data or not form.private.data %} checked="checked"{% endif %}>{{ visibilities.1.1 }}
+        {% endif %}
         </label>
         {% if form.private.errors %}
         <p class="help-block">{{ form.private.errors.as_text }}</p>
@@ -146,7 +150,8 @@
       <label class="control-label" for="allow_download">Download</label>
       <div class="controls">
         <label class="checkbox">
-          <input type="checkbox" id="allow_download" name="allow_download" value="1"{% if "1" == form.allow_download.data %} checked="checked"{% endif %}>Allow to download photo with original size
+          <input type="hidden" name="allow_download" value="0">
+          <input type="checkbox" id="allow_download" name="allow_download" value="1"{% if "1" == form.allow_download.data or not form.allow_download.data %} checked="checked"{% endif %}><label for="allow_download">Allow to download photo with original size</label>
         </label>
         {% if form.allow_download.errors %}
         <p class="help-block">{{ form.allow_download.errors.as_text }}</p>

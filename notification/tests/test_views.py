@@ -7,7 +7,9 @@ from notification.views import get_notifications
 from tests import factory
 
 from datetime import datetime, timedelta
+from override_settings import override_settings
 
+@override_settings(PRIVATE=False)
 class TestHelperFunction(TestCase):
 	def setUp(self):
 		self.user = factory.create_user('john.doe@example.com', 'john.doe@example.com', 'john123', 'John', 'Doe')
@@ -33,6 +35,7 @@ class TestHelperFunction(TestCase):
 		AccountKey.objects.get(user=self.user_with_notification).update_view_notification()
 		self.assertEqual(0, len(get_notifications(self.user_with_notification)))
 
+@override_settings(PRIVATE=False)
 class TestNotification(TestCase):
 	def setUp(self):
 		self.user = factory.create_user('john.doe@example.com', 'john.doe@example.com', 'john123', 'John', 'Doe')

@@ -38,6 +38,8 @@ body.admin {
   background: #000; }
   #footer .span7 {
     text-align: right; }
+    #footer .span7 a {
+      color: #666; }
 
 /**************/
 /* Base Style */
@@ -141,6 +143,9 @@ body.admin {
   .typeahead a:hover {
     background: #F2F2F2 !important;
     text-decoration: underline !important; }
+
+.global-padding {
+  padding: 25px 30px; }
 
 /*----- Form -----*/
 legend, .page-title {
@@ -275,7 +280,7 @@ a:active {
 /* Top bar */
 /***********/
 #topbar {
-  height: 26px;
+  /* 		height: 26px; */
   padding: 8px 0 6px;
   background: #000; }
   #topbar .home {
@@ -285,6 +290,16 @@ a:active {
     line-height: 22px;
     background: url("../img/topbar-widget.png") no-repeat 0 1px;
     text-decoration: none; }
+  #topbar .dropdown .dropdown-link {
+    padding: 0;
+    margin: 0; }
+  #topbar .nav {
+    margin: 0; }
+  #topbar .navbar {
+    margin-bottom: 0; }
+  #topbar .profile-name a {
+    display: inline;
+    padding: 0; }
 
 .topbar-widget a, #topbar .home {
   color: #999; }
@@ -296,20 +311,20 @@ a:active {
 .topbar-widget {
   float: right; }
 
+.hide-text {
+  display: none; }
+
 .notify, .post-blog, .invite {
   margin-top: 2px; }
 
-.post-blog {
-  width: 17px;
-  height: 17px; }
-  .post-blog a {
-    display: block;
-    width: 16px;
-    height: 16px;
-    text-indent: -999em;
-    background: url("../img/topbar-widget.png") no-repeat 0 -39px; }
-    .post-blog a:hover {
-      background-position: -16px -39px; }
+.post-blog a {
+  display: block;
+  width: 16px;
+  height: 16px;
+  text-indent: -999em;
+  background: url("../img/topbar-widget.png") no-repeat 0 -39px; }
+  .post-blog a:hover {
+    background-position: -16px -39px; }
 
 .invite a {
   padding: 0 0 0 15px;
@@ -328,10 +343,7 @@ a:active {
   border-right: 4px solid transparent;
   border-top: 4px solid #fff; }
 
-.profile-toggle img {
-  vertical-align: middle;
-  margin-right: 5px; }
-
+/* 	.profile-toggle img{ vertical-align: middle; margin-right: 5px;} */
 /*----- Dropdown -----*/
 .caret {
   opacity: 0.5; }
@@ -950,8 +962,18 @@ span.slogan {
 .middle .grey {
   font-size: 11px; }
 
+.table-list {
+  margin-top: 20px;
+  border-top: 1px solid #acacac; }
+
 .table-list th, .table-list td {
-  border: none; }
+  border-bottom: 1px solid #ddd; }
+
+.table-list th {
+  background-color: #d7d7d7;
+  border-bottom: 1px solid #acacac; }
+  .table-list th a {
+    color: #363636 !important; }
 
 .table-list .centered {
   text-align: center; }
@@ -1114,6 +1136,9 @@ span.slogan {
   .navbar .nav > li > a, .navbar .dropdown-menu a {
     font-weight: normal; }
 
+  .navbar .nav > li {
+    float: left; }
+
   .login_form input {
     width: 150px; }
 
@@ -1165,6 +1190,9 @@ span.slogan {
   .navbar .nav > li > a, .navbar .dropdown-menu a {
     font-weight: normal; }
 
+  .navbar .nav > li {
+    float: left; }
+
   /* Menu */
   .menu {
     clear: both;
@@ -1215,6 +1243,60 @@ span.slogan {
     width: 670px; } }
 /*----- Landscape phones and down -----*/
 @media (max-width: 480px) {
+  /* Bootstrap */
+  .navbar .nav > li {
+    float: none;
+    border-bottom: 1px dotted #353535;
+    padding: 7px 15px;
+    margin: 0!important; }
+    .navbar .nav > li:hover {
+      background: #333;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px; }
+
+  /* Topbar */
+  .topbar-widget {
+    width: 100%;
+    margin: 10px 0 0;
+    border-top: 1px dotted #353535; }
+    .topbar-widget .nav, .topbar-widget .post-blog, .topbar-widget .invite {
+      float: none !important; }
+    .topbar-widget .separate-hide {
+      display: none !important; }
+
+  #topbar .navbar {
+    margin-bottom: 10px; }
+
+  .invite a {
+    padding: 0;
+    display: block;
+    background: transparent; }
+
+  .notify {
+    font-size: 13px;
+    background: transparent !important; }
+    .notify:hover {
+      color: #fff !important; }
+
+  .post-blog a {
+    width: auto;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    text-indent: 0em; }
+
+  .hide-text {
+    display: inline; }
+
+  .profile-toggle {
+    width: auto; }
+    .profile-toggle .caret {
+      display: none; }
+    .profile-toggle .hide-text {
+      display: block;
+      width: 100%; }
+
   .form-backend {
     padding-left: 0px; }
 
@@ -1336,7 +1418,10 @@ span.slogan {
       width: 130px;
       margin: 0;
       border: none;
-      border-bottom: 1px dotted #ccc; } }
+      border-bottom: 1px dotted #ccc; }
+
+  div.controls ul.tagit {
+    width: 200px; } }
 /************/
 /* Clearfix */
 /************/
@@ -1574,8 +1659,6 @@ ul.tagit input[type="text"] {
 /*****************/
 .messages .tags {
   font-weight: bold;
-  float: left;
-  line-height: 15px;
   padding-right: 5px; }
 
 .filter-block-append {

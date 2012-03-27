@@ -174,9 +174,12 @@ $(document).ready(function() {
 			<div class="download-photo block">
 				<h3>Photo</h3>
 				<ul>
+				  {% if not blog.allow_download %}
 					<li><span class="col-left ic-download">Download</span> <span class="col-right grey">The owner has disabled downloading of their photos</span></li>
-					<li><span class="col-left ic-download">Download</span> <a href="" class="col-right">Download the Original size</a></li>
-					<li><span class="col-left ic-size">Size</span> <span class="col-right">1280x768</span></li>
+					{% else %}
+					<li><span class="col-left ic-download">Download</span> <a href="{% url blog_download blog.id %}" class="col-right">Download the Original size</a></li>
+					<li><span class="col-left ic-size">Size</span> <span class="col-right">{{ blog.image.width }}x{{ blog.image.height }}</span></li>
+					{% endif %}
 				</ul>
 			</div>
 			

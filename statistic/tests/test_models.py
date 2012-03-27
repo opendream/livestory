@@ -5,7 +5,10 @@ from common import rm_user
 from datetime import datetime, timedelta
 from statistic.models import History, ViewCount
 from tests import factory
+from override_settings import override_settings
 
+
+@override_settings(PRIVATE=False)
 class TestBaseData(TestCase):
 	def setUp(self):
 		self.user = factory.create_user('john.doe@example.com', 'john.doe@example.com', '1234', 'John', 'Doe')
@@ -26,7 +29,7 @@ class TestHistory(TestBaseData):
 		history = History.objects.create(user=self.user, blog=self.blog)
 		self.assertEqual(history.__unicode__(), 'John Doe(%s) viewed Visit Praque(%s) on %s' % (self.user.id, self.blog.id, history.datetime.strftime('%Y/%m/%d')))
 
-
+@override_settings(PRIVATE=False)
 class TestViewCount(TestBaseData):
 	def test_create(self):
 		blog = Blog.objects.create(title='Visit Pattaya', user=self.user, category=self.category, location=self.location)
