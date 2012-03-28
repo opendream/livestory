@@ -18,3 +18,7 @@ a.btn-warning:visited, a.btn-warning {
 a.btn:visited, a.btn {
     color: #333;
 }
+
+.popover a:visited, .popover a {
+    color: #FFF !important;
+}
