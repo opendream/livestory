@@ -8,10 +8,10 @@ class BlogCreateForm(forms.ModelForm):
 	image = forms.ImageField(required=False)
 
 	title = forms.CharField(max_length=200, 
-					widget=forms.TextInput(attrs={'class': 'input-xlarge'}))
+					widget=forms.TextInput(attrs={'class': 'span4'}))
 	
 	description = forms.CharField(max_length=300, required=False,
-					widget=forms.Textarea(attrs={'rows': 7, 'class': 'textcounter input-xlarge'}))
+					widget=forms.Textarea(attrs={'rows': 7, 'class': 'textcounter span4'}))
 	
 	country = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'span2', 'placeHolder': 'Country'}))
 

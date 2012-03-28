@@ -8,7 +8,7 @@
 
   <h2 class="oxfam-font ic-page-title ic-title-{{ color }} block">{{ title }}</h2>
   {% if not blogs %}
-  <p>No result</p>
+  <p class="alert alert-block span4">No result</p>
   {% else %}
   <ul class="thumbnails blog-thumbnails">
     {% for blog in blogs %}
@@ -24,13 +24,13 @@
             />
           </a>
   				<div class="status">
-  					<span class="mood-icon-s mood-{{ rect.blog.get_mood_text|lower }}-s">Mood</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
+  					<span class="mood-icon-s mood-{{ blog.get_mood_text|lower }}-s">Mood</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
   				</div>
   			</div>
         <div class="caption">
           <h4><a href="{% url blog_view blog.id %}">{{ blog.title }}</a></h4>
           <p class="posted">
-            <span class="grey">Posted on {{ blog.created|localtime|date:"m.d.Y" }} in <a href="{% url blog_category blog.category.code %}" class="tag">{{ blog.category.name }}</a></span>
+            <span class="grey">{{ blog.created|localtime|timeago:'M d, Y' }} in <a href="{% url blog_category blog.category.code %}" class="tag">{{ blog.category.name }}</a></span>
           </p>
         </div>
       </div>

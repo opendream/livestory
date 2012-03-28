@@ -41,6 +41,10 @@ body.admin {
     #footer .span7 a {
       color: #666; }
 
+.private #footer .span7 {
+  color: #999;
+  text-align: left; }
+
 /**************/
 /* Base Style */
 /**************/
@@ -147,6 +151,9 @@ body.admin {
 .global-padding {
   padding: 25px 30px; }
 
+.separate-hide {
+  width: 20px; }
+
 /*----- Form -----*/
 legend, .page-title {
   padding: 10px 7px 10px;
@@ -243,6 +250,13 @@ a:active {
     -webkit-box-shadow: inset -1px -2px 0px 0px #535353;
     box-shadow: inset -1px -2px 0px 0px #535353;
     background-color: #787878; }
+
+.btn-text {
+  background: none;
+  border: 0;
+  color: #390; }
+  .btn-text:hover {
+    text-decoration: underline; }
 
 /*----- Grid -----*/
 .grid-row {
@@ -493,11 +507,6 @@ a:active {
   padding: 0px 7px 0px 6px;
   background: #777; }
 
-* + html .nav-admin .notify {
-  margin-top: -21px;
-  margin-right: 3px; }
-
-/* IE7 */
 /*----- Search -----*/
 .search-stories {
   float: left;
@@ -801,31 +810,31 @@ span.slogan {
   background-position: 0 0; }
 
 .mood-sad-s {
-  background-position: -32px 0; }
+  background-position: -16px 0; }
 
 .mood-excited-s {
-  background-position: -64px 0; }
+  background-position: -32px 0; }
 
 .mood-inspired-s {
-  background-position: -96px 0; }
+  background-position: -48px 0; }
 
 .mood-frustrated-s {
-  background-position: -128px 0; }
+  background-position: -64px 0; }
 
 .mood-angry-s {
-  background-position: -160px 0; }
+  background-position: -80px 0; }
 
 .mood-fun-s {
-  background-position: -192px 0; }
+  background-position: -96px 0; }
 
 .mood-proud-s {
-  background-position: -224px 0; }
+  background-position: -112px 0; }
 
 .mood-amazed-s {
-  background-position: -256px 0; }
+  background-position: -128px 0; }
 
 .mood-motivated-s {
-  background-position: -288px 0; }
+  background-position: -144px 0; }
 
 .mood-happy:hover, .mood-happy.active {
   background-position: 0 -32px; }
@@ -935,6 +944,19 @@ span.slogan {
     background: #eaeaea;
     font-weight: bold; }
 
+/*******/
+/* Tag */
+/*******/
+div.controls ul.tagit {
+  margin: 0;
+  width: 300px;
+  font-size: 12px; }
+
+ul.tagit input[type="text"] {
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+
 /****************/
 /* Notification */
 /****************/
@@ -950,17 +972,21 @@ span.slogan {
   background-position: 0 -12px; }
 
 .avatar {
-  width: 35px; }
+  width: 25px; }
 
 .ic-notify {
   width: 12px;
   padding: 0 !important; }
 
 .middle {
-  vertical-align: middle !important; }
+  line-height: 19px !important;
+  /* vertical-align: middle !important; */ }
 
 .middle .grey {
   font-size: 11px; }
+
+.middle .ic-status {
+  margin: 13px 0 0 0; }
 
 .table-list {
   margin-top: 20px;
@@ -994,8 +1020,8 @@ span.slogan {
   background-position: 0 -250px; }
 
 .dropdown-list {
-  max-width: 335px;
-  width: 335px; }
+  max-width: 300px;
+  width: 300px; }
 
 .dropdown-list li {
   padding: 5px 10px;
@@ -1099,6 +1125,99 @@ span.slogan {
 .filter-place {
   float: left;
   margin-left: 30px; }
+
+/****************/
+/* Upload Image */
+/****************/
+.image-help {
+  position: absolute;
+  top: 10px;
+  left: 80px;
+  width: 225px;
+  height: 40px;
+  text-indent: -999em;
+  background: url("../img/ic-add-photo.png") no-repeat; }
+
+.input-file {
+  position: relative;
+  border: none;
+  -moz-opacity: 0;
+  opacity: 0;
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+  background: transparent !important;
+  z-index: 999; }
+
+.drop-area {
+  position: relative; }
+
+.dropbox {
+  width: 102px;
+  height: 102px;
+  background: url("../img/bg-drop.png") no-repeat !important; }
+  .dropbox .image-append {
+    width: 310px;
+    height: 102px;
+    z-index: 20000000; }
+
+.select-file {
+  position: absolute;
+  bottom: 10px;
+  left: 170px;
+  width: 104px;
+  height: 28px;
+  background: url("../img/btn-select-file.png") no-repeat !important; }
+  .select-file:hover {
+    cursor: pointer; }
+
+.ic {
+  display: block;
+  margin: 10px 0;
+  padding-left: 16px;
+  background: url("../img/ic-moods.png") no-repeat; }
+
+.image-delete {
+  background-position: -90px 0; }
+
+/* foo */
+.image-border {
+  background: transparent;
+  background: #f0f0f0;
+  border: 1px dashed #c4c4c4;
+  width: 280px;
+  height: 150px; }
+
+input.fileupload-classic {
+  width: 100%; }
+
+.image-upload {
+  position: relative;
+  height: 140px; }
+
+form#blog-form .image-upload {
+  position: relative;
+  height: auto; }
+
+#fileupload-progress-wrapper {
+  position: absolute;
+  margin-top: 10px;
+  margin-bottom: 70px;
+  display: none; }
+
+#fileupload-progress {
+  width: 200px;
+  display: none; }
+
+form#blog-form .dropbox {
+  background: #f0f0f0 url("../img/add_photo.png") center center no-repeat !important;
+  width: 280px;
+  height: 150px; }
+
+form#blog-form .dropbox .image-append {
+  height: 150px;
+  width: 100%; }
+
+form#blog-form #fileupload-progress-wrapper {
+  margin: 55px 0 0 40px; }
 
 /*****************/
 /* Media Queries */
@@ -1241,6 +1360,14 @@ span.slogan {
 
   .grid-colspan {
     width: 670px; } }
+@media (min-width: 480px) and (max-width: 730px) {
+  /* 	  body{ background: #000;} */
+  /* Grid */
+  .grid {
+    width: 135px; }
+
+  .grid-colspan {
+    width: 98%; } }
 /*----- Landscape phones and down -----*/
 @media (max-width: 480px) {
   /* Bootstrap */
@@ -1268,16 +1395,32 @@ span.slogan {
   #topbar .navbar {
     margin-bottom: 10px; }
 
+  .img-vertical {
+    float: right;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+    margin: 0; }
+
   .invite a {
     padding: 0;
     display: block;
     background: transparent; }
 
   .notify {
+    padding: 0;
     font-size: 13px;
     background: transparent !important; }
     .notify:hover {
       color: #fff !important; }
+    .notify .value {
+      float: right;
+      color: white;
+      background: red;
+      padding: 0px 5px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px; }
 
   .post-blog a {
     width: auto;
@@ -1296,6 +1439,11 @@ span.slogan {
     .profile-toggle .hide-text {
       display: block;
       width: 100%; }
+
+  .nav-admin .notify {
+    background: #EA1515 !important; }
+  .nav-admin .no-notify {
+    background: #585858 !important; }
 
   .form-backend {
     padding-left: 0px; }
@@ -1321,10 +1469,10 @@ span.slogan {
 
   /* Grid */
   .grid {
-    width: 138px; }
+    width: 135px; }
 
   .grid-colspan {
-    width: 435px;
+    width: 425px;
     height: 100px; }
 
   .grid-colspan .slogan {
@@ -1410,6 +1558,16 @@ span.slogan {
   .mood-res {
     width: 280px; }
 
+  /* New Story */
+  .field-mood .controls {
+    width: 250px; }
+
+  div.controls ul.tagit {
+    width: 200px; }
+
+  .image-border {
+    width: 235px; }
+
   .menu {
     width: 280px; }
     .menu ul {
@@ -1420,8 +1578,10 @@ span.slogan {
       border: none;
       border-bottom: 1px dotted #ccc; }
 
-  div.controls ul.tagit {
-    width: 200px; } }
+  .btn-text {
+    margin-top: 15px;
+    padding: 0;
+    display: block; } }
 /************/
 /* Clearfix */
 /************/
@@ -1455,108 +1615,6 @@ html[xmlns] .clearfix {
     margin-bottom: 20px; }
   .login_form form {
     padding: 25px 30px; }
-
-/****************/
-/* Upload Image */
-/****************/
-.image-help {
-  position: absolute;
-  top: 10px;
-  left: 80px;
-  width: 225px;
-  height: 40px;
-  text-indent: -999em;
-  background: url("../img/ic-add-photo.png") no-repeat; }
-
-.input-file {
-  position: relative;
-  border: none;
-  -moz-opacity: 0;
-  opacity: 0;
-  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-  background: transparent !important;
-  z-index: 999; }
-
-.drop-area {
-  position: relative; }
-
-.dropbox {
-  width: 102px;
-  height: 102px;
-  background: url("../img/bg-drop.png") no-repeat !important; }
-  .dropbox .image-append {
-    width: 102px;
-    height: 102px; }
-
-.select-file {
-  position: absolute;
-  bottom: 10px;
-  left: 170px;
-  width: 104px;
-  height: 28px;
-  background: url("../img/btn-select-file.png") no-repeat !important; }
-  .select-file:hover {
-    cursor: pointer; }
-
-.ic {
-  display: block;
-  margin: 10px 0;
-  padding-left: 16px;
-  background: url("../img/ic-moods.png") no-repeat; }
-
-.image-delete {
-  background-position: -90px 0; }
-
-/* foo */
-.image-border {
-  background: transparent;
-  background: #f0f0f0;
-  border: 1px dashed #c4c4c4;
-  width: 280px;
-  height: 150px; }
-
-input.fileupload-classic {
-  width: 100%; }
-
-.image-upload {
-  position: relative;
-  height: 140px; }
-
-form#blog-form .image-upload {
-  position: relative;
-  height: auto; }
-
-#fileupload-progress-wrapper {
-  position: absolute;
-  margin-top: 10px;
-  margin-bottom: 70px;
-  display: none; }
-
-#fileupload-progress {
-  width: 200px;
-  display: none; }
-
-form#blog-form .dropbox {
-  background: #f0f0f0 url("../img/add_photo.png") center center no-repeat !important;
-  width: 280px;
-  height: 150px; }
-
-form#blog-form .dropbox .image-append {
-  height: 150px; }
-
-form#blog-form #fileupload-progress-wrapper {
-  margin: 55px 0 0 40px; }
-
-/*  tag blog    */
-div.controls ul.tagit {
-  margin: 0;
-  width: 300px;
-  font-size: 12px; }
-
-ul.tagit input[type="text"] {
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  box-shadow: none; }
 
 /*****************/
 /* Scour         */
@@ -1618,8 +1676,7 @@ ul.tagit input[type="text"] {
   padding-bottom: 5px; }
 
 .blog-tag {
-  overflow: hidden;
-  width: 370px; }
+  overflow: hidden; }
   .blog-tag .badge {
     color: #fff !important;
     margin: 0 5px 5px 0;
@@ -1634,8 +1691,7 @@ ul.tagit input[type="text"] {
   list-style-type: none;
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
-  overflow: hidden;
-  width: 370px; }
+  overflow: hidden; }
 .download-photo .ic-size {
   background-position: 0 -50px !important; }
 .download-photo .ic-download {

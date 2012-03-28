@@ -130,12 +130,21 @@ $(function () {
         }
         $.get(url, params, callback);
     });
-    
+    /*
     $('.field-mood .mood-list input').change(function (e) {
         $('.field-mood .mood-list .mood-icon').removeClass('active');
         $(this).siblings('.mood-icon').addClass('active');
     });
-    
+    */
+    $('.mood-list').click(function () {
+        var icon = $('.mood-icon', this);
+        if (!icon.hasClass('active')) {
+            inp = $('input', this);
+            $('.field-mood .mood-list .mood-icon').removeClass('active');
+            icon.addClass('active');
+            inp.click();
+        }
+    });
 
 
     

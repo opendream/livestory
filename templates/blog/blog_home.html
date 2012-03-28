@@ -10,7 +10,9 @@
 {% block content %}
 <div class="scour blog-list" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
   {% for rect in rects %}
-  <div class="rect {{ rect.placement }}{% if rect.blog %} has_blog{% endif %}" style="
+  <div 
+  {% if rect.blog %} id="rect-{{ rect.blog.id }}" {% endif %}
+  class="rect {{ rect.placement }}{% if rect.blog %} has_blog{% endif %}" style="
     left:{{ rect.rect.left }}px;
     top:{{ rect.rect.top }}px;
     width: {{ rect.rect.width }}px;
@@ -18,8 +20,8 @@
     padding: 5px;
   " 
   {% if rect.blog %}
-  data-original-title="{{ rect.blog.title }}" 
-  data-content="<span class='emoticon-icon emo_{{ rect.blog.get_mood_text|lower }}'>Mood: {{ rect.blog.get_mood_text }}</span><span class='location'>{{ rect.blog.location.city }}, {{ rect.blog.location.country }}</span>" 
+  data-original-title="<a href='{% url blog_view rect.blog.id %}'>{{ rect.blog.title }}</a>" 
+  data-content="<span class='mood-icon-s mood-{{ rect.blog.get_mood_text|lower }}-s'>Mood: {{ rect.blog.get_mood_text }}</span><span class='location'>{{ rect.blog.location.city }}, {{ rect.blog.location.country }}</span>" 
   {% endif %}
   >
     {% if rect.blog %}
@@ -36,23 +38,29 @@
   </div>
   {% endfor %}
   <script type="text/javascript">
-    $('.scour .has_blog.right').popover({'placement': 'right'});
-    $('.scour .has_blog.left').popover({'placement': 'left'});
+    var timeout;
+    
+    $('.scour .has_blog').each(function () {
+      var placement = $(this).hasClass('left')? 'left': 'right';
+      var pfun = function () {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        return 'in ' + placement;
+      }
+      $(this).popover({'placement': 'in ' + placement, 'delay': 100});
+    })
     
     $('.black-layer').css('opacity', 0);
     
-    
     $('.rect').mouseenter(function () {
+      $('.popover').hide();
       $(this).css('opacity', 1);
       $('.black-layer').show().stop().animate({opacity: 0.3}, {queue: false, duration: 200});
-      $('.black-layer', $(this)).hide()
+      $('.black-layer', $(this)).hide();
     }).mouseleave(function () {
       $('.black-layer').stop().animate({opacity: 0}, {queue: false, duration: 200});
     })
-    
-    $('.popover').live('mouseenter', function (e) {
-      //console.log(e)
-    });
     
   </script>
 </div>

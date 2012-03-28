@@ -48,7 +48,8 @@ class TestBlogCreate(TestCase):
             'private': '',
             'draft': '',
             'category': '',
-            'allow_download': ''
+            'allow_download': '',
+            'trash': '0',
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -81,7 +82,8 @@ class TestBlogCreate(TestCase):
             'private': '1',
             'draft': '0',
             'category': str(self.category.id),
-            'allow_download': '0'
+            'allow_download': '0',
+            'trash': '0',
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -123,7 +125,8 @@ class TestBlogCreate(TestCase):
             'private': '0',
             'draft': '1',
             'category': str(self.category.id),
-            'allow_download': '1'
+            'allow_download': '1',
+            'trash': '0',
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -172,7 +175,8 @@ class TestBlogCreate(TestCase):
             'private': '0',
             'draft': '1',
             'category': str(self.category.id),
-            'allow_download': '1'
+            'allow_download': '1',
+            'trash': '0',
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
@@ -197,7 +201,8 @@ class TestBlogCreate(TestCase):
             'private': '0',
             'draft': '1',
             'category': str(self.category.id),
-            'allow_download': '1'
+            'allow_download': '1',
+            'trash': '0',
         }
 
         self.client.login(username='test@example.com', password='test')
@@ -267,7 +272,8 @@ class TestBlogEdit(TestCase):
             'private': '',
             'draft': '',
             'category': '',
-            'allow_download': ''
+            'allow_download': '',
+            'trash': '0',
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params)
@@ -297,7 +303,8 @@ class TestBlogEdit(TestCase):
             'private': '1',
             'draft': '0',
             'category': str(self.cat_travel.id),
-            'allow_download': '0'
+            'allow_download': '0',
+            'trash': '0',
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
@@ -334,7 +341,8 @@ class TestBlogEdit(TestCase):
             'private': '1',
             'draft': '1',
             'category': str(self.cat_travel.id),
-            'allow_download': '1'
+            'allow_download': '1',
+            'trash': '0',
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
@@ -375,7 +383,8 @@ class TestBlogEdit(TestCase):
             'private': '1',
             'draft': '1',
             'category': str(self.cat_travel.id),
-            'allow_download': '1'
+            'allow_download': '1',
+            'trash': '0',
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
@@ -398,6 +407,84 @@ class TestBlogEdit(TestCase):
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
     
+    def test_blog_edit_post_trash(self):
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
+        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world Edited',
+            'image_path': dst,
+            'description': 'lorem ipsum Edited',
+            'mood': '2',
+            'country': 'Korea',
+            'city': 'Sol',
+            'private': '1',
+            'draft': '0',
+            'category': str(self.cat_travel.id),
+            'allow_download': '1',
+            'trash': '1',
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(True, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world Edited', blog.title)
+        self.assertEquals('lorem ipsum Edited', blog.description)
+        self.assertEquals(2, blog.mood)
+        self.assertEquals(True, blog.private)
+        self.assertEquals(False, blog.draft)
+        self.assertEquals(True, blog.allow_download)
+        self.assertEquals(True, blog.trash)
+        self.assertEquals(self.cat_travel, blog.category)
+        self.assertEquals(self.loc_korea, blog.location)
+    
+    def test_blog_edit_post_trash(self):
+        src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
+        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        shutil.copy2(src, dst)
+        params = {
+            'title': 'Hello world Edited',
+            'image_path': dst,
+            'description': 'lorem ipsum Edited',
+            'mood': '2',
+            'country': 'Korea',
+            'city': 'Sol',
+            'private': '1',
+            'draft': '0',
+            'category': str(self.cat_travel.id),
+            'allow_download': '1',
+            'trash': '0',
+        }
+        self.client.login(username='test@example.com', password='test')
+        response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
+        blog = response.context['blog']
+        user_id = self.client.session.get('_auth_user_id')
+
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, 'blog/blog_form.html')
+        self.assertEquals('Edit Post', response.context['page_title'])
+        self.assertEquals(False, response.context['imagefield_error'])
+        self.assertEquals(False, response.context['is_draft'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), response.context['image_path'])
+        self.assertEquals('%simages/blog/%s/%s/blog_%s.jpg' % (settings.MEDIA_ROOT, user_id, blog.id, blog.id), blog.image.path)
+        self.assertEquals('Hello world Edited', blog.title)
+        self.assertEquals('lorem ipsum Edited', blog.description)
+        self.assertEquals(2, blog.mood)
+        self.assertEquals(True, blog.private)
+        self.assertEquals(False, blog.draft)
+        self.assertEquals(True, blog.allow_download)
+        self.assertEquals(False, blog.trash)
+        self.assertEquals(self.cat_travel, blog.category)
+        self.assertEquals(self.loc_korea, blog.location)
+        
     def test_blog_edit_post_miss_match_location(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
@@ -412,7 +499,8 @@ class TestBlogEdit(TestCase):
             'private': '1',
             'draft': '1',
             'category': str(self.cat_travel.id),
-            'allow_download': '1'
+            'allow_download': '1',
+            'trash': '0',
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
@@ -999,7 +1087,7 @@ class TestBlogManagement(TestCase):
         self.blogs[0].save()
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_edit', args=[self.blogs[0].id]))
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(404, response.status_code)
         self.client.logout()
 
     def test_authenticated_user_trash_other_blog(self):

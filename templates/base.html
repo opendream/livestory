@@ -19,13 +19,14 @@
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/bootstrap/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css">
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/dev.css">
+  <!--[if IE 7]><link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/ie7.css"><![endif]-->
   
   {% location_js %}
   {% block html_head %}{% endblock %}
   
   <!-- <script type="text/javascript" src="{{STATIC_URL}}libs/less-1.2.1.js"></script> -->
 </head>
-<body class="{% block base_body_class %}{% endblock %}">
+<body class="{% block base_body_class %}{% endblock %}{% if PRIVATE and not user.is_authenticated %} private{% endif %}">
   <!-- topbar -->
   {% if user.is_authenticated %}
   <div id="topbar">
@@ -52,7 +53,7 @@
 		      
 		      <li class="nav dropdown">
 			      <a id="notification-section" class="dropdown-toggle dropdown-link" data-toggle="dropdown" href="#">
-	          <div class="notify rounded{% if notifications|length == 0 %} no-notify{% endif %}"><span class="value">{{ notifications|length }}</span> <span class="hide-text">Notification</span></div>{% if notifications %}<span class="notify-bottom"></span>{% endif %}
+	          <div class="notify rounded{% if notifications|length == 0 %} no-notify{% endif %}"><span class="value {% if notifications|length == 0 %} no-notify{% endif %}">{{ notifications|length }}</span> <span class="hide-text">Notification</span></div>{% if notifications %}<span class="notify-bottom"></span>{% endif %}
 	          </a>
 	          <ul class="dropdown-menu dropdown-list">
 	            {% if notifications %}
@@ -76,18 +77,17 @@
 	          </ul>
 		      </li>
 		      
-		      <li class="separate-hide"><span class="separate pull-right"></span></li>
-		      
 		      {% if user.is_staff %}
+		      <li class="separate-hide"><span class="separate pull-right"></span></li>
 		      <li>
-		        <div class="invite pull-right"><a href="{% url account_invite %}" class="">Invite User</a></div>
+		        <div class="invite"><a href="{% url account_invite %}" class="">Invite User</a></div>
 		      </li>
 		      {% endif %}
 		      
 		      <li class="separate-hide"><span class="separate pull-right"></span></li>
 		      
 		      <li>
-			      <div class="post-blog pull-right"><a href="{% url blog_create %}" class="">Post Blog</a></div>
+			      <div class="post-blog"><a href="{% url blog_create %}" class="">Add New Story</a></div>
 		      </li>
 		      
 		      <li class="separate-hide"><span class="separate pull-right"></span></li>
@@ -129,15 +129,19 @@
     <div class="container">
       <div class="row">
         <div class="span5">
+          {% if not PRIVATE or user.is_authenticated %}
           <form>
             <input type="text" class="search-stories" placeholder="Enter keywords">
             <button type="submit" class="btn-search">Search</button>
           </form>
+          {% endif %}
         </div> <!-- span5 -->
         
         <div class="span7">
-        	<p class="grey"><a href="">About us</a> | <a href="">Term of use</a></p>
-          <p>© 20112 {{ ORGANIZATION_NAME }} GB</p>
+          {% if not PRIVATE or user.is_authenticated %}
+        	<p class="grey"><a href="{% url blog_about %}">About us</a> | <a href="{% url blog_term %}">Term of use</a></p>
+        	{% endif %}
+          <p>© 2012 {{ ORGANIZATION_NAME }} GB</p>
         </div>
       </div> <!-- row -->
     </div>

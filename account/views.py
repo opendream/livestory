@@ -12,7 +12,7 @@ from django.http import HttpResponseForbidden
 
 from account.forms import *
 from account.models import *
-from account.tasks import send_invite
+from account.tasks import send_invite, send_forgot
 
 from datetime import datetime
 
@@ -163,3 +163,30 @@ def account_profile_edit(request):
 
     
     return render(request, 'account/account_profile_edit.html', locals())
+
+def account_forgot(request):
+    form = AccountForgotForm()
+    email_error = False
+    success = False
+    
+    if request.POST:
+        form = AccountForgotForm(request.POST)
+        if form.is_valid():
+            try:
+                user = User.objects.get(email=request.POST.get('email'))
+            except User.DoesNotExist:
+                email_error = 'Your email miss match.'
+                
+            if send_forgot(user.email, request.build_absolute_uri('/')):
+                success = 'Check your email and click the activate link for join us again.'
+            else:
+                email_error = 'Send email error. Please, try again later.'
+            
+    context = {
+        'form': form,
+        'email_error': email_error,
+        'success': success,
+    }
+    return render(request, 'account/account_forgot.html', context)
+    
+    

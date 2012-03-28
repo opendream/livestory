@@ -16,7 +16,7 @@ QUAL = 75
 register = template.Library()
 
 @register.filter()
-def timeago(d, format='m.d.Y f a'):
+def timeago(d, format='M d, Y f a'):
     now = localtime(datetime.now())
     delta = now - (d - timedelta(0, 0, d.microsecond))
     if delta.days > 0:

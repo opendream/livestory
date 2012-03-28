@@ -189,7 +189,10 @@ def blog_restore(request, blog_id):
 
         blog.trash = False
         blog.save()
-        return redirect(reverse('blog_manage_trash'))
+        if request.GET.get('view'):
+            return redirect(reverse('blog_view', args=[blog.id]))
+        else:
+            return redirect(reverse('blog_manage_trash'))
     except Blog.DoesNotExist:
         raise Http404
 
@@ -259,11 +262,11 @@ def blog_create(request):
 def blog_edit(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
-        
+
         if not request.user.is_staff and (not request.user.is_authenticated() or request.user.id != blog.user.id):
             return render(request, '403.html', status=403)
         elif blog.trash:
-            return render(request, '403.html', status=403)
+            raise Http404
         
         location = Location.objects.get(pk=blog.location_id)
         action = reverse('blog_edit', args=[blog_id])
@@ -273,7 +276,13 @@ def blog_edit(request, blog_id):
 
         if request.method == 'POST':
             form = BlogCreateForm(request.POST, request.FILES)
-
+            
+            trash = bool(int(form.data.get('trash')))
+            if trash:
+                blog.trash = trash
+                blog.save()
+                return redirect(reverse('blog_view', args=[blog.id]))
+                
             # Check image field upload.
             image_path = form.data.get('image_path')
             if not image_path or not os.path.exists(image_path):
@@ -284,6 +293,7 @@ def blog_edit(request, blog_id):
                 blog.description = form.cleaned_data.get('description')[:300]
                 blog.mood = form.cleaned_data.get('mood')
                 blog.allow_download = bool(int(form.data.get('allow_download')))
+                
                 blog.category = form.cleaned_data.get('category')
                 blog.save_tags(form.data.get('tags'))
                 try:
@@ -293,7 +303,7 @@ def blog_edit(request, blog_id):
                     # If previous is draft, you can draft it again.
                     if blog.draft:
                         blog.draft = bool(int(form.data.get('draft')))
-                
+                        
                     # There is image uploaded.
                     if image_path.split('/')[-2] == 'temp':
                         cpath = cache_path(blog.image.path)
@@ -342,8 +352,11 @@ def blog_view(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
         blog.viewcount.update()
+        
         if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
             return render(request, '403.html', status=403)
+        elif blog.trash and not request.user.is_staff and not request.user != blog.user:
+            raise Http404
 
         # History.objects.create(user=request.user, blog=blog)
             

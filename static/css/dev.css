@@ -4,3 +4,17 @@
 .filter-block-append {
     position: relative;
 }
+.restore-msg {
+    margin-left: auto;
+    margin-right: auto;
+    width: 135px;
+}
+
+a.btn-success:visited, a.btn-success,
+a.btn-warning:visited, a.btn-warning {
+    color: #fff !important;
+}
+
+a.btn:visited, a.btn {
+    color: #333;
+}

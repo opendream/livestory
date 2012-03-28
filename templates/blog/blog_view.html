@@ -82,11 +82,22 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block content %}
-
   
   <div id ="blog" class="row">
     <div class="span8 block">
-    
+      
+      {% if blog.trash %}
+      <div class="messages">
+        <div class="alert alert-warning">
+          <a class="close">×</a>
+          <div class="restore-msg">
+            <a class="btn btn-warning" href="{% url blog_restore blog.id %}?view=1">Restore</a>
+            <a class="btn btn" href="{% url blog_manage_trash %}">Cancel</a>
+          </div>
+    		</div>
+    	</div>
+    	{% endif %}
+    	
       <div class="blog-container-photo">
         <div class="blog-photo rounded5">
           <img src="{{ blog.image|scale:'748x1000' }}" alt="{{ blog.title }}" />
@@ -100,11 +111,13 @@ $(document).ready(function() {
       
       <p class="block">{{ blog.description }}</p>
 
-      <span class="grey">Posted on {{ blog.created|localtime|timeago }} in</span> <a href="#">{{ blog.category }}</a>
-
+      <span class="grey">{{ blog.created|localtime|timeago }} in</span> <a href="{% url blog_category blog.category.code %}">{{ blog.category }}</a>
+      
+      {% if not blog.trash %}
       {% if blog.user.id == user.id or user.is_staff %}
       <br /><br />
-      <div><a href="{% url blog_edit blog.id %}" class="edit-post-link">Edit this post</a></div>
+      <div><a href="{% url blog_edit blog.id %}" class="ic image-delete">Edit this story</a></div>
+      {% endif %}
       {% endif %}
       
     </div> <!-- span3 -->

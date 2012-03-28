@@ -21,7 +21,7 @@ def view(request):
 	notifications = []
 	if len(last_notification) == 1:
 		last_seven_days = last_notification[0].datetime - timedelta(7)
-		notifications = Notification.objects.filter(datetime__gt=last_seven_days)
+		notifications = Notification.objects.filter(datetime__gt=last_seven_days).order_by('-datetime')
 
 	context = {
 		'notification7days': notifications
@@ -33,7 +33,7 @@ def get_notifications(user):
 	if user.is_authenticated():
 		try:
 			account_key = AccountKey.objects.get(user=user)
-			notifications = Notification.objects.filter(blog__user=user, datetime__gt=account_key.view_notification)
+			notifications = Notification.objects.filter(blog__user=user, datetime__gt=account_key.view_notification).order_by('-datetime')
 		except AccountKey.DoesNotExist:
 			pass
 	return notifications

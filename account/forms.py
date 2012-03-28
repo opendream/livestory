@@ -10,13 +10,13 @@ class AccountInviteForm(forms.Form):
     invite = forms.CharField(widget=forms.Textarea)
     
 class AccountProfileForm(forms.Form):
-    firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'input-xlarge'}), required=False)
-    lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'input-xlarge'}), required=False)
+    firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+    lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     
     just_update_password = forms.IntegerField(required=False)
     
-    password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'input-xlarge'}, render_value=False), required=False)
-    confirm_password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'input-xlarge'}, render_value=False), required=False)
+    password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'span3'}, render_value=False), required=False)
+    confirm_password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'span3'}, render_value=False), required=False)
     
     image = forms.ImageField(required=False)
     
@@ -42,3 +42,6 @@ class AccountProfileForm(forms.Form):
         if password != confirm_password:
             raise forms.ValidationError(_("Password not match"))
         return confirm_password
+
+class AccountForgotForm(forms.Form):
+    email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'input-xlarge'}))
