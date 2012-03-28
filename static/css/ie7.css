@@ -1,0 +1,5 @@
+/* Btn */
+.btn-text{ margin: 0 10px;}
+
+/* Notify */
+*+html .nav-admin .notify{ margin-top: -21px; margin-right: 3px;} /* IE7 */

@@ -1,5 +1,5 @@
 import os
-import settings
+from django.conf import settings
 
 def file_save_upload(f, directory = ''):
     if directory == '':
@@ -14,7 +14,7 @@ def file_save_upload(f, directory = ''):
         destination.write(chunk)
     destination.close()
 
-    return { 'filepath': filepath, 'url' : filepath.replace(settings.base_path, '') }
+    return { 'filepath': filepath, 'url' : filepath.replace(settings.BASE_PATH, '') }
 
 def check_file_exists(filepath, original_filename = '', num_retry = 0):
     num_retry = num_retry + 1

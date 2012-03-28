@@ -4,9 +4,13 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-import settings
+from django.conf import settings
 
 urlpatterns = patterns('',
+    url(r'^$', 'blog.views.blog_home', name='blog_home'),
+    url(r'^about/$', 'blog.views.blog_about', name='blog_about'),
+    url(r'^term/$', 'blog.views.blog_term', name='blog_term'),
+    
     url(r'^$', 'blog.views.blog_home', name='blog_home'),
     url(r'^account/', include('account.urls')),
     url(r'^blog/', include('blog.urls')),
@@ -20,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^account/password_reset/done/$', 'django.contrib.auth.views.password_reset_done', name='account_password_reset_done'),
     url(r'^account/reset/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', 'django.contrib.auth.views.password_reset_confirm', name='account_password_reset_confirm'),
     url(r'^account/reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='account_password_reset_complete'),
+    url(r'^notifications/$', 'notification.views.view', name='notification_view'),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

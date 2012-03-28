@@ -23,7 +23,7 @@
     </div>
     
     <div class="control-group{% if form.firstname.errors %} error{% endif %}">
-      <label class="control-label" for="title">Firstname</label>
+      <label class="control-label" for="id_firstname">Firstname</label>
       <div class="controls">
         {{ form.firstname }}
         <span class="help-inline">{{ form.firstname.errors.as_text }}</span>
@@ -31,7 +31,7 @@
     </div>
     
     <div class="control-group{% if form.lastname.errors %} error{% endif %}">
-      <label class="control-label" for="title">Lastname</label>
+      <label class="control-label" for="id_lastname">Lastname</label>
       <div class="controls">
         {{ form.lastname }}
         <span class="help-inline">{{ form.lastname.errors.as_text }}</span>
@@ -39,7 +39,7 @@
     </div>
     
     <div class="control-group{% if form.password.errors %} error{% endif %}">
-      <label class="control-label" for="title">Password</label>
+      <label class="control-label" for="id_password">Password</label>
       <div class="controls">
         {{ form.password }}
         <span class="help-inline">{{ form.password.errors.as_text }}</span>
@@ -47,10 +47,18 @@
     </div>
     
     <div class="control-group{% if form.confirm_password.errors %} error{% endif %}">
-      <label class="control-label" for="title">Confirm Password</label>
+      <label class="control-label" for="id_confirm_password">Confirm Password</label>
       <div class="controls">
         {{ form.confirm_password }}
         <span class="help-inline">{{ form.confirm_password.errors.as_text }}</span>
+      </div>
+    </div>
+    
+    <div class="control-group{% if form.timezone.errors %} error{% endif %}">
+      <label class="control-label" for="timezone">Timezone</label>
+      <div class="controls">
+        {{ form.timezone }}
+        <span class="help-inline">{{ form.timezone.errors.as_text }}</span>
       </div>
     </div>
     
@@ -60,7 +68,12 @@
         
         
         <div class="image-upload">
-          
+          <div id="fileupload-progress-wrapper">
+            <div id="upload-detail">uploading...</div>
+            <div class="progress progress-info progress-striped active" id="fileupload-progress">
+              <div class="bar" id="fileupload-complete"></div>
+            </div>
+          </div>
           <div class="image-wrapper"{% if not account.image %} style="display:none;"{% endif %}>
   					<div class="image-append">
   					  {% if account.image %}
@@ -83,6 +96,7 @@
 
     <div class="form-backend">
       <button type="submit" class="btn-green">Update Profile</button>
+      <button type="reset" class="btn-grey">Cancel</button>
     </div>
   </fieldset>
 </form>

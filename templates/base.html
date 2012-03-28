@@ -1,4 +1,6 @@
 {% load common_tags %}
+{% load blog_tags %}
+{% load tz %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -9,48 +11,101 @@
   <meta name="description" content="" />
   <meta charset="utf-8">
   <meta name="keywords" content="{% block meta_keywords %}{% endblock %}" />
-  <meta name="viewport" content="initial-scale=1.0;">
+	<meta name="viewport" content="initial-scale=1.0;">  
   
   <script type="text/javascript" src="{{STATIC_URL}}libs/jquery-1.7.1.min.js"></script>
-  <script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/bootstrap/bootstrap.min.css">
+  <script src="{{STATIC_URL}}libs/bootstrap/js/bootstrap.js" type="text/javascript"></script>
+  <script src="{{STATIC_URL}}libs/respond/respond.min.js" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/bootstrap/bootstrap.css">
   <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/style.css">
-
+  <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/dev.css">
+  <!--[if IE 7]><link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/ie7.css"><![endif]-->
+  
+  {% location_js %}
   {% block html_head %}{% endblock %}
   
   <!-- <script type="text/javascript" src="{{STATIC_URL}}libs/less-1.2.1.js"></script> -->
 </head>
-<body class="{% block base_body_class %}{% endblock %}">
+<body class="{% block base_body_class %}{% endblock %}{% if PRIVATE and not user.is_authenticated %} private{% endif %}">
   <!-- topbar -->
   {% if user.is_authenticated %}
   <div id="topbar">
-    <div class="container">
-    <a class="home" href="{% url blog_home %}">Home</a>
-    <div class="topbar-widget">
-      <div class="btn-group profile-group">
-      <a class="btn dropdown-toggle profile-toggle" data-toggle="dropdown">
-        {% if user.get_profile.image %}
-        <img src="{{ user.get_profile.image|crop:AVATAR_TOP_SIZE }}" alt=""/>
-        {% endif %}
-        <span>
-          {% if user.get_profile.get_fullname %}
-          {{ user.get_profile.get_fullname }}
-          {% else %}
-          {{ user.username }}
-          {% endif %}
-        </span>
-      <span class="caret"></span></a>
-      <ul class="dropdown-menu">
-        <li><a href="{% url account_profile_edit %}">Edit Profile</a></li>
-        <li><a href="{% url account_logout %}">Logout</a></li>
-      </ul>
-    </div>
-    <div class="notify"><a href="#" class="rounded">24</a><span class="notify-bottom"></span></div>
-    <div class="post-blog"><a href="{% url blog_create %}" class="">Post Blog</a></div>
-    {% if user.is_staff %}
-    <div class="invite"><a href="{% url account_invite %}" class="">Invite User</a></div>
-    {% endif %}
-    </div>
+    <div class="container navbar">
+      <a class="home" href="{% url blog_home %}">Home</a>
+
+      <div class="topbar-widget">
+      
+	      <!-- New Nav -->
+	      <ul class="nav pull-right">
+		      <li class="profile-name">
+						{% if user.get_profile.image %}
+	          <img src="{{ user.get_profile.get_image|crop:AVATAR_TOP_SIZE }}" alt="" class="img-vertical"/>
+	          {% endif %}
+	          
+	          {% if user.get_profile.get_fullname %}
+		          <a href="#">{{ user.get_profile.get_fullname }}</a>
+	          {% else %}
+		          <a href="#">{{ user.username }}</a>
+	          {% endif %}
+		      </li>
+		      
+		      <li class="separate-hide"><span class="separate pull-right"></span></li>
+		      
+		      <li class="nav dropdown">
+			      <a id="notification-section" class="dropdown-toggle dropdown-link" data-toggle="dropdown" href="#">
+	          <div class="notify rounded{% if notifications|length == 0 %} no-notify{% endif %}"><span class="value {% if notifications|length == 0 %} no-notify{% endif %}">{{ notifications|length }}</span> <span class="hide-text">Notification</span></div>{% if notifications %}<span class="notify-bottom"></span>{% endif %}
+	          </a>
+	          <ul class="dropdown-menu dropdown-list">
+	            {% if notifications %}
+	            {% for notification in notifications %}
+	            <li class="clearfix">
+	              <div class="avatar">
+	                <a href="#"><img src="{{ notification.subject.get_profile.get_image|crop:AVATAR_TOP_SIZE }}"/></a>
+	              </div>
+	              <div class="info"> 
+	                <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
+	                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span> {{ notification.datetime|localtime|timeago }}.</span>
+	              </div>
+	            </li>
+	            <li class="divider"></li>
+	            {% endfor %}
+	            {% else %}
+	            <li class="clearfix">No notifications.</li>
+	            <li class="divider"></li>
+	            {% endif %}
+	            <li class="view-all"><a href="{% url notification_view %}">View all notifications</a></li>
+	          </ul>
+		      </li>
+		      
+		      {% if user.is_staff %}
+		      <li class="separate-hide"><span class="separate pull-right"></span></li>
+		      <li>
+		        <div class="invite"><a href="{% url account_invite %}" class="">Invite User</a></div>
+		      </li>
+		      {% endif %}
+		      
+		      <li class="separate-hide"><span class="separate pull-right"></span></li>
+		      
+		      <li>
+			      <div class="post-blog"><a href="{% url blog_create %}" class="">Add New Story</a></div>
+		      </li>
+		      
+		      <li class="separate-hide"><span class="separate pull-right"></span></li>
+		      
+		      <li class="nav dropdown">
+			      <a class="dropdown-toggle profile-toggle dropdown-link" data-toggle="dropdown" href="#">
+		        <b class="caret"></b> <span class="hide-text">More</span></a>
+		        <ul class="dropdown-menu">
+		          <li><a href="{% url account_profile_edit %}">Edit Profile</a></li>
+		          <li><a href="{% url blog_manage %}">Manage Stories</a></li>
+	            <li><a href="{% url account_logout %}">Logout</a></li>
+		        </ul>
+		      </li>
+		      
+	      </ul>
+
+        
+      </div>
     </div>
   </div>
   {% endif %}
@@ -65,6 +120,7 @@
   </div>
   
   <div class="container{% block base_container_class %}{% endblock %}">
+    {% block base_navi %}{% endblock %}
     {% block base_content %}{% endblock %}
   </div>
 
@@ -73,14 +129,19 @@
     <div class="container">
       <div class="row">
         <div class="span5">
+          {% if not PRIVATE or user.is_authenticated %}
           <form>
             <input type="text" class="search-stories" placeholder="Enter keywords">
             <button type="submit" class="btn-search">Search</button>
           </form>
+          {% endif %}
         </div> <!-- span5 -->
         
         <div class="span7">
-          <p>© 2011.Oxfam is a registered charity in England and Wales (no 202918) and Scotland (SC039042). Oxfam GB is a member of Oxfam International</p>
+          {% if not PRIVATE or user.is_authenticated %}
+        	<p class="grey"><a href="{% url blog_about %}">About us</a> | <a href="{% url blog_term %}">Term of use</a></p>
+        	{% endif %}
+          <p>© 2012 {{ ORGANIZATION_NAME }} GB</p>
         </div>
       </div> <!-- row -->
     </div>

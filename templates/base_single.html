@@ -1,22 +1,97 @@
 {% extends 'base.html' %}
+{% load common_tags %}
+{% load blog_tags %}
 
 {% block base_body_class %}single{% endblock %}
 
+{% block html_head %}
+{% endblock %}
 
-{% block base_content %}
+{% block base_navi %}
 <!------- Navigation -->
-<div id="navigation">
+<div id="navigation" class="clearfix">
   <h1 class="oxfam-font">
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
-  </h1>
+  </h1>  
+  {% url blog_home as blog_home %}
+  {% url blog_all as blog_all %}
+  {% url blog_place as blog_place %}
+  {% url blog_mood 'arg' as blog_mood %}
+  {% url blog_category  'arg' as blog_category %}
+  
   <ul class="menu">
-    <li><a href="#" class="popular active">Popular</a></li>
-    <li><a href="#" class="place">Place</a></li>
-    <li><a href="#" class="moods">Moods</a></li>
-    <li><a href="#" class="categories">Categories</a></li>
+    <li><a href="{{ blog_home }}" class="popular{% if request.path == '/' %} active{% endif %}">Popular</a></li>
+    <li><a href="#filter-menu-place" class="place has-filter{% active request blog_place %}">Place</a></li>
+    <li><a href="#filter-menu-mood" class="moods has-filter{% active request blog_mood %}">Moods</a></li>
+    <li><a href="#filter-menu-category" class="categories has-filter{% active request blog_category %}">Categories</a></li>
+    <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
   </ul>
 </div>
 
-{% block content %}{% endblock %}
+{% endblock %}
 
+{% block base_content %}
+<div class="clear-both">
+  
+  <div class="filter-block block">
+    <div class="filter-block-append"{% if not filter %} style="height:0;"{% endif %}>
+      <span class="filter-top"></span>
+      
+      <!-- Mood -->
+      <div id="filter-menu-mood" class="filter-menu{% if filter.mood %} default dshow{% endif %}"{% if not filter.mood %} style="display: none;"{% endif %}>
+    		<h3 class="filter-title futura-font purple">Filter by moods</h3>
+    		<ul class="moodlist pull-right filter-wrap">
+    			<li><a href="{% url blog_mood 'happy'      %}"><span class="{% if filter.mood == 'happy'     %}active {% endif %}mood-icon mood-happy"></span>Happy</a></li>
+    			<li><a href="{% url blog_mood 'sad'        %}"><span class="{% if filter.mood == 'sad'       %}active {% endif %}mood-icon mood-sad"></span>Sad</a></li>
+    			<li><a href="{% url blog_mood 'excited'    %}"><span class="{% if filter.mood == 'excited'   %}active {% endif %}mood-icon mood-excited"></span>Excited</a></li>
+    			<li><a href="{% url blog_mood 'inspired'   %}"><span class="{% if filter.mood == 'inspired'  %}active {% endif %}mood-icon mood-inspired"></span>Inspired</a></li>
+    			<li><a href="{% url blog_mood 'frustrated' %}"><span class="{% if filter.mood == 'frustrated'%}active {% endif %}mood-icon mood-frustrated"></span>Frustrated</a></li>
+    			<li><a href="{% url blog_mood 'angry'      %}"><span class="{% if filter.mood == 'angry'     %}active {% endif %}mood-icon mood-angry"></span>Angry</a></li>
+    			<li><a href="{% url blog_mood 'fun'        %}"><span class="{% if filter.mood == 'fun'       %}active {% endif %}mood-icon mood-fun"></span>Fun</a></li>
+    			<li><a href="{% url blog_mood 'proud'      %}"><span class="{% if filter.mood == 'proud'     %}active {% endif %}mood-icon mood-proud"></span>Proud</a></li>
+    			<li><a href="{% url blog_mood 'amazed'     %}"><span class="{% if filter.mood == 'amazed'    %}active {% endif %}mood-icon mood-amazed"></span>Amazed</a></li>
+    			<li><a href="{% url blog_mood 'motivated'  %}"><span class="{% if filter.mood == 'motivated' %}active {% endif %}mood-icon mood-motivated"></span>Motivated</a></li>
+    		</ul>
+      </div>
+      <!-- End Mood -->
+
+      <!-- Category -->
+      <div id="filter-menu-category" class="filter-menu{% if filter.category %} default dshow{% endif %}"{% if not filter.category %} style="display: none;"{% endif %}>
+    		<h3 class="filter-title futura-font pink">Filter by categories</h3>
+    		<ul class="categories-list filter-wrap">
+    		  {% for category in category_filter %}
+    			<li class="list-block span2"><a href="{% url blog_category category.code %}"{% ifequal filter.category category.code %} class="active"{% endifequal %}>{{ category.name }}</a></li>
+    			{% endfor %}		
+    		</ul>
+      </div>
+      <!-- End Category -->
+      
+      
+      <!-- Place -->
+      <div id="filter-menu-place" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
+    		<h3 class="filter-title futura-font yellow">Filter by place</h3>
+    		<form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">
+    			<div class="control-group">
+            <div class="">
+              {{ place_form.country }}
+              {{ place_form.city }}
+              {% if place_form.country.errors or form.city.errors %}
+              <span class="help-inline">* Please enter both fields.</span>
+              {% endif %}
+              <input type="submit" value="Submit" class="btn-grey" />
+              <p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
+            </div>
+          </div>
+    		</form>
+    	</div>
+    	<!-- End Place -->
+    	<a href="" class="btn-hide filter-close">close</a>
+  		<span class="filter-bottom"></span>
+    </div>
+  </div>
+</div>
+
+<div class="clear-both">
+    {% block content %}{% endblock %}
+</div>
 {% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'account/account_mail.html' %}
+
+{% block content %}
+<p>You have new activate link from {{ site_name }}.</p>
+
+<p>You forgot password from <strong>{{ site_name }}</strong> and you request the new password. </p>
+<p>To update your {{ site_name }} account, Please, click <strong>"Activate your account"</strong> below.</p>
+
+<p>If you have any questions, we'd love to hear from you. Please email us at {{ contact_email }}</p>
+{% endblock %}

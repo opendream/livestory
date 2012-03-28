@@ -1,25 +1,37 @@
+from account.models import Account, AccountKey
 from blog.models import Blog, Category, Location, Love
+from notification.models import Notification
+from statistic.models import ViewCount
 from django.contrib.auth.models import User
+from django.core.files.base import File as DjangoFile
 
-def create_user(username=None, email=None, password=None):
-    username = username or 'testuser'
-    email = email or 'test@example.com'
-    password = password or 'testuser'
-    return User.objects.create_user(username, email, password)
+import hashlib
+from datetime import datetime
+
+def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe', has_image=False, timezone='Asia/Bangkok'):
+    user = User.objects.create_user(username, email, password)
+    account = Account(firstname=firstname, lastname=lastname, user=user, timezone=timezone)
+    if has_image:
+        account.image = DjangoFile(open('static/tests/avatar.png'), 'avatar.png')
+    account.save()
+    
+    key = hashlib.md5('key%s%s' % (user.email, str(datetime.now()))).hexdigest()[0:30]
+    account_key = AccountKey(key=key, user=user)
+    account_key.save()
+        
+    return user
 
 def create_category(name = 'Food', code = 'f'):
     category = Category(name=name, code=code)
     category.save()
     return category
     
-def create_location():
-    location = Location(country = 'Thailand', city = 'Bangkok')
-    location.lat = '100.00'
-    location.lng = '13.00'
+def create_location(country='Thailand', city='Bangkok', lat='100.00', lng='13.00'):
+    location = Location(country=country, city=city, lat=lat, lng=lng)
     location.save()
     return location
 
-def create_blog(title='Icecream', user = None, category = None, location = None, mood=1):
+def create_blog(title='Icecream', user = None, category = None, location = None, mood=1, private=True, draft=False, tags='hastags,foo,bar', trash=False, allow_download=True):
     user = user or create_user()
     category = category or create_category()
     location = location or create_location()
@@ -29,7 +41,21 @@ def create_blog(title='Icecream', user = None, category = None, location = None,
     blog.category = category
     blog.location = location
     blog.mood = mood
+    blog.private = private
+    blog.draft = draft
+    blog.trash = trash
+    blog.allow_download = allow_download
     blog.save()
+    blog.save_tags(tags)
+    blog.image.save('blog_%s.jpg' % blog.id, DjangoFile(open('static/tests/blog.jpg'), 'blog.jpg'))
+    blog.save()
+
+    viewcount = ViewCount.objects.create(blog=blog)
     
     return blog
+
+def create_notification(subject, action, blog, dt):
+    notification = Notification(subject=subject, action=action, blog=blog, datetime=dt)
+    notification.save()
+    return notification
     

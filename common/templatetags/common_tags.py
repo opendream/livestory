@@ -1,7 +1,13 @@
+import hashlib
 import os
-import settings
+from django.conf import settings
 
 from django import template
+from datetime import datetime, timedelta
+
+from django.utils.timesince import timesince
+from common.templatetags.tz import localtime
+from django.template.defaultfilters import date as dateformat
 
 FMT = 'JPEG'
 EXT = 'jpg'
@@ -10,8 +16,18 @@ QUAL = 75
 register = template.Library()
 
 @register.filter()
+def timeago(d, format='M d, Y f a'):
+    now = localtime(datetime.now())
+    delta = now - (d - timedelta(0, 0, d.microsecond))
+    if delta.days > 0:
+        return dateformat(d, format)
+    else:
+        return '%s ago' %timesince(d) 
+
+
+@register.filter()
 def path_to_url(path):
-	return path.replace(settings.base_path, '')
+	return path.replace(settings.BASE_PATH, '')
 
 def cache_path(path):
     directory, name = os.path.split(path)
@@ -43,10 +59,12 @@ def scale(imagefield, size, method='scale'):
     # imagefield can be a dict with "path" and "url" keys
     if imagefield.__class__.__name__ == 'dict':
         imagefield = type('imageobj', (object,), imagefield)
-
+    
+    original_path = ''
     # Support filepath
     if type(imagefield) is unicode:
-        image_path = resized_path(imagefield, size, method)
+        original_path = imagefield
+        image_path = resized_path(original_path, size, method)
         image_url = imagefield
         try:
             format = imagefield.split('.')[-1].upper()
@@ -55,7 +73,8 @@ def scale(imagefield, size, method='scale'):
         except IndexError:
             format = 'JPEG'
     else:
-        image_path = resized_path(imagefield.path, size, method)
+        original_path = imagefield.path
+        image_path = resized_path(original_path, size, method)
         image_url = imagefield.url
         try:
             format = imagefield.path.split('.')[-1].upper()
@@ -110,8 +129,8 @@ def scale(imagefield, size, method='scale'):
             ImageOps.fit(image, (width, height), Image.ANTIALIAS
                         ).save(image_path, format, quality=QUAL)
     
-    path = resized_path(image_url, size, method)
-    return path_to_url(path)
+    path = resized_path(original_path, size, method)
+    return '%s?r=%s' % (path_to_url(path), hashlib.md5(str(datetime.now())).hexdigest()[0:5])
 
 @register.filter()
 def crop(imagefield, size):
@@ -125,5 +144,34 @@ def crop(imagefield, size):
     """
     
     return scale(imagefield, size, 'crop')
-    
 
+@register.filter('ucwords')
+def ucwords_tag(string):
+    """ucwords -- Converts first letter of each word
+    within a string into an uppercase all other to lowercase.
+
+    (string) ucwords( (string) string )"""
+    erg=[ item.capitalize() for item in string.split( ' ' ) ]
+    return ' '.join( erg )
+
+@register.simple_tag
+def active(request, pattern, text=' active'):
+    pattern = pattern.split('/')[1:-1]
+    path = request.path.split('/')[1:-1]
+    
+    if len(pattern) < len(path):        
+        for i, v in enumerate(pattern):
+            if v != path[i]:
+                return ''
+        
+        return text
+        
+    else:
+        for i, v in enumerate(pattern):
+            try:
+                if v != 'arg' and v != '0' and v != path[i]:
+                    return ''
+            except:
+                return ''
+  
+        return text

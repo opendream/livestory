@@ -2,8 +2,28 @@ from django import template
 from django.utils import simplejson as json
 
 from location.models import Location
+from taggit.models import Tag
 
 register = template.Library()
+
+@register.simple_tag()
+def tags_js():
+  tags_raw = Tag.objects.all()
+  tags = []
+  for tag in tags_raw:
+    tags.append(tag.name)
+
+  return '''
+<script>
+$(document).ready(function() {
+  $('#id_tags').tagit({
+    availableTags: ['%s'],
+    allowSpaces: true,
+    removeConfirmation: true
+  });
+});
+</script>
+''' % "', '".join(tags)
 
 @register.simple_tag()
 def location_js():

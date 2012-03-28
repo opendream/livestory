@@ -14,11 +14,6 @@
 	
 </style>
 
-<div class="outer-container span6 offset3">
-  <div class="inner-container">
-	  
-		  {% include 'snippets/login_form.html' with form=form next=next %}
-	  
-  </div>
-</div>
+{% include 'snippets/login_form.html' with form=form next=next %}
+
 {% endblock %}
