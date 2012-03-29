@@ -25,7 +25,7 @@ class ViewCount(models.Model):
 		self.totalcount = self.totalcount + 1
 		now = datetime.now()
 		diff = now - self.updated
-		days_diff = float(int(diff.total_seconds() + 3)) / (60 * 60 * 24)
+		days_diff = float(int(diff.seconds + 3)) / (60 * 60 * 24)
 		if days_diff > 7:
 			self.weekcount = 1
 		else:
