@@ -10,6 +10,7 @@
     {% url blog_manage as blog_manage %}
     {% url blog_create as blog_create %}
     {% url account_profile_edit as account_profile_edit %}
+    {% url account_manage_users as account_manage_users %}
     {% url notification_view as notification_view %}
     <ul class="nav nav-list nav-admin">
       <li class="nav-header"><a href ="{{ blog_manage }}">Posts</a></li>
@@ -24,6 +25,7 @@
       </li>      
       <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li>
       <li class="{% active request account_profile_edit %}"><a href="{{ account_profile_edit }}"><i class="icon-user{% active request account_profile_edit ' icon-white' %}"></i> Your Profile</a></li>
+      <li class="{% active request account_manage_users %}"><a href="{{ account_manage_users }}"><i class="icon-user{% active request account_manage_users ' icon-white' %}"></i> Manage Users</a></li>
     </ul>
   </div>
   <div class="span9 block">

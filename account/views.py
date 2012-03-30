@@ -7,8 +7,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.forms.models import model_to_dict
 from django.http import HttpResponseForbidden
+
+from common import get_page_range
 
 from account.forms import *
 from account.models import *
@@ -189,4 +192,52 @@ def account_forgot(request):
     }
     return render(request, 'account/account_forgot.html', context)
     
-    
+def account_manage_users(request):
+    if not request.user.is_staff:
+        return render(request, '403.html', status=403)
+
+    users = User.objects.all()
+
+    if request.GET.get('sort') and request.GET.get('order'):
+        sort = request.GET.get('sort')
+        order = request.GET.get('order')
+
+        if sort == 'role':
+            sort = ['is_staff']
+        elif sort == 'name':
+            sort = ['account__firstname', 'account__lastname']
+        else:
+            sort = [sort]
+        
+        if order == 'desc':
+            users = users.order_by(*['-%s' % sort_col for sort_col in sort])
+        else:
+            users = users.order_by(*['%s' % sort_col for sort_col in sort])
+    else:
+        order = 'desc'
+        users = users.order_by('-date_joined')
+
+    pager = Paginator(users, 20)
+    p = request.GET.get('page') or 1
+
+    try:
+        pagination = pager.page(p)
+        blogs = pagination.object_list
+    except (PageNotAnInteger, EmptyPage):
+        raise Http404
+
+    p = int(p)
+
+    page_range = get_page_range(pagination)
+
+    context = {
+        'users': users,
+        'has_pager': len(page_range) > 1,
+        'pagination': pagination,
+        'page': p,
+        'pager': pager,
+        'page_range': page_range,
+        'order': order == 'desc' and 'asc' or 'desc',
+    }
+
+    return render(request, 'account/account_manage_users.html', context)
