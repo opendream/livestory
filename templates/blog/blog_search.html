@@ -1,0 +1,60 @@
+{% extends 'base_single.html' %}
+{% load common_tags %}
+{% load tz %}
+
+{% block content %}
+<div class="blog-list">
+
+  <h2 class="oxfam-font ic-page-title ic-title-{{ color }} block">{{ title }}</h2>
+  {% if not keyword %}
+  <p class="alert alert-block span4">No keyword</p>
+  {% else %}
+	  {% if not blogs %}
+	  <p class="alert alert-block span4">No result</p>
+	  {% else %}
+	  <ul class="thumbnails blog-thumbnails">
+	    {% for blog in blogs %}
+	    <li class="span3">
+	      <div class="thumbnail">
+	        <div class="blog-photo blog-thumbnail no-shadow">
+	  				<a href="{% url blog_view blog.id %}">
+	            <img 
+	              width="260" 
+	              height="180" 
+	              alt="{{ blog.title }}" 
+	              src="{{ blog.image|crop:'260x180' }}" 
+	            />
+	          </a>
+	  				<div class="status">
+	  					<span class="mood-icon-s mood-{{ blog.get_mood_text|lower }}-s">Mood</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
+	  				</div>
+	  			</div>
+	        <div class="caption">
+	          <h4><a href="{% url blog_view blog.id %}">{{ blog.title }}</a></h4>
+	          <p class="posted">
+	            <span class="grey">{{ blog.created|localtime|timeago:'M d, Y' }} in <a href="{% url blog_category blog.category.code %}" class="tag">{{ blog.category.name }}</a></span>
+	          </p>
+	        </div>
+	      </div>
+	    </li>
+	    {% endfor %}
+	  </ul>
+	  {% endif %}
+	  {% if has_pager %}
+	  <div class="pagination pagination-centered">
+	    <ul>
+	      {% if pagination.has_previous %}
+	      <li class="disabled"><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.previous_page_number }}">«</a></li>
+	      {% endif %}
+	      {% for p in page_range %}
+	      <li{% ifequal page p %} class="active"{% endifequal %}><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
+	      {% endfor %}
+	      {% if pagination.has_next %}
+	      <li><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.next_page_number }}">»</a></li>
+	      {% endif %}
+	    </ul>
+	  </div>
+	  {% endif %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.forms.models import model_to_dict
 from django.utils import simplejson as json
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.servers.basehttp import FileWrapper
 
@@ -625,3 +625,42 @@ def blog_about(request):
 
 def blog_term(request):
     return render(request, 'term.html')
+
+def blog_search(request):
+    """Search blogs by title and description"""
+    keyword = request.REQUEST.get("keyword", '')
+
+    if not keyword: return "Error!!"
+
+    blogs = Blog.objects.filter(
+        Q(title__icontains=keyword) |
+        Q(description__icontains=keyword)
+    )
+
+    pager = Paginator(blogs, 8)
+    p = request.GET.get('page') or 1
+
+    try:
+        pagination = pager.page(p)
+        blogs = pagination.object_list
+    except (PageNotAnInteger, EmptyPage):
+        raise Http404
+
+    p = int(p)
+ 
+    page_range = get_page_range(pagination)
+
+    context = {'blogs': blogs, 
+    'title': 'keyword: %s' % keyword,
+    'has_pager': len(page_range) > 1,
+    'pagination': pagination,
+    'page': p,
+    'pager': pager,
+    'page_range': page_range,
+    'keyword': keyword,
+    'param': 'keyword=%s' % keyword}
+    return render(request, 'blog/blog_search.html', context)
+
+
+
+    

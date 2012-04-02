@@ -130,8 +130,13 @@
       <div class="row">
         <div class="span5">
           {% if not PRIVATE or user.is_authenticated %}
-          <form>
-            <input type="text" class="search-stories" placeholder="Enter keywords">
+     	  <script type="text/javascript">
+     	  function validate() {
+     	  	if (!($('#keyword').val())) return false;
+     	  }
+     	  </script>
+          <form action="{% url blog_search %}" method="POST" onsubmit="return validate()">{% csrf_token %}
+            <input type="text" id='keyword' name="keyword" class="search-stories" placeholder="Enter keywords">
             <button type="submit" class="btn-search">Search</button>
           </form>
           {% endif %}
