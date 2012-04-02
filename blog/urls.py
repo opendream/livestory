@@ -22,5 +22,6 @@ urlpatterns = patterns('blog.views',
     url(r'category/(?P<category>[0-9A-Za-z,-]+)/$', 'blog_category', name='blog_category'),
     url(r'place/$', 'blog_place', name='blog_place'),
     url(r'tags/$', 'blog_tags', name='blog_tags'),
+    url(r'search/$', 'blog_search', name='blog_search'),
 
 )
