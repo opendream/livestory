@@ -12,7 +12,7 @@ class TimezoneMiddleware(object):
             
             psplit = request.path.split('/')
             
-            if request.path not in (reverse('account_login'), reverse('account_forgot')) and not (len(psplit) == 5 and psplit[1] == 'account' and psplit[2] == 'activate'):
+            if request.path not in (reverse('account_login'), reverse('account_forgot'), reverse('blog_create_by_email')) and not (len(psplit) == 5 and psplit[1] == 'account' and psplit[2] == 'activate'):
                 print psplit
                 return render(request, 'blog/blog_static.html')
                 
