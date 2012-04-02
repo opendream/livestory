@@ -2,6 +2,8 @@ from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('blog.views',
     url(r'create/$', 'blog_create', name='blog_create'),
+    url(r'create/from/email/$', 'blog_create_by_email', name='blog_create_by_email'),
+    
     url(r'manage/$', 'blog_manage', name='blog_manage'),
     url(r'manage/published/$', 'blog_manage_published', name='blog_manage_published'),
     url(r'manage/draft/$', 'blog_manage_draft', name='blog_manage_draft'),
@@ -21,4 +23,5 @@ urlpatterns = patterns('blog.views',
     url(r'place/$', 'blog_place', name='blog_place'),
     url(r'tags/$', 'blog_tags', name='blog_tags'),
     url(r'search/$', 'blog_search', name='blog_search'),
+
 )

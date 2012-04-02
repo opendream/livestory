@@ -50,6 +50,9 @@ class Account(models.Model):
     def __unicode__(self):
         return '%s' % (self.get_fullname())
 
+    def is_activated(self):
+        return not AccountKey.objects.filter(user__email=email).exists()
+
 class AccountKey(models.Model):
     
     key           = models.CharField(max_length=200)

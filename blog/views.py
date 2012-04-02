@@ -12,6 +12,8 @@ from django.utils import simplejson as json
 from django.db.models import Count, Sum, Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.servers.basehttp import FileWrapper
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.uploadedfile import UploadedFile
 
 from account.models import Account
 from blog.models import *
@@ -258,6 +260,68 @@ def blog_create(request):
         'location_error': location_error
     }
     return render(request, 'blog/blog_form.html', context)
+
+@csrf_exempt
+def blog_create_by_email(request):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(email=request.POST.get('sender'))
+        except User.DoesNotExist:
+            return HttpResponse('Sender not found')
+
+        title = request.POST.get('Subject')
+        description = request.POST.get('stripped-text') # Text without signature
+
+        if not title or not description:
+            return HttpResponse('Email subject or body is empty')
+
+        if request.FILES:
+            keys = request.FILES.keys()
+            key_with_max_size = keys[0]
+            max_size = request.FILES[keys[0]].size
+            for key in keys[1:]:
+                if request.FILES[key].size > max_size:
+                    key_with_max_size = key
+                    max_size = request.FILES[key].size
+
+            image_file = request.FILES[key_with_max_size]
+        
+            if not image_file:
+                return HttpResponse('Image attachment not found')
+
+        else:
+            return HttpResponse('Image attachment not found')
+
+        form_data = {
+            'title':title,
+            'description':description,
+            'country':'England',
+            'city':'Oxford',
+            'mood':99, # Moodless
+            'private':0,
+            'category':22, # No category
+            'tags':None
+        }
+
+        form = BlogCreateForm(form_data, request.FILES)
+
+        if not form.is_valid():
+            return HttpResponse('Server error')
+
+        blog = form.save(commit=False)
+        blog.user = user
+        blog.draft = False
+        blog.allow_download = False
+        blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
+        blog.save()
+
+        uploading_file = UploadedFile(request.FILES['image'])
+        blog.image.save('blog_%s.jpg' % blog.id, uploading_file.file)
+        blog.save()
+
+        ViewCount.objects.create(blog=blog)
+
+    return HttpResponse('')
 
 def blog_edit(request, blog_id):
     try:

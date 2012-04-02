@@ -1,0 +1,109 @@
+{% extends 'base_backend.html' %}
+
+{% load tz %}
+{% load common_tags %}
+
+{% block head_title %}Manage Users{% endblock %}
+
+{% block content %}
+  <h1 class="page-title block">Manage Users</h1>
+  <form class="form-inline" method="POST" action="{% url blog_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">{% csrf_token %}
+    <a href="#" class="btn-green">Add user</a>
+    <select name="op" id="op">
+      <option>Bulk Actions</option>
+      <option value="delete">Delete user</option>
+      <option value="activate">Activate user</option>
+      <option value="block">Block user</option>
+    </select>
+    <input type="submit" value="Apply" class="btn-grey">
+    <table class="table table-striped table-list">
+      <thead>
+        <tr>
+          <th>
+            <input type="checkbox">
+          </th>
+          <th>
+            <a href="{{ url }}?sort=name&order={% if request.GET.sort == 'name' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}">
+              Name
+              {% if request.GET.sort == 'name' %}
+              {% if request.GET.order == 'asc' or not request.GET.order %}
+              <i class="sort-asc"></i>
+              {% else %}
+              <i class="sort-desc"></i>
+              {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th class="centered">
+            <a href="{{ url }}?sort=date_joined&order={% if request.GET.sort == 'date_joined' or not request.GET.sort %}{% if request.GET.order == 'desc' or not request.GET.order %}asc{% else %}desc{% endif %}{% else %}desc{% endif %}">
+              Date Joined
+              {% if request.GET.sort == 'date_joined' or not request.GET.sort %}
+              {% if request.GET.order == 'desc' or not request.GET.order %}
+              <i class="sort-desc"></i>
+              {% else %}
+              <i class="sort-asc"></i>
+              {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th class="centered">
+            <a href="{{ url }}?sort=last_login&order={% if request.GET.sort == 'last_login' and request.GET.order == 'desc' %}asc{% else %}desc{% endif %}">
+              Last Login
+              {% if request.GET.sort == 'last_login' %}
+              {% if request.GET.order == 'desc' or not request.GET.order %}
+              <i class="sort-desc"></i>
+              {% else %}
+              <i class="sort-asc"></i>
+              {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th class="centered">
+            <a href="{{ url }}?sort=role&order={% if request.GET.sort == 'role' and request.GET.order == 'desc' %}asc{% else %}desc{% endif %}">
+              Role
+              {% if request.GET.sort == 'role' %}
+              {% if request.GET.order == 'desc' or not request.GET.order %}
+              <i class="sort-desc"></i>
+              {% else %}
+              <i class="sort-asc"></i>
+              {% endif %}
+              {% endif %}
+            </a>
+          </th>
+          <th class="centered">Edit</th>
+          <th class="centered">Activate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td><input type="checkbox" name="blog_id" value="{{ blog.id }}"></td>
+          <td><a href="#">{{ user.get_profile.firstname }} {{ user.get_profile.lastname }}</a></td>
+          <td class="centered">{{ user.date_joined|localtime|date:"m/d/Y" }}</td>
+          <td class="centered">{{ user.last_login|localtime|date:"m/d/Y" }}</td>
+          <td class="centered">{% if user.is_staff %}Staff{% else %}Normal User{% endif %}</td>
+          <td class="centered"><a href="#" class="ic-action-story ic-edit-story">Edit</a></td>
+          <td class="centered">{% if not user.get_profile.is_activated %}<a href="#" class="">activate</a>{% else %}Activated{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% if has_pager %}
+    <div class="pagination pagination-centered">
+      <ul>
+        {% if pagination.has_previous %}
+        <li class="disabled"><a href="{% url account_manage_users %}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.previous_page_number }}">«</a></li>
+        {% endif %}
+        {% for p in page_range %}
+        <li{% ifequal page p %} class="active"{% endifequal %}><a href="{% url account_manage_users %}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
+        {% endfor %}
+        {% if pagination.has_next %}
+        <li><a href="{% url account_manage_users %}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.next_page_number }}">»</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    {% endif %}
+    </form>  
+
+
+{% endblock %}

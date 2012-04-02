@@ -13,6 +13,7 @@ from taggit.models import TaggedItem
 import shutil
 
 MOOD_CHOICES = (
+    (99, 'Moodless' ), 
     (1, 'Happy'     ), 
     (2, 'Sad'       ), 
     (3, 'Excited'   ), 
