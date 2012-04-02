@@ -315,7 +315,7 @@ def blog_create_by_email(request):
         blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
         blog.save()
 
-        uploading_file = UploadedFile(request.FILES['image'])
+        uploading_file = UploadedFile(image_file)
         blog.image.save('blog_%s.jpg' % blog.id, uploading_file.file)
         blog.save()
 
