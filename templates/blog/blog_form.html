@@ -152,7 +152,7 @@
       <div class="controls">
         <label class="checkbox">
           <input type="hidden" name="allow_download" value="0">
-          <input type="checkbox" id="allow_download" name="allow_download" value="1"{% if "1" == form.allow_download.data or not form.allow_download.data %} checked="checked"{% endif %}><label for="allow_download">Allow to download photo with original size</label>
+          <input type="checkbox" id="allow_download" name="allow_download" value="1"{% if "1" == form.allow_download.data or not form.allow_download.data %} checked="checked"{% endif %}><label for="allow_download">Allow Oxfam to ues this photo outside Oxfam Live Stories</label>
         </label>
         {% if form.allow_download.errors %}
         <p class="help-block">{{ form.allow_download.errors.as_text }}</p>
