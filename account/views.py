@@ -102,6 +102,7 @@ def account_invite(request):
             if len(email_invalid_list):
                 messages.error(request, 'Email format is invalid : %s' % ', '.join(email_invalid_list))
 
+            return redirect('account_invite')
             
     else:
         form = AccountInviteForm()
