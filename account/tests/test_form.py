@@ -24,10 +24,18 @@ class TestAccountCreationForm(TestCase):
 		self.assertTrue(form.is_valid())
 
 	def test_save_form_email(self):
-		form = AccountCreationForm(dict(email='test@example.com', username='test', password1='testpassword', password2='testpassword'))
+		form = AccountCreationForm(dict(email='test@example.com', 
+			username='test', 
+			password1='testpassword', 
+			password2='testpassword', 
+			firstname='test_firstname',
+			lastname='test_lastname'))
 		self.assertTrue(form.is_valid())
 		account = form.save()
 		user = account.user
 		self.assertEquals(user.email, 'test@example.com')
 		self.assertEquals(user.username, 'test')
+		self.assertEquals(account.firstname, 'test_firstname')
+		self.assertEquals(account.lastname, 'test_lastname')
+		self.assertTrue(user.is_active)
 
