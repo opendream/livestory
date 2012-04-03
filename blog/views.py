@@ -694,35 +694,37 @@ def blog_search(request):
     """Search blogs by title and description"""
     keyword = request.REQUEST.get("keyword", '')
 
-    if not keyword: return "Error!!"
+    context = {'title': 'keyword: %s' % keyword,
+        'keyword': keyword,
+        'param': 'keyword=%s' % keyword}
 
-    blogs = Blog.objects.filter(
-        Q(title__icontains=keyword) |
-        Q(description__icontains=keyword)
-    )
+    if keyword:
 
-    pager = Paginator(blogs, 8)
-    p = request.GET.get('page') or 1
+        blogs = Blog.objects.filter(
+            Q(title__icontains=keyword) |
+            Q(description__icontains=keyword)
+        ).order_by('-created')
 
-    try:
-        pagination = pager.page(p)
-        blogs = pagination.object_list
-    except (PageNotAnInteger, EmptyPage):
-        raise Http404
+        pager = Paginator(blogs, 8)
+        p = request.GET.get('page') or 1
 
-    p = int(p)
- 
-    page_range = get_page_range(pagination)
+        try:
+            pagination = pager.page(p)
+            blogs = pagination.object_list
+        except (PageNotAnInteger, EmptyPage):
+            raise Http404
 
-    context = {'blogs': blogs, 
-    'title': 'keyword: %s' % keyword,
-    'has_pager': len(page_range) > 1,
-    'pagination': pagination,
-    'page': p,
-    'pager': pager,
-    'page_range': page_range,
-    'keyword': keyword,
-    'param': 'keyword=%s' % keyword}
+        p = int(p)
+
+        page_range = get_page_range(pagination)
+
+        context.update({'blogs': blogs, 
+        'has_pager': len(page_range) > 1,
+        'pagination': pagination,
+        'page': p,
+        'pager': pager,
+        'page_range': page_range,})
+
     return render(request, 'blog/blog_search.html', context)
 
 
