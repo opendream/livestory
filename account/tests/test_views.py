@@ -50,7 +50,7 @@ class TestAccount(TestCase):
     def test_account_invite_new_user(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'testnewuser@example.com, testnewuser2@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite})
+        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
         self.assertContains(response, 'Sending email invite. you can see list of user invited in user managment.')
         
         testnewuser = User.objects.get(username='testnewuser@example.com')
@@ -68,7 +68,7 @@ class TestAccount(TestCase):
         
         self.client.login(username='staff@example.com', password='staff')
         invite = 'inactivetest1@example.com, inactivetest2@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite})
+        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
         self.assertContains(response, 'Sending email invite. you can see list of user invited in user managment.')
         
         account_key1 = AccountKey.objects.get(user=self.inactive_user1)
@@ -80,7 +80,7 @@ class TestAccount(TestCase):
     def test_account_invite_exists_active_user(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'tester2@example.com, staff@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite})
+        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
         self.assertContains(response, 'Email user has joined : tester2@example.com, staff@example.com')
         
         tester2 = User.objects.get(username='tester2@example.com')
@@ -92,14 +92,14 @@ class TestAccount(TestCase):
     def test_account_invite_invalid_email(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com'
-        response = self.client.post('/account/invite/', {'invite': invite})
+        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
         self.assertContains(response, 'Email format is invalid : testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com')
         self.client.logout()
     
     def test_account_activate(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'testactivate@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite})
+        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
         self.client.logout()
         
         account_key = AccountKey.objects.get(user__username='testactivate@example.com')
