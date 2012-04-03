@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.forms import fields
 from django.utils.translation import ugettext_lazy as _
 
 from account.models import Account
@@ -42,6 +44,22 @@ class AccountProfileForm(forms.Form):
         if password != confirm_password:
             raise forms.ValidationError(_("Password not match"))
         return confirm_password
+
+class AccountCreationForm(UserCreationForm):
+    email = fields.EmailField()
+    firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+    lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+
+    def save(self, commit=False):
+        user = super(AccountCreationForm, self).save(commit)
+        user.email = self.cleaned_data['email']
+        user.save()
+        account = Account()
+        account.user = user
+        account.firstname = self.cleaned_data['firstname']
+        account.lastname = self.cleaned_data['lastname']
+        account.save()
+        return account
 
 class AccountForgotForm(forms.Form):
     email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'input-xlarge'}))

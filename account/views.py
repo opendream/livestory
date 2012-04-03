@@ -130,7 +130,17 @@ def account_activate(request, key):
     login(request, user)
     
     return redirect(reverse('account_profile_edit') + param)
+
+def account_profile_create(request):
+    if not request.user.is_staff:
+        return render(request, '403.html', status=403)
     
+    if request.GET:
+        pass
+    else:
+        pass
+
+
 def account_profile_edit(request):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
