@@ -8,7 +8,7 @@
 {% block content %}
   <h1 class="page-title block">Manage Users</h1>
   <form class="form-inline" method="POST" action="{% url blog_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">{% csrf_token %}
-    <a href="#" class="btn-green">Add user</a>
+    <a href="{% url account_profile_create %}" class="btn-green">Add user</a>
     <select name="op" id="op">
       <option>Bulk Actions</option>
       <option value="delete">Delete user</option>

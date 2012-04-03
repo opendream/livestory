@@ -134,11 +134,15 @@ def account_activate(request, key):
 def account_profile_create(request):
     if not request.user.is_staff:
         return render(request, '403.html', status=403)
-    
-    if request.GET:
-        pass
+    form = None
+    if request.method == 'GET':
+        form = AccountCreationForm()
     else:
         pass
+    context = {
+        'form': form
+    }
+    return render(request, 'account/account_profile_create.html', context)
 
 
 def account_profile_edit(request):

@@ -46,13 +46,12 @@ class AccountProfileForm(forms.Form):
         return confirm_password
 
 class AccountCreationForm(UserCreationForm):
-    email = fields.EmailField()
     firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
 
     def save(self, commit=False):
         user = super(AccountCreationForm, self).save(commit)
-        user.email = self.cleaned_data['email']
+        user.email = self.cleaned_data['username']
         user.save()
         account = Account()
         account.user = user
