@@ -4,3 +4,4 @@ media/*
 *.sublime-workspace
 *.DS_Store
 .coverage
+.sass-cache

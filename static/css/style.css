@@ -567,7 +567,8 @@ span.slogan {
   -webkit-box-shadow: 3px 3px 0px #e3e3e3;
   box-shadow: 3px 3px 0px #e3e3e3; }
   .blog-photo img {
-    float: left; }
+    float: left;
+    width: 100%; }
 
 .status {
   position: absolute;
