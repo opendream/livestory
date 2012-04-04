@@ -698,6 +698,7 @@ def blog_search(request):
         'keyword': keyword,
         'param': 'keyword=%s' % keyword}
 
+    keyword = keyword.strip()
     if keyword:
 
         blogs = Blog.objects.filter(

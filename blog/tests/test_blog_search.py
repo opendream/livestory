@@ -35,3 +35,9 @@ class TestBlogSearch(TestCase):
 		response1 = self.client.post('/blog/search/', {'keyword': 'Lorem'})
 		response2 = self.client.post('/blog/search/', {'keyword': 'lorem'})
 		self.assertEqual(response1.context['blogs'].count(), response2.context['blogs'].count())
+
+	def test_search_blog__post_keyword_with_spaces(self):
+		response1 = self.client.post('/blog/search/', {'keyword': ' Lorem  '})
+		response2 = self.client.post('/blog/search/', {'keyword': 'Lorem'})
+		self.assertEqual(response1.context['blogs'].count(), response2.context['blogs'].count())
+
