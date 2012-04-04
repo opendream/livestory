@@ -1,0 +1,31 @@
+{% extends 'base_single.html' %}
+{% load common_tags %}
+
+{% block head_title %}New Profile{% endblock %}
+
+{% block html_head %}
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="profile-block block rounded5">
+	<div class="blog-profile clearfix"> 
+		<div class="user-detail span6 pull-left">
+			<img width="94" height="94" src="{{ viewed_user.account.get_image|crop:'94x94' }}" alt="" class="porfile-photo"/>
+			<a href="#" class="profile-name">{{ viewed_user.account.firstname }} &nbsp; {{ viewed_user.account.lastname }}</a>
+			<span class="profile-email grey">{{ viewed_user.username }}</span>
+		</div>
+		
+		<div class="user-stat pull-right">
+			<div class="count-photo rounded5 pull-right">
+				<span class="count-num">127</span>
+				<span class="grey">Photos</span>
+			</div>
+			<p class="grey last-login">Last login <span class="login-date">{{ viewed_user.last_login|date:"F j, Y" }}</span></p>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
