@@ -156,6 +156,7 @@ INSTALLED_APPS = (
     'django_nose',
     'djkombu',
     'djcelery',
+    'south',
     
     'account',
     'blog',
