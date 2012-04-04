@@ -263,3 +263,15 @@ def account_manage_users(request):
     }
 
     return render(request, 'account/account_manage_users.html', context)
+
+def account_profile_view(request, pk):
+    if not request.user.is_authenticated():
+        return render(request, '403.html', status=403)
+    
+    user = get_object_or_404(User, pk=pk)
+
+    context = {
+        'viewed_user': user
+    }
+
+    return render(request, 'account/account_profile_view.html', context)
