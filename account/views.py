@@ -138,7 +138,14 @@ def account_profile_create(request):
     if request.method == 'GET':
         form = AccountCreationForm()
     else:
-        pass
+        form = AccountCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "New profile created.")
+        else:
+            messages.error(request, "Please correct error(s) below.")
+
     context = {
         'form': form
     }

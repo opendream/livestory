@@ -1,7 +1,7 @@
 {% extends 'base_backend.html' %}
 {% load common_tags %}
 
-{% block head_title %}Your Profile{% endblock %}
+{% block head_title %}New Profile{% endblock %}
 
 {% block html_head %}
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
@@ -10,15 +10,16 @@
 {% endblock %}
 
 {% block content %}
-<form class="form-horizontal" method="post" action="{% url account_profile_edit %}">
+<form class="form-horizontal" method="post" action="{% url account_profile_create %}">
   {% csrf_token %}
   <fieldset>
-    <legend><h1>Your profile</h1></legend>
+    <legend><h1>New profile</h1></legend>
     
     <div class="control-group">
       <label class="control-label" for="title">Email</label>
       <div class="controls">
-        <span class="grey label-inline-form">{{ user.username }}</span>
+        {{ form.username }}
+        <span class="help-inline">{{ form.username.errors.as_text }}</span>
       </div>
     </div>
     
@@ -41,16 +42,16 @@
     <div class="control-group{% if form.password.errors %} error{% endif %}">
       <label class="control-label" for="id_password">Password</label>
       <div class="controls">
-        {{ form.password }}
-        <span class="help-inline">{{ form.password.errors.as_text }}</span>
+        {{ form.password1 }}
+        <span class="help-inline">{{ form.password1.errors.as_text }}</span>
       </div>
     </div>
     
     <div class="control-group{% if form.confirm_password.errors %} error{% endif %}">
       <label class="control-label" for="id_confirm_password">Confirm Password</label>
       <div class="controls">
-        {{ form.confirm_password }}
-        <span class="help-inline">{{ form.confirm_password.errors.as_text }}</span>
+        {{ form.password2 }}
+        <span class="help-inline">{{ form.password2.errors.as_text }}</span>
       </div>
     </div>
     
@@ -62,41 +63,9 @@
       </div>
     </div>
     
-    <div class="control-group">
-      <label class="control-label" for="fileInput">Avatar</label>
-      <div class="controls">
-        
-        
-        <div class="image-upload">
-          <div id="fileupload-progress-wrapper">
-            <div id="upload-detail">uploading...</div>
-            <div class="progress progress-info progress-striped active" id="fileupload-progress">
-              <div class="bar" id="fileupload-complete"></div>
-            </div>
-          </div>
-          <div class="image-wrapper"{% if not account.image %} style="display:none;"{% endif %}>
-  					<div class="image-append">
-  					  {% if account.image %}
-  					  <img src="{{ account.image|crop:AVATAR_SIZE }}" />
-  					  {% endif %}
-  					</div>
-  					<a href="{% url ajax_account_image_delete %}" class="ic image-delete">change image</a>
-  					<input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_account_image_upload %}" />
-					</div>
-					<div class="drop-area"{% if account.image %} style="display:none;"{% endif %}>
-						<div class="dropbox"><input class="input-file image-append fileupload" type="file" name="image"></div>
-						<div class="image-help">add photo here or</div>
-						<div class="select-file"><input class="input-file imgae-button fileupload-classic" type="file" name="image" disabled="disabled"></div>
-					</div>
-				</div>
-        
-        
-      </div>
-    </div>
-
     <div class="form-backend">
-      <button type="submit" class="btn-green">Update Profile</button>
-      <button type="reset" class="btn-grey">Cancel</button>
+      <button type="submit" class="btn-green">Create Profile</button>
+      <button type="reset" class="btn-grey">Reset</button>
     </div>
   </fieldset>
 </form>

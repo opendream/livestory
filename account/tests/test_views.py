@@ -163,4 +163,44 @@ class TestAccount(TestCase):
         self.assertContains(response, 'Password not match')
 
         self.client.logout()
+
+@override_settings(PRIVATE=False)
+class TestCreateAccount(TestCase):
+    def setUp(self):
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
+        self.staff.is_staff = True
+        self.staff.save()
+        self.user = factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Panudate', 'Vasinwattana')
+        self.inactive_user1 = factory.create_user('inactivetest1@example.com', 'inactivetest1@example.com', 'inactivetest1')
+        self.inactive_user1.is_active = False
+        self.inactive_user1.save()
+        self.inactive_user2 = factory.create_user('inactivetest2@example.com', 'inactivetest2@example.com', 'inactivetest2')
+        self.inactive_user2.is_active = False
+        self.inactive_user2.save()
+        self.client.login(username='staff@example.com', password='staff')
+    
+    def tearDown(self):
+        pass
+    
+    def test_account_profile_create__get(self):
+        response = self.client.get('/account/profile/create/')
+        assert '<input type="text" name="username" id="id_username" />' in response.content
+        assert '<input type="password" name="password1" id="id_password1" />' in response.content
+        assert '<input type="password" name="password2" id="id_password2" />' in response.content
+        assert '<input id="id_firstname" type="text" class="span3" name="firstname" maxlength="200" />' in response.content
+        assert '<input id="id_lastname" type="text" class="span3" name="lastname" maxlength="200" />' in response.content
+        assert '<select name="timezone" id="id_timezone">' in response.content
+        assert '<option value="UTC" selected="selected">UTC</option>' in response.content
+
+    def test_account_profile_create__post_saved(self):
+        response = self.client.post('/account/profile/create/', {'username': 'test@example.com', 'password1': 'password', 'password2': 'password', 'timezone': 'UTC'})
+        self.assertContains(response, 'New profile created.')
+        user = User.objects.get(username='test@example.com')
+        self.assertTrue(user.account)
+
+    def test_account_profile_create_post_invalid_username(self):
+        response = self.client.post('/account/profile/create/', {'username': 'test'})
+        self.assertContains(response, 'Please correct error(s) below.')
+        self.assertContains(response, '<input type="text" name="username" value="test" id="id_username" />')
+        self.assertContains(response, '<span class="help-inline">* Enter a valid e-mail address.</span>')
     
