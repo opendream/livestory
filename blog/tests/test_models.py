@@ -1,7 +1,7 @@
 from blog.models import Blog, Love, blog_image_path
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from statistic.models import ViewCount
+#from statistic.models import ViewCount
 from tests import factory
 from common import rm_user
 from override_settings import override_settings
@@ -98,8 +98,8 @@ class TestBlog(TestCase):
         self.assertFalse(expected)
         expected = os.path.exists('%scache/images/blog/%s/%s' % (settings.MEDIA_ROOT, self.user.id, blog_id))
         self.assertFalse(expected)
-        with self.assertRaises(ViewCount.DoesNotExist):
-            ViewCount.objects.get(blog__id=blog_id)
+        #with self.assertRaises(ViewCount.DoesNotExist):
+        #    ViewCount.objects.get(blog__id=blog_id)
         
 @override_settings(PRIVATE=False)
 class TestLove(TestCase):
