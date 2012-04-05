@@ -1,46 +1,22 @@
-from django.contrib.auth.models import User
 from django.db import models
 
 from blog.models import Blog
-from datetime import datetime
 
+class BlogViewHit(models.Model):
+    blog = models.ForeignKey(Blog)
+    sessionkey = models.CharField(max_length=200)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-class History(models.Model):
-	datetime = models.DateTimeField(auto_now_add=True)
-	user = models.ForeignKey(User)
-	blog = models.ForeignKey(Blog)
+    def save(self, *args, **kwargs):
+        #blog_stat_summary = BlogViewSummary.objects.select_for_update().get(blog=blog) ### Use this statement instead when migrate to Django 1.4
+        blog_stat_summary, created = BlogViewSummary.objects.get_or_create(blog=self.blog)
+        blog_stat_summary.totalcount = blog_stat_summary.totalcount + 1
+        blog_stat_summary.save()
+        super(BlogViewHit, self).save(*args, **kwargs)
 
-	def __unicode__(self):
-		return '%s(%s) viewed %s(%s) on %s' % (self.user.get_profile().get_fullname(), self.user.id, self.blog.title, self.blog.id, self.datetime.strftime('%Y/%m/%d'))
+class BlogViewSummary(models.Model):
+    blog = models.ForeignKey(Blog)
+    totalcount = models.IntegerField(default=0)
 
-
-class ViewCount(models.Model):
-	updated = models.DateTimeField(editable=False)
-	blog = models.OneToOneField(Blog)
-	totalcount = models.IntegerField(default=0)
-	weekcount = models.IntegerField(default=0)
-	daycount = models.IntegerField(default=0)
-
-	def update(self):
-		self.totalcount = self.totalcount + 1
-		now = datetime.now()
-		diff = now - self.updated
-		days_diff = float(int(diff.seconds + 3)) / (60 * 60 * 24)
-		if days_diff > 7:
-			self.weekcount = 1
-		else:
-			self.weekcount = self.weekcount + 1
-		if days_diff > 1:
-			self.daycount = 1
-		else:
-			self.daycount = self.daycount + 1
-		self.updated = datetime.now()
-		self.save()
-
-	def __unicode__(self):
-		return '%s has %s view(s), %s view(s) in week, %s view(s) in day' % (self.blog.title, self.totalcount, self.weekcount, self.daycount)
-
-	def save(self, *args, **kwargs):
-		if not self.id:
-			self.updated = datetime.now()
-		super(ViewCount, self).save(*args, **kwargs)
+    def __unicode__(self):
+        return '%s has %d hits' % (self.blog.title, self.totalcount)
