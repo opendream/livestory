@@ -203,4 +203,27 @@ class TestCreateAccount(TestCase):
         self.assertContains(response, 'Please correct error(s) below.')
         self.assertContains(response, '<input type="text" name="username" value="test" id="id_username" />')
         self.assertContains(response, '<span class="help-inline">* Enter a valid e-mail address.</span>')
+
+@override_settings(PRIVATE=False)
+class TestViewUserProfile(TestCase):
+    def setUp(self):
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
+        self.staff.is_staff = True
+        self.staff.save()
+        self.user = factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Panudate', 'Vasinwattana')
+        self.inactive_user1 = factory.create_user('inactivetest1@example.com', 'inactivetest1@example.com', 'inactivetest1')
+        self.inactive_user1.is_active = False
+        self.inactive_user1.save()
+        self.inactive_user2 = factory.create_user('inactivetest2@example.com', 'inactivetest2@example.com', 'inactivetest2')
+        self.inactive_user2.is_active = False
+        self.inactive_user2.save()
+        self.client.login(username='staff@example.com', password='staff')
+    
+    def tearDown(self):
+        pass
+    
+    def test_user_profile_view__get_no_blogs_profile(self):
+        response = self.client.get('/account/profile/3/view/')
+        print response.content
+        self.assertTrue(False)
     

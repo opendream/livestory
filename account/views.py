@@ -270,6 +270,7 @@ def account_profile_view(request, pk):
     
     user = get_object_or_404(User, pk=pk)
     blogs = user.blog_set.all()
+    blog_count = blogs.count()
 
     pager = Paginator(blogs, 8)
     p = request.GET.get('page') or 1
@@ -290,6 +291,7 @@ def account_profile_view(request, pk):
     'page': p,
     'pager': pager,
     'page_range': page_range,
-    'viewed_user': user}
+    'viewed_user': user,
+    'blog_count': blog_count}
 
     return render(request, 'account/account_profile_view.html', context)
