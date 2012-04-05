@@ -269,9 +269,27 @@ def account_profile_view(request, pk):
         return render(request, '403.html', status=403)
     
     user = get_object_or_404(User, pk=pk)
+    blogs = user.blog_set.all()
 
-    context = {
-        'viewed_user': user
-    }
+    pager = Paginator(blogs, 8)
+    p = request.GET.get('page') or 1
+
+    try:
+        pagination = pager.page(p)
+        blogs = pagination.object_list
+    except (PageNotAnInteger, EmptyPage):
+        raise Http404
+
+    p = int(p)
+
+    page_range = get_page_range(pagination)
+
+    context = {'blogs': blogs, 
+    'has_pager': len(page_range) > 1,
+    'pagination': pagination,
+    'page': p,
+    'pager': pager,
+    'page_range': page_range,
+    'viewed_user': user}
 
     return render(request, 'account/account_profile_view.html', context)

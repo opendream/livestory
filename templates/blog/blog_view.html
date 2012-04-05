@@ -124,10 +124,10 @@ $(document).ready(function() {
     
     <div class="span4 block">
       <div class="blog-profile block clearfix">
-        <a href="#" class="profile-image">
+        <a href="{% url account_profile_view profile.pk %}" class="profile-image">
           <img width="94" height="94" src="{{ profile.get_image|crop:'94x94' }}" alt="" class="porfile-photo"/>
         </a>
-        <a href="#" class="profile-name">{{ profile.firstname }} {{ profile.lastname }}</a>
+        <a href="{% url account_profile_view profile.pk %}" class="profile-name">{{ profile.firstname }} {{ profile.lastname }}</a>
         <span class="profile-email grey">{{ profile.user }}</span>
       </div>
       

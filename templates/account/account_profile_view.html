@@ -1,7 +1,8 @@
 {% extends 'base_single.html' %}
 {% load common_tags %}
+{% load tz %}
 
-{% block head_title %}New Profile{% endblock %}
+{% block head_title %}View Profile{% endblock %}
 
 {% block html_head %}
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
@@ -14,18 +15,66 @@
 	<div class="blog-profile clearfix"> 
 		<div class="user-detail span6 pull-left">
 			<img width="94" height="94" src="{{ viewed_user.account.get_image|crop:'94x94' }}" alt="" class="porfile-photo"/>
-			<a href="#" class="profile-name">{{ viewed_user.account.firstname }} &nbsp; {{ viewed_user.account.lastname }}</a>
+			<span class="profile-name">{{ viewed_user.account.firstname }} &nbsp; {{ viewed_user.account.lastname }}</span>
 			<span class="profile-email grey">{{ viewed_user.username }}</span>
 		</div>
 		
 		<div class="user-stat pull-right">
 			<div class="count-photo rounded5 pull-right">
-				<span class="count-num">127</span>
+				<span class="count-num">{{ pager.count }}</span>
 				<span class="grey">Photos</span>
 			</div>
 			<p class="grey last-login">Last login <span class="login-date">{{ viewed_user.last_login|date:"F j, Y" }}</span></p>
 		</div>
 	</div>
 </div>
-
+{% if not blogs %}
+  <p class="alert alert-block span4">No photos found.</p>
+{% else %}
+<div class="clear-both">
+	<h2 class="oxfam-font ic-page-title ic-title-green block">Photos</h2>
+	<ul class="thumbnails blog-thumbnails">
+  {% for blog in blogs %}
+    <li class="span3">
+      <div class="thumbnail">
+        <div class="blog-photo blog-thumbnail no-shadow">
+          <a href="{% url blog_view blog.id %}">
+            <img 
+              width="260" 
+              height="180" 
+              alt="{{ blog.title }}" 
+              src="{{ blog.image|crop:'260x180' }}" 
+            />
+          </a>
+          <div class="status">
+            <span class="mood-icon-s mood-{{ blog.get_mood_text|lower }}-s">Mood</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
+          </div>
+        </div>
+        <div class="caption">
+          <h4><a href="{% url blog_view blog.id %}">{{ blog.title }}</a></h4>
+          <p class="posted">
+            <span class="grey">{{ blog.created|localtime|timeago:'M d, Y' }} in <a href="{% url blog_category blog.category.code %}" class="tag">{{ blog.category.name }}</a></span>
+          </p>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+	{% if has_pager %}
+  <div class="pagination pagination-centered">
+    <ul>
+      {% if pagination.has_previous %}
+      <li class="disabled"><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.previous_page_number }}">«</a></li>
+      {% endif %}
+      {% for p in page_range %}
+      <li{% ifequal page p %} class="active"{% endifequal %}><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
+      {% endfor %}
+      {% if pagination.has_next %}
+      <li><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.next_page_number }}">»</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endif %}
 {% endblock %}

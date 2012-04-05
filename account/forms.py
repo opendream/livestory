@@ -46,10 +46,15 @@ class AccountProfileForm(forms.Form):
         return confirm_password
 
 class AccountCreationForm(UserCreationForm):
-    username = forms.EmailField(required=True)
+    username = forms.EmailField(widget=forms.TextInput(attrs={'class': 'span3'}), required=True)
     firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.common_timezones], required=False, initial='UTC')
+
+    def __init__(self):
+        super(AccountCreationForm, self).__init__()
+        self.fields['password1'].widget=forms.TextInput(attrs={'class': 'span3'})
+        self.fields['password2'].widget=forms.TextInput(attrs={'class': 'span3'})
 
     def save(self, commit=False):
         user = super(AccountCreationForm, self).save(commit)
