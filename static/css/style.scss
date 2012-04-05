@@ -502,7 +502,6 @@
 	}
 	
 	.blog-profile{ 
-		margin-bottom: 40px;
 		.porfile-photo{
 			float: left;
 			width: 94px;
@@ -835,12 +834,12 @@
 	
 	.table-list{ 
 		margin-top: 20px;
-		border-top: 1px solid #acacac;
+		border-top: 1px solid #BCBCBC;
 	}
-	.table-list th, .table-list td{ border-bottom: 1px solid #ddd; }
+	.table-list th, .table-list td{ border-bottom: 1px solid #E4E4E4; }
 	.table-list th {
-		background-color: #d7d7d7;
-		border-bottom: 1px solid #acacac;
+		background-color: #eee;
+		border-bottom: 1px solid #BCBCBC;
 		
 		a{ color: #363636 !important; }
 	}

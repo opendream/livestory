@@ -588,20 +588,18 @@ span.slogan {
   margin: 0 0 10px;
   font-size: 18px; }
 
-.blog-profile {
-  margin-bottom: 40px; }
-  .blog-profile .porfile-photo {
-    float: left;
-    width: 94px;
-    height: 94px;
-    margin: 0 10px 5px 0;
-    border: 3px solid #000; }
-  .blog-profile .profile-name {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #000; }
+.blog-profile .porfile-photo {
+  float: left;
+  width: 94px;
+  height: 94px;
+  margin: 0 10px 5px 0;
+  border: 3px solid #000; }
+.blog-profile .profile-name {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000; }
 
 /*----- Love it -----*/
 .love, .unlove {
@@ -991,14 +989,14 @@ ul.tagit input[type="text"] {
 
 .table-list {
   margin-top: 20px;
-  border-top: 1px solid #acacac; }
+  border-top: 1px solid #BCBCBC; }
 
 .table-list th, .table-list td {
-  border-bottom: 1px solid #ddd; }
+  border-bottom: 1px solid #E4E4E4; }
 
 .table-list th {
-  background-color: #d7d7d7;
-  border-bottom: 1px solid #acacac; }
+  background-color: #eee;
+  border-bottom: 1px solid #BCBCBC; }
   .table-list th a {
     color: #363636 !important; }
 
