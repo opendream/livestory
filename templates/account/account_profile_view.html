@@ -22,14 +22,14 @@
 		<div class="user-stat pull-right">
 			<div class="count-photo rounded5 pull-right">
 				<span class="count-num">{{ blog_count }}</span>
-				<span class="grey">Photos</span>
+				<span class="grey">Photo{{ blog_count|pluralize }}</span>
 			</div>
 			<p class="grey last-login">Last login <span class="login-date">{{ viewed_user.last_login|date:"F j, Y" }}</span></p>
 		</div>
 	</div>
 </div>
 {% if not blogs %}
-  <p class="alert alert-block span4">No photos found.</p>
+  <p class="alert alert-block span4">No photo found.</p>
 {% else %}
 <div class="clear-both">
 	<h2 class="oxfam-font ic-page-title ic-title-green block">Photos</h2>

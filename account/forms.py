@@ -51,10 +51,10 @@ class AccountCreationForm(UserCreationForm):
     lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.common_timezones], required=False, initial='UTC')
 
-    def __init__(self):
-        super(AccountCreationForm, self).__init__()
-        self.fields['password1'].widget=forms.TextInput(attrs={'class': 'span3'})
-        self.fields['password2'].widget=forms.TextInput(attrs={'class': 'span3'})
+    def __init__(self,*args,**kwargs):
+        super(AccountCreationForm, self).__init__(*args,**kwargs)
+        self.fields['password1'].widget=forms.PasswordInput(attrs={'class': 'span3'})
+        self.fields['password2'].widget=forms.PasswordInput(attrs={'class': 'span3'})
 
     def save(self, commit=False):
         user = super(AccountCreationForm, self).save(commit)

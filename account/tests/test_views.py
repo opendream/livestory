@@ -5,7 +5,7 @@ from tests import factory
 
 from django.conf import settings
 from override_settings import override_settings
-
+import shutil
 
 @override_settings(PRIVATE=False)
 class TestAccount(TestCase):
@@ -184,9 +184,9 @@ class TestCreateAccount(TestCase):
     
     def test_account_profile_create__get(self):
         response = self.client.get('/account/profile/create/')
-        assert '<input type="text" name="username" id="id_username" />' in response.content
-        assert '<input type="password" name="password1" id="id_password1" />' in response.content
-        assert '<input type="password" name="password2" id="id_password2" />' in response.content
+        assert '<input id="id_username" type="text" class="span3" name="username" />' in response.content
+        assert '<input id="id_password1" type="password" class="span3" name="password1" />' in response.content
+        assert '<input id="id_password2" type="password" class="span3" name="password2" />' in response.content
         assert '<input id="id_firstname" type="text" class="span3" name="firstname" maxlength="200" />' in response.content
         assert '<input id="id_lastname" type="text" class="span3" name="lastname" maxlength="200" />' in response.content
         assert '<select name="timezone" id="id_timezone">' in response.content
@@ -201,7 +201,7 @@ class TestCreateAccount(TestCase):
     def test_account_profile_create_post_invalid_username(self):
         response = self.client.post('/account/profile/create/', {'username': 'test'})
         self.assertContains(response, 'Please correct error(s) below.')
-        self.assertContains(response, '<input type="text" name="username" value="test" id="id_username" />')
+        self.assertContains(response, '<input id="id_username" type="text" class="span3" value="test" name="username" />')
         self.assertContains(response, '<span class="help-inline">* Enter a valid e-mail address.</span>')
 
 @override_settings(PRIVATE=False)
@@ -210,20 +210,45 @@ class TestViewUserProfile(TestCase):
         self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
         self.staff.is_staff = True
         self.staff.save()
-        self.user = factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Panudate', 'Vasinwattana')
-        self.inactive_user1 = factory.create_user('inactivetest1@example.com', 'inactivetest1@example.com', 'inactivetest1')
-        self.inactive_user1.is_active = False
-        self.inactive_user1.save()
-        self.inactive_user2 = factory.create_user('inactivetest2@example.com', 'inactivetest2@example.com', 'inactivetest2')
-        self.inactive_user2.is_active = False
-        self.inactive_user2.save()
+        self.user1 = factory.create_user('tester1@example.com', 'tester1@example.com', 'testuser1', 'Panudate', 'Vasinwattana')
+        factory.create_blog(user=self.user1)
+
+        self.user2 = factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Tavee', 'Khunbida')
+        factory.create_blog(user=self.user2)
+        factory.create_blog(user=self.user2)
+        factory.create_blog(user=self.user2)
+        factory.create_blog(user=self.user2)        
+        factory.create_blog(user=self.user2)
+        factory.create_blog(user=self.user2)
+        factory.create_blog(user=self.user2)
+        factory.create_blog(user=self.user2)
+        factory.create_blog(user=self.user2)
+        
         self.client.login(username='staff@example.com', password='staff')
     
     def tearDown(self):
         pass
     
     def test_user_profile_view__get_no_blogs_profile(self):
-        response = self.client.get('/account/profile/3/view/')
-        print response.content
-        self.assertTrue(False)
+        user = User.objects.get(username='staff@example.com')
+        response = self.client.get('/account/profile/%s/view/' % user.id)
+        self.assertContains(response, '<span class="profile-name">John &nbsp; Doe</span>')
+        self.assertContains(response, '<span class="profile-email grey">staff@example.com</span>')
+        self.assertContains(response, '<span class="count-num">0</span>')
+        self.assertContains(response, 'No photo found.')
+
+    def test_user_profile_view__get_one_blog_profile(self):
+        user = User.objects.get(username='tester1@example.com')
+        response = self.client.get('/account/profile/%s/view/' % user.id)
+        self.assertContains(response, '<span class="count-num">1</span>')
+        self.assertContains(response, '<span class="grey">Photo</span>')
+        self.assertContains(response, '<span class="mood-icon-s mood-happy-s">Mood</span><span class="location">Bangkok, Thailand</span>')
+
+    def test_user_profile_view_get_blogs_profile_with_pagination(self):
+        user = User.objects.get(username='tester2@example.com')
+        response = self.client.get('/account/profile/%s/view/' % user.id)
+        self.assertContains(response, '<span class="count-num">9</span>')
+        self.assertContains(response, '<span class="grey">Photos</span>')
+        self.assertContains(response, '<span class="mood-icon-s mood-happy-s">Mood</span><span class="location">Bangkok, Thailand</span>')
+        self.assertContains(response, '<li><a href="?page=2">2</a></li>')
     
