@@ -235,7 +235,7 @@ class TestViewUserProfile(TestCase):
         self.assertContains(response, '<span class="profile-name">John &nbsp; Doe</span>')
         self.assertContains(response, '<span class="profile-email grey">staff@example.com</span>')
         self.assertContains(response, '<span class="count-num">0</span>')
-        self.assertContains(response, 'No photo found.')
+        self.assertContains(response, 'No photos found.')
 
     def test_user_profile_view__get_one_blog_profile(self):
         user = User.objects.get(username='tester1@example.com')
@@ -251,4 +251,66 @@ class TestViewUserProfile(TestCase):
         self.assertContains(response, '<span class="grey">Photos</span>')
         self.assertContains(response, '<span class="mood-icon-s mood-happy-s">Mood</span><span class="location">Bangkok, Thailand</span>')
         self.assertContains(response, '<li><a href="?page=2">2</a></li>')
+
+@override_settings(PRIVATE=False)
+class TestEditUserProfile(TestCase):
+    def setUp(self):
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
+        self.staff.is_staff = True
+        self.staff.save()
+
+        self.user = factory.create_user('tester@example.com', 'tester@example.com', 'testuser', 'Panudate', 'Vasinwattana')
+
+        self.client.login(username='staff@example.com', password='staff')
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_user_profile_edit__get(self):
+        user = User.objects.get(username='tester@example.com')
+        response = self.client.get('/account/profile/%s/edit/' % user.id)
+        self.assertContains(response, '<span class="grey label-inline-form">tester@example.com</span>')
+        self.assertContains(response, '<input name="firstname" value="Panudate" class="span3" maxlength="200" type="text" id="id_firstname" />')
+        self.assertContains(response, '<input name="lastname" value="Vasinwattana" class="span3" maxlength="200" type="text" id="id_lastname" />')
+        self.assertContains(response, '<input id="id_password" type="password" class="span3" name="password" maxlength="200" />')
+        self.assertContains(response, '<input id="id_confirm_password" type="password" class="span3" name="confirm_password" maxlength="200" />')
+        self.assertContains(response, '<select name="timezone" id="id_timezone">')
+        self.assertContains(response, '<input checked="checked" type="checkbox" name="is_active" id="id_is_active" />')
+        self.assertContains(response, '<input class="input-file imgae-button fileupload-classic" type="file" name="image" disabled="disabled">')
+        self.assertContains(response, '<button type="submit" class="btn-green">Update Profile</button>')
+
+    def test_user_profile_edit__save(self):
+        tz = 'Africa/Abidjan'
+        user = User.objects.get(username='tester@example.com')
+        response = self.client.post('/account/profile/%s/edit/' % user.id, {
+                'firstname': 'Panudate', 
+                'lastname': 'Vasinwattana',
+                'timezone': tz,
+                'is_active': True}
+        )
+        self.assertEquals(200, response.status_code)
+        self.assertContains(response, 'User profile has been updated.')
+        user2 = User.objects.get(username='tester@example.com')
+        user2_profile = user2.get_profile()
+        self.assertEquals(user2_profile.timezone, tz)
+
+    def test_user_profile_edit__activate_user(self):
+        user = User.objects.get(username='tester@example.com')
+        user.is_active = False
+        user.save()
+
+        response = self.client.post('/account/profile/%s/edit/' % user.id, {'is_active': True})
+        self.assertEquals(200, response.status_code)
+        # check user is activated from database
+        user2 = User.objects.get(username='tester@example.com')
+        assert user2.is_active
+
+    def test_user_profile_edit__block_user(self):
+        user = User.objects.get(username='tester@example.com')
+        assert user.is_active
+        response = self.client.post('/account/profile/%s/edit/' % user.id, {'is_active': False})
+        self.assertEquals(200, response.status_code)
+        # check user is blocked from database
+        user2 = User.objects.get(username='tester@example.com')
+        assert user2.is_active == False
     

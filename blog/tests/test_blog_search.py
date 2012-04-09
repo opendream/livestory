@@ -27,8 +27,8 @@ class TestBlogSearch(TestCase):
 
 	def test_search_blog__post_with_result_with_pagination(self):
 		response = self.client.post('/blog/search/', {'keyword': 'Lorem'})
-		self.assertContains(response, '<div class="pagination pagination-centered">')
 		print response.content
+		self.assertContains(response, '<div class="pagination pagination-centered">')
 		self.assertContains(response, '<a href="?keyword=Lorem&page=3">3</a>')
 
 	def test_search_blog__post_with_result_case_insensitive(self):

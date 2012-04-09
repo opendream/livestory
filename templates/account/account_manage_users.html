@@ -82,7 +82,7 @@
           <td class="centered">{{ user.date_joined|localtime|date:"m/d/Y" }}</td>
           <td class="centered">{{ user.last_login|localtime|date:"m/d/Y" }}</td>
           <td class="centered">{% if user.is_staff %}Staff{% else %}Normal User{% endif %}</td>
-          <td class="centered"><a href="#" class="ic-action-story ic-edit-story">Edit</a></td>
+          <td class="centered"><a href="{% url user_profile_edit user.pk %}" class="ic-action-story ic-edit-story">Edit</a></td>
           <td class="centered">{% if not user.get_profile.is_activated %}<a href="#" class="">activate</a>{% else %}Activated{% endif %}</td>
         </tr>
         {% endfor %}
@@ -104,6 +104,5 @@
     </div>
     {% endif %}
     </form>  
-
 
 {% endblock %}

@@ -2,14 +2,45 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils import simplejson as json
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+
+from account.models import User
 
 from common.templatetags.common_tags import *
-
 from common.views import file_save_upload
 
 import os
 import shutil
 from django.conf import settings
+
+@login_required
+def ajax_profile_image_upload(request, user_id):
+    print 'debug', user_id
+    user = get_object_or_404(User, pk=user_id)
+    account = user.get_profile()
+    image = request.FILES['image']
+    print 'good'
+    try:
+        account.image.file
+        account.image.delete()
+    except:
+        pass
+        
+    account.image.save(image.name, request.FILES['image'], save=False)
+    account.save()
+    
+    data = {
+        'name': image.name,
+        'size': image.size,
+        'url': account.get_image_url(),
+        'thumbnail_url': crop(account.image, settings.AVATAR_SIZE),
+        'delete_url': reverse('ajax_account_image_delete'),
+        'delete_type': 'DELETE'
+    }
+    print 'url>>', data['url']
+    print 'thumb>>', data['thumbnail_url']
+    return HttpResponse(json.dumps(data), mimetype="application/json")
+
 
 @login_required
 def ajax_account_image_upload(request):
