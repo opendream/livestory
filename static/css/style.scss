@@ -152,7 +152,7 @@
   @mixin btn{
 	  @include border-rounded(6px);
 	  display: inline-block;
-    color: white;
+    color: white !important;
     font: bold 13px arial;
     padding: 7px 12px;
     margin-right: 10px;
