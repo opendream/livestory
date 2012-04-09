@@ -437,6 +437,7 @@ a:active {
     height: 69px;
     display: block;
     text-indent: -999em;
+    overflow: hidden;
     background: url("../img/nav.png") no-repeat; }
   .menu .popular {
     width: 65px;
@@ -504,8 +505,7 @@ a:active {
   background-color: #ebebeb; }
 
 .nav-admin .notify {
-  padding: 0px 7px 0px 6px;
-  background: #777; }
+  padding: 0px 7px 0px 6px; }
 
 /*----- Search -----*/
 .search-stories {
@@ -609,6 +609,7 @@ span.slogan {
   height: 33px;
   margin: 0 10px 0 0;
   text-indent: -999em;
+  overflow: hidden;
   background: url("../img/btn-loveit.png") no-repeat; }
 
 .unlove {
@@ -1558,7 +1559,10 @@ form#blog-form #fileupload-progress-wrapper {
     border-left: 3px solid #12a3d4; }
 
   input[class*="span"], select[class*="span"], textarea[class*="span"], .uneditable-input {
-    margin-bottom: 9px; } }
+    margin-bottom: 9px; }
+
+  .notify-bottom {
+    background: none; } }
 @media (max-width: 320px) {
   .login_form input {
     width: 150px; }
