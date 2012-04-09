@@ -25,7 +25,9 @@
       </li>      
       <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li>
       <li class="{% active request account_profile_edit %}"><a href="{{ account_profile_edit }}"><i class="icon-user{% active request account_profile_edit ' icon-white' %}"></i> Your Profile</a></li>
+      {% if user.is_staff %}
       <li class="{% active request account_manage_users %}"><a href="{{ account_manage_users }}"><i class="icon-user{% active request account_manage_users ' icon-white' %}"></i> Manage Users</a></li>
+      {% endif %}
     </ul>
   </div>
   <div class="span9 block">

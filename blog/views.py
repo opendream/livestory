@@ -232,6 +232,8 @@ def blog_create(request):
                 
                 blog.image = blog_save_image(image_path, blog)
                 blog.save()
+
+                BlogViewSummary.objects.get_or_create(blog=blog)
                 
                 # There is image uploaded.
                 if image_path.split('/')[-2] == 'temp':
@@ -312,6 +314,8 @@ def blog_create_by_email(request):
         blog.allow_download = False
         blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
         blog.save()
+
+        BlogViewSummary.objects.get_or_create(blog=blog)
 
         uploading_file = UploadedFile(image_file)
         blog.image.save('blog_%s.jpg' % blog.id, uploading_file.file)

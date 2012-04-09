@@ -24,6 +24,8 @@ class AccountProfileForm(forms.Form):
     
     timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.common_timezones], required=False)
     
+    is_active = forms.BooleanField(required=False)
+
     class Meta:
 		model = Account
 		#exclude = ('user', 'location', 'draft')

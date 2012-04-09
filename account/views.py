@@ -189,6 +189,44 @@ def account_profile_edit(request):
     
     return render(request, 'account/account_profile_edit.html', locals())
 
+def user_profile_edit(request, pk):
+    """ 
+    Provide edit user profile method for staff level user 
+    """
+    if not request.user.is_staff:
+        return render(request, '403.html', status=403)
+    
+    usr = get_object_or_404(User, pk=pk)
+    account = usr.get_profile()
+    
+    if request.method == 'POST':
+        form = AccountProfileForm(request.POST)
+
+        if form.is_valid():         
+            password = form.cleaned_data.get('password')
+            active = form.cleaned_data.get('is_active')
+            if password:
+                usr.set_password(password)
+            usr.is_active = active
+            usr.save()
+
+            account.firstname = form.cleaned_data.get('firstname')
+            account.lastname  = form.cleaned_data.get('lastname')
+            account.timezone  = form.cleaned_data.get('timezone')
+            # TODO: save avatar
+            account.save()
+                        
+            messages.success(request, 'User profile has been updated.')
+            
+    else:
+        user_data = model_to_dict(usr)
+        user_data.update(model_to_dict(account))
+        user_data['password'] = ''
+        form = AccountProfileForm(user_data)
+
+    
+    return render(request, 'account/user_profile_edit.html', locals())
+
 def account_forgot(request):
     form = AccountForgotForm()
     email_error = False
@@ -295,3 +333,4 @@ def account_profile_view(request, pk):
     'blog_count': blog_count}
 
     return render(request, 'account/account_profile_view.html', context)
+
