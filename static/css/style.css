@@ -588,20 +588,18 @@ span.slogan {
   margin: 0 0 10px;
   font-size: 18px; }
 
-.blog-profile {
-  margin-bottom: 40px; }
-  .blog-profile .porfile-photo {
-    float: left;
-    width: 94px;
-    height: 94px;
-    margin: 0 10px 5px 0;
-    border: 3px solid #000; }
-  .blog-profile .profile-name {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #000; }
+.blog-profile .porfile-photo {
+  float: left;
+  width: 94px;
+  height: 94px;
+  margin: 0 10px 5px 0;
+  border: 3px solid #000; }
+.blog-profile .profile-name {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000; }
 
 /*----- Love it -----*/
 .love, .unlove {
@@ -991,14 +989,14 @@ ul.tagit input[type="text"] {
 
 .table-list {
   margin-top: 20px;
-  border-top: 1px solid #acacac; }
+  border-top: 1px solid #BCBCBC; }
 
 .table-list th, .table-list td {
-  border-bottom: 1px solid #ddd; }
+  border-bottom: 1px solid #E4E4E4; }
 
 .table-list th {
-  background-color: #d7d7d7;
-  border-bottom: 1px solid #acacac; }
+  background-color: #eee;
+  border-bottom: 1px solid #BCBCBC; }
   .table-list th a {
     color: #363636 !important; }
 
@@ -1219,6 +1217,39 @@ form#blog-form .dropbox .image-append {
 
 form#blog-form #fileupload-progress-wrapper {
   margin: 55px 0 0 40px; }
+
+/**************/
+/* User profile */
+/**************/
+.profile-block {
+  border: 1px solid #d8d9d7;
+  padding: 10px;
+  background: url("../img/logo-oxfam_trans.png") no-repeat 150px -21px; }
+  .profile-block .blog-profile {
+    padding: 10px;
+    background: url("../img/bg-userprofile.png"); }
+  .profile-block .user-detail {
+    margin-left: 0; }
+
+.user-stat .count-photo {
+  border: 1px solid #c6c6c6;
+  margin-bottom: 10px;
+  background-color: #fff; }
+  .user-stat .count-photo span {
+    display: block;
+    padding: 2px 10px;
+    text-align: center;
+    font-weight: bold; }
+  .user-stat .count-photo .count-num {
+    border-bottom: 1px solid #ccc;
+    padding: 15px 0;
+    font-size: 1.8em; }
+.user-stat .last-login {
+  clear: both; }
+  .user-stat .last-login .login-date {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #333; }
 
 /*****************/
 /* Media Queries */

@@ -18,8 +18,8 @@ class TestAccount(TestCase):
         
     def tearDown(self):
          self.users[0].get_profile().image.delete()
-         rm_user(self.users[0].id)
-         rm_user(self.users[1].id)
+         # rm_user(self.users[0].id)
+         # rm_user(self.users[1].id)
         
     def test_get_fullname(self):
         self.assertEquals('Nirut Khemasakchai', self.users[0].get_profile().get_fullname())

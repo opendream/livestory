@@ -7,9 +7,10 @@ class TestAccountCreationForm(TestCase):
 	def test_render_empty_form(self):
 		form = AccountCreationForm()
 		html_out = form.as_table()
-		assert '<input type="text" name="username" id="id_username" />' in html_out
-		assert '<input type="password" name="password1" id="id_password1" />' in html_out
-		assert '<input type="password" name="password2" id="id_password2" />' in html_out
+		print html_out
+		assert '<input id="id_username" type="text" class="span3" name="username" />' in html_out
+		assert '<input id="id_password1" type="password" class="span3" name="password1" />' in html_out
+		assert '<input id="id_password2" type="password" class="span3" name="password2" />' in html_out
 		assert '<input id="id_firstname" type="text" class="span3" name="firstname" maxlength="200" />' in html_out
 		assert '<input id="id_lastname" type="text" class="span3" name="lastname" maxlength="200" />' in html_out
 		assert '<select name="timezone" id="id_timezone">' in html_out
