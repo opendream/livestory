@@ -20,7 +20,7 @@
       <li class="{% active request notification_view %}">
         <a href ="{{ notification_view }}" class="">
 	        <i class="icon-comment{% active request notification_view ' icon-white' %}"></i>
-          All Notifications<span class="rounded {% if notifications|length == 0 %} notify no-notify{% endif %} pull-right"> {{ notifications|length }}</span>
+          All Notifications<span class="rounded {% if notifications|length == 0 %} no-notify {% endif %} notify pull-right"> {{ notifications|length }}</span>
         </a>
       </li>      
       <li class="nav-header"><a href ="{{ account_profile_edit }}">User</a></li>
