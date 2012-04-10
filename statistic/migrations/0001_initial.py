@@ -8,32 +8,29 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'History'
-        db.create_table('statistic_history', (
+        # Adding model 'BlogViewHit'
+        db.create_table('statistic_blogviewhit', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('datetime', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('blog', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.Blog'])),
+            ('sessionkey', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('timestamp', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
-        db.send_create_signal('statistic', ['History'])
+        db.send_create_signal('statistic', ['BlogViewHit'])
 
-        # Adding model 'ViewCount'
-        db.create_table('statistic_viewcount', (
+        # Adding model 'BlogViewSummary'
+        db.create_table('statistic_blogviewsummary', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')()),
             ('blog', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['blog.Blog'], unique=True)),
             ('totalcount', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('weekcount', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('daycount', self.gf('django.db.models.fields.IntegerField')(default=0)),
         ))
-        db.send_create_signal('statistic', ['ViewCount'])
+        db.send_create_signal('statistic', ['BlogViewSummary'])
 
     def backwards(self, orm):
-        # Deleting model 'History'
-        db.delete_table('statistic_history')
+        # Deleting model 'BlogViewHit'
+        db.delete_table('statistic_blogviewhit')
 
-        # Deleting model 'ViewCount'
-        db.delete_table('statistic_viewcount')
+        # Deleting model 'BlogViewSummary'
+        db.delete_table('statistic_blogviewsummary')
 
     models = {
         'auth.group': {
@@ -103,21 +100,18 @@ class Migration(SchemaMigration):
             'lat': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'lng': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
-        'statistic.history': {
-            'Meta': {'object_name': 'History'},
+        'statistic.blogviewhit': {
+            'Meta': {'object_name': 'BlogViewHit'},
             'blog': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Blog']"}),
-            'datetime': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+            'sessionkey': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
         },
-        'statistic.viewcount': {
-            'Meta': {'object_name': 'ViewCount'},
+        'statistic.blogviewsummary': {
+            'Meta': {'object_name': 'BlogViewSummary'},
             'blog': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['blog.Blog']", 'unique': 'True'}),
-            'daycount': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'totalcount': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'updated': ('django.db.models.fields.DateTimeField', [], {}),
-            'weekcount': ('django.db.models.fields.IntegerField', [], {'default': '0'})
+            'totalcount': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         'taggit.tag': {
             'Meta': {'object_name': 'Tag'},

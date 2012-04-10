@@ -330,7 +330,43 @@ class TestManageUserBulk(TestCase):
         self.client.logout()
 
     def test_user_manage_bulk__get(self):
-        response = self.client.get(reverse('account_manage_users'))
-        print response.content
-        self.assertTrue(False)
+        resp = self.client.get('/account/users/manage/')
+        self.assertContains(resp, '<option value="block">Block user</option>')
+        self.assertContains(resp, '<input type="submit" value="Apply" class="btn-grey">')
+        self.assertContains(resp, 'Tom Hank')
+        self.assertContains(resp, 'Panudate Vasinwattana')
+
+    def test_user_manage_bulk_post_block_users(self):
+        user1 = User.objects.get(username='tester1@example.com')
+        user2 = User.objects.get(username='tester2@example.com')
+        params = {
+            'op': 'block',
+            'user_id': [user1.id, user2.id]
+        }
+        self.client.post('/account/users/bulk/', params, follow=True)
+        user1 = User.objects.get(username='tester1@example.com')
+        user2 = User.objects.get(username='tester2@example.com')
+        assert user1.is_active == False
+        assert user2.is_active == False
+    
+    def test_user_manage_bulk_post_unblock_users(self):
+        user1 = User.objects.get(username='tester1@example.com')
+        user1.is_active = False
+        user1.save()
+
+        user2 = User.objects.get(username='tester2@example.com')
+        user2.is_active = False
+        user2.save()
+        
+        assert user1.is_active == False
+        assert user2.is_active == False
+        params = {
+            'op': 'unblock',
+            'user_id': [user1.id, user2.id]
+        }
+        self.client.post('/account/users/bulk/', params, follow=True)
+        user1 = User.objects.get(username='tester1@example.com')
+        user2 = User.objects.get(username='tester2@example.com')
+        assert user1.is_active
+        assert user2.is_active
     

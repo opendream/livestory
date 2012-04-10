@@ -337,7 +337,7 @@ def account_profile_view(request, pk):
 def account_manage_bulk(request):
     if not request.user.is_staff or request.method == 'GET':
         return render(request, '403.html', status=403)
-        
+
     if request.method == 'POST':
         user_ids = request.POST.getlist('user_id')
         operation = request.POST.get('op')
@@ -345,5 +345,8 @@ def account_manage_bulk(request):
             user = User.objects.get(id=user_id)
             if operation == 'block':
                 user.is_active = False
+                user.save()
+            elif operation == 'unblock':
+                user.is_active = True
                 user.save()
         return redirect(reverse('account_manage_users'))
