@@ -53,6 +53,15 @@ class Account(models.Model):
     def is_activated(self):
         return not AccountKey.objects.filter(user__email=email).exists()
 
+    def status(self):
+        if self.user.is_active:
+            return 'active'
+        else:
+            if not self.user.last_login: 
+                return 'not-activate'
+            else:
+                return 'block'
+
 class AccountKey(models.Model):
     
     key           = models.CharField(max_length=200)

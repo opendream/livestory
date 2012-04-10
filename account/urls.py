@@ -11,4 +11,5 @@ urlpatterns = patterns('account.views',
     url(r'forgot/$', 'account_forgot', name='account_forgot'),
 
     url(r'users/manage/$', 'account_manage_users', name='account_manage_users'),
+    url(r'users/bulk/$', 'account_manage_bulk', name='account_manage_bulk'),
 )

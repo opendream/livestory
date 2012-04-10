@@ -7,12 +7,10 @@
 
 {% block content %}
   <h1 class="page-title block">Manage Users</h1>
-  <form class="form-inline" method="POST" action="{% url blog_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">{% csrf_token %}
+  <form class="form-inline" method="POST" action="{% url account_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">{% csrf_token %}
     <a href="{% url account_profile_create %}" class="btn-green">Add user</a>
     <select name="op" id="op">
       <option>Bulk Actions</option>
-      <option value="delete">Delete user</option>
-      <option value="activate">Activate user</option>
       <option value="block">Block user</option>
     </select>
     <input type="submit" value="Apply" class="btn-grey">
@@ -70,20 +68,20 @@
               {% endif %}
             </a>
           </th>
+          <th class="centered">Status</th>
           <th class="centered">Edit</th>
-          <th class="centered">Activate</th>
         </tr>
       </thead>
       <tbody>
         {% for user in users %}
         <tr>
-          <td><input type="checkbox" name="blog_id" value="{{ blog.id }}"></td>
+          <td><input type="checkbox" name="user_id" value="{{ user.id }}"></td>
           <td><a href="{% url account_profile_view user.pk %}">{{ user.get_profile.firstname }} {{ user.get_profile.lastname }}</a></td>
           <td class="centered">{{ user.date_joined|localtime|date:"m/d/Y" }}</td>
           <td class="centered">{{ user.last_login|localtime|date:"m/d/Y" }}</td>
           <td class="centered">{% if user.is_staff %}Staff{% else %}Normal User{% endif %}</td>
+          <td class="centered">{{ user.get_profile.status }}</td>
           <td class="centered"><a href="{% url user_profile_edit user.pk %}" class="ic-action-story ic-edit-story">Edit</a></td>
-          <td class="centered">{% if not user.get_profile.is_activated %}<a href="#" class="">activate</a>{% else %}Activated{% endif %}</td>
         </tr>
         {% endfor %}
       </tbody>

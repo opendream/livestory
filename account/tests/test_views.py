@@ -313,4 +313,24 @@ class TestEditUserProfile(TestCase):
         # check user is blocked from database
         user2 = User.objects.get(username='tester@example.com')
         assert user2.is_active == False
+
+@override_settings(PRIVATE=False)
+class TestManageUserBulk(TestCase):
+    def setUp(self):
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
+        self.staff.is_staff = True
+        self.staff.save()
+
+        self.user1 = factory.create_user('tester1@example.com', 'tester1@example.com', 'testuser1', 'Panudate', 'Vasinwattana')
+        self.user2 = factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Tom', 'Hank')
+        
+        self.client.login(username='staff@example.com', password='staff')
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_user_manage_bulk__get(self):
+        response = self.client.get(reverse('account_manage_users'))
+        print response.content
+        self.assertTrue(False)
     
