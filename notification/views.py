@@ -21,7 +21,11 @@ def view(request):
 	notifications = []
 	if len(last_notification) == 1:
 		last_seven_days = last_notification[0].datetime - timedelta(7)
-		notifications = Notification.objects.filter(datetime__gt=last_seven_days).order_by('-datetime')
+		notifications = Notification.objects.filter(
+			datetime__gt=last_seven_days
+		).exclude(
+			subject=request.user
+		).order_by('-datetime')
 
 	context = {
 		'notification7days': notifications
