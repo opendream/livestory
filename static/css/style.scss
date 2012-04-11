@@ -192,6 +192,7 @@
 	.ic-edit-story { background-position: 0 -100px; }
 	.ic-delete-story { background-position: 0 -150px; }
 
+	
 
 
 /* Utilities
@@ -446,10 +447,7 @@
 
 	/* Blog Photo
 	---------------------------------------*/
-	.blog-container-photo{
-		float: left;
-		margin: 0 auto 18px;
-	}
+	.blog-container-photo{ margin: 0 auto 18px; }
 	.blog-photo{
 		@include shadow(3px, 3px, 0px, 0px, #e3e3e3);
 		position: relative;
@@ -1136,7 +1134,7 @@
 		---------------------------------------*/
 	  .blog-thumbnails > li { margin-left: 17px; }
   }
-	
+
 	/*----- Portrait tablet to landscape and desktop -----*/
   @media (min-width: 768px) and (max-width: 980px) {
   
@@ -1184,6 +1182,24 @@
 		---------------------------------------*/
 	  .mood-container{ width: 400px;}
   }
+  
+  
+  
+  
+  	@mixin mark($top, $left){
+			top: $top !important;
+			left: $left !important;
+			
+	}
+  
+  
+  
+  .rect{
+		-webkit-transition: all .75s ;
+		-moz-transition: all .75s ;
+		-o-transition: all .75s ;
+		transition: all .75s ;
+	}
 	
 	/*----- Landscape phone to portrait tablet -----*/
   @media (max-width: 768px) {
@@ -1191,14 +1207,28 @@
 	  /* 	Scour Front 
 		---------------------------------------*/
 		.scour{
-			width: auto !important;
-			height: auto !important;
-			.rect{
-				position: relative !important;
-				top: 0px !important;
-				left: 0px !important;
-			}
+			width: 718px !important; 
+			height: 500px !important;
+
+			margin-top: -40px;
 		}
+		#rect-6, #rect-24, #rect-16, #rect-4, #rect-9, #rect-2, #rect-3, #rect-7, #rect-31, #rect-20,
+		#rect-5, #rect-13, #rect-22, #rect-32, #rect-30{
+			display: none;
+		}
+		
+		
+
+		#rect-29 { @include mark(55px, 215px)  }
+		#rect-8  { @include mark(160px, 20px)  }
+		#rect-14 { @include mark(275px, 215px) }
+		#rect-28 { @include mark(275px, 408px) }
+		#rect-27 { @include mark(14px, 117px)  }
+		#rect-18 { @include mark(350px, 408px) }
+		#rect-12 { @include mark(127px, 602px) }
+		#rect-21 { @include mark(201px, 602px) }
+		#rect-23 { @include mark(276px, 602px) }
+		#rect-35 { @include mark(350px, 505px) }
 		
 	  /* Bootstrap override
 	  ---------------------------------------*/
@@ -1243,6 +1273,9 @@
   }
 	
 	@media (max-width: 730px) {
+	  
+	  
+	  
 	  
 	  /* Grid system
 	  ---------------------------------------*/

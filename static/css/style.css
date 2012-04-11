@@ -516,7 +516,6 @@ legend h1, h1 {
 /* Blog Photo
 ---------------------------------------*/
 .blog-container-photo {
-  float: left;
   margin: 0 auto 18px; }
 
 .blog-photo {
@@ -1373,17 +1372,64 @@ html[xmlns] .clearfix {
   ---------------------------------------*/
   .mood-container {
     width: 400px; } }
+.rect {
+  -webkit-transition: all .75s;
+  -moz-transition: all .75s;
+  -o-transition: all .75s;
+  transition: all .75s; }
+
 /*----- Landscape phone to portrait tablet -----*/
 @media (max-width: 768px) {
   /* 	Scour Front 
 	---------------------------------------*/
   .scour {
-    width: auto !important;
-    height: auto !important; }
-    .scour .rect {
-      position: relative !important;
-      top: 0px !important;
-      left: 0px !important; }
+    width: 718px !important;
+    height: 500px !important;
+    margin-top: -40px; }
+
+  #rect-6, #rect-24, #rect-16, #rect-4, #rect-9, #rect-2, #rect-3, #rect-7, #rect-31, #rect-20,
+  #rect-5, #rect-13, #rect-22, #rect-32, #rect-30 {
+    display: none; }
+
+  #rect-29 {
+    top: 55px !important;
+    left: 215px !important; }
+
+  #rect-8 {
+    top: 160px !important;
+    left: 20px !important; }
+
+  #rect-14 {
+    top: 275px !important;
+    left: 215px !important; }
+
+  #rect-28 {
+    top: 275px !important;
+    left: 408px !important; }
+
+  #rect-27 {
+    top: 14px !important;
+    left: 117px !important; }
+
+  #rect-18 {
+    top: 350px !important;
+    left: 408px !important; }
+
+  #rect-12 {
+    top: 127px !important;
+    left: 602px !important; }
+
+  #rect-21 {
+    top: 201px !important;
+    left: 602px !important; }
+
+  #rect-23 {
+    top: 276px !important;
+    left: 602px !important; }
+
+  #rect-35 {
+    top: 350px !important;
+    left: 505px !important; }
 
   /* Bootstrap override
   ---------------------------------------*/
