@@ -5,19 +5,24 @@
 			<form method="POST" action="{% url account_login %}" class="form-vertical thumbnail">
 				<fieldset>
 			  {% csrf_token %}
-			  {% if form.non_field_errors or form.errors %}
-			  <div class="alert alert-error">{{ form.non_field_errors.as_text }}{{ form.errors }}</div>
-			  {% endif %}
 			  <input type="hidden" name="next" value="{{next}}" />
-				
 			  <div class="item control-group">
 			    <label for="id_email" class="control-label">Email</label>
 			    <div class="input">{{ form.username }}</div>
+			    {% if form.username.errors %}
+			    <div class="alert alert-error">Please enter your email.</div>
+			    {% endif %}
 			  </div>
 			
 			  <div class="item control-group">
 			    <label for="id_password" class="control-label">Password</label>
 			    <div class="input">{{ form.password }}</div>
+			    {% if not form.username.errors and form.password.errors %}
+			    <div class="alert alert-error">Please enter your password.</div>
+			    {% endif %}
+			    {% if form.non_field_errors %}
+			    <div class="alert alert-error">Invalid username/email or password.</div>
+			    {% endif %}
 			  </div>
 			
 			  <div class="form_actions">

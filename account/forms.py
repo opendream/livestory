@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import fields
 from django.utils.translation import ugettext_lazy as _
@@ -71,3 +72,17 @@ class AccountCreationForm(UserCreationForm):
 
 class AccountForgotForm(forms.Form):
     email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'input-xlarge'}))
+
+    def __init__(self, *args, **kwargs):
+        super(AccountForgotForm, self).__init__(*args, **kwargs)
+        for k, field in self.fields.items():
+            if 'required' in field.error_messages:
+                field.error_messages['required'] = 'Please enter email address.'
+
+    def clean_email(self):
+        req_email = self.cleaned_data['email']
+        try:
+            User.objects.get(username=req_email)
+        except User.DoesNotExist:
+            raise forms.ValidationError(_('Your email miss match.'))
+        return req_email

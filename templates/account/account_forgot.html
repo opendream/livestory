@@ -24,7 +24,6 @@
 			  <div class="alert alert-error">
 			    {{ form.non_field_errors.as_text }}
 			    {{ form.email.errors.as_text }}
-			    {{ email_error }}
 			  </div>
 			  {% endif %}
 			  {% if success %}
@@ -35,7 +34,7 @@
 			  <input type="hidden" name="next" value="{{next}}" />
 				
 			  <div class="item control-group">
-			    <label for="id_email" class="control-label">Your Email</label>
+			    <label for="id_email" class="control-label">Please enter your email</label>
 			    <div class="input">{{ form.email }}</div>
 			  </div>
 			
