@@ -20,22 +20,22 @@
 			<form method="POST" action="{% url account_forgot %}" class="form-vertical thumbnail">
 				<fieldset>
 			  {% csrf_token %}
-			  {% if form.non_field_errors or form.email.errors or email_error %}
-			  <div class="alert alert-error">
-			    {{ form.non_field_errors.as_text }}
-			    {{ form.email.errors.as_text }}
-			  </div>
-			  {% endif %}
-			  {% if success %}
-			  <div class="alert alert-success">
-			    {{ success }}
-			  </div>
-			  {% endif %}
 			  <input type="hidden" name="next" value="{{next}}" />
-				
-			  <div class="item control-group">
+
+			  <div class="item control-group{% if form.non_field_errors or form.email.errors or email_error %} error {% endif %}">
 			    <label for="id_email" class="control-label">Please enter your email</label>
 			    <div class="input">{{ form.email }}</div>
+			    {% if form.non_field_errors or form.email.errors or email_error %}
+			    <div class="help-inline">
+			      {{ form.non_field_errors.as_text }}
+			      {{ form.email.errors.as_text }}
+			    </div>
+			    {% endif %}
+			    {% if success %}
+			    <div class="alert alert-success">
+			      {{ success }}
+			    </div>
+			    {% endif %}
 			  </div>
 			
 			  <div class="form_actions">

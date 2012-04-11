@@ -71,7 +71,7 @@ class AccountCreationForm(UserCreationForm):
         return account
 
 class AccountForgotForm(forms.Form):
-    email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'input-xlarge'}))
+    email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'span3'}))
 
     def __init__(self, *args, **kwargs):
         super(AccountForgotForm, self).__init__(*args, **kwargs)

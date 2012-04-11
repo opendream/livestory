@@ -1,30 +1,31 @@
 <div>
 		<div class="row login_form">
-			<div class="span4 offset4 control-group">
+			<div class="span4 offset4 control-group{% if form.non_field_errors %} error{% endif %}">
 				<h1 class="oxfam-font"><span class="brand">{{ ORGANIZATION_NAME }}</span><span class="slogan">live stories</span></h1>
 			<form method="POST" action="{% url account_login %}" class="form-vertical thumbnail">
 				<fieldset>
 			  {% csrf_token %}
 			  <input type="hidden" name="next" value="{{next}}" />
-			  <div class="item control-group">
+			  <div class="item control-group{% if form.username.errors or form.non_field_errors %} error{% endif %}">
 			    <label for="id_email" class="control-label">Email</label>
 			    <div class="input">{{ form.username }}</div>
 			    {% if form.username.errors %}
-			    <div class="alert alert-error">Please enter your email.</div>
+			    <div class="help-inline">* Please enter your email.</div>
 			    {% endif %}
 			  </div>
 			
-			  <div class="item control-group">
+			  <div class="item control-group{% if not form.username.errors and form.password.errors or form.non_field_errors %} error{% endif %}">
 			    <label for="id_password" class="control-label">Password</label>
 			    <div class="input">{{ form.password }}</div>
 			    {% if not form.username.errors and form.password.errors %}
-			    <div class="alert alert-error">Please enter your password.</div>
-			    {% endif %}
-			    {% if form.non_field_errors %}
-			    <div class="alert alert-error">Invalid username/email or password.</div>
+			    <div class="help-inline">* Please enter your password.</div>
 			    {% endif %}
 			  </div>
-			
+			  {% if form.non_field_errors %}
+			  <div class="item control-group error">
+			    <div class="help-inline">* Invalid username/email or password.</div>
+			  </div>
+			  {% endif %}
 			  <div class="form_actions">
 			    <button type="submit" class="btn-green">Login</button>
 			    <a href="{% url account_forgot %}">Forgot password?</a>
