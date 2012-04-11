@@ -37,7 +37,7 @@
       
 	      <!-- New Nav -->
 	      <ul class="nav pull-right">
-		      <li class="profile-name">
+		      <li>
 						{% if user.get_profile.image %}
 	          <img src="{{ user.get_profile.get_image|crop:AVATAR_TOP_SIZE }}" alt="" class="img-vertical"/>
 	          {% endif %}
