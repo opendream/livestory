@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.auth.models import User
 
 from celery.decorators import task
 from smtplib import SMTPAuthenticationError
@@ -50,8 +51,8 @@ def send_invite(invite_list, base_url):
 def send_forgot(email, base_url):
     subject = 'You have new activate link from %s' % settings.SITE_NAME
     
-    key = hashlib.md5('key%s%s' % (email, str(datetime.now()))).hexdigest()[0:30]
-    activate_link = '%s%s' % (base_url[0:-1], reverse('account_activate', args=[key]))
+    new_key = hashlib.md5('key%s%s' % (email, str(datetime.now()))).hexdigest()[0:30]
+    activate_link = '%s%s' % (base_url[0:-1], reverse('account_activate', args=[new_key]))
     
     body = render_to_string('account/account_send_forgot.html', {
         'site_name': settings.SITE_NAME,
@@ -63,14 +64,13 @@ def send_forgot(email, base_url):
         'activate_link': activate_link
     })
                 
-    account_key = AccountKey.objects.get(user__email=email)
+    user = User.objects.get(email=email)
     try:
         msg = EmailMessage(subject, body, settings.EMAIL_HOST_USER, [email])
         msg.content_subtype = 'html'
         msg.send()
         
-        account_key.key = key
-        account_key.save()
+        AccountKey.objects.create(user=user, key=new_key)
         return True
     except SMTPAuthenticationError:
         return False

@@ -235,12 +235,8 @@ def account_forgot(request):
     if request.POST:
         form = AccountForgotForm(request.POST)
         if form.is_valid():
-            try:
-                user = User.objects.get(email=request.POST.get('email'))
-            except User.DoesNotExist:
-                email_error = 'Your email miss match.'
-                
-            if send_forgot(user.email, request.build_absolute_uri('/')):
+            request_email = form.cleaned_data.get('email')
+            if send_forgot(request_email, request.build_absolute_uri('/')):
                 success = 'Check your email and click the activate link for join us again.'
             else:
                 email_error = 'Send email error. Please, try again later.'

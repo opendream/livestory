@@ -93,7 +93,7 @@ $(document).ready(function() {\n\
       var remaining = maxlength - len;\n\
       if (remaining < 0) {\n\
         $counter.closest('.control-group').addClass('error');\n\
-        $buttons.attr('disabled', 'disabled');\n\
+        //$buttons.removeAttr('disabled', 'disabled');\n\
       } else {\n\
         $counter.closest('.control-group').removeClass('error');\n\
         $buttons.removeAttr('disabled');\n\
