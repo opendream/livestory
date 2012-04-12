@@ -165,32 +165,20 @@
 
             // Events.
             this._tagInput
-                .keydown(function(event) {
-                    // Backspace is not detected within a keypress, so it must use keydown.
-                    if (event.which == $.ui.keyCode.BACKSPACE && that._tagInput.val() === '') {
-                        var tag = that._lastTag();
-                        if (!that.options.removeConfirmation || tag.hasClass('remove')) {
-                            // When backspace is pressed, the last tag is deleted.
-                            that.removeTag(tag);
-                        } else if (that.options.removeConfirmation) {
-                            tag.addClass('remove ui-state-highlight');
-                        }
-                    } else if (that.options.removeConfirmation) {
-                        that._lastTag().removeClass('remove ui-state-highlight');
-                    }
-
+                .keypress(function(event) {
                     // Comma/Space/Enter are all valid delimiters for new tags,
                     // except when there is an open quote or if setting allowSpaces = true.
                     // Tab will also create a tag, unless the tag input is empty, in which case it isn't caught.
+                    console.log(event.which)
                     if (
-                        event.which == $.ui.keyCode.COMMA ||
-                        event.which == $.ui.keyCode.ENTER ||
+                        event.which == 44 /*COMMA*/ ||
+                        event.which == 13 /*ENTER*/ ||
                         (
-                            event.which == $.ui.keyCode.TAB &&
+                            event.which == 9 /*TAB*/ &&
                             that._tagInput.val() !== ''
                         ) ||
                         (
-                            event.which == $.ui.keyCode.SPACE &&
+                            event.which == 32 /*SPACE*/ &&
                             that.options.allowSpaces !== true &&
                             (
                                 $.trim(that._tagInput.val()).replace( /^s*/, '' ).charAt(0) != '"' ||
@@ -210,6 +198,19 @@
                 }).blur(function(e){
                     // Create a tag when the element loses focus (unless it's empty).
                     that.createTag(that._cleanedInput());
+                }).keydown(function(event) {
+                    // Backspace is not detected within a keypress, so it must use keydown.
+                    if (event.which == $.ui.keyCode.BACKSPACE && that._tagInput.val() === '') {
+                        var tag = that._lastTag();
+                        if (!that.options.removeConfirmation || tag.hasClass('remove')) {
+                            // When backspace is pressed, the last tag is deleted.
+                            that.removeTag(tag);
+                        } else if (that.options.removeConfirmation) {
+                            tag.addClass('remove ui-state-highlight');
+                        }
+                    } else if (that.options.removeConfirmation) {
+                        that._lastTag().removeClass('remove ui-state-highlight');
+                    }
                 });
                 
 
