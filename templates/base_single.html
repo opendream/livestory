@@ -75,9 +75,6 @@
             <div class="">
               {{ place_form.country }}
               {{ place_form.city }}
-              {% if place_form.country.errors or form.city.errors %}
-              <span class="help-inline">* Please enter both fields.</span>
-              {% endif %}
               <input type="submit" value="Submit" class="btn-grey" />
               <p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
             </div>
