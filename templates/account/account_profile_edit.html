@@ -77,7 +77,7 @@
           <div class="image-wrapper"{% if not account.image %} style="display:none;"{% endif %}>
   					<div class="image-append">
   					  {% if account.image %}
-  					  <img src="{{ account.image|crop:AVATAR_SIZE }}" />
+  					  <img src="{{ account.image|crop:AVATAR_SIZE }}"/>
   					  {% endif %}
   					</div>
   					<a href="{% url ajax_account_image_delete %}" class="ic image-delete">change image</a>
@@ -96,7 +96,7 @@
 
     <div class="form-backend">
       <button type="submit" class="btn-green">Update Profile</button>
-      <button type="reset" class="btn-grey">Cancel</button>
+      <button type="reset" class="btn-grey">Reset</button>
     </div>
   </fieldset>
 </form>

@@ -59,6 +59,14 @@ class AccountCreationForm(UserCreationForm):
         self.fields['password1'].widget=forms.PasswordInput(attrs={'class': 'span3'})
         self.fields['password2'].widget=forms.PasswordInput(attrs={'class': 'span3'})
 
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        try:
+            User.objects.get(username=username)
+        except User.DoesNotExist:
+            return username
+        raise forms.ValidationError(_("This email is already exists."))
+
     def save(self, commit=False):
         user = super(AccountCreationForm, self).save(commit)
         user.email = self.cleaned_data['username']
@@ -75,9 +83,7 @@ class AccountForgotForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(AccountForgotForm, self).__init__(*args, **kwargs)
-        for k, field in self.fields.items():
-            if 'required' in field.error_messages:
-                field.error_messages['required'] = 'Please enter email address.'
+        self.fields['email'].error_messages['required'] = 'Please enter email address.'
 
     def clean_email(self):
         req_email = self.cleaned_data['email']
