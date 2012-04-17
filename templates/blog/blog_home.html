@@ -11,7 +11,7 @@
 <div class="scour blog-list" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
   {% for rect in rects %}
   <div 
-  {% if rect.blog %} id="rect-{{ rect.blog.id }}" {% endif %}
+  {% if rect.blog %} id="rect-{{ forloop.counter }}" {% endif %}
   class="rect {{ rect.placement }}{% if rect.blog %} has_blog{% endif %}" style="
     left:{{ rect.rect.left }}px;
     top:{{ rect.rect.top }}px;
