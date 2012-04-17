@@ -71,9 +71,7 @@
 a {
   color: #390; }
 
-a:visited {
-  color: #339900; }
-
+/* 	a:visited { color:#339900; } */
 a:hover {
   text-decoration: underline; }
 
@@ -247,6 +245,64 @@ a:active {
 .ic-delete-story {
   background-position: 0 -150px; }
 
+/* CSS3 Transition
+---------------------------------------*/
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
+
+.rect {
+  -webkit-transition: all .75s;
+  -moz-transition: all .75s;
+  -o-transition: all .75s;
+  transition: all .75s;
+  background: transparent !important;
+  -webkit-animation-name: fadeIn;
+  -moz-animation-name: fadeIn;
+  -ms-animation-name: fadeIn;
+  -o-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -moz-animation-duration: 3s;
+  -moz-animation-delay: 0;
+  -moz-animation-iteration-count: 1;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-delay: 0;
+  -webkit-animation-iteration-count: 1;
+  animation-duration: 3s;
+  animation-delay: 0;
+  animation-iteration-count: 1; }
+
 /* Utilities
 ---------------------------------------*/
 .block {
@@ -264,6 +320,9 @@ a:active {
 
 .hide-text {
   display: none; }
+
+.inline {
+  display: inline !important; }
 
 .no-shadow {
   -moz-box-shadow: none;
@@ -338,9 +397,6 @@ legend h1, h1 {
     padding: 0; }
   #topbar .navbar {
     margin-bottom: 0; }
-  #topbar .profile-name a {
-    display: inline;
-    padding: 0; }
   #topbar .nav {
     margin: 0; }
     #topbar .nav > li > a {
@@ -944,6 +1000,7 @@ li:hover .tooltip-popup {
 /* Photo Thumbnail
 ---------------------------------------*/
 .blog-thumbnail {
+  position: relative;
   padding: 0;
   border: none; }
 
@@ -1310,6 +1367,57 @@ html[xmlns] .clearfix {
     margin-left: 17px; } }
 /*----- Portrait tablet to landscape and desktop -----*/
 @media (min-width: 768px) and (max-width: 980px) {
+  /* 	Scour Front 
+	---------------------------------------*/
+  .scour {
+    width: 718px !important;
+    height: 500px !important;
+    margin-top: -40px; }
+
+  #rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+  #rect-21, #rect-22, #rect-23, #rect-24, #rect-25 {
+    display: none; }
+
+  #rect-1 {
+    top: 55px !important;
+    left: 215px !important; }
+
+  #rect-2 {
+    top: 160px !important;
+    left: 20px !important; }
+
+  #rect-4 {
+    top: 275px !important;
+    left: 215px !important; }
+
+  #rect-7 {
+    top: 275px !important;
+    left: 408px !important; }
+
+  #rect-8 {
+    top: 14px !important;
+    left: 117px !important; }
+
+  #rect-11 {
+    top: 350px !important;
+    left: 408px !important; }
+
+  #rect-13 {
+    top: 127px !important;
+    left: 602px !important; }
+
+  #rect-14 {
+    top: 201px !important;
+    left: 602px !important; }
+
+  #rect-15 {
+    top: 276px !important;
+    left: 602px !important; }
+
+  #rect-16 {
+    top: 350px !important;
+    left: 505px !important; }
+
   /* Bootstrap override
   ---------------------------------------*/
   .navbar .nav > li > a, .navbar .dropdown-menu a {
@@ -1372,12 +1480,6 @@ html[xmlns] .clearfix {
   ---------------------------------------*/
   .mood-container {
     width: 400px; } }
-.rect {
-  -webkit-transition: all .75s;
-  -moz-transition: all .75s;
-  -o-transition: all .75s;
-  transition: all .75s; }
-
 /*----- Landscape phone to portrait tablet -----*/
 @media (max-width: 768px) {
   /* 	Scour Front 
@@ -1387,47 +1489,47 @@ html[xmlns] .clearfix {
     height: 500px !important;
     margin-top: -40px; }
 
-  #rect-6, #rect-24, #rect-16, #rect-4, #rect-9, #rect-2, #rect-3, #rect-7, #rect-31, #rect-20,
-  #rect-5, #rect-13, #rect-22, #rect-32, #rect-30 {
+  #rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+  #rect-21, #rect-22, #rect-23, #rect-24, #rect-25 {
     display: none; }
 
-  #rect-29 {
+  #rect-1 {
     top: 55px !important;
     left: 215px !important; }
 
-  #rect-8 {
+  #rect-2 {
     top: 160px !important;
     left: 20px !important; }
 
-  #rect-14 {
+  #rect-4 {
     top: 275px !important;
     left: 215px !important; }
 
-  #rect-28 {
+  #rect-7 {
     top: 275px !important;
     left: 408px !important; }
 
-  #rect-27 {
+  #rect-8 {
     top: 14px !important;
     left: 117px !important; }
 
-  #rect-18 {
+  #rect-11 {
     top: 350px !important;
     left: 408px !important; }
 
-  #rect-12 {
+  #rect-13 {
     top: 127px !important;
     left: 602px !important; }
 
-  #rect-21 {
+  #rect-14 {
     top: 201px !important;
     left: 602px !important; }
 
-  #rect-23 {
+  #rect-15 {
     top: 276px !important;
     left: 602px !important; }
 
-  #rect-35 {
+  #rect-16 {
     top: 350px !important;
     left: 505px !important; }
 
@@ -1496,6 +1598,96 @@ html[xmlns] .clearfix {
   .grid-colspan {
     width: 670px; } }
 @media (min-width: 480px) and (max-width: 730px) {
+  /* 	Scour Front 
+  ---------------------------------------*/
+  .scour {
+    width: 425px !important;
+    height: 940px !important;
+    margin-top: -40px; }
+
+  .popover, .black-layer {
+    display: none !important; }
+
+  #rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
+  #rect-19, #rect-20, #rect-21, #rect-22 {
+    display: block; }
+
+  #rect-1 {
+    top: 0px !important;
+    left: 20px !important; }
+
+  #rect-2 {
+    top: 222px !important;
+    left: 20px !important; }
+
+  #rect-4 {
+    top: 222px !important;
+    left: 215px !important; }
+
+  #rect-7 {
+    top: 370px !important;
+    left: 215px !important; }
+
+  #rect-13 {
+    top: 518px !important;
+    left: 312px !important; }
+
+  #rect-14 {
+    top: 444px !important;
+    left: 312px !important; }
+
+  #rect-8 {
+    top: 444px !important;
+    left: 215px !important; }
+
+  #rect-5 {
+    top: 518px !important;
+    left: 20px !important; }
+
+  #rect-3 {
+    top: 592px !important;
+    left: 215px !important; }
+
+  #rect-15 {
+    top: 666px !important;
+    left: 20px !important; }
+
+  #rect-16 {
+    top: 666px !important;
+    left: 117px !important; }
+
+  #rect-10 {
+    top: 740px !important;
+    left: 20px !important; }
+
+  #rect-22 {
+    top: 814px !important;
+    left: 20px !important; }
+
+  #rect-17 {
+    top: 888px !important;
+    left: 20px !important; }
+
+  #rect-11 {
+    top: 814px !important;
+    left: 117px !important; }
+
+  #rect-18 {
+    top: 814px !important;
+    left: 215px !important; }
+
+  #rect-19 {
+    top: 814px !important;
+    left: 312px !important; }
+
+  #rect-20 {
+    top: 888px !important;
+    left: 215px !important; }
+
+  #rect-21 {
+    top: 888px !important;
+    left: 312px !important; }
+
   	/* Grid system
     ---------------------------------------*/
   .grid {
@@ -1505,6 +1697,96 @@ html[xmlns] .clearfix {
     width: 98%; } }
 /*----- Landscape phones and down -----*/
 @media (max-width: 480px) {
+  /* 	Scour Front 
+	---------------------------------------*/
+  .scour {
+    width: 425px !important;
+    height: 940px !important;
+    margin-top: -40px; }
+
+  .popover, .black-layer {
+    display: none !important; }
+
+  #rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
+  #rect-19, #rect-20, #rect-21, #rect-22 {
+    display: block; }
+
+  #rect-1 {
+    top: 0px !important;
+    left: 20px !important; }
+
+  #rect-2 {
+    top: 222px !important;
+    left: 20px !important; }
+
+  #rect-4 {
+    top: 222px !important;
+    left: 215px !important; }
+
+  #rect-7 {
+    top: 370px !important;
+    left: 215px !important; }
+
+  #rect-13 {
+    top: 518px !important;
+    left: 312px !important; }
+
+  #rect-14 {
+    top: 444px !important;
+    left: 312px !important; }
+
+  #rect-8 {
+    top: 444px !important;
+    left: 215px !important; }
+
+  #rect-5 {
+    top: 518px !important;
+    left: 20px !important; }
+
+  #rect-3 {
+    top: 592px !important;
+    left: 215px !important; }
+
+  #rect-15 {
+    top: 666px !important;
+    left: 20px !important; }
+
+  #rect-16 {
+    top: 666px !important;
+    left: 117px !important; }
+
+  #rect-10 {
+    top: 740px !important;
+    left: 20px !important; }
+
+  #rect-22 {
+    top: 814px !important;
+    left: 20px !important; }
+
+  #rect-17 {
+    top: 888px !important;
+    left: 20px !important; }
+
+  #rect-11 {
+    top: 814px !important;
+    left: 117px !important; }
+
+  #rect-18 {
+    top: 814px !important;
+    left: 215px !important; }
+
+  #rect-19 {
+    top: 814px !important;
+    left: 312px !important; }
+
+  #rect-20 {
+    top: 888px !important;
+    left: 215px !important; }
+
+  #rect-21 {
+    top: 888px !important;
+    left: 312px !important; }
+
   /* Bootstrap override
   ---------------------------------------*/
   .navbar .nav > li {
@@ -1677,6 +1959,129 @@ html[xmlns] .clearfix {
   input[class*="span"], select[class*="span"], textarea[class*="span"], .uneditable-input {
     margin-bottom: 9px; } }
 @media (max-width: 320px) {
+  /* 	Scour Front 
+	---------------------------------------*/
+  .scour {
+    width: 280px !important;
+    height: 670px !important;
+    margin-top: -20px; }
+
+  .popover, .black-layer {
+    display: none !important; }
+
+  #rect-1 {
+    width: 270px !important;
+    height: 158px !important; }
+
+  /* Big*/
+  #rect-2 {
+    width: 132px !important;
+    height: 205px !important; }
+
+  /* Port */
+  #rect-4, #rect-5 {
+    width: 132px !important;
+    height: 99px !important; }
+
+  /*squ */
+  #rect-7, #rect-10 {
+    width: 132px !important;
+    height: 46px !important; }
+
+  /* hori */
+  #rect-13, #rect-14, #rect-15, #rect-16, #rect-17, #rect-18,
+  #rect-19, #rect-20, #rect-21, #rect-22 {
+    width: 63px !important;
+    height: 50px !important; }
+
+  /*small */
+  #rect-8, #rect-11 {
+    width: 63px !important;
+    height: 99px !important; }
+
+  /* port small */
+  #rect-3 {
+    width: 131px !important;
+    height: 207px !important; }
+
+  /* normal */
+  /*  h:158px w:131px*/
+  #rect-1 {
+    top: 0px !important;
+    left: 0px !important; }
+
+  #rect-2 {
+    top: 157px !important;
+    left: 0px !important; }
+
+  #rect-4 {
+    top: 157px !important;
+    left: 138px !important; }
+
+  #rect-7 {
+    top: 262px !important;
+    left: 138px !important; }
+
+  #rect-13 {
+    top: 366px !important;
+    left: 206px !important; }
+
+  #rect-14 {
+    top: 313px !important;
+    left: 206px !important; }
+
+  #rect-8 {
+    top: 313px !important;
+    left: 138px !important; }
+
+  #rect-5 {
+    top: 368px !important;
+    left: 0px !important; }
+
+  #rect-3 {
+    top: 419px !important;
+    left: 138px !important; }
+
+  #rect-15 {
+    top: 473px !important;
+    left: 0px !important; }
+
+  #rect-16 {
+    top: 473px !important;
+    left: 69px !important; }
+
+  #rect-10 {
+    top: 525px !important;
+    left: 0px !important; }
+
+  #rect-22 {
+    top: 628px !important;
+    left: 0px !important; }
+
+  #rect-17 {
+    top: 576px !important;
+    left: 0px !important; }
+
+  #rect-11 {
+    top: 576px !important;
+    left: 69px !important; }
+
+  #rect-18 {
+    top: 576px !important;
+    left: 138px !important; }
+
+  #rect-19 {
+    top: 576px !important;
+    left: 206px !important; }
+
+  #rect-20 {
+    top: 629px !important;
+    left: 138px !important; }
+
+  #rect-21 {
+    top: 629px !important;
+    left: 206px !important; }
+
   /* Grid system
   ---------------------------------------*/
   .grid {
@@ -1702,7 +2107,10 @@ html[xmlns] .clearfix {
   	/* Thumbnails
     ---------------------------------------*/
   .blog-thumbnails [class*="span"] {
-    width: auto; }
+    width: auto !important; }
+
+  .thumbnail {
+    width: 260px; }
 
   	/* Thumbnails
     ---------------------------------------*/
@@ -1862,6 +2270,7 @@ html[xmlns] .clearfix {
   text-align: center;
   padding: 10px !important; }
 
+/* unknow */
 .separate {
   background: #5e5e5e;
   width: 1px;
@@ -1875,8 +2284,6 @@ html[xmlns] .clearfix {
   font-weight: bold;
   color: #000 !important; }
 
-/* ungruop */
-/* unknow */
 .typeahead a {
   background: #fff !important; }
   .typeahead a:hover {
