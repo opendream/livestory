@@ -71,7 +71,8 @@ a {
 
 /* 	a:visited { color:#339900; } */
 a:hover {
-  text-decoration: underline; }
+  color: #666;
+  text-decoration: none; }
 
 a:active {
   color: #000; }
@@ -495,8 +496,7 @@ legend h1, h1 {
 .dropdown-menu li a {
   color: #390 !important; }
   .dropdown-menu li a:hover {
-    background: #f2f2f2;
-    text-decoration: underline; }
+    background: #f2f2f2; }
 
 .caret {
   opacity: 0.5; }
@@ -1047,6 +1047,8 @@ li:hover .tooltip-popup {
   position: relative;
   padding: 0;
   border: none; }
+  .blog-thumbnail a {
+    display: block; }
 
 .thumbnail .status {
   bottom: 0;
@@ -1076,10 +1078,6 @@ li:hover .tooltip-popup {
     width: 310px;
     height: 102px;
     z-index: 20000000; }
-
-.image-upload {
-  position: relative;
-  height: 140px; }
 
 .image-border {
   background: transparent;
@@ -1261,19 +1259,24 @@ ul.tagit input[type="text"] {
 ---------------------------------------*/
 .sidebar-title {
   border-bottom: 1px solid #ddd;
-  font-size: 16px;
   margin-bottom: 10px;
   padding-bottom: 5px; }
 
-.download-photo ul {
+.sidebar-list h3 {
+  font-size: 16px; }
+.sidebar-list ul {
   margin-left: 0; }
-.download-photo li {
+.sidebar-list li {
   list-style-type: none;
   border-bottom: 1px solid #ddd;
   padding: 10px 0;
   overflow: hidden; }
+.sidebar-list .mood-icon {
+  margin: 0; }
+.sidebar-list .mood-icon:hover {
+  cursor: auto; }
 
-.col-left {
+.ic-widget {
   padding-left: 25px;
   background: url("../img/ic-blog.png") no-repeat; }
 
@@ -1285,22 +1288,21 @@ ul.tagit input[type="text"] {
 
 .col-left, .col-right {
   float: left;
-  vertical-align: top; }
+  line-height: 28px; }
 
 .col-left {
-  width: 25%; }
+  width: 30%; }
 
 .col-right {
-  width: 65%; }
+  width: 60%; }
 
-.blog-tag {
-  overflow: hidden; }
-  .blog-tag .badge {
-    color: #fff !important;
-    margin: 0 5px 5px 0;
-    float: left; }
-    .blog-tag .badge:hover {
-      background-color: #666; }
+.badge {
+  margin: 5px 5px 0px 0;
+  float: left;
+  line-height: 18px;
+  color: #fff !important; }
+  .badge:hover {
+    background-color: #666; }
 
 /* Scour Front Page
 ---------------------------------------*/
@@ -1418,7 +1420,11 @@ html[xmlns] .clearfix {
     height: 500px !important;
     margin-top: -40px; }
 
-  #rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+  .popover, .black-layer {
+    display: none !important; }
+
+  #rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
+  #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
   #rect-21, #rect-22, #rect-23, #rect-24, #rect-25 {
     display: none; }
 
@@ -1526,7 +1532,15 @@ html[xmlns] .clearfix {
   /* 	Filter 
   ---------------------------------------*/
   .mood-container {
-    width: 400px; } }
+    width: 400px; }
+
+  /* 	Cols 
+	---------------------------------------*/
+  .col-left {
+    width: 45%; }
+
+  .col-right {
+    width: 50%; } }
 /*----- Landscape phone to portrait tablet -----*/
 @media (max-width: 768px) {
   /* 	Scour Front 
@@ -1535,6 +1549,9 @@ html[xmlns] .clearfix {
     width: 718px !important;
     height: 500px !important;
     margin-top: -40px; }
+
+  .popover, .black-layer {
+    display: none !important; }
 
   #rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
   #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
@@ -2053,29 +2070,28 @@ html[xmlns] .clearfix {
     width: 132px !important;
     height: 99px !important; }
 
-  /*squ */
+  /* Squ */
   #rect-7, #rect-10 {
     width: 132px !important;
     height: 46px !important; }
 
-  /* hori */
+  /* Hori */
   #rect-13, #rect-14, #rect-15, #rect-16, #rect-17, #rect-18,
   #rect-19, #rect-20, #rect-21, #rect-22 {
     width: 63px !important;
     height: 50px !important; }
 
-  /*small */
+  /* Small */
   #rect-8, #rect-11 {
     width: 63px !important;
     height: 99px !important; }
 
-  /* port small */
+  /* Port small */
   #rect-3 {
     width: 131px !important;
     height: 207px !important; }
 
-  /* normal */
-  /*  h:158px w:131px*/
+  /* Normal */
   #rect-1 {
     top: 0px !important;
     left: 0px !important; }

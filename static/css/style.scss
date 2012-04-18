@@ -115,7 +115,7 @@
 	---------------------------------------*/
 	a { color:#390; }
 /* 	a:visited { color:#339900; } */
-	a:hover { text-decoration: underline; } 
+	a:hover { color:#666; text-decoration: none; } 
 	a:active { color:#000; }
 	
 	::-webkit-input-placeholder {color: #c6c6c6; }
@@ -401,7 +401,7 @@
 		}
 		.dropdown-menu li a {
 			color:#390 !important;
-			&:hover { background: #f2f2f2; text-decoration: underline; }
+			&:hover { background: #f2f2f2; }
 		}
 		.caret{ opacity: 0.5; }
 		
@@ -859,6 +859,7 @@
 			position: relative;
 			padding: 0;
 			border: none;
+			a{ display: block; }
 		}
 		.thumbnail .status{
 			bottom: 0;
@@ -890,10 +891,6 @@
 			z-index: 20000000;
 		}
 	}
-	.image-upload {
-    position: relative;
-    height: 140px;
-  }
 	.image-border {
     background: transparent ;
     background: #f0f0f0;
@@ -1061,11 +1058,11 @@
 	---------------------------------------*/
 	.sidebar-title {
 		border-bottom: 1px solid #ddd;
-		font-size: 16px;
 		margin-bottom: 10px;
 		padding-bottom: 5px;
 	}
-	.download-photo {
+	.sidebar-list {
+		h3{ font-size: 16px; }
 		ul { margin-left: 0; }
 		li {
 			list-style-type: none;
@@ -1073,25 +1070,26 @@
 			padding: 10px 0;
 			overflow: hidden;
 		}
+		.mood-icon{ margin: 0; }
+		.mood-icon:hover{ cursor: auto;}
 	}
-	.col-left {
+	.ic-widget {
 		padding-left: 25px;
 		background: url("../img/ic-blog.png") no-repeat;
 	}
 	.ic-size { background-position: 0 -50px !important; }
 	.ic-download { background-position: 4px 3px !important; }
-	.col-left, .col-right{ float: left; vertical-align: top;}
-	.col-left{ width: 25%;}
-	.col-right{ width: 65%;}
 	
-	.blog-tag {
-		overflow: hidden;
-		.badge {
-			color: #fff !important;
-			margin: 0 5px 5px 0;
-			float: left;
-			&:hover { background-color: #666; }
-		}
+	.col-left, .col-right{ float: left; line-height: 28px; }
+	.col-left{ width: 30%;}
+	.col-right{ width: 60%;}
+	
+	.badge {
+		margin: 5px 5px 0px 0;
+		float: left;
+		line-height: 18px;
+		color: #fff !important;
+		&:hover { background-color: #666; }
 	}
 	
 	/* Scour Front Page
@@ -1211,15 +1209,17 @@
 			height: 500px !important;
 			margin-top: -40px;
 		}
-		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+		.popover, .black-layer{ display: none !important; }
+		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
+		#rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
 		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
 			display: none;
 		}
-		#rect-1 { @include mark(55px, 215px)  }
-		#rect-2 { @include mark(160px, 20px)  }
-		#rect-4 { @include mark(275px, 215px) }
-		#rect-7 { @include mark(275px, 408px) }
-		#rect-8 { @include mark(14px, 117px)  }
+		#rect-1  { @include mark(55px, 215px)  }
+		#rect-2  { @include mark(160px, 20px)  }
+		#rect-4  { @include mark(275px, 215px) }
+		#rect-7  { @include mark(275px, 408px) }
+		#rect-8  { @include mark(14px, 117px)  }
 		#rect-11 { @include mark(350px, 408px) }
 		#rect-13 { @include mark(127px, 602px) }
 		#rect-14 { @include mark(201px, 602px) }
@@ -1238,7 +1238,6 @@
 			  margin-bottom: 10px;
 		  }
 	  }
-	  
   
 	  /* Menu 
 	  ---------------------------------------*/
@@ -1274,6 +1273,12 @@
 		/* 	Filter 
 		---------------------------------------*/
 	  .mood-container{ width: 400px;}
+	  
+	  /* 	Cols 
+		---------------------------------------*/
+		.col-left  { width: 45%; }
+		.col-right { width: 50%; }
+
   }
 	
 	/*----- Landscape phone to portrait tablet -----*/
@@ -1286,16 +1291,17 @@
 			height: 500px !important;
 			margin-top: -40px;
 		}
+		.popover, .black-layer{ display: none !important; }
 		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
 		#rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
 		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
 			display: none;
 		}
-		#rect-1 { @include mark(55px, 215px)  }
-		#rect-2 { @include mark(160px, 20px)  }
-		#rect-4 { @include mark(275px, 215px) }
-		#rect-7 { @include mark(275px, 408px) }
-		#rect-8 { @include mark(14px, 117px)  }
+		#rect-1  { @include mark(55px, 215px)  }
+		#rect-2  { @include mark(160px, 20px)  }
+		#rect-4  { @include mark(275px, 215px) }
+		#rect-7  { @include mark(275px, 408px) }
+		#rect-8  { @include mark(14px, 117px)  }
 		#rect-11 { @include mark(350px, 408px) }
 		#rect-13 { @include mark(127px, 602px) }
 		#rect-14 { @include mark(201px, 602px) }
@@ -1367,25 +1373,25 @@
 		#rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
 		#rect-19, #rect-20, #rect-21, #rect-22 { display: block; }
 		
-		#rect-1 { @include mark(0px, 20px)     }
-		#rect-2  { @include mark(222px, 20px)   }
-		#rect-4 { @include mark(222px, 215px) }
-		#rect-7 { @include mark(370px, 215px) }
+		#rect-1  { @include mark(0px, 20px)    }
+		#rect-2  { @include mark(222px, 20px)  }
+		#rect-4  { @include mark(222px, 215px) }
+		#rect-7  { @include mark(370px, 215px) }
 		#rect-13 { @include mark(518px, 312px) }
 		#rect-14 { @include mark(444px, 312px) }
-		#rect-8 { @include mark(444px, 215px) }
-		#rect-5 { @include mark(518px, 20px)   }
+		#rect-8  { @include mark(444px, 215px) }
+		#rect-5  { @include mark(518px, 20px)  }
 		#rect-3  { @include mark(592px, 215px) }
-		#rect-15 { @include mark(666px, 20px)   }
-		#rect-16 { @include mark(666px, 117px)  }
-	  #rect-10  { @include mark(740px, 20px)   }
-	  #rect-22 { @include mark(814px, 20px)   }
-	  #rect-17 { @include mark(888px, 20px)   }
-	  #rect-11 { @include mark(814px, 117px)  }
-	  #rect-18  { @include mark(814px, 215px) }
+		#rect-15 { @include mark(666px, 20px)  }
+		#rect-16 { @include mark(666px, 117px) }
+	  #rect-10 { @include mark(740px, 20px)  }
+	  #rect-22 { @include mark(814px, 20px)  }
+	  #rect-17 { @include mark(888px, 20px)  }
+	  #rect-11 { @include mark(814px, 117px) }
+	  #rect-18 { @include mark(814px, 215px) }
 	  #rect-19 { @include mark(814px, 312px) }
 	  #rect-20 { @include mark(888px, 215px) }
-	  #rect-21  { @include mark(888px, 312px) }
+	  #rect-21 { @include mark(888px, 312px) }
 		
 		/* Grid system
 	  ---------------------------------------*/
@@ -1416,25 +1422,25 @@
 		#rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
 		#rect-19, #rect-20, #rect-21, #rect-22 { display: block; }
 		
-		#rect-1 { @include mark(0px, 20px)     }
-		#rect-2  { @include mark(222px, 20px)   }
-		#rect-4 { @include mark(222px, 215px) }
-		#rect-7 { @include mark(370px, 215px) }
+		#rect-1  { @include mark(0px, 20px)    }
+		#rect-2  { @include mark(222px, 20px)  }
+		#rect-4  { @include mark(222px, 215px) }
+		#rect-7  { @include mark(370px, 215px) }
 		#rect-13 { @include mark(518px, 312px) }
 		#rect-14 { @include mark(444px, 312px) }
-		#rect-8 { @include mark(444px, 215px) }
-		#rect-5 { @include mark(518px, 20px)   }
+		#rect-8  { @include mark(444px, 215px) }
+		#rect-5  { @include mark(518px, 20px)  }
 		#rect-3  { @include mark(592px, 215px) }
-		#rect-15 { @include mark(666px, 20px)   }
-		#rect-16 { @include mark(666px, 117px)  }
-	  #rect-10  { @include mark(740px, 20px)   }
-	  #rect-22 { @include mark(814px, 20px)   }
-	  #rect-17 { @include mark(888px, 20px)   }
-	  #rect-11 { @include mark(814px, 117px)  }
-	  #rect-18  { @include mark(814px, 215px) }
+		#rect-15 { @include mark(666px, 20px)  }
+		#rect-16 { @include mark(666px, 117px) }
+	  #rect-10 { @include mark(740px, 20px)  }
+	  #rect-22 { @include mark(814px, 20px)  }
+	  #rect-17 { @include mark(888px, 20px)  }
+	  #rect-11 { @include mark(814px, 117px) }
+	  #rect-18 { @include mark(814px, 215px) }
 	  #rect-19 { @include mark(814px, 312px) }
 	  #rect-20 { @include mark(888px, 215px) }
-	  #rect-21  { @include mark(888px, 312px) }
+	  #rect-21 { @include mark(888px, 312px) }
 	  
 	  /* Bootstrap override
 	  ---------------------------------------*/
@@ -1602,33 +1608,32 @@
 
 		#rect-1 { @include size(270px, 158px) } /* Big*/
 		#rect-2 { @include size(132px, 205px) } /* Port */
-		#rect-4, #rect-5 { @include size(132px, 99px) } /*squ */
-		#rect-7, #rect-10,  { @include size(132px, 46px) } /* hori */
+		#rect-4, #rect-5 { @include size(132px, 99px) } /* Squ */
+		#rect-7, #rect-10,  { @include size(132px, 46px) } /* Hori */
 		#rect-13, #rect-14, #rect-15, #rect-16, #rect-17, #rect-18,
-		#rect-19, #rect-20, #rect-21, #rect-22{ @include size(63px, 50px) } /*small */
-		#rect-8, #rect-11 { @include size(63px, 99px) } /* port small */
-		#rect-3 { @include size(131px, 207px) } /* normal */
-		/*  h:158px w:131px*/
+		#rect-19, #rect-20, #rect-21, #rect-22{ @include size(63px, 50px) } /* Small */
+		#rect-8, #rect-11 { @include size(63px, 99px) } /* Port small */
+		#rect-3 { @include size(131px, 207px) } /* Normal */
 		
-		#rect-1 { @include mark(0px, 0px)     }
+		#rect-1  { @include mark(0px, 0px)     }
 		#rect-2  { @include mark(157px, 0px)   }
-		#rect-4 { @include mark(157px, 138px) }
-		#rect-7 { @include mark(262px, 138px) }
+		#rect-4  { @include mark(157px, 138px) }
+		#rect-7  { @include mark(262px, 138px) }
 		#rect-13 { @include mark(366px, 206px) }
 		#rect-14 { @include mark(313px, 206px) }
-		#rect-8 { @include mark(313px, 138px) }
-		#rect-5 { @include mark(368px, 0px)   }
+		#rect-8  { @include mark(313px, 138px) }
+		#rect-5  { @include mark(368px, 0px)   }
 		#rect-3  { @include mark(419px, 138px) }
 		#rect-15 { @include mark(473px, 0px)   }
 		#rect-16 { @include mark(473px, 69px)  }
-	  #rect-10  { @include mark(525px, 0px)   }
+	  #rect-10 { @include mark(525px, 0px)   }
 	  #rect-22 { @include mark(628px, 0px)   }
 	  #rect-17 { @include mark(576px, 0px)   }
 	  #rect-11 { @include mark(576px, 69px)  }
-	  #rect-18  { @include mark(576px, 138px) }
+	  #rect-18 { @include mark(576px, 138px) }
 	  #rect-19 { @include mark(576px, 206px) }
 	  #rect-20 { @include mark(629px, 138px) }
-	  #rect-21  { @include mark(629px, 206px) }
+	  #rect-21 { @include mark(629px, 206px) }
 	  
 	  /* Grid system
 	  ---------------------------------------*/

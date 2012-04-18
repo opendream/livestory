@@ -172,22 +172,33 @@ $(document).ready(function() {
         </ul>
       </div>
       
-      <div class="blog-mood block">
-				<h3 class="sidebar-title">Mood</h3>
-				<span class="mood-icon mood-{{ blog.get_mood_text|lower }}">Mood: {{ blog.get_mood_text }}</span>
-			</div>	
-			
-			<div class="blog-category block">
-				<h3 class="sidebar-title">Category</h3>
-				<a href="{% url blog_category blog.category.code %}">{{ blog.category }}</a>
+      <div class="sidebar-list block clearfix">
+	      <ul>
+		      <li>
+			      <div class="col-left"><h3>Mood</h3></div>
+						<div class="col-right"><span class="mood-icon mood-{{ blog.get_mood_text|lower }} active">Mood: {{ blog.get_mood_text }}</span></div>
+		      </li>
+		      <li>
+			      <div class="col-left"><h3>Category</h3></div>
+						<div class="col-right"><a href="{% url blog_category blog.category.code %}">{{ blog.category }}</a></div>
+		      </li>
+		      <li>
+			      <div class="col-left"><h3>Location</h3></div>
+						<div class="col-right"><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span></div>
+		      </li>
+		      {% if blog.tags.all %}
+		      <li>
+			      <div class="col-left"><h3>Tags</h3></div>
+						<div class="col-right">{% for tag in blog.tags.all %}
+				<a href="{% url blog_tags %}?tags={{ tag.name }}" class="badge">{{ tag.name }}</a>
+				{% endfor %}</div>
+		      </li>
+		      {% endif %}
+	      </ul>
 			</div>
-			
-			<div class="blog-location block">
-				<h3 class="sidebar-title">Location</h3>
-				<span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
-			</div>
-      
-      {% if blog.tags.all %}
+
+     <!--
+ {% if blog.tags.all %}
       <div class="blog-tag block">
 				<h3 class="sidebar-title">Tags</h3>
 				{% for tag in blog.tags.all %}
@@ -195,15 +206,26 @@ $(document).ready(function() {
 				{% endfor %}
 			</div>
 			{% endif %}
+-->
 			
-			<div class="download-photo block">
+			<div class="sidebar-list block">
 				<h3 class="sidebar-title">Photo</h3>
 				<ul>
 				  {% if not blog.allow_download %}
-					<li><span class="col-left ic-download">Download</span> <span class="col-right grey">The owner has disabled downloading of their photos</span></li>
+					<li>
+						<div class="col-left"><span class="ic-widget ic-download">Download</span></div>
+						<div class="col-right"><span class="grey">The owner has disabled downloading of their photos</span>
+						</div>
+					</li>
 					{% else %}
-					<li><span class="col-left ic-download">Download</span> <a href="{% url blog_download blog.id %}" class="col-right">Download the Original size</a></li>
-					<li><span class="col-left ic-size">Size</span> <span class="col-right">{{ blog.image.width }}x{{ blog.image.height }}</span></li>
+					<li>
+						<div class="col-left"><span class="ic-widget ic-download">Download</span></div>
+						<div class="col-right"><a href="{% url blog_download blog.id %}">Download the Original size</a></div>
+					</li>
+					<li>
+						<div class="col-left"><span class="ic-widget ic-size">Size</span></div>
+						<div class="col-right"><span class="col-right">{{ blog.image.width }}x{{ blog.image.height }}</span></div>
+						</li>
 					{% endif %}
 				</ul>
 			</div>
