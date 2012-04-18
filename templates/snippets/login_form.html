@@ -6,10 +6,10 @@
 				<fieldset>
 			  {% csrf_token %}
 			  <input type="hidden" name="next" value="{{next}}" />
-			  <div class="item control-group{% if form.username.errors or form.non_field_errors %} error{% endif %}">
+			  <div class="item control-group{% if form.email.errors or form.non_field_errors %} error{% endif %}">
 			    <label for="id_email" class="control-label">Email</label>
-			    <div class="input">{{ form.username }}</div>
-			    {% if form.username.errors %}
+			    <div class="input">{{ form.email }}</div>
+			    {% if form.email.errors %}
 			    <div class="help-inline">* Please enter your email.</div>
 			    {% endif %}
 			  </div>
@@ -28,7 +28,7 @@
 			  {% endif %}
 			  <div class="form_actions">
 			    <button type="submit" class="btn-green">Login</button>
-			    <a href="{% url account_forgot %}">Forgot password?</a>
+			    <a href="{% url account_password_reset %}">Forgot password?</a>
 			  </div>
 				</fieldset>
 			</form>

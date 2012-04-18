@@ -1,17 +1,18 @@
-from account.models import AccountKey
+from datetime import datetime, timedelta
+
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import simplejson as json
-from notification.models import Notification
 
-from datetime import datetime, timedelta
+from account.models import UserProfile
+from notification.models import Notification
 
 def view(request):
 	if not request.user.is_authenticated():
 		return render(request, '403.html', status=403)
 
 	# Update view notification
-	AccountKey.objects.get(user=request.user).update_view_notification()
+	UserInvitation.objects.get(user=request.user).update_view_notification()
 
 	# If request is ajax
 	if request.is_ajax():
@@ -36,8 +37,8 @@ def get_notifications(user):
 	notifications = []
 	if user.is_authenticated():
 		try:
-			account_key = AccountKey.objects.get(user=user)
-			notifications = Notification.objects.filter(blog__user=user, datetime__gt=account_key.view_notification).order_by('-datetime')
-		except AccountKey.DoesNotExist:
+			account_key = UserProfile.objects.get(user=user)
+			notifications = Notification.objects.filter(blog__user=user, datetime__gt=account_key.notification_viewed).order_by('-datetime')
+		except UserInvitation.DoesNotExist:
 			pass
 	return notifications

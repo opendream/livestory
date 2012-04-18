@@ -14,7 +14,7 @@
     {% if notification7days %}
     {% for notification in notification7days %}
     <tr class="action-{{ notification.action }}">
-      <td class="avatar"><a href = "#"><img src="{{ notification.subject.get_profile.get_image|crop:AVATAR_TOP_SIZE }}"/></a></td>
+      <td class="avatar"><a href = "#"><img src="{{ notification.subject.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}"/></a></td>
       <td class="ic-notify middle"><div class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></div></td>
       <td class="middle"><a href ="{% url account_profile_view notification.subject.id %}"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>. | <span class="grey">{{ notification.datetime|localtime|timeago }}</span></td>
     </tr>

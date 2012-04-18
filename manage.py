@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 from django.core.management import execute_manager
+
 import imp
+import sys
+
 try:
-    imp.find_module('settings') # Assumed to be in the same directory.
+    imp.find_module('settings')
 except ImportError:
     import sys
-    sys.stderr.write("Error: Can't find the file 'settings.py' in the directory containing %r. It appears you've customized things.\nYou'll have to run django-admin.py, passing it your settings module.\n" % __file__)
+    sys.stderr.write('Error: Cannot import settings file from settings directory.\n')
     sys.exit(1)
 
-import settings
+try:
+    from settings import active as settings
+    sys.stdout.write('** Using DEVELOPMENT settings\n')
+except ImportError:
+    from settings import production as settings
+    sys.stdout.write('** Using PRODUCTION settings\n')
 
 if __name__ == "__main__":
     execute_manager(settings)

@@ -76,8 +76,8 @@
       <tbody>
         {% for user in users %}
         <tr>
-          <td><input type="checkbox" class="check" name="user_id" value="{{ user.id }}"></td>
-          <td><a href="{% url account_profile_view user.pk %}">{{ user.get_profile.firstname }} {{ user.get_profile.lastname }}</a></td>
+          <td><input type="checkbox" name="user_id" value="{{ user.id }}"></td>
+          <td><a href="{% url account_profile_view user.pk %}">{{ user.get_profile.first_name }} {{ user.get_profile.last_name }}</a></td>
           <td class="centered">{{ user.date_joined|localtime|date:"m/d/Y" }}</td>
           <td class="centered">{{ user.last_login|localtime|date:"m/d/Y" }}</td>
           <td class="centered">{% if user.is_staff %}Staff{% else %}Normal User{% endif %}</td>

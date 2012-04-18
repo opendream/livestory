@@ -1,4 +1,4 @@
-from account.models import Account, AccountKey
+from account.models import UserProfile, UserInvitation
 from blog.models import Blog, Category, Location, Love
 from notification.models import Notification
 from django.contrib.auth.models import User
@@ -7,15 +7,15 @@ from django.core.files.base import File as DjangoFile
 import hashlib
 from datetime import datetime
 
-def create_user(username='testuser', email='test@example.com', password='testuser', firstname='John', lastname='Doe', has_image=False, timezone='Asia/Bangkok'):
+def create_user(username='testuser', email='test@example.com', password='testuser', first_name='John', last_name='Doe', has_image=False, timezone='Asia/Bangkok'):
     user = User.objects.create_user(username, email, password)
-    account = Account(firstname=firstname, lastname=lastname, user=user, timezone=timezone)
+    account = UserProfile(first_name=first_name, last_name=last_name, user=user, timezone=timezone)
     if has_image:
         account.image = DjangoFile(open('static/tests/avatar.png'), 'avatar.png')
     account.save()
     
     key = hashlib.md5('key%s%s' % (user.email, str(datetime.now()))).hexdigest()[0:30]
-    account_key = AccountKey(key=key, user=user)
+    account_key = UserInvitation(key=key, user=user)
     account_key.save()
         
     return user

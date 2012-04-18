@@ -22,19 +22,19 @@
       </div>
     </div>
     
-    <div class="control-group{% if form.firstname.errors %} error{% endif %}">
-      <label class="control-label" for="id_firstname">Firstname</label>
+    <div class="control-group{% if form.first_name.errors %} error{% endif %}">
+      <label class="control-label" for="id_firs_tname">Firstname</label>
       <div class="controls">
-        {{ form.firstname }} 
-        <span class="help-inline">{{ form.firstname.errors.as_text }}</span>
+        {{ form.first_name }} 
+        <span class="help-inline">{{ form.first_name.errors.as_text }}</span>
       </div>
     </div>
     
-    <div class="control-group{% if form.lastname.errors %} error{% endif %}">
-      <label class="control-label" for="id_lastname">Lastname</label>
+    <div class="control-group{% if form.last_name.errors %} error{% endif %}">
+      <label class="control-label" for="id_last_name">Lastname</label>
       <div class="controls">
-        {{ form.lastname }}
-        <span class="help-inline">{{ form.lastname.errors.as_text }}</span>
+        {{ form.last_name }}
+        <span class="help-inline">{{ form.last_name.errors.as_text }}</span>
       </div>
     </div>
     

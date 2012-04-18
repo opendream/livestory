@@ -1,0 +1,42 @@
+{% extends 'base_single.html' %}
+{% load common_tags %}
+{% load tz %}
+
+{% block head_title %}Account Activation{% endblock %}
+
+{% block content %}
+
+{% if invitation %}
+
+<form class="form-horizontal" method="post" action="{% url account_activate invitation.invitation_key %}">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>Activate user account</h1></legend>
+
+        <div class="control-group">
+            <label class="control-label" for="title">First name</label>
+            <div class="controls">{{ form.first_name }}</div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="title">Last name</label>
+            <div class="controls">{{ form.last_name }}</div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="title">Password</label>
+            <div class="controls">{{ form.password }}</div>
+        </div>
+
+        <div class="form-backend">
+            <button type="submit" class="btn-green">Activate account</button>
+        </div>
+
+    </fieldset>
+</form>
+
+{% else %}
+<h2>Invitation key is invalid</h2>
+{% endif %}
+
+{% endblock %}
