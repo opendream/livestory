@@ -1,4 +1,4 @@
-from account.models import Account, AccountKey
+from account.models import UserProfile, UserInvitation
 from django.test import TestCase
 from notification.models import Notification
 from override_settings import override_settings
@@ -28,12 +28,12 @@ class TestNotification(TestCase):
 		self.love_notification.delete()
 		self.download_notification.delete()
 
-		AccountKey.objects.get(user=self.love_user).delete()
-		Account.objects.get(user=self.love_user).delete()
+		UserInvitation.objects.get(user=self.love_user).delete()
+		UserProfile.objects.get(user=self.love_user).delete()
 		self.love_user.delete()
 
-		AccountKey.objects.get(user=self.user).delete()
-		Account.objects.get(user=self.user).delete()
+		UserInvitation.objects.get(user=self.user).delete()
+		UserProfile.objects.get(user=self.user).delete()
 		self.user.delete()
 
 	def test_unicode(self):

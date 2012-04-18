@@ -1,4 +1,4 @@
-from account.models import Account, AccountKey
+from account.models import UserProfile, UserInvitation
 from common import rm_user
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -32,7 +32,7 @@ class TestHelperFunction(TestCase):
 
 	def test_get_notifications_after_viewed(self):
 		self.assertEqual(1, len(get_notifications(self.user)))
-		AccountKey.objects.get(user=self.user_with_notification).update_view_notification()
+		UserInvitation.objects.get(user=self.user_with_notification).update_view_notification()
 		self.assertEqual(0, len(get_notifications(self.user_with_notification)))
 
 @override_settings(PRIVATE=False)
