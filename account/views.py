@@ -31,163 +31,148 @@ from django.conf import settings
 #     from django.contrib.auth.views import login
 #     return login(request, authentication_form=EmailAuthenticationForm)
 
+def auth_login(request):
+    from django.contrib.auth.views import login
+    return login(request, authentication_form=EmailAuthenticationForm)
+
+
+def account_activate(request, key):
+    invitation = UserInvitation.objects.validate_invitation(key)
+
+    if request.method == 'POST':
+        form = UserActivationForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            password = form.cleaned_data['password']
+            user = UserInvitation.objects.claim_invitation(invitation, first_name, last_name, password)
+
+            user = authenticate(email=user.email, password=password)
+            login(request, user)
+
+            return redirect('blog_home')
+
+    else:
+        form = UserActivationForm()
+
+    return render(request, 'account/account_activate.html', {'form':form, 'invitation':invitation})
+
+
+@login_required
 def account_invite(request):
     if not request.user.is_staff:
         return render(request, '403.html', status=403)
-        
+
     if request.method == 'POST':
-        form = AccountInviteForm(request.POST)
+        form = UserInvitationForm(request.POST)
 
         if form.is_valid():
-            
-            email_exist = [user.email for user in User.objects.all()]
-            
-            invite_dummy = form.cleaned_data['invite'].split(',')
-            
-            invite_list = []
-            email_invalid_list = []
-            email_joined_list = []
-            for email in invite_dummy:
+            invitation_requests = []
+            invalid_emails = []
+
+            for email in form.cleaned_data['emails'].split(','):
                 email = email.strip()
+
+                if not email:
+                    continue
+
                 try:
                     validate_email(email)
-                    
-                    key = hashlib.md5('key%s%s' % (email, str(datetime.now()))).hexdigest()[0:30]
-                    activate_link = request.build_absolute_uri(reverse('account_activate', args=[key]))
-                    
-                    
-                    # Case first time invite user
-                    if email not in email_exist:
-                        
-                        password = hashlib.md5('%s%s' % (email, str(datetime.now()))).hexdigest()[0:10]
-                        
-                        user = User.objects.create_user(email, email, password)
-                        user.is_active = False
-                        user.save()
-                        
-                        account = Account(user=user)
-                        account.save()
-                        
-                        account_key = AccountKey(user=user, key=key)
-                        account_key.save()
-                        
-                        invite_list.append({'email': user.email, 'activate_link': activate_link})
-                    
-                    # Case second or more time invite user
-                    else:
-                        account_key = AccountKey.objects.get(user__email=email)
-                        
-                        if not account_key.user.is_active:
-                            user = account_key.user
-                            
-                            account_key.key = key
-                            account_key.save()
-                    
-                            invite_list.append({'email': user.email, 'activate_link': activate_link})
-                        # Case user joined
-                        else:
-                            email_joined_list.append(email)
-                    
                 except ValidationError:
-                    email_invalid_list.append(email)
-            
-            # Send email backend with celery
-            send_invite.delay(invite_list, request.build_absolute_uri('/'))
-            
+                    invalid_emails.append(email)
+                    continue
+
+                try:
+                    invitation = UserInvitation.objects.get(email=email)
+                except UserInvitation.DoesNotExist:
+                    if not User.objects.filter(email=email).exists():
+                        invitation = UserInvitation.objects.create_invitation(email, request.user)
+                    else:
+                        invitation = None
+
+                if invitation:
+                    invitation_requests.append(invitation.create_invitation_request(request.build_absolute_uri('/')[:-1]))
+
+            from requests import async
+            responses = async.map(invitation_requests)
+
             # Set message
-            if len(invite_list):
-                messages.success(request, 'Sending email invite. you can see list of user invited in user managment.')
-            if len(email_joined_list):
-                messages.warning(request, 'Email user has joined : %s' % ', '.join(email_joined_list))
-            if len(email_invalid_list):
-                messages.error(request, 'Email format is invalid : %s' % ', '.join(email_invalid_list))
+            if invitation_requests:
+                messages.success(request, 'Sending invitation email(s).')
+            if invalid_emails:
+                messages.warning(request, 'The following email(s) is invalid and has not been sent: %s' % ', '.join(invalid_emails))
 
             return redirect('account_invite')
-            
-    else:
-        form = AccountInviteForm()
-        
-    return render(request, 'account/account_invite.html', locals())
-    
-def account_activate(request, key):
-    try:
-        account_key = AccountKey.objects.get(key=key)
-    except AccountKey.DoesNotExist:
-        return render(request, 'account/account_key_error.html', locals())
-    
-    # Activate and login to user and redirect to update user profile chang password and orther
-    # When user forgot password can go to this method and force login
-    user = account_key.user
-    param = {0: '?activate=1', 1: '?forgot=1'}[int(user.is_active)]
-    user.is_active = True
-    
-    password = hashlib.md5('%s%s' % (user.username, str(datetime.now()))).hexdigest()[0:10]
-    user.set_password(password)
-    
-    user.save()
-    
-    user = authenticate(username=user.username, password=password)
-    login(request, user)
-    
-    return redirect(reverse('account_profile_edit') + param)
 
+    else:
+        form = UserInvitationForm()
+
+    return render(request, 'account/account_invite.html', locals())
+
+
+@login_required
 def account_profile_create(request):
     if not request.user.is_staff:
         return render(request, '403.html', status=403)
-    form = None
-    if request.method == 'GET':
-        form = AccountCreationForm()
-    else:
-        form = AccountCreationForm(request.POST)
 
+    if request.method == 'POST':
+        form = ProfileCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            email = form.cleaned_data['email']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            password = form.cleaned_data['password1']
+            timezone = form.cleaned_data['timezone']
+
+            user = UserProfile.objects.create_profile(email, first_name, last_name, password, timezone)
+
             messages.success(request, "New profile created.")
+            return redirect('account_manage_users')
+
         else:
             messages.error(request, "Please correct error(s) below.")
+    else:
+        form = ProfileCreationForm()
 
-    context = {
-        'form': form
-    }
-    return render(request, 'account/account_profile_create.html', context)
+    return render(request, 'account/account_profile_create.html', {'form': form})
 
 
 def account_profile_edit(request):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
-    
+
     user = request.user
     account = user.get_profile()
-    
+
     inst = model_to_dict(user)
     inst.update(model_to_dict(account))
     inst['password'] = ''
     param = request.GET.get('forgot') or request.GET.get('activate')
     if param:
         inst['just_update_password'] = 1
-    
+
     if request.method == 'POST':
         form = AccountProfileForm(request.POST)
 
-        if form.is_valid():			
-			password = form.cleaned_data.get('password')
-			if password:
-			    user.set_password(password)
-			    user.save()
-			    
-			account.firstname = form.cleaned_data.get('firstname')
-			account.lastname  = form.cleaned_data.get('lastname')
-			account.timezone  = form.cleaned_data.get('timezone')
-			# TODO: save avatar
-			account.save()
-						
-			messages.success(request, 'Your profile has been save.')
-			
+        if form.is_valid():
+            password = form.cleaned_data.get('password')
+            if password:
+                user.set_password(password)
+                user.save()
+
+            account.firstname = form.cleaned_data.get('firstname')
+            account.lastname = form.cleaned_data.get('lastname')
+            account.timezone = form.cleaned_data.get('timezone')
+            # TODO: save avatar
+            account.save()
+
+            messages.success(request, 'Your profile has been save.')
+
     else:
         form = AccountProfileForm(inst)
 
-    
     return render(request, 'account/account_profile_edit.html', locals())
+
 
 def user_profile_edit(request, pk):
     """ 
@@ -195,14 +180,14 @@ def user_profile_edit(request, pk):
     """
     if not request.user.is_staff:
         return render(request, '403.html', status=403)
-    
+
     usr = get_object_or_404(User, pk=pk)
     account = usr.get_profile()
-    
+
     if request.method == 'POST':
         form = AccountProfileForm(request.POST)
 
-        if form.is_valid():         
+        if form.is_valid():
             password = form.cleaned_data.get('password')
             active = form.cleaned_data.get('is_active')
             if password:
@@ -211,27 +196,34 @@ def user_profile_edit(request, pk):
             usr.save()
 
             account.firstname = form.cleaned_data.get('firstname')
-            account.lastname  = form.cleaned_data.get('lastname')
-            account.timezone  = form.cleaned_data.get('timezone')
+            account.lastname = form.cleaned_data.get('lastname')
+            account.timezone = form.cleaned_data.get('timezone')
             # TODO: save avatar
             account.save()
-                        
+
             messages.success(request, 'User profile has been updated.')
-            
+
     else:
         user_data = model_to_dict(usr)
         user_data.update(model_to_dict(account))
         user_data['password'] = ''
         form = AccountProfileForm(user_data)
 
-    
     return render(request, 'account/user_profile_edit.html', locals())
 
+
 def account_forgot(request):
+
+    if request.method == 'POST':
+        pass
+    else:
+        pass
+
+    return render(request, 'registration/password_')
     form = AccountForgotForm()
     email_error = False
     success = False
-    
+
     if request.POST:
         form = AccountForgotForm(request.POST)
         if form.is_valid():
@@ -240,14 +232,15 @@ def account_forgot(request):
                 success = 'Check your email and click the activate link for join us again.'
             else:
                 email_error = 'Send email error. Please, try again later.'
-            
+
     context = {
         'form': form,
         'email_error': email_error,
         'success': success,
-    }
+        }
     return render(request, 'account/account_forgot.html', context)
-    
+
+
 def account_manage_users(request):
     if not request.user.is_staff:
         return render(request, '403.html', status=403)
@@ -261,10 +254,10 @@ def account_manage_users(request):
         if sort == 'role':
             sort = ['is_staff']
         elif sort == 'name':
-            sort = ['account__firstname', 'account__lastname']
+            sort = ['userprofile__first_name', 'userprofile_last_name']
         else:
             sort = [sort]
-        
+
         if order == 'desc':
             users = users.order_by(*['-%s' % sort_col for sort_col in sort])
         else:
@@ -278,7 +271,7 @@ def account_manage_users(request):
 
     try:
         pagination = pager.page(p)
-        blogs = pagination.object_list
+        users = pagination.object_list
     except (PageNotAnInteger, EmptyPage):
         raise Http404
 
@@ -294,14 +287,15 @@ def account_manage_users(request):
         'pager': pager,
         'page_range': page_range,
         'order': order == 'desc' and 'asc' or 'desc',
-    }
+        }
 
     return render(request, 'account/account_manage_users.html', context)
+
 
 def account_profile_view(request, pk):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
-    
+
     user = get_object_or_404(User, pk=pk)
     blogs = user.blog_set.all()
     blog_count = blogs.count()
@@ -319,16 +313,17 @@ def account_profile_view(request, pk):
 
     page_range = get_page_range(pagination)
 
-    context = {'blogs': blogs, 
-    'has_pager': len(page_range) > 1,
-    'pagination': pagination,
-    'page': p,
-    'pager': pager,
-    'page_range': page_range,
-    'viewed_user': user,
-    'blog_count': blog_count}
+    context = {'blogs': blogs,
+               'has_pager': len(page_range) > 1,
+               'pagination': pagination,
+               'page': p,
+               'pager': pager,
+               'page_range': page_range,
+               'viewed_user': user,
+               'blog_count': blog_count}
 
     return render(request, 'account/account_profile_view.html', context)
+
 
 def account_manage_bulk(request):
     if not request.user.is_staff or request.method == 'GET':
@@ -346,3 +341,4 @@ def account_manage_bulk(request):
                 user.is_active = True
                 user.save()
         return redirect(reverse('account_manage_users'))
+

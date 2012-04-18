@@ -8,13 +8,13 @@ import pytz
 
 class TimezoneMiddleware(object):
     def process_request(self, request):
-        if not request.user.is_authenticated() and settings.PRIVATE:
+        #if not request.user.is_authenticated() and settings.PRIVATE:
             
-            psplit = request.path.split('/')
+            #psplit = request.path.split('/')
             
-            if request.path not in (reverse('account_login'), reverse('account_forgot'), reverse('blog_create_by_email')) and not (len(psplit) == 5 and psplit[1] == 'account' and psplit[2] == 'activate'):
-                print psplit
-                return render(request, 'blog/blog_static.html')
+            #if request.path not in (reverse('account_login'), reverse('account_forgot'), reverse('blog_create_by_email')) and not (len(psplit) == 5 and psplit[1] == 'account' and psplit[2] == 'activate'):
+            #    print psplit
+            #    return render(request, 'blog/blog_static.html')
                 
         tz = pytz.timezone('UTC')
 

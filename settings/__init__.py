@@ -1,7 +1,7 @@
 # Django settings for livestory project.
 
 import os
-base_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), os.path.pardir)
+BASE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), os.path.pardir)
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -18,15 +18,15 @@ USE_L10N = True
 USE_TZ = True
 
 
-MEDIA_ROOT = os.path.join(base_path, 'media/')
+MEDIA_ROOT = os.path.join(BASE_PATH, 'media/')
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(base_path, 'sitestatic/')
+STATIC_ROOT = os.path.join(BASE_PATH, 'sitestatic/')
 STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 STATICFILES_DIRS = (
-    os.path.join(base_path, 'static'),
+    os.path.join(BASE_PATH, 'static'),
 )
 
 STATICFILES_FINDERS = (
@@ -35,11 +35,15 @@ STATICFILES_FINDERS = (
 #   'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-AUTH_PROFILE_MODULE = 'account.Account'
+AUTH_PROFILE_MODULE = 'account.UserProfile'
 LOGIN_REDIRECT_URL = '/'
 
 ROOT_URLCONF = 'urls'
 
+AUTHENTICATION_BACKENDS = (
+    'backends.EmailAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 SECRET_KEY = 'hu56#4ven7_!nfbx7mn-u^bgg^%(c!6(h3jdw632d4k8drmijt'
 
@@ -60,7 +64,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 TEMPLATE_DIRS = (
-    os.path.join(base_path, 'templates'),
+    os.path.join(BASE_PATH, 'templates'),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -127,21 +131,23 @@ LOGGING = {
         }
 }
 
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'oxfram.livestory@gmail.com'
-EMAIL_HOST_PASSWORD = 'openpassword'
-EMAIL_PORT = 587
-EMAIL_SUBJECT_PREFIX = '[LiveStory] '
-
-
 import djcelery
 djcelery.setup_loader()
 
-# OXFAM LIVESTORY SETTINGS ################################################################################
+# LIVESTORY SETTINGS ################################################################################
 
-# Uniqu for your project
+SITE_NAME = 'Oxfam Live Stories'
+SITE_DOMAIN = '127.0.0.1:8000'
+
+ORGANIZATION_NAME = 'Oxfam'
+CONTACT_EMAIL = 'info@oxfam.org.uk'
+
+
+
+
+PRIVATE = True
+
+# Unique for your project
 SITE_LOGO = 'static/img/logo-livestories.png'
 SITE_LOGO_EMAIL = 'static/img/logo-oxfam_email.png'
 
@@ -153,18 +159,17 @@ BROKER_VHOST = '/'
 BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 # LIVE STORY
-SITE_NAME = 'Oxfam Live Stories'
-ORGANIZATION_NAME = 'Oxfam'
-CONTACT_EMAIL = 'info@oxfam.org.uk'
+
 IMAGE_URL = MEDIA_URL + 'images/'
 IMAGE_ROOT = MEDIA_ROOT + 'images/'
 TEMP_ROOT = MEDIA_ROOT + 'temp/'
+
 AVATAR_SIZE = '94x94'
 AVATAR_TOP_SIZE = '24x24'
 BLOG_PREVIEW_SIZE = '470x1000'
+
 CAN_SHARE_SN = False
 NOTIFICATION_POPUP_NUM = 7
-PRIVATE = True
 
 # DJANGO-NOSE
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -180,3 +185,18 @@ NOSE_ARGS = [
         'statistic',
 ]
 
+# MAILGUN EMAIL SERVICE #########
+DEFAULT_FROM_EMAIL = 'postmaster@livestory.mailgun.org'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_HOST_USER = 'postmaster@livestory.mailgun.org'
+EMAIL_HOST_PASSWORD = '16ikiogvkjc0'
+EMAIL_PORT = 587
+EMAIL_SUBJECT_PREFIX = '[LiveStory] '
+
+USER_RESET_EMAIL_FROM = 'postmaster@livestory.mailgun.org'
+INVITATION_EMAIL_FROM = 'postmaster@livestory.mailgun.org'
+
+MAILGUN_API_DOMAIN = 'https://api.mailgun.net/v2/livestory.mailgun.org'
+MAILGUN_API_KEY = 'key-9fju-vnl5spkmer1b2g2xtsxavhq2ai2'
