@@ -12,6 +12,7 @@ from django.forms.models import model_to_dict
 from django.http import HttpResponseForbidden
 
 from common import get_page_range
+from common.templatetags.common_tags import *
 
 from account.forms import *
 from account.models import *
@@ -152,20 +153,25 @@ def account_profile_edit(request):
         inst['just_update_password'] = 1
 
     if request.method == 'POST':
-        form = AccountProfileForm(request.POST)
+        form = AccountProfileForm(request.POST, request.FILES)
 
-        if form.is_valid():
+        if form.is_valid():         
             password = form.cleaned_data.get('password')
             if password:
                 user.set_password(password)
                 user.save()
-
+            
             account.firstname = form.cleaned_data.get('firstname')
-            account.lastname = form.cleaned_data.get('lastname')
-            account.timezone = form.cleaned_data.get('timezone')
-            # TODO: save avatar
-            account.save()
+            account.lastname  = form.cleaned_data.get('lastname')
+            account.timezone  = form.cleaned_data.get('timezone')
 
+            #save avatar
+            image = form.cleaned_data.get('image')
+            if (image):
+                account.image.save(image.name, image, save=False)
+                            
+            account.save()
+                        
             messages.success(request, 'Your profile has been save.')
 
     else:

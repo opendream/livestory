@@ -37,8 +37,6 @@ def ajax_profile_image_upload(request, user_id):
         'delete_url': reverse('ajax_account_image_delete'),
         'delete_type': 'DELETE'
     }
-    print 'url>>', data['url']
-    print 'thumb>>', data['thumbnail_url']
     return HttpResponse(json.dumps(data), mimetype="application/json")
 
 

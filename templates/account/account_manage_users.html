@@ -19,7 +19,7 @@
       <thead>
         <tr>
           <th>
-            <input type="checkbox">
+            <input type="checkbox" id="select_all">
           </th>
           <th>
             <a href="{{ url }}?sort=name&order={% if request.GET.sort == 'name' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}">
@@ -104,4 +104,13 @@
     {% endif %}
     </form>  
 
+    <script type="text/javascript">
+      $(document).ready(function() {
+            $('#select_all').click(function() {
+                    $('.check').each(function() {
+                        $(this).attr('checked',!$(this).attr('checked'));
+                    });
+            });
+      });
+    </script>
 {% endblock %}

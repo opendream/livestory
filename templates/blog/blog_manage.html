@@ -42,9 +42,9 @@ $(document).ready(function() {
     {% url blog_manage_draft as blog_manage_draft %}
     {% url blog_manage_trash as blog_manage_trash %}
     <a href="{{ blog_manage }}" class="{% if request.path == blog_manage %}tab-active{% endif %}">All </a><span class="grey">({{ num_all }})</span> | 
-    <a href="{{ blog_manage_published }}" class="{% active request blog_manage_published 'active-b' %}">Published </a><span class="grey">({{ num_published }})</span> | 
-    <a href="{{ blog_manage_draft }}" class="{% active request blog_manage_draft 'active-b' %}">Drafts </a><span class="grey">({{ num_draft }})</span> | 
-    <a href="{{ blog_manage_trash }}" class="{% active request blog_manage_trash 'active-b' %}">Trash </a><span class="grey">({{ num_trash }})</span>
+    <a href="{{ blog_manage_published }}" class="{% active request blog_manage_published 'tab-active' %}">Published </a><span class="grey">({{ num_published }})</span> | 
+    <a href="{{ blog_manage_draft }}" class="{% active request blog_manage_draft 'tab-active' %}">Drafts </a><span class="grey">({{ num_draft }})</span> | 
+    <a href="{{ blog_manage_trash }}" class="{% active request blog_manage_trash 'tab-active' %}">Trash </a><span class="grey">({{ num_trash }})</span>
   </div>
   <form class="form-inline" method="POST" action="{% url blog_manage_bulk %}{% if section %}?section={{ section }}{% endif %}">{% csrf_token %}
     <select name="op" id="op">

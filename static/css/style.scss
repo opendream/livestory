@@ -70,7 +70,7 @@
 	/* Link
 	---------------------------------------*/
 	a { color:#390; }
-	a:visited { color:#339900; }
+/* 	a:visited { color:#339900; } */
 	a:hover { text-decoration: underline; } 
 	a:active { color:#000; }
 	
@@ -191,8 +191,43 @@
 	}
 	.ic-edit-story { background-position: 0 -100px; }
 	.ic-delete-story { background-position: 0 -150px; }
-
 	
+	/* CSS3 Transition
+	---------------------------------------*/
+	@mixin mark($top, $left){
+			top: $top !important;
+			left: $left !important;
+	}
+	@-webkit-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
+	@-moz-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
+	@-ms-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
+	@-o-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
+	@keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
+	
+	.rect{
+		-webkit-transition: all .75s ;
+		-moz-transition: all .75s ;
+		-o-transition: all .75s ;
+		transition: all .75s ;
+		background: transparent !important;
+		
+		-webkit-animation-name: fadeIn;
+		-moz-animation-name: fadeIn;
+		-ms-animation-name: fadeIn;
+		-o-animation-name: fadeIn;
+		animation-name: fadeIn;
+		
+		-moz-animation-duration: 3s;
+		-moz-animation-delay: 0;
+		-moz-animation-iteration-count: 1;
+		-webkit-animation-duration: 3s;
+		-webkit-animation-delay: 0;
+		-webkit-animation-iteration-count: 1;
+		animation-duration: 3s;
+		animation-delay: 0;
+		animation-iteration-count: 1;
+	}
+
 
 
 /* Utilities
@@ -202,6 +237,7 @@
   .hide{ display: none !important; }
 	.img-vertical{ vertical-align: middle; margin: 0 5px 0 0; }
 	.hide-text{ display: none; }
+	.inline{ display: inline !important; }
 	
 	@mixin clear-shadow{
 		-moz-box-shadow: none;
@@ -287,7 +323,6 @@
 		}
 		.dropdown-link{ padding: 0; }
 		.navbar{ margin-bottom: 0;}
-		.profile-name a{ display: inline; padding: 0; }
 		.nav{ 
 			margin: 0;
 			> li > a{ padding: 0; }
@@ -791,6 +826,7 @@
 		/* Photo Thumbnail
 		---------------------------------------*/
 		.blog-thumbnail{
+			position: relative;
 			padding: 0;
 			border: none;
 		}
@@ -1138,6 +1174,28 @@
 	/*----- Portrait tablet to landscape and desktop -----*/
   @media (min-width: 768px) and (max-width: 980px) {
   
+	  /* 	Scour Front 
+		---------------------------------------*/
+		.scour{
+			width: 718px !important; 
+			height: 500px !important;
+			margin-top: -40px;
+		}
+		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
+			display: none;
+		}
+		#rect-1 { @include mark(55px, 215px)  }
+		#rect-2 { @include mark(160px, 20px)  }
+		#rect-4 { @include mark(275px, 215px) }
+		#rect-7 { @include mark(275px, 408px) }
+		#rect-8 { @include mark(14px, 117px)  }
+		#rect-11 { @include mark(350px, 408px) }
+		#rect-13 { @include mark(127px, 602px) }
+		#rect-14 { @include mark(201px, 602px) }
+		#rect-15 { @include mark(276px, 602px) }
+		#rect-16 { @include mark(350px, 505px) }
+  
 	  /* Bootstrap override
 	  ---------------------------------------*/
 	  .navbar .nav > li > a, .navbar .dropdown-menu a{ font-weight: normal;}
@@ -1182,24 +1240,6 @@
 		---------------------------------------*/
 	  .mood-container{ width: 400px;}
   }
-  
-  
-  
-  
-  	@mixin mark($top, $left){
-			top: $top !important;
-			left: $left !important;
-			
-	}
-  
-  
-  
-  .rect{
-		-webkit-transition: all .75s ;
-		-moz-transition: all .75s ;
-		-o-transition: all .75s ;
-		transition: all .75s ;
-	}
 	
 	/*----- Landscape phone to portrait tablet -----*/
   @media (max-width: 768px) {
@@ -1209,26 +1249,22 @@
 		.scour{
 			width: 718px !important; 
 			height: 500px !important;
-
 			margin-top: -40px;
 		}
-		#rect-6, #rect-24, #rect-16, #rect-4, #rect-9, #rect-2, #rect-3, #rect-7, #rect-31, #rect-20,
-		#rect-5, #rect-13, #rect-22, #rect-32, #rect-30{
+		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
 			display: none;
 		}
-		
-		
-
-		#rect-29 { @include mark(55px, 215px)  }
-		#rect-8  { @include mark(160px, 20px)  }
-		#rect-14 { @include mark(275px, 215px) }
-		#rect-28 { @include mark(275px, 408px) }
-		#rect-27 { @include mark(14px, 117px)  }
-		#rect-18 { @include mark(350px, 408px) }
-		#rect-12 { @include mark(127px, 602px) }
-		#rect-21 { @include mark(201px, 602px) }
-		#rect-23 { @include mark(276px, 602px) }
-		#rect-35 { @include mark(350px, 505px) }
+		#rect-1 { @include mark(55px, 215px)  }
+		#rect-2 { @include mark(160px, 20px)  }
+		#rect-4 { @include mark(275px, 215px) }
+		#rect-7 { @include mark(275px, 408px) }
+		#rect-8 { @include mark(14px, 117px)  }
+		#rect-11 { @include mark(350px, 408px) }
+		#rect-13 { @include mark(127px, 602px) }
+		#rect-14 { @include mark(201px, 602px) }
+		#rect-15 { @include mark(276px, 602px) }
+		#rect-16 { @include mark(350px, 505px) }
 		
 	  /* Bootstrap override
 	  ---------------------------------------*/
@@ -1273,10 +1309,7 @@
   }
 	
 	@media (max-width: 730px) {
-	  
-	  
-	  
-	  
+	
 	  /* Grid system
 	  ---------------------------------------*/
 	  .grid{ width: 160px;}
@@ -1284,6 +1317,39 @@
   }
   
   @media (min-width: 480px) and (max-width: 730px){
+		
+		/* 	Scour Front 
+		---------------------------------------*/
+		.scour{
+			width: 425px !important; 
+			height: 940px !important;
+			margin-top: -40px;
+		}
+
+		.popover, .black-layer{ display: none !important; }
+		
+		#rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
+		#rect-19, #rect-20, #rect-21, #rect-22 { display: block; }
+		
+		#rect-1 { @include mark(0px, 20px)     }
+		#rect-2  { @include mark(222px, 20px)   }
+		#rect-4 { @include mark(222px, 215px) }
+		#rect-7 { @include mark(370px, 215px) }
+		#rect-13 { @include mark(518px, 312px) }
+		#rect-14 { @include mark(444px, 312px) }
+		#rect-8 { @include mark(444px, 215px) }
+		#rect-5 { @include mark(518px, 20px)   }
+		#rect-3  { @include mark(592px, 215px) }
+		#rect-15 { @include mark(666px, 20px)   }
+		#rect-16 { @include mark(666px, 117px)  }
+	  #rect-10  { @include mark(740px, 20px)   }
+	  #rect-22 { @include mark(814px, 20px)   }
+	  #rect-17 { @include mark(888px, 20px)   }
+	  #rect-11 { @include mark(814px, 117px)  }
+	  #rect-18  { @include mark(814px, 215px) }
+	  #rect-19 { @include mark(814px, 312px) }
+	  #rect-20 { @include mark(888px, 215px) }
+	  #rect-21  { @include mark(888px, 312px) }
 		
 		/* Grid system
 	  ---------------------------------------*/
@@ -1293,6 +1359,39 @@
   
 	/*----- Landscape phones and down -----*/
   @media (max-width: 480px) { 
+	  
+	  /* 	Scour Front 
+		---------------------------------------*/
+		.scour{
+			width: 425px !important; 
+			height: 940px !important;
+			margin-top: -40px;
+		}
+
+		.popover, .black-layer{ display: none !important; }
+		
+		#rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
+		#rect-19, #rect-20, #rect-21, #rect-22 { display: block; }
+		
+		#rect-1 { @include mark(0px, 20px)     }
+		#rect-2  { @include mark(222px, 20px)   }
+		#rect-4 { @include mark(222px, 215px) }
+		#rect-7 { @include mark(370px, 215px) }
+		#rect-13 { @include mark(518px, 312px) }
+		#rect-14 { @include mark(444px, 312px) }
+		#rect-8 { @include mark(444px, 215px) }
+		#rect-5 { @include mark(518px, 20px)   }
+		#rect-3  { @include mark(592px, 215px) }
+		#rect-15 { @include mark(666px, 20px)   }
+		#rect-16 { @include mark(666px, 117px)  }
+	  #rect-10  { @include mark(740px, 20px)   }
+	  #rect-22 { @include mark(814px, 20px)   }
+	  #rect-17 { @include mark(888px, 20px)   }
+	  #rect-11 { @include mark(814px, 117px)  }
+	  #rect-18  { @include mark(814px, 215px) }
+	  #rect-19 { @include mark(814px, 312px) }
+	  #rect-20 { @include mark(888px, 215px) }
+	  #rect-21  { @include mark(888px, 312px) }
 	  
 	  /* Bootstrap override
 	  ---------------------------------------*/
@@ -1432,8 +1531,55 @@
 		}
   }
   
-  @media (max-width: 320px) { 
   
+  @mixin size($w, $h){
+	  width: $w !important;
+	  height: $h !important;
+  }
+  
+  
+  @media (max-width: 320px) { 
+	  
+	  /* 	Scour Front 
+		---------------------------------------*/
+		.scour{
+			width: 280px !important; 
+			height: 670px !important;
+			margin-top: -20px;
+		}
+
+		.popover, .black-layer{ display: none !important; }
+
+		#rect-1 { @include size(270px, 158px) } /* Big*/
+		#rect-2 { @include size(132px, 205px) } /* Port */
+		#rect-4, #rect-5 { @include size(132px, 99px) } /*squ */
+		#rect-7, #rect-10,  { @include size(132px, 46px) } /* hori */
+		#rect-13, #rect-14, #rect-15, #rect-16, #rect-17, #rect-18,
+		#rect-19, #rect-20, #rect-21, #rect-22{ @include size(63px, 50px) } /*small */
+		#rect-8, #rect-11 { @include size(63px, 99px) } /* port small */
+		#rect-3 { @include size(131px, 207px) } /* normal */
+		/*  h:158px w:131px*/
+		
+		#rect-1 { @include mark(0px, 0px)     }
+		#rect-2  { @include mark(157px, 0px)   }
+		#rect-4 { @include mark(157px, 138px) }
+		#rect-7 { @include mark(262px, 138px) }
+		#rect-13 { @include mark(366px, 206px) }
+		#rect-14 { @include mark(313px, 206px) }
+		#rect-8 { @include mark(313px, 138px) }
+		#rect-5 { @include mark(368px, 0px)   }
+		#rect-3  { @include mark(419px, 138px) }
+		#rect-15 { @include mark(473px, 0px)   }
+		#rect-16 { @include mark(473px, 69px)  }
+	  #rect-10  { @include mark(525px, 0px)   }
+	  #rect-22 { @include mark(628px, 0px)   }
+	  #rect-17 { @include mark(576px, 0px)   }
+	  #rect-11 { @include mark(576px, 69px)  }
+	  #rect-18  { @include mark(576px, 138px) }
+	  #rect-19 { @include mark(576px, 206px) }
+	  #rect-20 { @include mark(629px, 138px) }
+	  #rect-21  { @include mark(629px, 206px) }
+	  
 	  /* Grid system
 	  ---------------------------------------*/
 	  .grid{ width: 133px;}
@@ -1447,8 +1593,9 @@
 		/* Thumbnails
 	  ---------------------------------------*/
 		.blog-thumbnails [class*="span"] {
-			width: auto;
+			width: auto !important;
 		}
+		.thumbnail{ width: 260px; }
 		
 		/* Thumbnails
 	  ---------------------------------------*/
@@ -1593,7 +1740,7 @@
 		padding: 10px !important;
 	}
 	
-	
+	/* unknow */
 	.separate{
 		background: #5e5e5e;
 		width: 1px;
@@ -1603,10 +1750,6 @@
 	.separate-hide{ width: 20px;} 
 	
 	.tab-active{ font-weight: bold; color: #000 !important;}
-	
-/* ungruop */
-
-	/* unknow */
 
 	.typeahead a{ background: #fff !important;
 		&:hover{ background: #F2F2F2 !important; text-decoration: underline !important;}

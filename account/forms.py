@@ -120,9 +120,7 @@ class AccountForgotForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(AccountForgotForm, self).__init__(*args, **kwargs)
-        for k, field in self.fields.items():
-            if 'required' in field.error_messages:
-                field.error_messages['required'] = 'Please enter email address.'
+        self.fields['email'].error_messages['required'] = 'Please enter email address.'
 
     def clean_email(self):
         req_email = self.cleaned_data['email']
