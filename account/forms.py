@@ -53,9 +53,9 @@ class UserActivationForm(forms.Form):
     password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'span3'}))
 
 
-class UserProfileProfileForm(forms.Form):
-    firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
-    lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+class UserProfileForm(forms.Form):
+    first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+    last_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     
     just_update_password = forms.IntegerField(required=False)
     
@@ -89,7 +89,7 @@ class UserProfileProfileForm(forms.Form):
             raise forms.ValidationError(_("Password not match"))
         return confirm_password
 
-class ProfileCreationForm(forms.Form):
+class UserProfileCreationForm(forms.Form):
     email = forms.EmailField(max_length=254, widget=forms.TextInput(attrs={'class': 'span3'}))
     first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
     last_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))

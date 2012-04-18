@@ -139,7 +139,7 @@ def account_profile_edit(request):
         inst['just_update_password'] = 1
 
     if request.method == 'POST':
-        form = AccountProfileForm(request.POST, request.FILES)
+        form = UserProfileForm(request.POST, request.FILES)
 
         if form.is_valid():         
             password = form.cleaned_data.get('password')
@@ -147,8 +147,8 @@ def account_profile_edit(request):
                 user.set_password(password)
                 user.save()
             
-            account.firstname = form.cleaned_data.get('firstname')
-            account.lastname  = form.cleaned_data.get('lastname')
+            account.firstname = form.cleaned_data.get('first_name')
+            account.lastname  = form.cleaned_data.get('last_name')
             account.timezone  = form.cleaned_data.get('timezone')
 
             #save avatar
@@ -161,7 +161,7 @@ def account_profile_edit(request):
             messages.success(request, 'Your profile has been save.')
 
     else:
-        form = AccountProfileForm(inst)
+        form = UserProfileForm(inst)
 
     return render(request, 'account/account_profile_edit.html', locals())
 
@@ -177,7 +177,7 @@ def user_profile_edit(request, pk):
     account = usr.get_profile()
 
     if request.method == 'POST':
-        form = AccountProfileForm(request.POST)
+        form = UserProfileForm(request.POST)
 
         if form.is_valid():
             password = form.cleaned_data.get('password')
@@ -187,8 +187,8 @@ def user_profile_edit(request, pk):
             usr.is_active = active
             usr.save()
 
-            account.firstname = form.cleaned_data.get('firstname')
-            account.lastname = form.cleaned_data.get('lastname')
+            account.firstname = form.cleaned_data.get('first_name')
+            account.lastname = form.cleaned_data.get('last_name')
             account.timezone = form.cleaned_data.get('timezone')
             # TODO: save avatar
             account.save()
@@ -199,7 +199,7 @@ def user_profile_edit(request, pk):
         user_data = model_to_dict(usr)
         user_data.update(model_to_dict(account))
         user_data['password'] = ''
-        form = AccountProfileForm(user_data)
+        form = UserProfileForm(user_data)
 
     return render(request, 'account/user_profile_edit.html', locals())
 
