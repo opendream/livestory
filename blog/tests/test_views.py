@@ -558,7 +558,7 @@ class TestBlogView(TestCase):
     
     def test_blog_view_get(self):    
         response = self.client.get('/blog/%s/view/' % self.blog.id)
-        self.assertEquals(200, response.status_code)
+        self.assertRedirects(response, '%s?next=/blog/%s/view/' % (reverse('account_login'), self.blog.id))
         
         response = self.client.get('/blog/%s/view/' % self.blog_private.id)
         self.assertEquals(403, response.status_code)
