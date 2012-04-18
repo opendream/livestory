@@ -46,31 +46,3 @@ def send_invite(invite_list, base_url):
         except SMTPAuthenticationError:
             account_key.can_send_mail = False
             account_key.save()
-
-@task()
-def send_forgot(email, base_url):
-    subject = 'You have new activate link from %s' % settings.SITE_NAME
-    
-    new_key = hashlib.md5('key%s%s' % (email, str(datetime.now()))).hexdigest()[0:30]
-    activate_link = '%s%s' % (base_url[0:-1], reverse('account_activate', args=[new_key]))
-    
-    body = render_to_string('account/account_send_forgot.html', {
-        'site_name': settings.SITE_NAME,
-        'site_logo': settings.SITE_LOGO,
-        'site_logo_email': settings.SITE_LOGO_EMAIL,
-        'organization_name': settings.ORGANIZATION_NAME,
-        'contact_email': settings.CONTACT_EMAIL,
-        'base_url': base_url,
-        'activate_link': activate_link
-    })
-                
-    user = User.objects.get(email=email)
-    try:
-        msg = EmailMessage(subject, body, settings.EMAIL_HOST_USER, [email])
-        msg.content_subtype = 'html'
-        msg.send()
-        
-        AccountKey.objects.create(user=user, key=new_key)
-        return True
-    except SMTPAuthenticationError:
-        return False

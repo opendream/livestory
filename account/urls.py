@@ -7,7 +7,6 @@ urlpatterns = patterns('account.views',
     url(r'profile/(\d+)/edit/$', 'user_profile_edit', name='user_profile_edit'),
     url(r'profile/create/$', 'account_profile_create', name='account_profile_create'),
     url(r'profile/(\d+)/view/$', 'account_profile_view', name='account_profile_view'),
-    url(r'forgot/$', 'account_forgot', name='account_forgot'),
 
     url(r'users/manage/$', 'account_manage_users', name='account_manage_users'),
     url(r'users/bulk/$', 'account_manage_bulk', name='account_manage_bulk'),

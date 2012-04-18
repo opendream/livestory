@@ -17,21 +17,8 @@ from common.templatetags.common_tags import *
 
 from account.forms import *
 from account.models import *
-from account.tasks import send_invite, send_forgot
 
 from datetime import datetime
-
-import hashlib
-import os
-
-from django.conf import settings
-
-# def account_login(request):
-#     print 'xxx' , request.user.is_authenticated()
-#     if request.user.is_authenticated():
-#         return redirect(reverse('blog_home'))
-#     from django.contrib.auth.views import login
-#     return login(request, authentication_form=EmailAuthenticationForm)
 
 def auth_login(request):
     from django.contrib.auth.views import login
@@ -215,35 +202,6 @@ def user_profile_edit(request, pk):
         form = AccountProfileForm(user_data)
 
     return render(request, 'account/user_profile_edit.html', locals())
-
-
-def account_forgot(request):
-
-    if request.method == 'POST':
-        pass
-    else:
-        pass
-
-    return render(request, 'registration/password_')
-    form = AccountForgotForm()
-    email_error = False
-    success = False
-
-    if request.POST:
-        form = AccountForgotForm(request.POST)
-        if form.is_valid():
-            request_email = form.cleaned_data.get('email')
-            if send_forgot(request_email, request.build_absolute_uri('/')):
-                success = 'Check your email and click the activate link for join us again.'
-            else:
-                email_error = 'Send email error. Please, try again later.'
-
-    context = {
-        'form': form,
-        'email_error': email_error,
-        'success': success,
-        }
-    return render(request, 'account/account_forgot.html', context)
 
 
 def account_manage_users(request):

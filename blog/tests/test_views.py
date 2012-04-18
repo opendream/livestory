@@ -37,6 +37,24 @@ class TestBlogCreate(TestCase):
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.client.logout()
     
+    def test_post_blog_without_login(self):
+        params = {
+            'title': '',
+            'image_path': '',
+            'description': '',
+            'mood': '',
+            'country': '',
+            'city': '',
+            'private': '',
+            'draft': '',
+            'category': '',
+            'allow_download': '',
+            'trash': '0',
+        }
+
+        response = self.client.post('/blog/create/', params)
+        self.assertEquals(403, response.status_code)
+
     def test_blog_create_post_empty(self):
         params = {
             'title': '',
@@ -51,9 +69,7 @@ class TestBlogCreate(TestCase):
             'allow_download': '',
             'trash': '0',
         }
-        response = self.client.post('/blog/create/', params)
-        self.assertEquals(403, response.status_code)
-        
+
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/create/', params)
         self.assertEquals(200, response.status_code)
@@ -85,8 +101,6 @@ class TestBlogCreate(TestCase):
             'allow_download': '0',
             'trash': '0',
         }
-        response = self.client.post('/blog/create/', params)
-        self.assertEquals(403, response.status_code)
 
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/create/', params, follow=True)
@@ -128,8 +142,6 @@ class TestBlogCreate(TestCase):
             'allow_download': '1',
             'trash': '0',
         }
-        response = self.client.post('/blog/create/', params)
-        self.assertEquals(403, response.status_code)
 
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/create/', params, follow=True)
@@ -178,8 +190,6 @@ class TestBlogCreate(TestCase):
             'allow_download': '1',
             'trash': '0',
         }
-        response = self.client.post('/blog/create/', params)
-        self.assertEquals(403, response.status_code)
 
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/create/', params, follow=True)
@@ -1105,6 +1115,7 @@ class TestBlogManagement(TestCase):
         self.client.logout()
 
     def test_trash_not_exists_blog(self):
+        self.client.login(username=self.staff.username, password='1234')
         response = self.client.get(reverse('blog_trash', args=[0]))
         self.assertEquals(404, response.status_code)
 

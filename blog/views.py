@@ -15,7 +15,6 @@ from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.uploadedfile import UploadedFile
 
-from account.models import Account
 from blog.models import *
 from blog.forms import *
 from statistic.models import BlogViewHit, BlogViewSummary
@@ -29,8 +28,8 @@ from common import ucwords, get_page_range
 from taggit.models import TaggedItem
 
 def blog_home(request):
-    #if not request.user.is_authenticated() and settings.PRIVATE:
-    #    return render(request, 'blog/blog_static.html')
+    if not request.user.is_authenticated():
+        return render(request, 'blog/blog_static.html')
     
     scour_width = 960
     scour_height = 660
@@ -76,11 +75,10 @@ def blog_home(request):
     
     return render(request, 'blog/blog_home.html', context)
 
-def blog_manage(request, section=None):
-    if not request.user.is_authenticated():
-        return render(request, '403.html', status=403)
 
-    blogs = Blog.objects.all().annotate(num_loves=Count('love'))
+@login_required
+def blog_manage(request, section=None):
+    blogs = Blog.objects.filter(user=request.user).annotate(num_loves=Count('love'))
 
     if request.GET.get('sort') and request.GET.get('order'):
         sort = request.GET.get('sort')
@@ -94,9 +92,6 @@ def blog_manage(request, section=None):
     else:
         order = 'desc'
         blogs = blogs.order_by('-created')
-
-    if not request.user.is_staff:
-        blogs = blogs.filter(user=request.user)
 
     blog_all = blogs.filter(trash=False)
     blog_published = blogs.filter(draft=False, trash=False)
@@ -155,15 +150,23 @@ def blog_manage(request, section=None):
 
     return render(request, 'blog/blog_manage.html', context)
 
+
+@login_required
 def blog_manage_published(request):
     return blog_manage(request, 'published')
 
+
+@login_required
 def blog_manage_draft(request):
     return blog_manage(request, 'draft')
 
+
+@login_required
 def blog_manage_trash(request):
     return blog_manage(request, 'trash')
 
+
+@login_required
 def blog_trash(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
@@ -183,6 +186,8 @@ def blog_trash(request, blog_id):
     except Blog.DoesNotExist:
         raise Http404
 
+
+@login_required
 def blog_restore(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
@@ -199,10 +204,8 @@ def blog_restore(request, blog_id):
         raise Http404
 
 
+@login_required
 def blog_create(request):
-    if not request.user.is_authenticated():
-        return render(request, '403.html', status=403)
-    
     action = reverse('blog_create')
     image_path = ''
     imagefield_error = False
@@ -260,6 +263,7 @@ def blog_create(request):
         'location_error': location_error
     }
     return render(request, 'blog/blog_form.html', context)
+
 
 @csrf_exempt
 def blog_create_by_email(request):
@@ -323,6 +327,8 @@ def blog_create_by_email(request):
 
     return HttpResponse('')
 
+
+@login_required
 def blog_edit(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
@@ -412,6 +418,8 @@ def blog_edit(request, blog_id):
     except Blog.DoesNotExist:
         raise Http404
 
+
+@login_required
 def blog_view(request, blog_id):
     try:
         blog = Blog.objects.get(pk=blog_id)
@@ -459,6 +467,8 @@ def blog_view(request, blog_id):
     except Blog.DoesNotExist:
         raise Http404
 
+
+@login_required
 def blog_download(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
@@ -476,7 +486,9 @@ def blog_download(request, blog_id):
         Notification(subject=request.user, action=2, blog=blog).save()
     
     return response
-        
+
+
+@login_required
 def blog_love(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
@@ -509,6 +521,8 @@ def blog_love(request, blog_id):
         else:
             raise Http404
 
+
+@login_required
 def blog_unlove(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
@@ -536,7 +550,9 @@ def blog_unlove(request, blog_id):
             return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
         else:
             raise Http404
-            
+
+
+@login_required
 def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None, param='', color='blue'):
     items = Blog.objects.filter(draft=False, trash=False)
     if not request.user.is_authenticated():
@@ -577,7 +593,9 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
     }
     
     return render(request, 'blog/blog_list.html', context)
-    
+
+
+@login_required
 def blog_mood(request, mood):
     title = ucwords(mood)
     try: 
@@ -585,7 +603,9 @@ def blog_mood(request, mood):
     except KeyError:
         raise Http404
     return blog_all(request, title, {'mood': fmood}, {'mood': mood}, reverse('blog_mood', args=[mood]), color='purple')
-    
+
+
+@login_required
 def blog_category(request, category):
     try: 
         fcategory = Category.objects.get(code=category)
@@ -595,7 +615,9 @@ def blog_category(request, category):
     title = fcategory.name
     
     return blog_all(request, title, {'category': fcategory}, {'category': category}, reverse('blog_category', args=[category]), color='pink')
-    
+
+
+@login_required
 def blog_place(request):
     country = request.GET.get('country') or ''
     city = request.GET.get('city') or ''
@@ -625,7 +647,9 @@ def blog_place(request):
     param = 'country=%s&city=%s' % (country, city)
         
     return blog_all(request, title, filter, {'location': {'country': country, 'city': city}}, reverse('blog_place'), param, color='yellow')
-    
+
+
+@login_required
 def blog_tags(request):
     tags = request.GET.get('tags')
     if not tags or not Blog.objects.filter(tags__name=tags).count():
@@ -635,6 +659,8 @@ def blog_tags(request):
     
     return blog_all(request, title, {'tags__name': tags}, {'tags': tags}, reverse('blog_tags'), color='grey')
 
+
+@login_required
 def blog_save_location(country, city):
     try:
         location = Location.objects.get(country=ucwords(country), city=ucwords(city))
@@ -647,10 +673,9 @@ def blog_save_location(country, city):
         
     return location
 
-def blog_manage_bulk(request):
-    if not request.user.is_authenticated() or request.method == 'GET':
-        return render(request, '403.html', status=403)
 
+@login_required
+def blog_manage_bulk(request):
     if request.method == 'POST':
         blog_ids = request.POST.getlist('blog_id')
         operation = request.POST.get('op')
@@ -673,7 +698,11 @@ def blog_manage_bulk(request):
         elif section == 'trash':
             return redirect(reverse('blog_manage_trash'))
         return redirect(reverse('blog_manage'))
+    else:
+        raise Http404
 
+
+@login_required
 def blog_save_image(image_path, blog):
     directory, name = os.path.split(image_path)
     real_path = blog_image_url(blog, 'blog_%s.jpg' % blog.id)
@@ -686,20 +715,14 @@ def blog_save_image(image_path, blog):
     return real_path
 
 
-# Static page
-def blog_about(request):
-    return render(request, 'about.html')
-
-def blog_term(request):
-    return render(request, 'term.html')
-
+@login_required
 def blog_search(request):
     """Search blogs by title and description"""
     keyword = request.REQUEST.get("keyword", '')
 
     context = {'title': 'keyword: %s' % keyword,
-        'keyword': keyword,
-        'param': 'keyword=%s' % keyword}
+               'keyword': keyword,
+               'param': 'keyword=%s' % keyword}
 
     keyword = keyword.strip()
     if keyword:
@@ -722,15 +745,19 @@ def blog_search(request):
 
         page_range = get_page_range(pagination)
 
-        context.update({'blogs': blogs, 
-        'has_pager': len(page_range) > 1,
-        'pagination': pagination,
-        'page': p,
-        'pager': pager,
-        'page_range': page_range,})
+        context.update({'blogs': blogs,
+                        'has_pager': len(page_range) > 1,
+                        'pagination': pagination,
+                        'page': p,
+                        'pager': pager,
+                        'page_range': page_range,})
 
     return render(request, 'blog/blog_search.html', context)
 
 
+# Static page
+def blog_about(request):
+    return render(request, 'about.html')
 
-    
+def blog_term(request):
+    return render(request, 'term.html')
