@@ -1,4 +1,4 @@
-from account.models import Account, AccountKey
+from account.models import UserProfile, UserInvitation
 from django.test import TestCase
 from django.contrib.auth.models import User
 from tests import factory
@@ -8,7 +8,7 @@ from override_settings import override_settings
 import shutil
 
 @override_settings(PRIVATE=False)
-class TestAccount(TestCase):
+class TestUserProfile(TestCase):
     def setUp(self):
         self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
         self.staff.is_staff = True
@@ -60,8 +60,8 @@ class TestAccount(TestCase):
         self.client.logout()
     
     def test_account_invite_exists_inactive_user(self):    
-        account_key1 = AccountKey.objects.get(user=self.inactive_user1)
-        account_key2 = AccountKey.objects.get(user=self.inactive_user2)
+        account_key1 = UserInvitation.objects.get(user=self.inactive_user1)
+        account_key2 = UserInvitation.objects.get(user=self.inactive_user2)
         
         key1 = account_key1.key
         key2 = account_key2.key
@@ -71,8 +71,8 @@ class TestAccount(TestCase):
         response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
         self.assertContains(response, 'Sending email invite. you can see list of user invited in user managment.')
         
-        account_key1 = AccountKey.objects.get(user=self.inactive_user1)
-        account_key2 = AccountKey.objects.get(user=self.inactive_user2)
+        account_key1 = UserInvitation.objects.get(user=self.inactive_user1)
+        account_key2 = UserInvitation.objects.get(user=self.inactive_user2)
         self.assertNotEquals(key1, account_key1.key)
         self.assertNotEquals(key2, account_key2.key)
         self.client.logout()
@@ -102,7 +102,7 @@ class TestAccount(TestCase):
         response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
         self.client.logout()
         
-        account_key = AccountKey.objects.get(user__username='testactivate@example.com')
+        account_key = UserInvitation.objects.get(user__username='testactivate@example.com')
         response = self.client.get('/account/activate/%s/' % account_key.key, follow=True)
         current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
         
@@ -165,7 +165,7 @@ class TestAccount(TestCase):
         self.client.logout()
 
 @override_settings(PRIVATE=False)
-class TestCreateAccount(TestCase):
+class TestCreateUserProfile(TestCase):
     def setUp(self):
         self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
         self.staff.is_staff = True

@@ -1,4 +1,4 @@
-from account.models import Account, AccountKey
+from account.models import UserProfile, UserInvitation
 from common.templatetags.common_tags import ucwords_tag
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -8,12 +8,12 @@ def rm_user(id):
     try:
         user = User.objects.get(id=id)
         try:
-            AccountKey.objects.get(user=user).delete()
-        except AccountKey.DoesNotExist:
+            UserInvitation.objects.get(user=user).delete()
+        except UserInvitation.DoesNotExist:
             pass
         try:
-            Account.objects.get(user=user).delete()
-        except Account.DoesNotExist:
+            UserProfile.objects.get(user=user).delete()
+        except UserProfile.DoesNotExist:
             pass
         user.delete()
     except User.DoesNotExist:

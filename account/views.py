@@ -17,7 +17,6 @@ from common.templatetags.common_tags import *
 
 from account.forms import *
 from account.models import *
-from account.tasks import send_invite, send_forgot
 
 from datetime import datetime
 

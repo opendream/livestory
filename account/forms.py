@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.forms import fields
 from django.utils.translation import ugettext_lazy as _
 
-from account.models import Account, UserProfile, UserInvitation
+from account.models import UserProfile, UserInvitation
 
 import pytz
 
@@ -53,7 +53,7 @@ class UserActivationForm(forms.Form):
     password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'span3'}))
 
 
-class AccountProfileForm(forms.Form):
+class UserProfileProfileForm(forms.Form):
     firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     
@@ -69,7 +69,7 @@ class AccountProfileForm(forms.Form):
     is_active = forms.BooleanField(required=False)
 
     class Meta:
-		model = Account
+		model = UserProfile
 		#exclude = ('user', 'location', 'draft')
     
     def clean_password(self):
@@ -115,11 +115,11 @@ class ProfileCreationForm(forms.Form):
             raise forms.ValidationError(_('The two password fields didn\'t match.'))
         return password2
 
-class AccountForgotForm(forms.Form):
+class UserProfileForgotForm(forms.Form):
     email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'span3'}))
 
     def __init__(self, *args, **kwargs):
-        super(AccountForgotForm, self).__init__(*args, **kwargs)
+        super(UserProfileForgotForm, self).__init__(*args, **kwargs)
         self.fields['email'].error_messages['required'] = 'Please enter email address.'
 
     def clean_email(self):

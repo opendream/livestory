@@ -1,4 +1,4 @@
-from account.models import Account, AccountKey
+from account.models import UserProfile, UserInvitation
 from django.test import TestCase
 from tests import factory
 from override_settings import override_settings
@@ -9,7 +9,7 @@ from common import rm_user
 from django.conf import settings
 
 @override_settings(PRIVATE=False)
-class TestAccount(TestCase):
+class TestUserProfile(TestCase):
     def setUp(self):
         self.users = [
             factory.create_user('tester1@example.com', 'tester1@example.com', 'testuser1', 'Nirut', 'Khemasakchai', True),
@@ -43,7 +43,7 @@ class TestAccount(TestCase):
         self.assertEquals('Nirut Khemasakchai', self.users[0].get_profile().__unicode__())
         self.assertEquals('Panudate Vasinwattana', self.users[1].get_profile().__unicode__())
 
-class TestAccountKey(TestCase):
+class TestUserInvitation(TestCase):
     def setUp(self):
         self.users = [
             factory.create_user('tester1@example.com', 'tester1@example.com', 'testuser1', 'Nirut', 'Khemasakchai'),
@@ -55,13 +55,13 @@ class TestAccountKey(TestCase):
             rm_user(user.id)
         
     def test_unicode(self):
-        account_key1 = AccountKey.objects.get(user=self.users[0])
-        account_key2 = AccountKey.objects.get(user=self.users[1])
+        account_key1 = UserInvitation.objects.get(user=self.users[0])
+        account_key2 = UserInvitation.objects.get(user=self.users[1])
         self.assertEquals('tester1@example.com has key %s' % account_key1.key, account_key1.__unicode__())
         self.assertEquals('tester2@example.com has key %s' % account_key2.key, account_key2.__unicode__())
 
     def test_update_view_notification(self):
-        account_key = AccountKey.objects.get(user=self.users[0])
+        account_key = UserInvitation.objects.get(user=self.users[0])
         before = account_key.view_notification
         account_key.update_view_notification()
         after = account_key.view_notification

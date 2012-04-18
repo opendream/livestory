@@ -5,7 +5,7 @@ from django.conf import settings as project_settings
 
 from account.tasks import send_invite
 from tests import factory
-from account.models import AccountKey
+from account.models import UserInvitation
 from override_settings import override_settings
 
 
@@ -21,7 +21,7 @@ class TestSendInvite(TestCase):
             {'email': 'test@example.com', 'activate_link': 'moc_activate_link'}
         ]
         send_invite(invite_list, 'livestory.com')
-        account_key = AccountKey.objects.get(user__email='test@example.com')
+        account_key = UserInvitation.objects.get(user__email='test@example.com')
         self.assertEquals(True, account_key.can_send_mail)
         
         #fail_send_email_user = factory.create_user('test@qpamkfjgh.com', 'test@qpamkfjgh.com', 'test')
@@ -30,4 +30,4 @@ class TestSendInvite(TestCase):
         #]
         #send_invite(invite_list, 'livestory.com')
         ## TODO: make to False but now can not detect wrong email
-        #self.assertEquals(False, AccountKey.objects.get(user__email='test@qpamkfjgh.com').can_send_mail)
+        #self.assertEquals(False, UserInvitation.objects.get(user__email='test@qpamkfjgh.com').can_send_mail)

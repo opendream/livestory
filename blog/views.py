@@ -15,7 +15,6 @@ from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.uploadedfile import UploadedFile
 
-from account.models import Account
 from blog.models import *
 from blog.forms import *
 from statistic.models import BlogViewHit, BlogViewSummary
