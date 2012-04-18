@@ -12,6 +12,7 @@ from django.forms.models import model_to_dict
 from django.http import HttpResponseForbidden
 
 from common import get_page_range
+from common.decorators import user_is_staff
 from common.templatetags.common_tags import *
 
 from account.forms import *
@@ -60,10 +61,8 @@ def account_activate(request, key):
 
 
 @login_required
+@user_is_staff
 def account_invite(request):
-    if not request.user.is_staff:
-        return render(request, '403.html', status=403)
-
     if request.method == 'POST':
         form = UserInvitationForm(request.POST)
 

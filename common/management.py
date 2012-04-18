@@ -1,8 +1,18 @@
 from django.conf import settings
+from django.contrib.sites import models as site_app
 from django.contrib.sites.models import Site
+from django.db.models import signals
 
-def after_syncdb(sender, **kwargs):
-    Site.objects.get_or_create(domain=settings.SITE_DOMAIN, name=settings.SITE_NAME)
+def create_default_site(app, created_models, verbosity, **kwargs):
+    if Site in created_models:
+        try:
+            site = Site.objects.get(id=settings.SITE_ID)
+            site.delete()
+        except:
+            pass
 
-from django.db.models.signals import post_syncdb
-post_syncdb.connect(after_syncdb, dispatch_uid="common.management")
+        Site.objects.create(id=settings.SITE_ID, domain=settings.SITE_DOMAIN, name=settings.SITE_NAME)
+
+    Site.objects.clear_cache()
+
+signals.post_syncdb.connect(create_default_site, sender=site_app)
