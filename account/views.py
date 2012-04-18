@@ -309,7 +309,7 @@ def account_profile_view(request, pk):
         return render(request, '403.html', status=403)
     
     user = get_object_or_404(User, pk=pk)
-    blogs = user.blog_set.all()
+    blogs = user.blog_set.filter(trash=False)
     blog_count = blogs.count()
 
     pager = Paginator(blogs, 8)

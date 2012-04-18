@@ -276,7 +276,6 @@ class TestEditUserProfile(TestCase):
         self.assertContains(response, '<input id="id_confirm_password" type="password" class="span3" name="confirm_password" maxlength="200" />')
         self.assertContains(response, '<select name="timezone" id="id_timezone">')
         self.assertContains(response, '<input checked="checked" type="checkbox" name="is_active" id="id_is_active" />')
-        self.assertContains(response, '<input class="input-file imgae-button fileupload-classic" type="file" name="image" disabled="disabled">')
         self.assertContains(response, '<button type="submit" class="btn-green">Update Profile</button>')
 
     def test_user_profile_edit__save(self):
