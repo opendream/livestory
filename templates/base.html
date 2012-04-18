@@ -43,15 +43,9 @@
 	          {% endif %}
 	          
 	          {% if user.get_profile.get_fullname %}
-<<<<<<< HEAD
-		          <a href="{% url account_profile_edit %}" class="inline">{{ user.get_profile.get_fullname }}</a>
+		          <a href="{% url account_profile_view user.id %}" class="inline">{{ user.get_profile.get_fullname }}</a>
 	          {% else %}
-		          <a href="{% url account_profile_edit %}" class="inline">{{ user.username }}</a>
-=======
-		          <a href="{% url account_profile_view user.id %}">{{ user.get_profile.get_fullname }}</a>
-	          {% else %}
-		          <a href="{% url account_profile_view user.id %}">{{ user.username }}</a>
->>>>>>> Edit user profile link
+		          <a href="{% url account_profile_view user.id %}" class="inline">{{ user.username }}</a>
 	          {% endif %}
 		      </li>
 		      
