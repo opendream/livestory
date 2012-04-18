@@ -1,0 +1,9 @@
+Livestory Account Refactor
+- use UserProfile and UserInvitation instead of Account and AccountKey, respectively.
+- remove authentication state checking from Middleware (will redirect unauthenticated user to login page via login_required decorator)
+- rename firstname and lastname to first_name and last_name, respectively.
+- rename image field in Account model to avatar in UserProfile model
+- relocate view_notification in AccountKey to UserProfile
+- implement reset password functionality
+- change template file for email body
+- use mailgun as a mail service

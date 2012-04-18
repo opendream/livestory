@@ -1,0 +1,23 @@
+{% extends 'base_email.html' %}
+
+{% block email_content %}
+<p>You have invite from {{ settings.SITE_NAME }}.</p>
+
+<p>We're excited to invite you to join <strong>{{ settings.SITE_NAME }}</strong>, a photo micro blog with inspiring stories of 300 characters. </p>
+
+<p>There are millions of stories out there each day at {{ settings.ORGANIZATION_NAME }} us D motivating, inspiring, exciting, or even unhappy stories. From Afghanistan to Eastern Indonesia, tons of memorable moments unveil in front of us but we miss the opportunity to hear each other's stories because we've never had an easy way to share them before. Now we do. </p>
+
+<p>Introducing <strong>{{ settings.SITE_NAME }}</strong>, a private micro photo blogging (phlogging) community for {{ settings.ORGANIZATION_NAME }} staff in Asia that lets you share your stories in a short and simple way. Just upload a photo with a brief caption no longer than 300 characters long, add "mood" and "category", and your story is shared across the community!</p>
+
+<p>As the <strong>{{ settings.SITE_NAME }}</strong> grows, you will begin to see stories of us in Asia in the way we've never seen before.  We hope that you will feel more connected and be more inspired by the stories of us.</p>
+
+<p>To create your {{ settings.SITE_NAME }} account, Please, click <strong>"Activate your account"</strong> below.</p>
+
+<a href="{{ base_url }}{% url account_activate invitation.invitation_key %}" title="Activate your account"><img src="{{ base_url }}/static/img/email_invite.png" alt="Activate your account" style="border:0;" /></a>
+
+<p style="text-align:center;"><img src="{{ base_url }}/static/img/example_image.jpg" /></p>
+
+<p>If you have any questions, we'd love to hear from you. Please email us at {{ contact_email }}</p>
+
+<p>Can't wait to have you join the community!</p>
+{% endblock %}

@@ -125,9 +125,9 @@ $(document).ready(function() {
     <div class="span4 block">
       <div class="blog-profile block clearfix">
         <a href="{% url account_profile_view profile.pk %}" class="profile-image">
-          <img width="94" height="94" src="{{ profile.get_image|crop:'94x94' }}" alt="" class="porfile-photo"/>
+          <img width="94" height="94" src="{{ profile.get_avatar|crop:'94x94' }}" alt="" class="porfile-photo"/>
         </a>
-        <a href="{% url account_profile_view profile.pk %}" class="profile-name">{{ profile.firstname }} {{ profile.lastname }}</a>
+        <a href="{% url account_profile_view profile.pk %}" class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</a>
         <span class="profile-email grey">{{ profile.user }}</span>
       </div>
       
@@ -139,8 +139,8 @@ $(document).ready(function() {
         <ul class="friends clearfix">
           {% for user in loved_users|slice:":7" %}
           <li class="love-user_{{ user.user.id }}">
-              <a href="#" title=""><img width="35px" height="35px" src="{{ user.get_image|crop:'35x35' }}" alt="{{ user.get_fullname }}" /></a>
-              <div class="tooltip-popup">{{ user.get_fullname }}</div>
+              <a href="#" title=""><img width="35px" height="35px" src="{{ user.get_avatar|crop:'35x35' }}" alt="{{ user.get_full_name }}" /></a>
+              <div class="tooltip-popup">{{ user.get_full_name }}</div>
           </li>
           {% endfor %}
         </ul>
@@ -154,8 +154,8 @@ $(document).ready(function() {
             <ul class="friends-inline">
               {% for user in loved_users %}
               <li class="love-user_{{ user.user.id }}">
-                <a href="#" title=""><img width="35px" height="35px" src="{{ user.get_image|crop:'35x35' }}" alt="{{ user.get_fullname }}"></a>
-                <a href="#" class="profile-name">{{ user.get_fullname }}</a>
+                <a href="#" title=""><img width="35px" height="35px" src="{{ user.get_avatar|crop:'35x35' }}" alt="{{ user.get_full_name }}"></a>
+                <a href="#" class="profile-name">{{ user.get_full_name }}</a>
               </li>
               {% endfor %}
             </ul>
@@ -164,12 +164,12 @@ $(document).ready(function() {
         <ul class="hide">
           {% if user.is_authenticated %}
           <li id="own_love_list" class="love-user_{{ user.id }} hide">
-              <a href="#" title=""><img src="{{ user.get_profile.get_image|crop:'35x35' }}" alt="{{ user.get_profile.get_fulllname }}" /></a>
-              <div class="tooltip-popup">{{ user.get_profile.get_fullname }}</div>
+              <a href="#" title=""><img src="{{ user.get_profile.get_avatar|crop:'35x35' }}" alt="{{ user.get_profile.get_fulll_name }}" /></a>
+              <div class="tooltip-popup">{{ user.get_profile.get_full_name }}</div>
           </li>
           <li id="own_love_popup" class="love-user_{{ user.id }} hide">
-            <a href="#" title=""><img src="{{ user.get_profile.get_image|crop:'94x94' }}" alt="{{ user.get_profile.get_fullname }}"></a>
-            <a href="#" class="profile-name">{{ user.get_profile.get_fullname }}</a>
+            <a href="#" title=""><img src="{{ user.get_profile.get_avatar|crop:'94x94' }}" alt="{{ user.get_profile.get_full_name }}"></a>
+            <a href="#" class="profile-name">{{ user.get_profile.get_full_name }}</a>
           </li>
           {% endif %}
         </ul>

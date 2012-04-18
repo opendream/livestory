@@ -30,12 +30,40 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('account', ['AccountKey'])
 
+        # Adding model 'UserProfile'
+        db.create_table('account_userprofile', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
+            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('avatar', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True)),
+            ('timezone', self.gf('django.db.models.fields.CharField')(default='UTC', max_length=200)),
+            ('notification_viewed', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+        ))
+        db.send_create_signal('account', ['UserProfile'])
+
+        # Adding model 'UserInvitation'
+        db.create_table('account_userinvitation', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('email', self.gf('django.db.models.fields.CharField')(max_length=254)),
+            ('invitation_key', self.gf('django.db.models.fields.CharField')(unique=True, max_length=200)),
+            ('invited', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('invited_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+        ))
+        db.send_create_signal('account', ['UserInvitation'])
+
     def backwards(self, orm):
         # Deleting model 'Account'
         db.delete_table('account_account')
 
         # Deleting model 'AccountKey'
         db.delete_table('account_accountkey')
+
+        # Deleting model 'UserProfile'
+        db.delete_table('account_userprofile')
+
+        # Deleting model 'UserInvitation'
+        db.delete_table('account_userinvitation')
 
     models = {
         'account.account': {
@@ -55,6 +83,24 @@ class Migration(SchemaMigration):
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'}),
             'view_notification': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
+        },
+        'account.userinvitation': {
+            'Meta': {'object_name': 'UserInvitation'},
+            'email': ('django.db.models.fields.CharField', [], {'max_length': '254'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'invitation_key': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
+            'invited': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'invited_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+        },
+        'account.userprofile': {
+            'Meta': {'object_name': 'UserProfile'},
+            'avatar': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'notification_viewed': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'timezone': ('django.db.models.fields.CharField', [], {'default': "'UTC'", 'max_length': '200'}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},

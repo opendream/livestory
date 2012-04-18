@@ -87,12 +87,12 @@ class TestBlogCreate(TestCase):
         }
         response = self.client.post('/blog/create/', params)
         self.assertEquals(403, response.status_code)
-        
+
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/create/', params, follow=True)
         blog = response.context['blog']
         user_id = self.client.session.get('_auth_user_id')
-        
+
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Post', response.context['page_title'])
@@ -108,9 +108,9 @@ class TestBlogCreate(TestCase):
         self.assertEquals(False, blog.allow_download)
         self.assertEquals(self.category, blog.category)
         self.assertEquals(self.location, blog.location)
-        
+
         self.client.logout()
-    
+
     def test_blog_create_post_draft(self, country='thailand', city='suratthanee', again=True):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
@@ -155,12 +155,12 @@ class TestBlogCreate(TestCase):
         self.assertEquals('8.9034051', blog.location.lat)
         self.assertEquals('99.0128926', blog.location.lng)
         self.client.logout()
-        
+
         if again:
             self.test_blog_create_post_draft(country='thailand', city='surat thani', again=False)
             same = Location.objects.filter(country='Thailand', city='Surat Thani').count()
             self.assertEquals(1, same)
-            
+
     def test_blog_create_post_miss_match_location(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
@@ -186,7 +186,7 @@ class TestBlogCreate(TestCase):
 
         self.assertEquals(True, response.context['location_error'])
         self.client.logout()
-    
+
     def test_blog_create_post_group_of_country(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_create_post.jpg' % settings.MEDIA_ROOT
@@ -210,7 +210,7 @@ class TestBlogCreate(TestCase):
         blog = response.context['blog']
         self.assertEquals('United Kingdom', blog.location.country)
         self.assertEquals('London', blog.location.city)
-        
+
         self.client.logout()
 
 @override_settings(PRIVATE=False)
@@ -229,38 +229,38 @@ class TestBlogEdit(TestCase):
         self.blog_draft = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
         self.blog_draft.draft = True
         self.blog_draft.save()
-        
+
     def tearDown(self):
         rm_user(self.user.id      )
         rm_user(self.other_user.id)
         rm_user(self.staff.id     )
-        
+
     def test_blog_edit_get(self):
         response = self.client.get('/blog/%s/edit/' % self.blog.id)
         self.assertEquals(403, response.status_code)
-        
+
         self.client.login(username='othertest@example.com', password='test')
         response = self.client.get('/blog/%s/edit/' % self.blog.id)
         self.assertEquals(403, response.status_code)
         self.client.logout()
-        
+
         self.client.login(username='test@example.com', password='test')
         response = self.client.get('/blog/%s/edit/' % self.blog.id)
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.client.logout()
-        
+
         self.client.login(username='staff@example.com', password='test')
         response = self.client.get('/blog/%s/edit/' % self.blog.id)
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.client.logout()
-        
+
         self.client.login(username='staff@example.com', password='test')
         response = self.client.get('/blog/0/edit/')
         self.assertEquals(404, response.status_code)
         self.client.logout()
-    
+
     def test_blog_edit_post_empty(self):
         params = {
             'title': '',
@@ -279,7 +279,7 @@ class TestBlogEdit(TestCase):
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params)
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
-        
+
         self.assertEquals(True, response.context['imagefield_error'])
         self.assertFormError(response, 'form', 'title', ['This field is required.'])
         self.assertFormError(response, 'form', 'mood', ['This field is required.'])
@@ -364,11 +364,11 @@ class TestBlogEdit(TestCase):
         self.assertEquals(True, blog.allow_download)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
-        
+
         # For image directory exist (duplicate from above)
         if again:
             self.test_blog_edit_post_draft_publish_post(False)
-    
+
     def test_blog_edit_post_draft_on_draft_post(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
@@ -406,7 +406,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(True, blog.allow_download)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
-    
+
     def test_blog_edit_post_trash(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
@@ -445,7 +445,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(True, blog.trash)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
-    
+
     def test_blog_edit_post_trash(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
@@ -484,7 +484,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(False, blog.trash)
         self.assertEquals(self.cat_travel, blog.category)
         self.assertEquals(self.loc_korea, blog.location)
-        
+
     def test_blog_edit_post_miss_match_location(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT

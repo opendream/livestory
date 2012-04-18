@@ -15,9 +15,9 @@ urlpatterns = patterns('',
     url(r'^blog/', include('blog.urls')),
     url(r'^location/', include('location.urls')),
     url(r'^ajax/', include('ajax.urls')),
-    
-    url(r'^account/login/$', 'django.contrib.auth.views.login', name='account_login'),
-    url(r'^account/logout/$', 'django.contrib.auth.views.logout', {'next_page':'/account/login/'}, name='account_logout'),
+
+    url(r'^accounts/login/$', 'account.views.auth_login', name='account_login'),
+    url(r'^account/logout/$', 'django.contrib.auth.views.logout', {'next_page':'/'}, name='account_logout'),
     
     url(r'^account/password_reset/$', 'django.contrib.auth.views.password_reset', name='account_password_reset'),
     url(r'^account/password_reset/done/$', 'django.contrib.auth.views.password_reset_done', name='account_password_reset_done'),

@@ -1,17 +1,58 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django.forms import fields
 from django.utils.translation import ugettext_lazy as _
 
-from account.models import Account
+from account.models import Account, UserProfile, UserInvitation
 
 import pytz
 
-class AccountInviteForm(forms.Form):
-    invite = forms.CharField(widget=forms.Textarea)
-    
+class EmailAuthenticationForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        self.user_cache = None
+        super(EmailAuthenticationForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+
+        if email and password:
+            self.user_cache = authenticate(email=email, password=password)
+            if self.user_cache is None:
+                raise forms.ValidationError(_('Please enter a correct username and password. Note that both fields are case-sensitive.'))
+            elif not self.user_cache.is_active:
+                raise forms.ValidationError(_('This account is inactive.'))
+        self.check_for_test_cookie()
+        return self.cleaned_data
+
+    def check_for_test_cookie(self):
+        if self.request and not self.request.session.test_cookie_worked():
+            raise forms.ValidationError(_('Your Web browser doesn\'t appear to have cookies enabled. Cookies are required for logging in.'))
+
+    def get_user_id(self):
+        if self.user_cache:
+            return self.user_cache.id
+        return None
+
+    def get_user(self):
+        return self.user_cache
+
+
+class UserInvitationForm(forms.Form):
+    emails = forms.CharField(widget=forms.Textarea)
+
+
+class UserActivationForm(forms.Form):
+    first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
+    last_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
+    password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'span3'}))
+
+
 class AccountProfileForm(forms.Form):
     firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
@@ -48,35 +89,31 @@ class AccountProfileForm(forms.Form):
             raise forms.ValidationError(_("Password not match"))
         return confirm_password
 
-class AccountCreationForm(UserCreationForm):
-    username = forms.EmailField(widget=forms.TextInput(attrs={'class': 'span3'}), required=True)
-    firstname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
-    lastname = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+class ProfileCreationForm(forms.Form):
+    email = forms.EmailField(max_length=254, widget=forms.TextInput(attrs={'class': 'span3'}))
+    first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
+    last_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'span3'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'span3'}))
     timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.common_timezones], required=False, initial='UTC')
 
-    def __init__(self,*args,**kwargs):
-        super(AccountCreationForm, self).__init__(*args,**kwargs)
-        self.fields['password1'].widget=forms.PasswordInput(attrs={'class': 'span3'})
-        self.fields['password2'].widget=forms.PasswordInput(attrs={'class': 'span3'})
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
 
-    def clean_username(self):
-        username = self.cleaned_data["username"]
-        try:
-            User.objects.get(username=username)
-        except User.DoesNotExist:
-            return username
-        raise forms.ValidationError(_("This email is already exists."))
+        if UserInvitation.objects.filter(email=email).exists():
+            raise forms.ValidationError('Create user invitation has already been sent to this email address.')
 
-    def save(self, commit=False):
-        user = super(AccountCreationForm, self).save(commit)
-        user.email = self.cleaned_data['username']
-        user.save()
-        account = Account()
-        account.user = user
-        account.firstname = self.cleaned_data['firstname']
-        account.lastname = self.cleaned_data['lastname']
-        account.save()
-        return account
+        if UserProfile.objects.filter(email=email).exists():
+            raise forms.ValidationError('There is another user already using this email.')
+
+        return email
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1', '')
+        password2 = self.cleaned_data['password2']
+        if password1 != password2:
+            raise forms.ValidationError(_('The two password fields didn\'t match.'))
+        return password2
 
 class AccountForgotForm(forms.Form):
     email = forms.EmailField(max_length=255, widget=forms.TextInput(attrs={'class': 'span3'}))

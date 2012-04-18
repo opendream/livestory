@@ -39,7 +39,7 @@
 	      <ul class="nav pull-right">
 		      <li>
 						{% if user.get_profile.image %}
-	          <img src="{{ user.get_profile.get_image|crop:AVATAR_TOP_SIZE }}" alt="" class="img-vertical"/>
+	          <img src="{{ user.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}" alt="" class="img-vertical"/>
 	          {% endif %}
 	          
 	          {% if user.get_profile.get_fullname %}
@@ -60,7 +60,7 @@
 	            {% for notification in notifications %}
 	            <li class="clearfix">
 	              <div class="avatar">
-	                <a href="#"><img src="{{ notification.subject.get_profile.get_image|crop:AVATAR_TOP_SIZE }}"/></a>
+	                <a href="#"><img src="{{ notification.subject.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}"/></a>
 	              </div>
 	              <div class="info"> 
 	                <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
@@ -114,7 +114,7 @@
     <div class="container">
       <a id="logo" href="{% url blog_home %}">Oxfam Live Stories</a>
       {% if not user.is_authenticated %}
-      <div class="login"><a href="/account/login/" class="oxfam-font">Login</a></div>
+      <div class="login"><a href="{% url account_login %}" class="oxfam-font">Login</a></div>
       {% endif %}
     </div>
   </div>
