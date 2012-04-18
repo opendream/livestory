@@ -2,11 +2,6 @@
 /*    Oxfam Live Stories    */
 /****************************/
 
-/* Check list */
-/*
-2. border
-*/
-
 /* Bootstrap Override
 ---------------------------------------*/
 	.menubar-inner{ margin: 0 0 18px 0; }
@@ -21,6 +16,57 @@
 	}
 
 
+
+/* Mixin
+---------------------------------------*/
+	@mixin clear-shadow{
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+	@mixin shadow($hoffset, $voffset, $blur, $spread, $color){
+		-moz-box-shadow: $hoffset $voffset $blur $spread $color;
+		-webkit-box-shadow: $hoffset $voffset $blur $spread $color;
+		box-shadow: $hoffset $voffset $blur $spread $color;
+	}
+	@mixin inset-shadow($hoffset, $voffset, $blur, $spread, $color){
+		-moz-box-shadow: inset $hoffset $voffset $blur $spread $color;
+		-webkit-box-shadow: inset $hoffset $voffset $blur $spread $color;
+		box-shadow: inset $hoffset $voffset $blur $spread $color;
+	}
+	@mixin border-rounded($r){
+		-webkit-border-radius: $r;
+		-moz-border-radius: $r;
+		border-radius: $r;
+	}
+	@mixin btn($border, $bg, $shadow, $border-hover, $bg-hover, $shadow-hover){
+	  @include border-rounded(6px);
+	  display: inline-block;
+	  padding: 7px 12px;
+	  *padding: 3px 12px;
+	  margin-right: 10px;
+	  border: 1px solid $border;
+	  font: bold 13px Arial;
+	  color: white !important;
+	  text-decoration: none;
+	  background-color: $bg;
+	  -moz-box-shadow: inset -1px -2px 0px 0px $shadow;
+	  -webkit-box-shadow: inset -1px -2px 0px 0px $shadow;
+	  box-shadow: inset -1px -2px 0px 0px $shadow;
+	  &:hover{
+	    border: 1px solid $border-hover;
+	    background-color: $bg-hover;
+	    -moz-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
+	    -webkit-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
+	    box-shadow: inset -1px -2px 0px 0px $shadow-hover;
+	  }
+	}
+	@mixin mark($top, $left){
+		top: $top !important;
+		left: $left !important;
+	}
+	
+	
 
 /* Layouts Style
 ---------------------------------------*/
@@ -62,9 +108,7 @@
 
 /* Base Style 
 ---------------------------------------*/
-	body{
-	
-	}
+	body{ }
 	.global-padding{ padding: 25px 30px; }
 	
 	/* Link
@@ -123,39 +167,12 @@
 
 	/* Border radius
 	---------------------------------------*/
-  @mixin border-rounded($r){
-		-webkit-border-radius: $r;
-		-moz-border-radius: $r;
-		border-radius: $r;
-	}
 	.rounded{ @include border-rounded(4px); }
 	.rounded5{ @include border-rounded(5px); }
 	.rounded10{ @include border-rounded(10px); }
 	
 	/* Button
 	---------------------------------------*/
-  @mixin btn($border, $bg, $shadow, $border-hover, $bg-hover, $shadow-hover){
-	  @include border-rounded(6px);
-	  display: inline-block;
-    padding: 7px 12px;
-    *padding: 3px 12px;
-    margin-right: 10px;
-    border: 1px solid $border;
-    font: bold 13px Arial;
-    color: white !important;
-    text-decoration: none;
-    background-color: $bg;
-    -moz-box-shadow: inset -1px -2px 0px 0px $shadow;
-    -webkit-box-shadow: inset -1px -2px 0px 0px $shadow;
-    box-shadow: inset -1px -2px 0px 0px $shadow;
-    &:hover{
-	    border: 1px solid $border-hover;
-	    background-color: $bg-hover;
-	    -moz-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
-	    -webkit-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
-	    box-shadow: inset -1px -2px 0px 0px $shadow-hover;
-    }
-  }
   /* btn($border, $bg, $shadow, $border-hover, $bg-hover, $shadow-hover) */
   .btn-green{ @include btn(#089D4B, #72B64A, #3f9303, #0A5A26, #0F7335, #0a5a26); }
   .btn-grey { @include btn(#787878, #A0A0A0, #636363, #696969, #787878, #535353); }
@@ -194,10 +211,6 @@
 	
 	/* CSS3 Transition
 	---------------------------------------*/
-	@mixin mark($top, $left){
-			top: $top !important;
-			left: $left !important;
-	}
 	@-webkit-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-moz-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-ms-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
@@ -227,6 +240,27 @@
 		animation-delay: 0;
 		animation-iteration-count: 1;
 	}
+	
+	/* Hint
+	---------------------------------------*/
+	.hint-box{
+		@include  border-rounded(40px);
+		@include shadow(0, 0, 20px, 5px, #eee);
+		width: 450px;
+		margin: 0 auto;
+		padding: 10px 20px;
+		color: #010101;
+		p{ font-size: 20px; line-height: 36px; }
+	}
+	.ic-hint{
+		width: 34px;
+		height: 47px;
+		margin: -20px 0 0 0;
+		background: url('../img/btn.png') no-repeat -150px 0;
+	}
+	.category-box{ width: 390px; }
+	.mood-box{ width: 355px; }
+	.location-box{ width: 420px; }
 
 
 
@@ -234,26 +268,11 @@
 ---------------------------------------*/
 	.block{ margin-bottom: 24px !important; }
   .clear-both{ clear: both; }
+  .reset-box{ margin: 0; padding: 0; }
   .hide{ display: none !important; }
 	.img-vertical{ vertical-align: middle; margin: 0 5px 0 0; }
 	.hide-text{ display: none; }
 	.inline{ display: inline !important; }
-	
-	@mixin clear-shadow{
-		-moz-box-shadow: none;
-		-webkit-box-shadow: none;
-		box-shadow: none;
-	}
-	@mixin shadow($hoffset, $voffset, $blur, $spread, $color){
-		-moz-box-shadow: $hoffset $voffset $blur $spread $color;
-		-webkit-box-shadow: $hoffset $voffset $blur $spread $color;
-		box-shadow: $hoffset $voffset $blur $spread $color;
-	}
-	@mixin inset-shadow($hoffset, $voffset, $blur, $spread, $color){
-		-moz-box-shadow: inset $hoffset $voffset $blur $spread $color;
-		-webkit-box-shadow: inset $hoffset $voffset $blur $spread $color;
-		box-shadow: inset $hoffset $voffset $blur $spread $color;
-	}
 	.no-shadow{ @include clear-shadow; }
 
 
@@ -289,8 +308,19 @@
 		font-weight: normal;
 		font-style: normal;
 	}
+	@font-face {
+		font-family: 'Chalkduster';
+		src: url('../fonts/chalkduster.eot');
+		src: url('../fonts/chalkduster.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/chalkduster.woff') format('woff'),
+		url('../fonts/chalkduster.ttf') format('truetype'),
+		url('../fonts/chalkduster.svg#chalkduster') format('svg');
+		font-weight: normal;
+		font-style: normal;
+	}
 	.oxfam-font{ font-family: OxfamGlobalHeadlineRegular; }
 	.futura-font { font-family: FuturaMdCnBTMedium; }
+	.chalkduster-font { font-family: Chalkduster; }
 
 	
 
@@ -1203,7 +1233,12 @@
 	  
 	  .login_form{
 			input{ width: 150px; }
+			.btn-green{
+			  display: block;
+			  margin-bottom: 10px;
+		  }
 	  }
+	  
   
 	  /* Menu 
 	  ---------------------------------------*/
@@ -1251,7 +1286,8 @@
 			height: 500px !important;
 			margin-top: -40px;
 		}
-		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
+		#rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
 		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
 			display: none;
 		}
@@ -1355,6 +1391,13 @@
 	  ---------------------------------------*/
 	  .grid{ width: 135px; }
 	  .grid-colspan{ width: 98% }
+	  
+	  /* Hint
+	  ---------------------------------------*/
+	  .category-box{ width: auto !important; }
+		.mood-box{ width: auto !important; }
+		.location-box{ width: auto !important; }
+	  
   }
   
 	/*----- Landscape phones and down -----*/
@@ -1529,6 +1572,13 @@
 		input[class*="span"], select[class*="span"], textarea[class*="span"], .uneditable-input{
 			margin-bottom: 9px
 		}
+		
+		/* Hint
+	  ---------------------------------------*/
+	  .category-box{ width: auto !important; }
+		.mood-box{ width: auto !important; }
+		.location-box{ width: auto !important; }
+		
   }
   
   

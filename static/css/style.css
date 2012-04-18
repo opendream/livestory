@@ -1,10 +1,6 @@
 /****************************/
 /*    Oxfam Live Stories    */
 /****************************/
-/* Check list */
-/*
-2. border
-*/
 /* Bootstrap Override
 ---------------------------------------*/
 .menubar-inner {
@@ -25,6 +21,8 @@
   font-style: italic;
   color: #aaa; }
 
+/* Mixin
+---------------------------------------*/
 /* Layouts Style
 ---------------------------------------*/
 .admin {
@@ -303,6 +301,38 @@ a:active {
   animation-delay: 0;
   animation-iteration-count: 1; }
 
+/* Hint
+---------------------------------------*/
+.hint-box {
+  -webkit-border-radius: 40px;
+  -moz-border-radius: 40px;
+  border-radius: 40px;
+  -moz-box-shadow: 0 0 20px 5px #eeeeee;
+  -webkit-box-shadow: 0 0 20px 5px #eeeeee;
+  box-shadow: 0 0 20px 5px #eeeeee;
+  width: 450px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  color: #010101; }
+  .hint-box p {
+    font-size: 20px;
+    line-height: 36px; }
+
+.ic-hint {
+  width: 34px;
+  height: 47px;
+  margin: -20px 0 0 0;
+  background: url("../img/btn.png") no-repeat -150px 0; }
+
+.category-box {
+  width: 390px; }
+
+.mood-box {
+  width: 355px; }
+
+.location-box {
+  width: 420px; }
+
 /* Utilities
 ---------------------------------------*/
 .block {
@@ -310,6 +340,10 @@ a:active {
 
 .clear-both {
   clear: both; }
+
+.reset-box {
+  margin: 0;
+  padding: 0; }
 
 .hide {
   display: none !important; }
@@ -360,11 +394,21 @@ legend h1, h1 {
   font-weight: normal;
   font-style: normal; }
 
+@font-face {
+  font-family: 'Chalkduster';
+  src: url("../fonts/chalkduster.eot");
+  src: url("../fonts/chalkduster.eot?#iefix") format("embedded-opentype"), url("../fonts/chalkduster.woff") format("woff"), url("../fonts/chalkduster.ttf") format("truetype"), url("../fonts/chalkduster.svg#chalkduster") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+
 .oxfam-font {
   font-family: OxfamGlobalHeadlineRegular; }
 
 .futura-font {
   font-family: FuturaMdCnBTMedium; }
+
+.chalkduster-font {
+  font-family: Chalkduster; }
 
 /* Theme Style 
 ---------------------------------------*/
@@ -1428,6 +1472,9 @@ html[xmlns] .clearfix {
 
   .login_form input {
     width: 150px; }
+  .login_form .btn-green {
+    display: block;
+    margin-bottom: 10px; }
 
   /* Menu 
   ---------------------------------------*/
@@ -1489,7 +1536,8 @@ html[xmlns] .clearfix {
     height: 500px !important;
     margin-top: -40px; }
 
-  #rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+  #rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
+  #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
   #rect-21, #rect-22, #rect-23, #rect-24, #rect-25 {
     display: none; }
 
@@ -1694,7 +1742,18 @@ html[xmlns] .clearfix {
     width: 135px; }
 
   .grid-colspan {
-    width: 98%; } }
+    width: 98%; }
+
+  /* Hint
+  ---------------------------------------*/
+  .category-box {
+    width: auto !important; }
+
+  .mood-box {
+    width: auto !important; }
+
+  .location-box {
+    width: auto !important; } }
 /*----- Landscape phones and down -----*/
 @media (max-width: 480px) {
   /* 	Scour Front 
@@ -1957,7 +2016,18 @@ html[xmlns] .clearfix {
     padding-left: 0px; }
 
   input[class*="span"], select[class*="span"], textarea[class*="span"], .uneditable-input {
-    margin-bottom: 9px; } }
+    margin-bottom: 9px; }
+
+  	/* Hint
+    ---------------------------------------*/
+  .category-box {
+    width: auto !important; }
+
+  .mood-box {
+    width: auto !important; }
+
+  .location-box {
+    width: auto !important; } }
 @media (max-width: 320px) {
   /* 	Scour Front 
 	---------------------------------------*/

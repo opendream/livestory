@@ -101,9 +101,6 @@ $(document).ready(function() {
       <div class="blog-container-photo">
         <div class="blog-photo rounded5">
           <img src="{{ blog.image|scale:'748x1000' }}" alt="{{ blog.title }}" />
-          <div class="status">
-            <span class="mood-icon-s mood-{{ blog.get_mood_text|lower }}-s">Mood: {{ blog.get_mood_text }}</span><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
-          </div>
         </div>
       </div>
       
@@ -111,7 +108,7 @@ $(document).ready(function() {
       
       <p class="block">{{ blog.description }}</p>
 
-      <span class="grey">{{ blog.created|localtime|timeago }} in</span> <a href="{% url blog_category blog.category.code %}">{{ blog.category }}</a>
+      <span class="grey">{{ blog.created|localtime|timeago }} </span>
       
       {% if not blog.trash %}
       {% if blog.user.id == user.id or user.is_staff %}
@@ -174,6 +171,21 @@ $(document).ready(function() {
           {% endif %}
         </ul>
       </div>
+      
+      <div class="blog-mood block">
+				<h3 class="sidebar-title">Mood</h3>
+				<span class="mood-icon mood-{{ blog.get_mood_text|lower }}">Mood: {{ blog.get_mood_text }}</span>
+			</div>	
+			
+			<div class="blog-category block">
+				<h3 class="sidebar-title">Category</h3>
+				<a href="{% url blog_category blog.category.code %}">{{ blog.category }}</a>
+			</div>
+			
+			<div class="blog-location block">
+				<h3 class="sidebar-title">Location</h3>
+				<span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
+			</div>
       
       {% if blog.tags.all %}
       <div class="blog-tag block">
