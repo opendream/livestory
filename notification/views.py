@@ -3,16 +3,18 @@ from datetime import datetime, timedelta
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import simplejson as json
+from django.contrib.auth.decorators import login_required
 
-from account.models import UserProfile
+from account.models import UserProfile, UserInvitation
 from notification.models import Notification
 
+@login_required
 def view(request):
-	if not request.user.is_authenticated():
-		return render(request, '403.html', status=403)
-
 	# Update view notification
-	UserInvitation.objects.get(user=request.user).update_view_notification()
+	try:
+		UserInvitation.objects.get(invited_by=request.user).update_view_notification()
+	except UserInvitation.DoesNotExist:
+		pass
 
 	# If request is ajax
 	if request.is_ajax():

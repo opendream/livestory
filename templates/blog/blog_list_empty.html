@@ -1,0 +1,31 @@
+{% extends 'base_single.html' %}
+{% load common_tags %}
+{% load tz %}
+
+{% block content %}
+
+<div class="blog-list">
+
+  {% if filter.category %}
+  <div class="hint-box category-box">
+    <div class="pull-right ic-hint"></div>
+    <p class="chalkduster-font reset-box">Choose your desired category</p>
+  </div>
+  {% endif %}
+  {% if filter.mood %}
+  <div class="hint-box mood-box">
+    <div class="pull-right ic-hint"></div>
+    <p class="chalkduster-font reset-box">Choose your desired mood</p>
+  </div>
+  {% endif %}
+  {% if filter.location %}
+  <div class="hint-box location-box">
+    <div class="pull-left ic-hint"></div>
+    <p class="chalkduster-font reset-box">Type your desired location here</p>
+  </div>
+  {% endif %}
+
+</div>
+
+{% endblock %}
+

@@ -601,8 +601,14 @@ def blog_mood(request, mood):
     try: 
         fmood = dict([(m[1], m[0]) for m in MOOD_CHOICES])[title]
     except KeyError:
-        raise Http404
-    return blog_all(request, title, {'mood': fmood}, {'mood': mood}, reverse('blog_mood', args=[mood]), color='purple')
+        #render empty page
+        return render(request, 'blog/blog_list_empty.html', {'filter': {'mood': mood}})
+
+    return blog_all(request, title, 
+        {'mood': fmood}, 
+        {'mood': mood}, 
+        reverse('blog_mood', args=[mood]), 
+        color='purple')
 
 
 @login_required
@@ -610,12 +616,20 @@ def blog_category(request, category):
     try: 
         fcategory = Category.objects.get(code=category)
     except Category.DoesNotExist:
-        raise Http404
+        #render empty page
+        return render(request, 'blog/blog_list_empty.html', {'filter': {'category': category}})
         
     title = fcategory.name
-    
-    return blog_all(request, title, {'category': fcategory}, {'category': category}, reverse('blog_category', args=[category]), color='pink')
 
+    return blog_all(request, title, 
+        {'category': fcategory}, 
+        {'category': category}, 
+        reverse('blog_category', args=[category]), 
+        color='pink')
+
+@login_required
+def blog_place_empty(request):
+    return render(request, 'blog/blog_list_empty.html', {'filter': {'location': '-'}})
 
 @login_required
 def blog_place(request):

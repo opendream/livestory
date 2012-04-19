@@ -15,11 +15,9 @@ from django.conf import settings
 
 @login_required
 def ajax_profile_image_upload(request, user_id):
-    print 'debug', user_id
     user = get_object_or_404(User, pk=user_id)
     account = user.get_profile()
     image = request.FILES['image']
-    print 'good'
     try:
         account.image.file
         account.image.delete()
