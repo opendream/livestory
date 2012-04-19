@@ -250,19 +250,24 @@
 		margin: 0 auto;
 		padding: 10px 20px;
 		color: #010101;
-		p{ font-size: 20px; line-height: 36px; }
+		p{ font-size: 18px; line-height: 36px; }
 	}
 	.ic-hint{
-		width: 34px;
+		width: 45px;
 		height: 47px;
 		margin: -20px 0 0 0;
-		background: url('../img/btn.png') no-repeat -150px 0;
+		background: url('../img/btn.png') no-repeat -140px 0;
 	}
-	.category-box{ width: 390px; }
-	.mood-box{ width: 355px; }
-	.location-box{ width: 420px; }
+	.category-box{ width: 360px; }
+	.mood-box{ width: 330px; }
+	.location-box{ width: 380px; 
+		.ic-hint {
+			width: 40px;
+			background-position: -150px 0;
+		}
+	}
 
-
+	.blog-list {min-height: 400px;}
 
 /* Utilities
 ---------------------------------------*/
