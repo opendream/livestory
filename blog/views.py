@@ -170,7 +170,7 @@ def blog_manage_trash(request):
 def blog_trash(request, blog_id):
     try:
         blog = Blog.objects.get(id=blog_id)
-        if not request.user.is_authenticated() or (blog.user.id != request.user.id and not request.user.is_staff):
+        if blog.user.id != request.user.id and not request.user.is_staff:
             return render(request, '403.html', status=403)
 
         blog.trash = True
@@ -660,7 +660,6 @@ def blog_tags(request):
     return blog_all(request, title, {'tags__name': tags}, {'tags': tags}, reverse('blog_tags'), color='grey')
 
 
-@login_required
 def blog_save_location(country, city):
     try:
         location = Location.objects.get(country=ucwords(country), city=ucwords(city))
@@ -702,7 +701,6 @@ def blog_manage_bulk(request):
         raise Http404
 
 
-@login_required
 def blog_save_image(image_path, blog):
     directory, name = os.path.split(image_path)
     real_path = blog_image_url(blog, 'blog_%s.jpg' % blog.id)

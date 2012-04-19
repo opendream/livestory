@@ -8,10 +8,6 @@ def rm_user(id):
     try:
         user = User.objects.get(id=id)
         try:
-            UserInvitation.objects.get(user=user).delete()
-        except UserInvitation.DoesNotExist:
-            pass
-        try:
             UserProfile.objects.get(user=user).delete()
         except UserProfile.DoesNotExist:
             pass

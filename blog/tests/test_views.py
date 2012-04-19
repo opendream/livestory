@@ -29,7 +29,7 @@ class TestBlogCreate(TestCase):
         
     def test_blog_create_get(self):
         response = self.client.get('/blog/create/')
-        self.assertEquals(403, response.status_code)
+        self.assertRedirects(response, '%s?next=/blog/create/' % reverse('account_login'))
         
         self.client.login(username='test@example.com', password='test')
         response = self.client.get('/blog/create/')
@@ -53,7 +53,7 @@ class TestBlogCreate(TestCase):
         }
 
         response = self.client.post('/blog/create/', params)
-        self.assertEquals(403, response.status_code)
+        self.assertEquals(302, response.status_code)
 
     def test_blog_create_post_empty(self):
         params = {
@@ -247,7 +247,7 @@ class TestBlogEdit(TestCase):
 
     def test_blog_edit_get(self):
         response = self.client.get('/blog/%s/edit/' % self.blog.id)
-        self.assertEquals(403, response.status_code)
+        self.assertEquals(302, response.status_code)
 
         self.client.login(username='othertest@example.com', password='test')
         response = self.client.get('/blog/%s/edit/' % self.blog.id)
@@ -556,13 +556,11 @@ class TestBlogView(TestCase):
         rm_user(self.otheruser.id)
         rm_user(self.staff.id    )
     
-    def test_blog_view_get(self):    
+    def test_blog_view_get(self):
+        # Anonymous user
         response = self.client.get('/blog/%s/view/' % self.blog.id)
         self.assertRedirects(response, '%s?next=/blog/%s/view/' % (reverse('account_login'), self.blog.id))
-        
-        response = self.client.get('/blog/%s/view/' % self.blog_private.id)
-        self.assertEquals(403, response.status_code)
-        
+
         self.client.login(username='test@example.com', password='test')
         response = self.client.get('/blog/%s/view/' % self.blog_private.id)
         self.assertEquals(200, response.status_code)
@@ -580,9 +578,9 @@ class TestBlogView(TestCase):
         response = self.client.get('/blog/%s/view/' % self.blog_draft.id)
         self.assertEquals(200, response.status_code)
         self.client.logout()
-        
+
         response = self.client.get('/blog/0/view/')
-        self.assertEquals(404, response.status_code)
+        self.assertEquals(302, response.status_code)
 
     def test_blog_view_love(self):
         self.client.login(username='test@example.com', password='test')
@@ -603,11 +601,11 @@ class TestBlogView(TestCase):
     def test_blog_love_blog(self):
         # user is not logged in
         response = self.client.get('/blog/%s/love/' % self.blog_private.id)
-        self.assertEquals(403, response.status_code)
+        self.assertEquals(302, response.status_code)
         
         # user is not logged in, blog does not exists
         response = self.client.get('/blog/0/love/')
-        self.assertEquals(404, response.status_code)
+        self.assertEquals(302, response.status_code)
         
         # login
         self.client.login(username='test2@example.com', password='test')
@@ -645,11 +643,11 @@ class TestBlogView(TestCase):
     def test_blog_unlove_blog(self):
         # user is not logged in
         response = self.client.get('/blog/%s/unlove/' % self.blog_private.id)
-        self.assertEquals(403, response.status_code)
+        self.assertEquals(302, response.status_code)
         
         # user is not logged in, blog does not exists
         response = self.client.get('/blog/0/unlove/')
-        self.assertEquals(404, response.status_code)
+        self.assertEquals(302, response.status_code)
         
         # login
         self.client.login(username='test3@example.com', password='test')
@@ -814,6 +812,8 @@ class TestAllPage(TestCase):
         self.client.logout()
 
     def test_blog_mood_get(self):
+        self.client.login(username='testuser1@example.com', password='password')
+
         response = self.client.get('/blog/mood/')
         self.assertEquals(404, response.status_code)
         
@@ -839,8 +839,12 @@ class TestAllPage(TestCase):
         self.assertEquals(200, response.status_code)
         context = response.context
         self.assertEquals(0, context['blogs'].count())
+
+        self.client.logout()
         
     def test_blog_category_get(self):
+        self.client.login(username='testuser1@example.com', password='password')
+
         response = self.client.get('/blog/category/')
         self.assertEquals(404, response.status_code)
         
@@ -861,9 +865,12 @@ class TestAllPage(TestCase):
         self.assertEquals(3, context['blogs'].count())
         self.assertEquals('Food', context['title'])
         self.assertEquals({'category': self.category2.code}, context['filter'])
+
+        self.client.logout()
         
     def test_blog_place_get(self):
-                
+        self.client.login(username='testuser1@example.com', password='password')
+
         response = self.client.get('/blog/place/?country=&city=')
         self.assertEquals(200, response.status_code)
         context = response.context
@@ -926,8 +933,12 @@ class TestAllPage(TestCase):
         self.assertEquals({'location': {'country': 'Japan', 'city': 'Tokyo'}}, context['filter'])
         self.assertEquals('/blog/place/', context['url'])
         self.assertEquals('country=Japan&city=Tokyo', context['param'])
+
+        self.client.logout()
     
     def test_blog_tags_get(self):
+        self.client.login(username='testuser1@example.com', password='password')
+
         response = self.client.get('/blog/tags/')
         self.assertEquals(404, response.status_code)
         
@@ -949,6 +960,8 @@ class TestAllPage(TestCase):
         self.assertEquals('Tagged with "foo"', context['title'])
         self.assertEquals({'tags': 'foo'}, context['filter'])
         self.assertEquals('/blog/tags/', context['url'])
+
+        self.client.logout()
 
 @override_settings(PRIVATE=False)
 class TestAllPageTrash(TestCase):
@@ -1008,7 +1021,7 @@ class TestBlogManagement(TestCase):
 
     def test_anonymous_user_get(self):
         response = self.client.get(reverse('blog_manage'))
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(302, response.status_code)
 
     def test_authenticated_user_get(self):
         self.client.login(username=self.john.username, password='1234')
@@ -1034,7 +1047,7 @@ class TestBlogManagement(TestCase):
 
     def test_anonymous_user_trash_blog(self):
         response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]))
-        self.assertEquals(403, response.status_code)
+        self.assertEquals(302, response.status_code)
 
     def test_authenticated_user_trash_own_blog_on_all_section(self):
         self.client.login(username=self.john.username, password='1234')
@@ -1181,7 +1194,7 @@ class TestBlogManagement(TestCase):
 
     def test_anonymous_user_restore_blog(self):
         response = self.client.get(reverse('blog_restore', args=[self.blogs[0].id]))
-        self.assertEquals(403, response.status_code)
+        self.assertEquals(302, response.status_code)
 
     def test_authenticated_user_restore_own_blog(self):
         self.blogs[0].trash = True
@@ -1213,8 +1226,10 @@ class TestBlogManagement(TestCase):
         self.client.logout()
 
     def test_restore_not_exists_blog(self):
+        self.client.login(username=self.staff.username, password='1234')
         response = self.client.get(reverse('blog_restore', args=[0]))
         self.assertEquals(404, response.status_code)
+        self.client.logout()
 
     def test_restore_success_must_hide_blog_on_table(self):
         self.blogs[0].trash = False
@@ -1297,22 +1312,20 @@ class TestBlogManagement(TestCase):
 
     def test_bulk_action_trash_post_by_anonymous_user(self):
         response = self.client.post(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0].id})
-        blog = Blog.objects.get(id=self.blogs[0].id)
-        self.assertFalse(blog.trash)
-        self.assertEqual(403, response.status_code)
+        self.assertRedirects(response, '%s?next=%s' % (reverse('account_login'), reverse('blog_manage_bulk')))
 
     def test_bulk_action_trash_get_by_anonymous_user(self):
         response = self.client.get(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0].id})
         blog = Blog.objects.get(id=self.blogs[0].id)
         self.assertFalse(blog.trash)
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(302, response.status_code)
 
     def test_bulk_action_trash_get_by_authenticated_user(self):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_manage_bulk'), {'op': 'trash', 'blog_id': self.blogs[0].id})
         blog = Blog.objects.get(id=self.blogs[0].id)
         self.assertFalse(blog.trash)
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(404, response.status_code)
         self.client.logout()
 
     def test_bulk_action_trash_own_blog_on_all_section_post_by_authenticated_user(self):

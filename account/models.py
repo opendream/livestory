@@ -51,10 +51,8 @@ class UserProfile(models.Model):
 
     def get_avatar(self):
         if self.avatar:
-            print "HAS AVATAR"
             return self.avatar
         else:
-            print "NOT HAS AVATAR"
             default_avatar = {
                 'url': '%s/static/img/default_user.png' % '.',
                 'path': 'static/img/default_user.png'

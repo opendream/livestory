@@ -13,11 +13,7 @@ def create_user(username='testuser', email='test@example.com', password='testuse
     if has_image:
         account.image = DjangoFile(open('static/tests/avatar.png'), 'avatar.png')
     account.save()
-    
-    key = hashlib.md5('key%s%s' % (user.email, str(datetime.now()))).hexdigest()[0:30]
-    account_key = UserInvitation(key=key, user=user)
-    account_key.save()
-        
+
     return user
 
 def create_category(name = 'Food', code = 'f'):
