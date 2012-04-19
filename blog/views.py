@@ -77,7 +77,7 @@ def blog_home(request):
 
 
 @login_required
-def blog_manage(request, section=None):
+def blog_manage(request, section):
     blogs = Blog.objects.filter(user=request.user).annotate(num_loves=Count('love'))
 
     if request.GET.get('sort') and request.GET.get('order'):
@@ -149,21 +149,6 @@ def blog_manage(request, section=None):
     }
 
     return render(request, 'blog/blog_manage.html', context)
-
-
-@login_required
-def blog_manage_published(request):
-    return blog_manage(request, 'published')
-
-
-@login_required
-def blog_manage_draft(request):
-    return blog_manage(request, 'draft')
-
-
-@login_required
-def blog_manage_trash(request):
-    return blog_manage(request, 'trash')
 
 
 @login_required

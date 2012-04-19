@@ -3,12 +3,15 @@ from django.conf.urls.defaults import patterns, include, url
 urlpatterns = patterns('blog.views',
     url(r'create/$', 'blog_create', name='blog_create'),
     url(r'create/from/email/$', 'blog_create_by_email', name='blog_create_by_email'),
-    
-    url(r'manage/$', 'blog_manage', name='blog_manage'),
-    url(r'manage/published/$', 'blog_manage_published', name='blog_manage_published'),
-    url(r'manage/draft/$', 'blog_manage_draft', name='blog_manage_draft'),
-    url(r'manage/trash/$', 'blog_manage_trash', name='blog_manage_trash'),
+
+    url(r'manage/$', 'blog_manage', {'section':''}, name='blog_manage'),
+    url(r'manage/published/$', 'blog_manage', {'section':'published'}, name='blog_manage_published'),
+    url(r'manage/draft/$', 'blog_manage', {'section':'draft'}, name='blog_manage_draft'),
+    url(r'manage/trash/$', 'blog_manage', {'section':'trash'}, name='blog_manage_trash'),
+
     url(r'manage/bulk/$', 'blog_manage_bulk', name='blog_manage_bulk'),
+
+
     url(r'(?P<blog_id>\d+)/$', 'blog_view', name='blog_view'),
     url(r'(?P<blog_id>\d+)/view/$', 'blog_view'),
     url(r'(?P<blog_id>\d+)/edit/$', 'blog_edit', name='blog_edit'),
