@@ -282,10 +282,10 @@ a:active {
     opacity: 1; } }
 
 .rect {
-  -webkit-transition: all .75s;
-  -moz-transition: all .75s;
-  -o-transition: all .75s;
-  transition: all .75s;
+  -webkit-transition: all 0.75s;
+  -moz-transition: all 0.75s;
+  -o-transition: all 0.75s;
+  transition: all 0.75s;
   background: transparent !important;
   -webkit-animation-name: fadeIn;
   -moz-animation-name: fadeIn;
@@ -952,7 +952,7 @@ li:hover .tooltip-popup {
   .mood-list input[type="radio"] {
     display: none; }
 
-/* Menu Filter Block
+/* Filter Block
 ---------------------------------------*/
 .filter-block {
   position: relative; }

@@ -211,6 +211,13 @@
 	
 	/* CSS3 Transition
 	---------------------------------------*/
+	@mixin transition($time){
+		-webkit-transition: all #{$time}s ;
+		-moz-transition: all #{$time}s ;
+		-o-transition: all #{$time}s ;
+		transition: all #{$time}s ;
+	}
+	
 	@-webkit-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-moz-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-ms-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
@@ -218,10 +225,7 @@
 	@keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	
 	.rect{
-		-webkit-transition: all .75s ;
-		-moz-transition: all .75s ;
-		-o-transition: all .75s ;
-		transition: all .75s ;
+		@include transition(.75);
 		background: transparent !important;
 		
 		-webkit-animation-name: fadeIn;
@@ -772,9 +776,12 @@
 		input[type="radio"]{ display: none; }
   }
 
-	/* Menu Filter Block
+	/* Filter Block
 	---------------------------------------*/
-	.filter-block { position: relative; }
+	.filter-block { 
+		position: relative;
+		
+	}
 	.filter-wrap { margin-bottom: 10px; }
 	.filter-title {
 		@include inset-shadow(0px, 0px, 10px, 0px, #dcdcdc);
