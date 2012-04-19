@@ -6,3 +6,4 @@ media/*
 .coverage
 .sass-cache
 .idea
+settings/active.py
