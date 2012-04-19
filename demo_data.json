@@ -182,7 +182,7 @@
 	{"pk": 50, "model": "taggit.taggeditem", "fields": {"tag": 27, "content_type": 22, "object_id": 13}}, 
 	{"pk": 51, "model": "taggit.taggeditem", "fields": {"tag": 24, "content_type": 22, "object_id": 12}},
 
-    {"pk": 1, "model": "account.userprofile", "fields": {"first_name": "AdminName", "last_name": "Lastname", "avatar": "", "user": 1, "timezone": "UTC"}},
-    {"pk": 2, "model": "account.userprofile", "fields": {"first_name": "Thanyawan", "last_name": "Mingsong", "avatar": "./images/account/2/avatar.jpg", "user": 2, "timezone": "Asia/Bangkok"}},
+    {"pk": 1, "model": "account.userprofile", "fields": {"first_name": "AdminName", "last_name": "Lastname", "avatar": "", "user": 1, "timezone": "UTC", "notification_viewed":"2012-01-01 00:00:00"}},
+    {"pk": 2, "model": "account.userprofile", "fields": {"first_name": "Thanyawan", "last_name": "Mingsong", "avatar": "./images/account/2/avatar.jpg", "user": 2, "timezone": "Asia/Bangkok", "notification_viewed":"2012-01-01 00:00:00"}},
 	{"pk": 1, "model": "auth.user", "fields": {"username": "admin", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2012-03-28 07:53:36", "groups": [], "user_permissions": [], "password": "sha1$1ffd5$6b1895efff5b446083ccef3210f0df3153e9ed74", "email": "admin@example.com", "date_joined": "2012-03-28 07:52:46"}},
 	{"pk": 2, "model": "auth.user", "fields": {"username": "ikhuntuck", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2012-03-28 08:10:06", "groups": [], "user_permissions": [], "password": "sha1$ac648$f1020d5b82c008a2bdd103c52ab8ff2ed4efc167", "email": "ikhuntuck@gmail.com", "date_joined": "2012-03-28 08:08:10"}}]

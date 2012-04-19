@@ -718,6 +718,8 @@ def blog_search(request):
     """Search blogs by title and description"""
     keyword = request.REQUEST.get("keyword", '')
 
+    print keyword
+
     context = {'title': 'keyword: %s' % keyword,
                'keyword': keyword,
                'param': 'keyword=%s' % keyword}
@@ -750,6 +752,7 @@ def blog_search(request):
                         'pager': pager,
                         'page_range': page_range,})
 
+        print blogs
     return render(request, 'blog/blog_search.html', context)
 
 

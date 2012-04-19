@@ -1,5 +1,8 @@
 import base64, hashlib
 
+def generate_username(email):
+    return generate_md5_base64(email)
+
 def generate_md5_base64(str):
     m = hashlib.md5()
     m.update(str)
