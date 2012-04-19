@@ -16,7 +16,7 @@
 		<div class="user-detail span6 pull-left">
 			<img width="94" height="94" src="{{ viewed_user.get_profile.get_avatar|crop:'94x94' }}" alt="" class="porfile-photo"/>
 			<span class="profile-name">{{ viewed_user.get_profile.first_name }} &nbsp; {{ viewed_user.get_profile.last_name }}</span>
-			<span class="profile-email grey">{{ viewed_user.username }}</span>
+			<span class="profile-email grey">{{ viewed_user.email }}</span>
 		</div>
 		
 		<div class="user-stat pull-right">

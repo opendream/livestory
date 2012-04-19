@@ -103,7 +103,7 @@ def account_profile_create(request):
         return render(request, '403.html', status=403)
 
     if request.method == 'POST':
-        form = ProfileCreationForm(request.POST)
+        form = UserProfileCreationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data['email']
             first_name = form.cleaned_data['first_name']
@@ -119,11 +119,11 @@ def account_profile_create(request):
         else:
             messages.error(request, "Please correct error(s) below.")
     else:
-        form = ProfileCreationForm()
+        form = UserProfileCreationForm()
 
     return render(request, 'account/account_profile_create.html', {'form': form})
 
-
+@login_required
 def account_profile_edit(request):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
@@ -154,7 +154,7 @@ def account_profile_edit(request):
             #save avatar
             image = form.cleaned_data.get('image')
             if (image):
-                account.image.save(image.name, image, save=False)
+                account.avatar.save(image.name, image, save=False)
                             
             account.save()
                         
@@ -165,7 +165,8 @@ def account_profile_edit(request):
 
     return render(request, 'account/account_profile_edit.html', locals())
 
-
+@login_required
+@user_is_staff
 def user_profile_edit(request, pk):
     """ 
     Provide edit user profile method for staff level user 
@@ -203,7 +204,8 @@ def user_profile_edit(request, pk):
 
     return render(request, 'account/user_profile_edit.html', locals())
 
-
+@login_required
+@user_is_staff
 def account_manage_users(request):
     if not request.user.is_staff:
         return render(request, '403.html', status=403)
@@ -254,7 +256,7 @@ def account_manage_users(request):
 
     return render(request, 'account/account_manage_users.html', context)
 
-
+@login_required
 def account_profile_view(request, pk):
     if not request.user.is_authenticated():
         return render(request, '403.html', status=403)
@@ -287,7 +289,8 @@ def account_profile_view(request, pk):
 
     return render(request, 'account/account_profile_view.html', context)
 
-
+@login_required
+@user_is_staff
 def account_manage_bulk(request):
     if not request.user.is_staff or request.method == 'GET':
         return render(request, '403.html', status=403)

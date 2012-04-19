@@ -18,7 +18,7 @@
     <div class="control-group">
       <label class="control-label" for="title">Email</label>
       <div class="controls">
-        <span class="grey label-inline-form">{{ user.username }}</span>
+        <span class="grey label-inline-form">{{ user.email }}</span>
       </div>
     </div>
     
@@ -66,9 +66,9 @@
       <label class="control-label" for="fileInput">Avatar</label>
       <div class="controls">
         <div class="image-upload">
-          {% if account.image %}
+          {% if account.avatar %}
           <div class="image-wrapper">
-            <img src="{{ account.image|crop:AVATAR_SIZE }}"/>
+            <img src="{{ account.avatar|crop:AVATAR_SIZE }}"/>
           </div>
           {% endif %}
           
