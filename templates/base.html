@@ -38,14 +38,12 @@
 	      <!-- New Nav -->
 	      <ul class="nav pull-right">
 		      <li>
-						{% if user.get_profile.image %}
 	          <img src="{{ user.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}" alt="" class="img-vertical"/>
-	          {% endif %}
 	          
-	          {% if user.get_profile.get_fullname %}
-		          <a href="{% url account_profile_view user.id %}" class="inline">{{ user.get_profile.get_fullname }}</a>
+	          {% if user.get_profile.get_full_name %}
+		          <a href="{% url account_profile_view user.id %}" class="inline">{{ user.get_profile.get_full_name }}</a>
 	          {% else %}
-		          <a href="{% url account_profile_view user.id %}" class="inline">{{ user.username }}</a>
+		          <a href="{% url account_profile_view user.id %}" class="inline">{{ user.email }}</a>
 	          {% endif %}
 		      </li>
 		      
@@ -98,6 +96,9 @@
 		        <ul class="dropdown-menu">
 		          <li><a href="{% url account_profile_edit %}">Edit Profile</a></li>
 		          <li><a href="{% url blog_manage %}">Manage Stories</a></li>
+		          {% if user.is_staff %}
+		          <li><a href="{% url account_manage_users %}">Manage Users</a></li>
+		          {% endif %}
 	            <li><a href="{% url account_logout %}">Logout</a></li>
 		        </ul>
 		      </li>

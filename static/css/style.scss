@@ -2,11 +2,6 @@
 /*    Oxfam Live Stories    */
 /****************************/
 
-/* Check list */
-/*
-2. border
-*/
-
 /* Bootstrap Override
 ---------------------------------------*/
 	.menubar-inner{ margin: 0 0 18px 0; }
@@ -21,6 +16,57 @@
 	}
 
 
+
+/* Mixin
+---------------------------------------*/
+	@mixin clear-shadow{
+		-moz-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+	@mixin shadow($hoffset, $voffset, $blur, $spread, $color){
+		-moz-box-shadow: $hoffset $voffset $blur $spread $color;
+		-webkit-box-shadow: $hoffset $voffset $blur $spread $color;
+		box-shadow: $hoffset $voffset $blur $spread $color;
+	}
+	@mixin inset-shadow($hoffset, $voffset, $blur, $spread, $color){
+		-moz-box-shadow: inset $hoffset $voffset $blur $spread $color;
+		-webkit-box-shadow: inset $hoffset $voffset $blur $spread $color;
+		box-shadow: inset $hoffset $voffset $blur $spread $color;
+	}
+	@mixin border-rounded($r){
+		-webkit-border-radius: $r;
+		-moz-border-radius: $r;
+		border-radius: $r;
+	}
+	@mixin btn($border, $bg, $shadow, $border-hover, $bg-hover, $shadow-hover){
+	  @include border-rounded(6px);
+	  display: inline-block;
+	  padding: 7px 12px;
+	  *padding: 3px 12px;
+	  margin-right: 10px;
+	  border: 1px solid $border;
+	  font: bold 13px Arial;
+	  color: white !important;
+	  text-decoration: none;
+	  background-color: $bg;
+	  -moz-box-shadow: inset -1px -2px 0px 0px $shadow;
+	  -webkit-box-shadow: inset -1px -2px 0px 0px $shadow;
+	  box-shadow: inset -1px -2px 0px 0px $shadow;
+	  &:hover{
+	    border: 1px solid $border-hover;
+	    background-color: $bg-hover;
+	    -moz-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
+	    -webkit-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
+	    box-shadow: inset -1px -2px 0px 0px $shadow-hover;
+	  }
+	}
+	@mixin mark($top, $left){
+		top: $top !important;
+		left: $left !important;
+	}
+	
+	
 
 /* Layouts Style
 ---------------------------------------*/
@@ -62,16 +108,14 @@
 
 /* Base Style 
 ---------------------------------------*/
-	body{
-	
-	}
+	body{ }
 	.global-padding{ padding: 25px 30px; }
 	
 	/* Link
 	---------------------------------------*/
 	a { color:#390; }
 /* 	a:visited { color:#339900; } */
-	a:hover { text-decoration: underline; } 
+	a:hover { color:#666; text-decoration: none; } 
 	a:active { color:#000; }
 	
 	::-webkit-input-placeholder {color: #c6c6c6; }
@@ -123,39 +167,12 @@
 
 	/* Border radius
 	---------------------------------------*/
-  @mixin border-rounded($r){
-		-webkit-border-radius: $r;
-		-moz-border-radius: $r;
-		border-radius: $r;
-	}
 	.rounded{ @include border-rounded(4px); }
 	.rounded5{ @include border-rounded(5px); }
 	.rounded10{ @include border-rounded(10px); }
 	
 	/* Button
 	---------------------------------------*/
-  @mixin btn($border, $bg, $shadow, $border-hover, $bg-hover, $shadow-hover){
-	  @include border-rounded(6px);
-	  display: inline-block;
-    padding: 7px 12px;
-    *padding: 3px 12px;
-    margin-right: 10px;
-    border: 1px solid $border;
-    font: bold 13px Arial;
-    color: white !important;
-    text-decoration: none;
-    background-color: $bg;
-    -moz-box-shadow: inset -1px -2px 0px 0px $shadow;
-    -webkit-box-shadow: inset -1px -2px 0px 0px $shadow;
-    box-shadow: inset -1px -2px 0px 0px $shadow;
-    &:hover{
-	    border: 1px solid $border-hover;
-	    background-color: $bg-hover;
-	    -moz-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
-	    -webkit-box-shadow: inset -1px -2px 0px 0px $shadow-hover;
-	    box-shadow: inset -1px -2px 0px 0px $shadow-hover;
-    }
-  }
   /* btn($border, $bg, $shadow, $border-hover, $bg-hover, $shadow-hover) */
   .btn-green{ @include btn(#089D4B, #72B64A, #3f9303, #0A5A26, #0F7335, #0a5a26); }
   .btn-grey { @include btn(#787878, #A0A0A0, #636363, #696969, #787878, #535353); }
@@ -194,10 +211,6 @@
 	
 	/* CSS3 Transition
 	---------------------------------------*/
-	@mixin mark($top, $left){
-			top: $top !important;
-			left: $left !important;
-	}
 	@-webkit-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-moz-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-ms-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
@@ -227,6 +240,27 @@
 		animation-delay: 0;
 		animation-iteration-count: 1;
 	}
+	
+	/* Hint
+	---------------------------------------*/
+	.hint-box{
+		@include  border-rounded(40px);
+		@include shadow(0, 0, 20px, 5px, #eee);
+		width: 450px;
+		margin: 0 auto;
+		padding: 10px 20px;
+		color: #010101;
+		p{ font-size: 20px; line-height: 36px; }
+	}
+	.ic-hint{
+		width: 34px;
+		height: 47px;
+		margin: -20px 0 0 0;
+		background: url('../img/btn.png') no-repeat -150px 0;
+	}
+	.category-box{ width: 390px; }
+	.mood-box{ width: 355px; }
+	.location-box{ width: 420px; }
 
 
 
@@ -234,26 +268,11 @@
 ---------------------------------------*/
 	.block{ margin-bottom: 24px !important; }
   .clear-both{ clear: both; }
+  .reset-box{ margin: 0; padding: 0; }
   .hide{ display: none !important; }
 	.img-vertical{ vertical-align: middle; margin: 0 5px 0 0; }
 	.hide-text{ display: none; }
 	.inline{ display: inline !important; }
-	
-	@mixin clear-shadow{
-		-moz-box-shadow: none;
-		-webkit-box-shadow: none;
-		box-shadow: none;
-	}
-	@mixin shadow($hoffset, $voffset, $blur, $spread, $color){
-		-moz-box-shadow: $hoffset $voffset $blur $spread $color;
-		-webkit-box-shadow: $hoffset $voffset $blur $spread $color;
-		box-shadow: $hoffset $voffset $blur $spread $color;
-	}
-	@mixin inset-shadow($hoffset, $voffset, $blur, $spread, $color){
-		-moz-box-shadow: inset $hoffset $voffset $blur $spread $color;
-		-webkit-box-shadow: inset $hoffset $voffset $blur $spread $color;
-		box-shadow: inset $hoffset $voffset $blur $spread $color;
-	}
 	.no-shadow{ @include clear-shadow; }
 
 
@@ -289,8 +308,19 @@
 		font-weight: normal;
 		font-style: normal;
 	}
+	@font-face {
+		font-family: 'Chalkduster';
+		src: url('../fonts/chalkduster.eot');
+		src: url('../fonts/chalkduster.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/chalkduster.woff') format('woff'),
+		url('../fonts/chalkduster.ttf') format('truetype'),
+		url('../fonts/chalkduster.svg#chalkduster') format('svg');
+		font-weight: normal;
+		font-style: normal;
+	}
 	.oxfam-font{ font-family: OxfamGlobalHeadlineRegular; }
 	.futura-font { font-family: FuturaMdCnBTMedium; }
+	.chalkduster-font { font-family: Chalkduster; }
 
 	
 
@@ -371,7 +401,7 @@
 		}
 		.dropdown-menu li a {
 			color:#390 !important;
-			&:hover { background: #f2f2f2; text-decoration: underline; }
+			&:hover { background: #f2f2f2; }
 		}
 		.caret{ opacity: 0.5; }
 		
@@ -829,6 +859,7 @@
 			position: relative;
 			padding: 0;
 			border: none;
+			a{ display: block; }
 		}
 		.thumbnail .status{
 			bottom: 0;
@@ -860,10 +891,6 @@
 			z-index: 20000000;
 		}
 	}
-	.image-upload {
-    position: relative;
-    height: 140px;
-  }
 	.image-border {
     background: transparent ;
     background: #f0f0f0;
@@ -1031,11 +1058,11 @@
 	---------------------------------------*/
 	.sidebar-title {
 		border-bottom: 1px solid #ddd;
-		font-size: 16px;
 		margin-bottom: 10px;
 		padding-bottom: 5px;
 	}
-	.download-photo {
+	.sidebar-list {
+		h3{ font-size: 16px; }
 		ul { margin-left: 0; }
 		li {
 			list-style-type: none;
@@ -1043,25 +1070,26 @@
 			padding: 10px 0;
 			overflow: hidden;
 		}
+		.mood-icon{ margin: 0; }
+		.mood-icon:hover{ cursor: auto;}
 	}
-	.col-left {
+	.ic-widget {
 		padding-left: 25px;
 		background: url("../img/ic-blog.png") no-repeat;
 	}
 	.ic-size { background-position: 0 -50px !important; }
 	.ic-download { background-position: 4px 3px !important; }
-	.col-left, .col-right{ float: left; vertical-align: top;}
-	.col-left{ width: 25%;}
-	.col-right{ width: 65%;}
 	
-	.blog-tag {
-		overflow: hidden;
-		.badge {
-			color: #fff !important;
-			margin: 0 5px 5px 0;
-			float: left;
-			&:hover { background-color: #666; }
-		}
+	.col-left, .col-right{ float: left; line-height: 28px; }
+	.col-left{ width: 30%;}
+	.col-right{ width: 60%;}
+	
+	.badge {
+		margin: 5px 5px 0px 0;
+		float: left;
+		line-height: 18px;
+		color: #fff !important;
+		&:hover { background-color: #666; }
 	}
 	
 	/* Scour Front Page
@@ -1181,15 +1209,17 @@
 			height: 500px !important;
 			margin-top: -40px;
 		}
-		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+		.popover, .black-layer{ display: none !important; }
+		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
+		#rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
 		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
 			display: none;
 		}
-		#rect-1 { @include mark(55px, 215px)  }
-		#rect-2 { @include mark(160px, 20px)  }
-		#rect-4 { @include mark(275px, 215px) }
-		#rect-7 { @include mark(275px, 408px) }
-		#rect-8 { @include mark(14px, 117px)  }
+		#rect-1  { @include mark(55px, 215px)  }
+		#rect-2  { @include mark(160px, 20px)  }
+		#rect-4  { @include mark(275px, 215px) }
+		#rect-7  { @include mark(275px, 408px) }
+		#rect-8  { @include mark(14px, 117px)  }
 		#rect-11 { @include mark(350px, 408px) }
 		#rect-13 { @include mark(127px, 602px) }
 		#rect-14 { @include mark(201px, 602px) }
@@ -1203,6 +1233,10 @@
 	  
 	  .login_form{
 			input{ width: 150px; }
+			.btn-green{
+			  display: block;
+			  margin-bottom: 10px;
+		  }
 	  }
   
 	  /* Menu 
@@ -1239,6 +1273,12 @@
 		/* 	Filter 
 		---------------------------------------*/
 	  .mood-container{ width: 400px;}
+	  
+	  /* 	Cols 
+		---------------------------------------*/
+		.col-left  { width: 45%; }
+		.col-right { width: 50%; }
+
   }
 	
 	/*----- Landscape phone to portrait tablet -----*/
@@ -1251,15 +1291,17 @@
 			height: 500px !important;
 			margin-top: -40px;
 		}
-		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10, #rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
+		.popover, .black-layer{ display: none !important; }
+		#rect-3, #rect-5, #rect-6, #rect-9, #rect-10,
+		#rect-12, #rect-17, #rect-18, #rect-19, #rect-20,
 		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
 			display: none;
 		}
-		#rect-1 { @include mark(55px, 215px)  }
-		#rect-2 { @include mark(160px, 20px)  }
-		#rect-4 { @include mark(275px, 215px) }
-		#rect-7 { @include mark(275px, 408px) }
-		#rect-8 { @include mark(14px, 117px)  }
+		#rect-1  { @include mark(55px, 215px)  }
+		#rect-2  { @include mark(160px, 20px)  }
+		#rect-4  { @include mark(275px, 215px) }
+		#rect-7  { @include mark(275px, 408px) }
+		#rect-8  { @include mark(14px, 117px)  }
 		#rect-11 { @include mark(350px, 408px) }
 		#rect-13 { @include mark(127px, 602px) }
 		#rect-14 { @include mark(201px, 602px) }
@@ -1331,30 +1373,37 @@
 		#rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
 		#rect-19, #rect-20, #rect-21, #rect-22 { display: block; }
 		
-		#rect-1 { @include mark(0px, 20px)     }
-		#rect-2  { @include mark(222px, 20px)   }
-		#rect-4 { @include mark(222px, 215px) }
-		#rect-7 { @include mark(370px, 215px) }
+		#rect-1  { @include mark(0px, 20px)    }
+		#rect-2  { @include mark(222px, 20px)  }
+		#rect-4  { @include mark(222px, 215px) }
+		#rect-7  { @include mark(370px, 215px) }
 		#rect-13 { @include mark(518px, 312px) }
 		#rect-14 { @include mark(444px, 312px) }
-		#rect-8 { @include mark(444px, 215px) }
-		#rect-5 { @include mark(518px, 20px)   }
+		#rect-8  { @include mark(444px, 215px) }
+		#rect-5  { @include mark(518px, 20px)  }
 		#rect-3  { @include mark(592px, 215px) }
-		#rect-15 { @include mark(666px, 20px)   }
-		#rect-16 { @include mark(666px, 117px)  }
-	  #rect-10  { @include mark(740px, 20px)   }
-	  #rect-22 { @include mark(814px, 20px)   }
-	  #rect-17 { @include mark(888px, 20px)   }
-	  #rect-11 { @include mark(814px, 117px)  }
-	  #rect-18  { @include mark(814px, 215px) }
+		#rect-15 { @include mark(666px, 20px)  }
+		#rect-16 { @include mark(666px, 117px) }
+	  #rect-10 { @include mark(740px, 20px)  }
+	  #rect-22 { @include mark(814px, 20px)  }
+	  #rect-17 { @include mark(888px, 20px)  }
+	  #rect-11 { @include mark(814px, 117px) }
+	  #rect-18 { @include mark(814px, 215px) }
 	  #rect-19 { @include mark(814px, 312px) }
 	  #rect-20 { @include mark(888px, 215px) }
-	  #rect-21  { @include mark(888px, 312px) }
+	  #rect-21 { @include mark(888px, 312px) }
 		
 		/* Grid system
 	  ---------------------------------------*/
 	  .grid{ width: 135px; }
 	  .grid-colspan{ width: 98% }
+	  
+	  /* Hint
+	  ---------------------------------------*/
+	  .category-box{ width: auto !important; }
+		.mood-box{ width: auto !important; }
+		.location-box{ width: auto !important; }
+	  
   }
   
 	/*----- Landscape phones and down -----*/
@@ -1373,25 +1422,25 @@
 		#rect-3, #rect-5, #rect-10, #rect-17, #rect-18,
 		#rect-19, #rect-20, #rect-21, #rect-22 { display: block; }
 		
-		#rect-1 { @include mark(0px, 20px)     }
-		#rect-2  { @include mark(222px, 20px)   }
-		#rect-4 { @include mark(222px, 215px) }
-		#rect-7 { @include mark(370px, 215px) }
+		#rect-1  { @include mark(0px, 20px)    }
+		#rect-2  { @include mark(222px, 20px)  }
+		#rect-4  { @include mark(222px, 215px) }
+		#rect-7  { @include mark(370px, 215px) }
 		#rect-13 { @include mark(518px, 312px) }
 		#rect-14 { @include mark(444px, 312px) }
-		#rect-8 { @include mark(444px, 215px) }
-		#rect-5 { @include mark(518px, 20px)   }
+		#rect-8  { @include mark(444px, 215px) }
+		#rect-5  { @include mark(518px, 20px)  }
 		#rect-3  { @include mark(592px, 215px) }
-		#rect-15 { @include mark(666px, 20px)   }
-		#rect-16 { @include mark(666px, 117px)  }
-	  #rect-10  { @include mark(740px, 20px)   }
-	  #rect-22 { @include mark(814px, 20px)   }
-	  #rect-17 { @include mark(888px, 20px)   }
-	  #rect-11 { @include mark(814px, 117px)  }
-	  #rect-18  { @include mark(814px, 215px) }
+		#rect-15 { @include mark(666px, 20px)  }
+		#rect-16 { @include mark(666px, 117px) }
+	  #rect-10 { @include mark(740px, 20px)  }
+	  #rect-22 { @include mark(814px, 20px)  }
+	  #rect-17 { @include mark(888px, 20px)  }
+	  #rect-11 { @include mark(814px, 117px) }
+	  #rect-18 { @include mark(814px, 215px) }
 	  #rect-19 { @include mark(814px, 312px) }
 	  #rect-20 { @include mark(888px, 215px) }
-	  #rect-21  { @include mark(888px, 312px) }
+	  #rect-21 { @include mark(888px, 312px) }
 	  
 	  /* Bootstrap override
 	  ---------------------------------------*/
@@ -1529,6 +1578,13 @@
 		input[class*="span"], select[class*="span"], textarea[class*="span"], .uneditable-input{
 			margin-bottom: 9px
 		}
+		
+		/* Hint
+	  ---------------------------------------*/
+	  .category-box{ width: auto !important; }
+		.mood-box{ width: auto !important; }
+		.location-box{ width: auto !important; }
+		
   }
   
   
@@ -1552,33 +1608,32 @@
 
 		#rect-1 { @include size(270px, 158px) } /* Big*/
 		#rect-2 { @include size(132px, 205px) } /* Port */
-		#rect-4, #rect-5 { @include size(132px, 99px) } /*squ */
-		#rect-7, #rect-10,  { @include size(132px, 46px) } /* hori */
+		#rect-4, #rect-5 { @include size(132px, 99px) } /* Squ */
+		#rect-7, #rect-10,  { @include size(132px, 46px) } /* Hori */
 		#rect-13, #rect-14, #rect-15, #rect-16, #rect-17, #rect-18,
-		#rect-19, #rect-20, #rect-21, #rect-22{ @include size(63px, 50px) } /*small */
-		#rect-8, #rect-11 { @include size(63px, 99px) } /* port small */
-		#rect-3 { @include size(131px, 207px) } /* normal */
-		/*  h:158px w:131px*/
+		#rect-19, #rect-20, #rect-21, #rect-22{ @include size(63px, 50px) } /* Small */
+		#rect-8, #rect-11 { @include size(63px, 99px) } /* Port small */
+		#rect-3 { @include size(131px, 207px) } /* Normal */
 		
-		#rect-1 { @include mark(0px, 0px)     }
+		#rect-1  { @include mark(0px, 0px)     }
 		#rect-2  { @include mark(157px, 0px)   }
-		#rect-4 { @include mark(157px, 138px) }
-		#rect-7 { @include mark(262px, 138px) }
+		#rect-4  { @include mark(157px, 138px) }
+		#rect-7  { @include mark(262px, 138px) }
 		#rect-13 { @include mark(366px, 206px) }
 		#rect-14 { @include mark(313px, 206px) }
-		#rect-8 { @include mark(313px, 138px) }
-		#rect-5 { @include mark(368px, 0px)   }
+		#rect-8  { @include mark(313px, 138px) }
+		#rect-5  { @include mark(368px, 0px)   }
 		#rect-3  { @include mark(419px, 138px) }
 		#rect-15 { @include mark(473px, 0px)   }
 		#rect-16 { @include mark(473px, 69px)  }
-	  #rect-10  { @include mark(525px, 0px)   }
+	  #rect-10 { @include mark(525px, 0px)   }
 	  #rect-22 { @include mark(628px, 0px)   }
 	  #rect-17 { @include mark(576px, 0px)   }
 	  #rect-11 { @include mark(576px, 69px)  }
-	  #rect-18  { @include mark(576px, 138px) }
+	  #rect-18 { @include mark(576px, 138px) }
 	  #rect-19 { @include mark(576px, 206px) }
 	  #rect-20 { @include mark(629px, 138px) }
-	  #rect-21  { @include mark(629px, 206px) }
+	  #rect-21 { @include mark(629px, 206px) }
 	  
 	  /* Grid system
 	  ---------------------------------------*/

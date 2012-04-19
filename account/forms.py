@@ -103,7 +103,7 @@ class UserProfileCreationForm(forms.Form):
         if UserInvitation.objects.filter(email=email).exists():
             raise forms.ValidationError('Create user invitation has already been sent to this email address.')
 
-        if UserProfile.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists():
             raise forms.ValidationError('There is another user already using this email.')
 
         return email

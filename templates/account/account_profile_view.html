@@ -16,7 +16,7 @@
 		<div class="user-detail span6 pull-left">
 			<img width="94" height="94" src="{{ viewed_user.get_profile.get_avatar|crop:'94x94' }}" alt="" class="porfile-photo"/>
 			<span class="profile-name">{{ viewed_user.get_profile.first_name }} &nbsp; {{ viewed_user.get_profile.last_name }}</span>
-			<span class="profile-email grey">{{ viewed_user.username }}</span>
+			<span class="profile-email grey">{{ viewed_user.email }}</span>
 		</div>
 		
 		<div class="user-stat pull-right">
@@ -29,7 +29,7 @@
 	</div>
 </div>
 {% if not blogs %}
-  <p class="alert alert-block span4">No photos found.</p>
+  <p class="alert alert-block">No photos found.</p>
 {% else %}
 <div class="clear-both">
 	<h2 class="oxfam-font ic-page-title ic-title-green block">Photos</h2>
@@ -37,7 +37,7 @@
   {% for blog in blogs %}
     <li class="span3">
       <div class="thumbnail">
-        <div class="blog-photo blog-thumbnail no-shadow">
+        <div class="blog-thumbnail no-shadow">
           <a href="{% url blog_view blog.id %}">
             <img 
               width="260" 
