@@ -253,7 +253,7 @@ def blog_create(request):
         form = BlogCreateForm()
 
     context = {
-        'page_title': 'Add New Blog',
+        'page_title': 'Add New Story',
         'form': form,
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
