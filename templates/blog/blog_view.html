@@ -91,7 +91,7 @@ $(document).ready(function() {
         <div class="alert alert-warning">
           <a class="close">×</a>
           <div class="restore-msg">
-            <a class="btn btn-warning" href="{% url blog_restore blog.id %}?view=1">Restore</a>
+            <a class="btn btn-warning" href="{% url blog_restore blog.id %}?redirect={% url blog_view blog.id %}">Restore</a>
             <a class="btn btn" href="{% url blog_manage_trash %}">Cancel</a>
           </div>
     		</div>

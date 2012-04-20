@@ -77,7 +77,7 @@ def blog_home(request):
 
 
 @login_required
-def blog_manage(request, section=None):
+def blog_manage(request, section):
     blogs = Blog.objects.filter(user=request.user).annotate(num_loves=Count('love'))
 
     if request.GET.get('sort') and request.GET.get('order'):
@@ -152,56 +152,43 @@ def blog_manage(request, section=None):
 
 
 @login_required
-def blog_manage_published(request):
-    return blog_manage(request, 'published')
-
-
-@login_required
-def blog_manage_draft(request):
-    return blog_manage(request, 'draft')
-
-
-@login_required
-def blog_manage_trash(request):
-    return blog_manage(request, 'trash')
-
-
-@login_required
 def blog_trash(request, blog_id):
-    try:
-        blog = Blog.objects.get(id=blog_id)
-        if blog.user.id != request.user.id and not request.user.is_staff:
-            return render(request, '403.html', status=403)
+    blog = get_object_or_404(Blog, id=blog_id)
 
-        blog.trash = True
-        blog.save()
+    if blog.user.id != request.user.id and not request.user.is_staff:
+        return render(request, '403.html', status=403)
 
-        section = request.GET.get('section')
-        if section:
-            if section == 'published':
-                return redirect(reverse('blog_manage_published'))
-            elif section == 'draft':
-                return redirect(reverse('blog_manage_draft'))
-        return redirect(reverse('blog_manage'))
-    except Blog.DoesNotExist:
-        raise Http404
+    blog.trash = True
+    blog.save()
+
+    from_section = request.GET.get('from')
+
+    if from_section == 'published':
+        redirect_url_name ='blog_manage_published'
+    elif from_section == 'draft':
+        redirect_url_name = 'blog_manage_draft'
+    else:
+        redirect_url_name = 'blog_manage'
+
+    messages.success(request, 'Moved blog to trash successfully. [ <a href="%s?redirect=%s">Undo</a> ]' % (reverse('blog_restore', args=[blog.id]), reverse(redirect_url_name)))
+    return redirect(redirect_url_name)
 
 
 @login_required
 def blog_restore(request, blog_id):
-    try:
-        blog = Blog.objects.get(id=blog_id)
-        if not request.user.is_authenticated() or (blog.user != request.user and not request.user.is_staff):
-            return render(request, '403.html', status=403)
+    blog = get_object_or_404(Blog, id=blog_id)
 
-        blog.trash = False
-        blog.save()
-        if request.GET.get('view'):
-            return redirect(reverse('blog_view', args=[blog.id]))
-        else:
-            return redirect(reverse('blog_manage_trash'))
-    except Blog.DoesNotExist:
-        raise Http404
+    if blog.user.id != request.user.id and not request.user.is_staff:
+        return render(request, '403.html', status=403)
+
+    blog.trash = False
+    blog.save()
+
+    redirect_to = request.GET.get('redirect')
+    if redirect_to:
+        return redirect(redirect_to)
+
+    return redirect('blog_manage_trash')
 
 
 @login_required
