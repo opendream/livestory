@@ -61,7 +61,7 @@
 	                <a href="#"><img src="{{ notification.subject.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}"/></a>
 	              </div>
 	              <div class="info"> 
-	                <a href ="#"><strong>{{ notification.subject.get_profile.get_fullname }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
+	                <a href ="#"><strong>{{ notification.subject.get_profile.get_full_name }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
 	                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span> {{ notification.datetime|localtime|timeago }}.</span>
 	              </div>
 	            </li>

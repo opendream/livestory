@@ -413,7 +413,7 @@ def blog_view(request, blog_id):
         
         if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
             return render(request, '403.html', status=403)
-        elif blog.trash and not request.user.is_staff and not request.user != blog.user:
+        elif blog.trash and not request.user.is_staff and not request.user == blog.user:
             raise Http404
 
         # Save view hit and update stat summary

@@ -173,7 +173,7 @@ $(function () {
             var height = obj.height();
 
             $('.filter-block-append').css('overflow', 'hidden');
-            $('.filter-block-append').animate({'height': height+40}, {
+            $('.filter-block-append').animate({'height': height}, {
                 'queue': false, 
                 'duration': duration
             });
@@ -200,7 +200,7 @@ $(function () {
         
         var dshow = $('.filter-menu.dshow');
         if (dshow.length) {
-            $('.filter-block-append').animate({'height': dshow.height()+40}, {'queue': false, 'duration': duration});
+            $('.filter-block-append').animate({'height': dshow.height()}, {'queue': false, 'duration': duration});
             $('.filter-menu').hide();
             dshow.show();
             $('a.filter-close').attr('href', '#' + dshow.attr('id'));

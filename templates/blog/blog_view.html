@@ -51,6 +51,7 @@ $(document).ready(function() {
 
       // Effect.
       if (loveType == 'love') {
+        liList.removeClass('hide');
         liList.fadeIn();
         liPopup.show();
       } else {
@@ -125,7 +126,7 @@ $(document).ready(function() {
           <img width="94" height="94" src="{{ profile.get_avatar|crop:'94x94' }}" alt="" class="porfile-photo"/>
         </a>
         <a href="{% url account_profile_view profile.pk %}" class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</a>
-        <span class="profile-email grey">{{ profile.user }}</span>
+        <span class="profile-email grey">{{ user.email }}</span>
       </div>
       
       <div class="blog-loveit block clearfix">
@@ -136,13 +137,13 @@ $(document).ready(function() {
         <ul class="friends clearfix">
           {% for user in loved_users|slice:":7" %}
           <li class="love-user_{{ user.user.id }}">
-              <a href="#" title=""><img width="35px" height="35px" src="{{ user.get_avatar|crop:'35x35' }}" alt="{{ user.get_full_name }}" /></a>
+              <a href="{% url account_profile_view user.id %}" title=""><img width="35px" height="35px" src="{{ user.get_avatar|crop:'35x35' }}" alt="{{ user.get_full_name }}" /></a>
               <div class="tooltip-popup">{{ user.get_full_name }}</div>
           </li>
           {% endfor %}
         </ul>
         <a data-toggle="modal" href="#all-loves" id="more-loves" class="{% if love_count < max_items %}hide {% endif %}more-friend">more</a>
-        <div id="all-loves" class="modal hide fade" style="">
+        <div id="all-loves" class="modal fade" style="">
           <div class="modal-header">
             <a class="close" data-dismiss="modal">×</a>
             <h3>People who love this photo</h3>
@@ -176,7 +177,11 @@ $(document).ready(function() {
 	      <ul>
 		      <li>
 			      <div class="col-left"><h3>Mood</h3></div>
-						<div class="col-right"><span class="mood-icon mood-{{ blog.get_mood_text|lower }} active">Mood: {{ blog.get_mood_text }}</span></div>
+						<div class="col-right">
+              <a href="{% url blog_mood blog.get_mood_text|lower %}">
+              <span class="mood-icon mood-{{ blog.get_mood_text|lower }} active">Mood: {{ blog.get_mood_text }}</span>
+              </a>
+            </div>
 		      </li>
 		      <li>
 			      <div class="col-left"><h3>Category</h3></div>
@@ -184,7 +189,11 @@ $(document).ready(function() {
 		      </li>
 		      <li>
 			      <div class="col-left"><h3>Location</h3></div>
-						<div class="col-right"><span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span></div>
+						<div class="col-right">
+            <a href="{% url blog_place %}?city={{blog.location.city}}&amp;country={{blog.location.country}}">
+              <span class="location">{{ blog.location.city }}, {{ blog.location.country }}</span>
+            </a>
+            </div>
 		      </li>
 		      {% if blog.tags.all %}
 		      <li>

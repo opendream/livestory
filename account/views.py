@@ -219,7 +219,7 @@ def account_manage_users(request):
         if sort == 'role':
             sort = ['is_staff']
         elif sort == 'name':
-            sort = ['userprofile__first_name', 'userprofile_last_name']
+            sort = ['first_name', 'last_name']
         else:
             sort = [sort]
 
