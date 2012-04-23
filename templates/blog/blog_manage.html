@@ -133,9 +133,9 @@ $(document).ready(function() {
           <td class="centered"><a href="{% url blog_edit blog.id %}" class="ic-action-story ic-edit-story">Edit</a></td>
           {% endifnotequal %}
           {% if can_restore %}
-          <td class="centered"><a href="{% url blog_restore blog.id %}{% if section %}?section={{ section }}{% endif %}" class="">restore</a></td>
+          <td class="centered"><a href="{% url blog_restore blog.id %}{% if section %}?from={{ section }}{% endif %}" class="">restore</a></td>
           {% else %}
-          <td class="centered"><a href="{% url blog_trash blog.id %}{% if section %}?section={{ section }}{% endif %}" class="ic-action-story ic-delete-story">Trash</a></td>
+          <td class="centered"><a href="{% url blog_trash blog.id %}{% if section %}?from={{ section }}{% endif %}" class="ic-action-story ic-delete-story">Trash</a></td>
           {% endif %}
         </tr>
         {% endfor %}

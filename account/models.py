@@ -1,5 +1,6 @@
 import random
 import re
+import datetime
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -74,6 +75,9 @@ class UserProfile(models.Model):
                 return 'not-activate'
             else:
                 return 'block'
+    def update_view_notification(self):
+        self.notification_viewed = datetime.now()
+        self.save()
 
 class UserInvitationManager(models.Manager):
 

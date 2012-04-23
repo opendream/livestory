@@ -102,10 +102,12 @@
       <label class="control-label" for="mood_1">Mood</label>
       <div class="controls"> 
         {% for value, text in moods %}
+        {% if value < 99 %}
         <div class="radio mood-list">
           <input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% ifequal form.mood.data value|lower %} checked="checked"{% endifequal %}>
           <span class="mood-{{ text|lower }} mood-icon{% ifequal form.mood.data value|lower %} active{% endifequal %}"></span>{{ text }}
         </div>
+        {% endif %}
         {% endfor %}
         {% if form.mood.errors %}
         <div class="clear-both">

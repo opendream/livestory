@@ -13,17 +13,17 @@ from taggit.models import TaggedItem
 import shutil
 
 MOOD_CHOICES = (
-    (99, 'Moodless' ), 
-    (1, 'Happy'     ), 
-    (2, 'Sad'       ), 
-    (3, 'Excited'   ), 
-    (4, 'Inspired'  ),
-    (5, 'Frustrated'),
-    (6, 'Angry'     ),
-    (7, 'Fun'       ),
-    (8, 'Proud'     ),
-    (9, 'Amazed'    ),
-    (10,'Motivated' )
+    (1, 'Fun'         ), 
+    (2, 'Amazed'      ), 
+    (3, 'Happy'       ), 
+    (4, 'Motivated'   ),
+    (5, 'Proud'       ),
+    (6, 'Excited'     ),
+    (7, 'Inspired'    ),
+    (8, 'Frustrated'  ),
+    (9, 'Angry'       ),
+    (10,'Sad'         ),
+    (99, 'Moodless'   ), 
 )
 
 PRIVATE_CHOICES = (
