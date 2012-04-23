@@ -135,7 +135,7 @@ $(document).ready(function() {
         <span class="people-love grey"><span class="love-sum">{{ love_count }}</span>&nbsp;&nbsp;People love it</span>
         <ul class="friends clearfix">
           {% for user in loved_users|slice:":7" %}
-          <li class="love-user_{{ user.user.id }}">
+          <li class="friend-lover love-user_{{ user.user.id }}">
               <a href="#" title=""><img width="35px" height="35px" src="{{ user.get_avatar|crop:'35x35' }}" alt="{{ user.get_full_name }}" /></a>
               <div class="tooltip-popup">{{ user.get_full_name }}</div>
           </li>
@@ -176,7 +176,8 @@ $(document).ready(function() {
 	      <ul>
 		      <li>
 			      <div class="col-left"><h3>Mood</h3></div>
-						<div class="col-right"><span class="mood-icon mood-{{ blog.get_mood_text|lower }} active">Mood: {{ blog.get_mood_text }}</span></div>
+						<div class="col-right mood-popup"><span class="mood-icon mood-{{ blog.get_mood_text|lower }} active"></span>
+						<div class="tooltip-popup">{{ blog.get_mood_text }}</div></div>
 		      </li>
 		      <li>
 			      <div class="col-left"><h3>Category</h3></div>
