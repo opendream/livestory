@@ -352,7 +352,8 @@ def blog_edit(request, blog_id):
                 blog.allow_download = bool(int(form.data.get('allow_download')))
                 
                 blog.category = form.cleaned_data.get('category')
-                blog.save_tags(form.data.get('tags'))
+                print '>>>',form.cleaned_data.get('tags')
+                blog.save_tags(form.cleaned_data.get('tags'))
                 try:
                     blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
                     blog.private = form.cleaned_data.get('private')

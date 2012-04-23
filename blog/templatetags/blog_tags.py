@@ -14,14 +14,16 @@ def tags_js():
     tags.append(tag.name)
 
   return '''
-<script>
+<script type="text/javascript">
+
 $(document).ready(function() {
   $('#id_tags').tagit({
     availableTags: ['%s'],
-    allowSpaces: true,
-    removeConfirmation: true
+    allowSpaces: false,
+    removeConfirmation: true,
   });
 });
+
 </script>
 ''' % "', '".join(tags)
 

@@ -89,8 +89,10 @@ class Blog(models.Model):
                 self.tags.clear()
                 for tag in tags:
                     self.tags.add(tag.strip())
-                return True
-        return False
+        else:
+            if self.id:
+                self.tags.clear()
+        return True
 
     def get_tags(self):
         tags = []
