@@ -32,7 +32,7 @@
 	        <div class="caption">
 	          <h4><a href="{% url blog_view blog.id %}">{{ blog.title }}</a></h4>
 	          <p class="posted">
-	            <span class="grey">{{ blog.created|localtime|timeago:'M d, Y' }} in <a href="{% url blog_category blog.category.code %}" class="tag">{{ blog.category.name }}</a></span>
+	            <span class="grey">{{ blog.published|localtime|timeago:'M d, Y' }} in <a href="{% url blog_category blog.category.code %}" class="tag">{{ blog.category.name }}</a></span>
 	          </p>
 	        </div>
 	      </div>
