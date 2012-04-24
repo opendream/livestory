@@ -9,6 +9,7 @@ def site_information(request):
          place_form = BlogPlaceFilterForm(request.GET)
          
     return {
+        'settings':settings,
         'SITE_NAME': settings.SITE_NAME,
         'ORGANIZATION_NAME': settings.ORGANIZATION_NAME,
         'SITE_LOGO': settings.SITE_LOGO,

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import simplejson as json
 
-from common import ucwords
+from common.utilities import capfirst
 import urllib
 
 class Location(models.Model):
@@ -15,9 +15,9 @@ class Location(models.Model):
     def __unicode__(self):
     	return '%s: %s' % (self.country, self.city)
     
-    def save(self):
-        self.country = ucwords(self.country)
-        self.city = ucwords(self.city)
+    def save(self, *args, **kwargs):
+        self.country = capfirst(self.country)
+        self.city = capfirst(self.city)
         
         if not self.lat or not self.lng:
             resp = urllib.urlopen('http://maps.googleapis.com/maps/api/geocode/json?address=%s,%s&sensor=false' % (self.country, self.city))
@@ -41,8 +41,7 @@ class Location(models.Model):
                         
                 if not match_country or not match_city:
                     raise self.DoesNotExist
-                    
-                
+
                 exist = Location.objects.filter(country=self.country, city=self.city)
                 if exist.count():
                     self.id = exist[0].id
@@ -58,4 +57,4 @@ class Location(models.Model):
                 self.lat = '0'
                 self.lng = '0'
             
-        super(Location, self).save()
+        super(Location, self).save(*args, **kwargs)

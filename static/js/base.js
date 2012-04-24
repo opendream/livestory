@@ -15,7 +15,7 @@ $(function () {
             done: function (e, data) {
                 $('div.image-append', scope).html('');
                 $('div.image-append', scope).append($('<img/>').attr('src', data.result.thumbnail_url));
-                $('input[type=hidden][name=image_path]', scope).val(data.result.filepath);
+                $('input[type=hidden][name=image_file_name]', scope).val(data.result.name);
                 $('.drop-area', scope).hide();
                 setTimeout(function () {
                     $('.image-wrapper').show();
@@ -28,22 +28,11 @@ $(function () {
         $('.fileupload', scope).fileupload(param);
         $('.image-delete', scope).click(function (e) {
             e.preventDefault();
-            var params = {
-                'image_path': $('input[type=hidden][name=image_path]', scope).val()
-            };
-            var onSuccess = function (resp) {
-                if (resp.result == 'complete') {
-                    $('.drop-area', scope).show();
-                    $('.image-border', scope).show();
-                    $('.image-wrapper').hide();
-                    $('input[type=hidden][name=image_path]', scope).val('');
-                }
-            }
-            if ($(this).attr('href')) {
-                $.getJSON($(this).attr('href'), params, onSuccess);
-            } else {
-                onSuccess({'result': 'complete'});
-            }
+            $('.drop-area', scope).show();
+            $('.image-border', scope).show();
+            $('.image-wrapper').hide();
+            $('input[type=hidden][name=image_file_name]', scope).val('');
+
         });
 
         $('.fileupload', scope).bind('fileuploadstart', function () {

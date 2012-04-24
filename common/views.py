@@ -1,21 +1,6 @@
 import os
 from django.conf import settings
 
-def file_save_upload(f, directory = ''):
-    if directory == '':
-        directory = '%stemp' % settings.MEDIA_ROOT
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    filepath = check_file_exists('%s/%s' % (directory, f.name))
-    destination = open(filepath, 'wd+')
-    for chunk in f.chunks():
-        destination.write(chunk)
-    destination.close()
-
-    return { 'filepath': filepath, 'url' : filepath.replace(settings.BASE_PATH, '') }
-
 def check_file_exists(filepath, original_filename = '', num_retry = 0):
     num_retry = num_retry + 1
     if os.path.exists(filepath):

@@ -5,10 +5,12 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from common.templatetags.common_tags import cache_path
+#from common.templatetags.common_tags import cache_path
 from location.models import Location
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItem
+
+from common.utilities import split_filepath
 
 import shutil
 
@@ -36,14 +38,9 @@ DRAFT_CHOICES = (
     (True, 'Yes')
 )
 
-def blog_image_path(instance, filename):
-    filepath = '%sblog/%s/%s' % (settings.IMAGE_ROOT, instance.user.id, instance.id)
-    if not os.path.exists(filepath):
-        os.makedirs(filepath)
-    return '%s/blog_%d.jpg' % (filepath, instance.id)
-
 def blog_image_url(instance, filename):
-    return './images/blog/%s/%s/%s' % (instance.user.id, instance.id, filename)
+    (root, name, ext) = split_filepath(filename)
+    return './images/blog/%s/%s.%s' % (instance.user.id, name, ext)
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
@@ -58,7 +55,7 @@ class Category(models.Model):
     
 class Blog(models.Model):
     title          = models.CharField(max_length=200)
-    image          = models.ImageField(upload_to=blog_image_url)
+    image          = models.ImageField(upload_to=blog_image_url, max_length=500)
     description    = models.TextField(null=True)
     mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
@@ -105,12 +102,8 @@ class Blog(models.Model):
             with_file = kwargs['with_file']
 
         if with_file:
-            blog_image_path = '%sblog/%s/%s' % (settings.IMAGE_ROOT, self.user.id, self.id)
-            if os.path.exists(blog_image_path):
-                shutil.rmtree(blog_image_path)
-            cache_image_path = cache_path(blog_image_path)
-            if os.path.exists(cache_image_path):
-                shutil.rmtree(cache_image_path)
+            from functions import remove_blog_image
+            remove_blog_image(self)
         super(Blog, self).delete()
 
 

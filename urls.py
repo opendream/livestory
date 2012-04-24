@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^blog/', include('blog.urls')),
     url(r'^location/', include('location.urls')),
     url(r'^ajax/', include('ajax.urls')),
+    url(r'^ajax/', include('blog.urls_ajax')),
 
     url(r'^accounts/login/$', 'account.views.auth_login', name='account_login'),
     url(r'^account/logout/$', 'django.contrib.auth.views.logout', {'next_page':'/'}, name='account_logout'),

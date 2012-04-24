@@ -100,7 +100,7 @@ $(document).ready(function() {
     	
       <div class="blog-container-photo">
         <div class="blog-photo rounded5">
-          <img src="{{ blog.image|scale:'748x1000' }}" alt="{{ blog.title }}" />
+          <img src="{{ blog.image.path|scale_blog_image:'748x1000' }}" alt="{{ blog.title }}" />
         </div>
       </div>
       

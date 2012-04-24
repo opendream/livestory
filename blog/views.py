@@ -20,10 +20,10 @@ from blog.forms import *
 from statistic.models import BlogViewHit, BlogViewSummary
 from notification.models import Notification
 
+from functions import remove_temporary_blog_image, remove_blog_image
+
 from location.models import Location
 from common.scour import Scour
-from common.views import check_file_exists
-from common.templatetags.common_tags import cache_path
 from common import ucwords, get_page_range
 from taggit.models import TaggedItem
 
@@ -193,51 +193,40 @@ def blog_restore(request, blog_id):
 
 @login_required
 def blog_create(request):
-    action = reverse('blog_create')
-    image_path = ''
-    imagefield_error = False
-    location_error = False
+    blog_image_file = None
 
     if request.method == 'POST':
-        form = BlogCreateForm(request.POST, request.FILES)
+        form = ModifyBlogForm(request.POST)
+        if form.is_valid():
+            location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
 
-        # Check image field upload.
-        image_path = form.data.get('image_path')
-        if not image_path or not os.path.exists(image_path):
-            image_path = ''
-            imagefield_error = True
+            from django.core.files import File
 
-        if form.is_valid() and not imagefield_error:
-            blog = form.save(commit=False)
-            blog.description = form.cleaned_data.get('description')[:300]
-            blog.user = request.user
-            blog.draft = bool(int(form.data.get('draft')))
-            blog.allow_download = bool(int(form.data.get('allow_download')))
-            
-            try:
-                blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-                blog.save()
-                
-                blog.save_tags(form.data.get('tags'))
-                
-                blog.image = blog_save_image(image_path, blog)
-                blog.save()
+            blog = Blog(
+                title = form.cleaned_data['title'],
+                description = form.cleaned_data['description'],
+                user = request.user,
+                location = location,
+                draft = bool(int(request.POST.get('draft'))),
+                allow_download = form.cleaned_data['allow_download'],
+                image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name']))),
+                category = form.cleaned_data['category'],
+                mood = form.cleaned_data['mood'],
+            )
 
-                BlogViewSummary.objects.get_or_create(blog=blog)
-                
-                # There is image uploaded.
-                if image_path.split('/')[-2] == 'temp':
-                    cpath = cache_path(blog.image.path)
-                    if os.path.exists(cpath):
-                        shutil.rmtree(cpath)
-            
-                messages.success(request, 'Blog post created. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
-                return redirect(reverse('blog_edit', args=[blog.id]))
-            except Location.DoesNotExist:
-                location_error = True
-                
+            blog.save()
+            blog.save_tags(form.cleaned_data['tags'])
+
+            remove_temporary_blog_image(form.cleaned_data['image_file_name'])
+
+            messages.success(request, 'Blog post created. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+            return redirect(reverse('blog_edit', args=[blog.id]))
+
+        else:
+            blog_image_file = '%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, request.POST.get('image_file_name'))
+
     else:
-        form = BlogCreateForm()
+        form = ModifyBlogForm(initial={'allow_download':True})
 
     context = {
         'page_title': 'Add New Blog',
@@ -245,10 +234,9 @@ def blog_create(request):
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
         'is_draft': True,
-        'image_path': image_path,
-        'imagefield_error': imagefield_error,
-        'location_error': location_error
+        'blog_image_file':blog_image_file,
     }
+
     return render(request, 'blog/blog_form.html', context)
 
 
@@ -317,93 +305,72 @@ def blog_create_by_email(request):
 
 @login_required
 def blog_edit(request, blog_id):
-    try:
-        blog = Blog.objects.get(pk=blog_id)
+    blog = get_object_or_404(Blog, id=blog_id)
 
-        if not request.user.is_staff and (not request.user.is_authenticated() or request.user.id != blog.user.id):
-            return render(request, '403.html', status=403)
-        elif blog.trash:
-            raise Http404
-        
-        location = Location.objects.get(pk=blog.location_id)
-        action = reverse('blog_edit', args=[blog_id])
-        image_path = blog.image.path
-        imagefield_error = False
-        location_error = False
+    (root, name ,ext) = split_filepath(blog.image.path)
+    image_file_name = '%s.%s' % (name, ext)
 
-        if request.method == 'POST':
-            form = BlogCreateForm(request.POST, request.FILES)
-            
-            trash = bool(int(form.data.get('trash')))
-            if trash:
-                blog.trash = trash
-                blog.save()
-                return redirect(reverse('blog_view', args=[blog.id]))
-                
-            # Check image field upload.
-            image_path = form.data.get('image_path')
-            if not image_path or not os.path.exists(image_path):
-                imagefield_error = True
-                        
-            if form.is_valid() and not imagefield_error:
-                blog.title = form.cleaned_data.get('title')
-                blog.description = form.cleaned_data.get('description')[:300]
-                blog.mood = form.cleaned_data.get('mood')
-                blog.allow_download = bool(int(form.data.get('allow_download')))
-                
-                blog.category = form.cleaned_data.get('category')
-                blog.save_tags(form.data.get('tags'))
-                try:
-                    blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-                    blog.private = form.cleaned_data.get('private')
-
-                    # If previous is draft, you can draft it again.
-                    if blog.draft:
-                        blog.draft = bool(int(form.data.get('draft')))
-                        
-                    # There is image uploaded.
-                    if image_path.split('/')[-2] == 'temp':
-                        cpath = cache_path(blog.image.path)
-                        blog.image.delete()
-                        if os.path.exists(cpath):
-                            shutil.rmtree(cpath)
-                        # Save new image.
-                        blog.image = blog_save_image(image_path, blog)
-                
-                    blog.save()
-                    messages.success(request, 'Blog post updated. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
-                    return redirect(reverse('blog_edit', args=[blog.id]))
-                    
-                except Location.DoesNotExist:
-                    location_error = True
-        else:
-            defaults = {
-                'title': blog.title,
-                'description': blog.description,
-                'country': location.country,
-                'city': location.city,
-                'mood': str(blog.mood),
-                'category': blog.category,
-                'private': str(int(blog.private)),
-                'allow_download': str(int(blog.allow_download)),
-                'tags': blog.get_tags()
-            }
-            form = BlogCreateForm(defaults)
-
-        context = {
-            'page_title': 'Edit Post',
-            'form': form,
-            'moods': MOOD_CHOICES,
-            'visibilities': PRIVATE_CHOICES,
-            'is_draft': blog.draft,
-            'blog': blog,
-            'image_path': image_path,
-            'imagefield_error': imagefield_error,
-            'location_error': location_error,
-        }
-        return render(request, 'blog/blog_form.html', context)
-    except Blog.DoesNotExist:
+    if not request.user.is_staff and not request.user.id != blog.user.id:
+        return render(request, '403.html', status=403)
+    elif blog.trash:
         raise Http404
+
+    if request.method == 'POST':
+        form = ModifyBlogForm(blog, request.POST)
+        if form.is_valid():
+            location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
+
+            from django.core.files import File
+
+            blog.title = form.cleaned_data['title']
+            blog.description = form.cleaned_data['description']
+            blog.location = location
+            blog.draft = bool(int(request.POST.get('draft')))
+            blog.allow_download = form.cleaned_data['allow_download']
+            blog.category = form.cleaned_data['category']
+            blog.mood = form.cleaned_data['mood']
+            blog.trash = request.POST.get('trash', 0)
+
+            if form.cleaned_data['image_file_name'] != image_file_name:
+                remove_blog_image(blog)
+                blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
+
+            blog.save()
+            blog.save_tags(form.cleaned_data['tags'])
+
+            messages.success(request, 'Blog post updated. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+
+            if blog.trash:
+                return redirect('blog_view', blog_id=blog.id)
+
+            return redirect(reverse('blog_edit', args=[blog.id]))
+
+    else:
+
+        form = ModifyBlogForm(blog, initial={
+            'title': blog.title,
+            'description': blog.description,
+            'country': blog.location.country,
+            'city': blog.location.city,
+            'mood': blog.mood,
+            'image_file_name':image_file_name,
+            'category': blog.category,
+            'private': str(int(blog.private)),
+            'allow_download': blog.allow_download,
+            'tags': blog.get_tags()
+        })
+
+    context = {
+        'page_title': 'Edit Blog',
+        'blog': blog,
+        'form': form,
+        'is_draft': blog.draft,
+        'moods': MOOD_CHOICES,
+        'visibilities': PRIVATE_CHOICES,
+        'blog_image_file':blog.image.path,
+    }
+
+    return render(request, 'blog/blog_form.html', context)
 
 
 @login_required

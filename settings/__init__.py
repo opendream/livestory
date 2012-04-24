@@ -60,6 +60,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
     'middleware.TimezoneMiddleware',
 )
 
@@ -92,6 +93,8 @@ INSTALLED_APPS = (
     'djkombu',
     'djcelery',
     'taggit',
+
+    'easy_thumbnails',
 
     'location',
     'blog',
@@ -134,6 +137,11 @@ LOGGING = {
 import djcelery
 djcelery.setup_loader()
 
+# EASY THUMBNAILS ################################################################################
+
+THUMBNAIL_DEBUG = True
+THUMBNAIL_PRESERVE_EXTENSIONS = True
+
 # LIVESTORY SETTINGS ################################################################################
 
 SITE_NAME = 'Oxfam Live Stories'
@@ -142,8 +150,17 @@ SITE_DOMAIN = '127.0.0.1:8000'
 ORGANIZATION_NAME = 'Oxfam'
 CONTACT_EMAIL = 'info@oxfam.org.uk'
 
+# BLOG
 
+TEMP_BLOG_IMAGE_ROOT = os.path.join(MEDIA_ROOT, 'temp/blogging/')
+TEMP_BLOG_IMAGE_URL = 'temp/blogging/'
 
+BLOG_IMAGE_PREVIEW_WIDTH = 470
+BLOG_IMAGE_PREVIEW_HEIGHT = 470
+BLOG_IMAGE_PREVIEW_SIZE = '%dx%d' % (BLOG_IMAGE_PREVIEW_WIDTH, BLOG_IMAGE_PREVIEW_HEIGHT)
+
+BLOG_IMAGE_ROOT = os.path.join(MEDIA_ROOT, 'images/blog/')
+BLOG_IMAGE_URL = 'images/blog/'
 
 PRIVATE = True
 

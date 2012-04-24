@@ -7,11 +7,8 @@ from django.shortcuts import get_object_or_404
 from account.models import User
 
 from common.templatetags.common_tags import *
-from common.views import file_save_upload
 
-import os
 import shutil
-from django.conf import settings
 
 @login_required
 def ajax_profile_image_upload(request, user_id):
@@ -86,28 +83,3 @@ def ajax_account_image_delete(request):
         
     return HttpResponse(json.dumps(data), mimetype="application/json")
 
-@login_required
-def ajax_blog_image_upload(request):
-    f = request.FILES['image']
-    file_data = file_save_upload(request.FILES['image'])
-    data = {
-        'name': f.name,
-        'size': f.size,
-        'url': file_data['url'],
-        'filepath': file_data['filepath'],
-        'thumbnail_url': scale(file_data['filepath'], settings.BLOG_PREVIEW_SIZE)
-    }
-    return HttpResponse(json.dumps(data), mimetype="application/json")
-
-@login_required    
-def ajax_blog_image_delete(request):
-    data = {'result': 'complete', 'isTemp': False}
-    try:
-        image_path = request.GET.get('image_path')
-        if image_path:
-            if image_path.find(settings.TEMP_ROOT) == 0 and os.path.exists(image_path):
-                os.unlink(image_path)
-                data['isTemp'] = True
-    except:
-        pass
-    return HttpResponse(json.dumps(data), mimetype="application/json")

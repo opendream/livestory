@@ -1,4 +1,4 @@
-from blog.models import Blog, Love, blog_image_path
+from blog.models import Blog, Love
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 #from statistic.models import ViewCount
@@ -63,13 +63,6 @@ class TestBlog(TestCase):
         self.assertEquals('Proud'     , self.blogs[7].get_mood_text())
         self.assertEquals('Amazed'    , self.blogs[8].get_mood_text())
         self.assertEquals('Motivated' , self.blogs[9].get_mood_text())
-        
-        
-    def test_blog_image_path(self):
-        image_path = blog_image_path(self.blogs[0], self.blogs[0].image.file.name)
-        
-        self.assertEquals(True, os.path.exists('%s/media/images/blog/%d' % (settings.BASE_PATH, self.blogs[0].user.id)))
-        self.assertEquals('%s/media/images/blog/%d/%d/blog_%d.jpg' % (settings.BASE_PATH, self.blogs[0].user.id, self.blogs[0].id, self.blogs[0].id), image_path)
 
     def test_blog_default_private_is_private(self):
         self.assertEqual(True, self.blogs[0].private)
