@@ -25,13 +25,13 @@ class TestUserProfile(TestCase):
         pass
     
     def test_account_login_anonymous(self):
-        response = self.client.get('/account/login/')
+        response = self.client.get('/accounts/login/')
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'registration/login.html')
     
     def test_account_login_authenticated(self):
         self.client.login(username='tester2@example.com', password='testuser2')
-        response = self.client.get('/account/login/')
+        response = self.client.get('/accounts/login/')
         # self.assertRedirects(response, '/')
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'registration/login.html')
@@ -39,7 +39,7 @@ class TestUserProfile(TestCase):
     
     def test_account_invite_accessment(self):
         response = self.client.get('/account/invite/')
-        self.assertEquals(403, response.status_code)
+        self.assertRedirects(response, '/accounts/login/?next=/account/invite/')
 
         self.client.login(username='staff@example.com', password='staff')
         response = self.client.get('/account/invite/')
@@ -120,8 +120,8 @@ class TestUserProfile(TestCase):
         
     def test_account_profile_edit_get(self):
         response = self.client.get('/account/profile/edit/')
-        self.assertEquals(403, response.status_code)
-        
+        self.assertRedirect(response, '/')
+
         self.client.login(username='staff@example.com', password='staff')
         response = self.client.get('/account/profile/edit/')
         self.assertEquals(200, response.status_code)

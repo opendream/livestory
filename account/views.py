@@ -125,9 +125,6 @@ def account_profile_create(request):
 
 @login_required
 def account_profile_edit(request):
-    if not request.user.is_authenticated():
-        return render(request, '403.html', status=403)
-
     user = request.user
     account = user.get_profile()
 
