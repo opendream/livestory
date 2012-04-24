@@ -109,7 +109,7 @@ $(document).ready(function() {
       
       <p class="block">{{ blog.description }}</p>
 
-      <span class="grey">{{ blog.created|localtime|timeago }} </span>
+      <span class="grey">{% if blog.published %} {{ blog.published|localtime|timeago }} {% endif %}</span>
       
       {% if not blog.trash %}
       {% if blog.user.id == user.id or user.is_staff %}

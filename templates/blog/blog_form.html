@@ -166,9 +166,10 @@
     
     <div class="field-draft form-backend">
       <input type="hidden" name="draft" value="0">
+      <input type="hidden" name="publish" value="0">
       <input type="hidden" name="trash" value="0">
       {% if is_draft %}
-      <button type="submit" class="btn-green" name="draft" value="0">Publish</button>
+      <button type="submit" class="btn-green" name="publish" value="1">Publish</button>
       {% else %}
       <button type="submit" class="btn-green" name="draft" value="0">Save changes</button>
       {% endif %}

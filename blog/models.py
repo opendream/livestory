@@ -58,14 +58,14 @@ class Category(models.Model):
     
 class Blog(models.Model):
     title          = models.CharField(max_length=200)
-    image          = models.ImageField(upload_to=blog_image_url)
+    image          = models.ImageField(upload_to=blog_image_url)    
     description    = models.TextField(null=True)
     mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
     draft          = models.BooleanField(default=False, choices=DRAFT_CHOICES)
     trash          = models.BooleanField(default=False)
     allow_download = models.BooleanField(default=True)
-    created        = models.DateTimeField(auto_now_add=True)
+    published      = models.DateTimeField(null=True, blank=True)
     modified       = models.DateTimeField(auto_now=True)
                    
     user           = models.ForeignKey(User)

@@ -1,6 +1,7 @@
 import os
 from django.conf import settings
 import shutil
+import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -91,7 +92,7 @@ def blog_manage(request, section):
             blogs = blogs.order_by('%s' % sort)
     else:
         order = 'desc'
-        blogs = blogs.order_by('-created')
+        blogs = blogs.order_by('-published')
 
     blog_all = blogs.filter(trash=False)
     blog_published = blogs.filter(draft=False, trash=False)
@@ -214,6 +215,11 @@ def blog_create(request):
             blog.draft = bool(int(form.data.get('draft')))
             blog.allow_download = bool(int(form.data.get('allow_download')))
             
+            #stamp a published date
+            publish = bool(int(form.data.get('publish')))
+            if publish:
+                blog.published = datetime.datetime.now()
+
             try:
                 blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
                 blog.save()
@@ -304,6 +310,7 @@ def blog_create_by_email(request):
         blog.draft = False
         blog.allow_download = False
         blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
+        blog.published = datetime.datetime.now()
         blog.save()
 
         BlogViewSummary.objects.get_or_create(blog=blog)
@@ -352,7 +359,6 @@ def blog_edit(request, blog_id):
                 blog.allow_download = bool(int(form.data.get('allow_download')))
                 
                 blog.category = form.cleaned_data.get('category')
-                print '>>>',form.cleaned_data.get('tags')
                 blog.save_tags(form.cleaned_data.get('tags'))
                 try:
                     blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
@@ -361,7 +367,13 @@ def blog_edit(request, blog_id):
                     # If previous is draft, you can draft it again.
                     if blog.draft:
                         blog.draft = bool(int(form.data.get('draft')))
-                        
+                    
+                    #stamp a published date
+                    publish = bool(int(form.data.get('publish')))
+                    if publish:
+                        blog.published = datetime.datetime.now()
+
+
                     # There is image uploaded.
                     if image_path.split('/')[-2] == 'temp':
                         cpath = cache_path(blog.image.path)
@@ -467,7 +479,7 @@ def blog_download(request, blog_id):
         return render(request, '403.html', status=403)
     
     response = HttpResponse(FileWrapper(blog.image.file), mimetype='application/force-download')    
-    response['Content-Disposition'] = 'attachment; filename=%s-%s.%s' % (blog.created.strftime('%Y%m%d') , blog.id, blog.image.name.split('.')[-1])
+    response['Content-Disposition'] = 'attachment; filename=%s-%s.%s' % (blog.published.strftime('%Y%m%d') , blog.id, blog.image.name.split('.')[-1])
     
     # Nofify
     if request.user.is_authenticated() and request.user != blog.user:
@@ -547,7 +559,7 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
         items = items.filter(private=False)
     
     items = items.filter(**filter)
-    items = items.order_by('-created')
+    items = items.order_by('-published')
     
     pager = Paginator(items, 8)
     p = request.GET.get('page') or 1
@@ -732,7 +744,7 @@ def blog_search(request):
         blogs = Blog.objects.filter(
             Q(title__icontains=keyword) |
             Q(description__icontains=keyword)
-        ).order_by('-created')
+        ).order_by('-published')
 
         pager = Paginator(blogs, 8)
         p = request.GET.get('page') or 1
