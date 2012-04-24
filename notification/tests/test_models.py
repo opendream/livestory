@@ -28,11 +28,11 @@ class TestNotification(TestCase):
 		self.love_notification.delete()
 		self.download_notification.delete()
 
-		UserInvitation.objects.get(user=self.love_user).delete()
+		UserInvitation.objects.get(email=self.love_user.email).delete()
 		UserProfile.objects.get(user=self.love_user).delete()
 		self.love_user.delete()
 
-		UserInvitation.objects.get(user=self.user).delete()
+		UserInvitation.objects.get(email=self.user.email).delete()
 		UserProfile.objects.get(user=self.user).delete()
 		self.user.delete()
 

@@ -55,8 +55,7 @@ class TestNotification(TestCase):
 
 	def test_notification_page_get_by_anonymous_user(self):
 		response = self.client.get(reverse('notification_view'))
-		self.assertEqual(403, response.status_code)
-		self.assertTemplateUsed(response, '403.html')
+		self.assertRedirects(response, '/accounts/login/?next=/notifications/')
 
 	def test_notification_page_get_by_authenticated_user(self):
 		self.client.login(username='john.doe@example.com', password='john123')

@@ -134,6 +134,9 @@ class UserInvitation(models.Model):
             }
         )
 
+    def __unicode__(self):
+        return '%s has key %s' % (self.email, self.invitation_key)
+
 """
 class UserResetPasswordManager(models.Manager):
 
