@@ -26,11 +26,18 @@
 		            <div class="controls">{{ form.last_name }}</div>
 		        </div>
 		
-		        <div class="control-group">
+		        <div class="control-group{% if form.password.errors %} error{% endif %}">
 		            <label class="control-label" for="title">Password</label>
 		            <div class="controls">{{ form.password }}</div>
+		            <span class="help-inline">{{ form.password.errors.as_text }}</span>
 		        </div>
-		
+			
+				<div class="control-group{% if form.confirm_password.errors %} error{% endif %}">
+		            <label class="control-label" for="title">Confirm Password</label>
+		            <div class="controls">{{ form.confirm_password }}</div>
+		            <span class="help-inline">{{ form.confirm_password.errors.as_text }}</span>
+		        </div>
+
 		        <div class="form-backend">
 		            <button type="submit" class="btn-green">Activate account</button>
 		        </div>

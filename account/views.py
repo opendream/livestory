@@ -43,7 +43,7 @@ def account_activate(request, key):
 
     else:
         form = UserActivationForm()
-
+    
     return render(request, 'account/account_activate.html', {'form':form, 'invitation':invitation})
 
 

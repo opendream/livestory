@@ -51,7 +51,14 @@ class UserActivationForm(forms.Form):
     first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
     last_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
     password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'span3'}))
+    confirm_password = forms.CharField(max_length=200, widget=forms.PasswordInput(attrs={'class': 'span3'}))
 
+    def clean_confirm_password(self):
+        password1 = self.cleaned_data.get('password', '')
+        password2 = self.cleaned_data['confirm_password']
+        if password1 != password2:
+            raise forms.ValidationError(_('The two password fields didn\'t match.'))
+        return password2
 
 class UserProfileForm(forms.Form):
     first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
