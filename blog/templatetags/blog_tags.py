@@ -71,9 +71,9 @@ $(document).ready(function() {\n\
     }\n\
   });\n\
   $city.focus(function(e) {\n\
-    cityTypeahead(country_val);\n\
+    cityTypeahead($country.val());\n\
   });\n\
-  if (country_val != '') {\n\
+  if ($country.val() != '') {\n\
     cityTypeahead(country_val)\n\
   }\n\
 });\n\
