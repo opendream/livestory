@@ -15,17 +15,17 @@ from common.utilities import split_filepath
 import shutil
 
 MOOD_CHOICES = (
-    (99, 'Moodless' ), 
-    (1, 'Happy'     ), 
-    (2, 'Sad'       ), 
-    (3, 'Excited'   ), 
-    (4, 'Inspired'  ),
-    (5, 'Frustrated'),
-    (6, 'Angry'     ),
-    (7, 'Fun'       ),
-    (8, 'Proud'     ),
-    (9, 'Amazed'    ),
-    (10,'Motivated' )
+    (1, 'Fun'         ), 
+    (2, 'Amazed'      ), 
+    (3, 'Happy'       ), 
+    (4, 'Motivated'   ),
+    (5, 'Proud'       ),
+    (6, 'Excited'     ),
+    (7, 'Inspired'    ),
+    (8, 'Frustrated'  ),
+    (9, 'Angry'       ),
+    (10,'Sad'         ),
+    (99, 'Moodless'   ), 
 )
 
 PRIVATE_CHOICES = (
@@ -62,7 +62,7 @@ class Blog(models.Model):
     draft          = models.BooleanField(default=False, choices=DRAFT_CHOICES)
     trash          = models.BooleanField(default=False)
     allow_download = models.BooleanField(default=True)
-    created        = models.DateTimeField(auto_now_add=True)
+    published      = models.DateTimeField(null=True, blank=True)
     modified       = models.DateTimeField(auto_now=True)
                    
     user           = models.ForeignKey(User)
@@ -86,8 +86,10 @@ class Blog(models.Model):
                 self.tags.clear()
                 for tag in tags:
                     self.tags.add(tag.strip())
-                return True
-        return False
+        else:
+            if self.id:
+                self.tags.clear()
+        return True
 
     def get_tags(self):
         tags = []

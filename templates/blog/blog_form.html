@@ -106,10 +106,12 @@
       <label class="control-label" for="mood_1">Mood</label>
       <div class="controls">
         {% for value, text in moods %}
+        {% if value < 99 %}
         <div class="radio mood-list">
           <input type="radio" id="mood_{{ value }}" value="{{ value }}" name="mood"{% if blog.mood == value %} checked="checked"{% endif %}>
           <span class="mood-{{ text|lower }} mood-icon{% if blog.mood == value %} active{% endif %}"></span>{{ text }}
         </div>
+        {% endif %}
         {% endfor %}
         {% if form.mood.errors %}
         <div class="clear-both">
@@ -125,7 +127,7 @@
         {{ form.category }}
       </div>
     </div>
-
+    
     <div class="field-tags control-group">
       <label class="control-label" for="id_tags">Tags</label>
       <div class="controls">
@@ -167,9 +169,10 @@
     
     <div class="field-draft form-backend">
       <input type="hidden" name="draft" value="0">
+      <input type="hidden" name="publish" value="0">
       <input type="hidden" name="trash" value="0">
       {% if is_draft %}
-      <button type="submit" class="btn-green" name="draft" value="0">Publish</button>
+      <button type="submit" class="btn-green" name="publish" value="1">Publish</button>
       {% else %}
       <button type="submit" class="btn-green" name="draft" value="0">Save changes</button>
       {% endif %}

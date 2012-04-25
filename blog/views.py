@@ -1,6 +1,7 @@
 import os
 from django.conf import settings
 import shutil
+import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -91,7 +92,7 @@ def blog_manage(request, section):
             blogs = blogs.order_by('%s' % sort)
     else:
         order = 'desc'
-        blogs = blogs.order_by('-created')
+        blogs = blogs.order_by('-published')
 
     blog_all = blogs.filter(trash=False)
     blog_published = blogs.filter(draft=False, trash=False)
@@ -214,6 +215,10 @@ def blog_create(request):
                 mood = form.cleaned_data['mood'],
             )
 
+            publish = bool(int(request.POST.get('publish')))
+            if publish:
+                blog.published = datetime.datetime.now()
+
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
 
@@ -229,7 +234,7 @@ def blog_create(request):
         form = ModifyBlogForm(initial={'allow_download':True})
 
     context = {
-        'page_title': 'Add New Blog',
+        'page_title': 'Add New Story',
         'form': form,
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
@@ -292,6 +297,7 @@ def blog_create_by_email(request):
         blog.draft = False
         blog.allow_download = False
         blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
+        blog.published = datetime.datetime.now()
         blog.save()
 
         BlogViewSummary.objects.get_or_create(blog=blog)
@@ -334,6 +340,11 @@ def blog_edit(request, blog_id):
             if form.cleaned_data['image_file_name'] != image_file_name:
                 remove_blog_image(blog)
                 blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
+
+            #stamp a published date
+            publish = bool(int(form.data.get('publish')))
+            if publish:
+                blog.published = datetime.datetime.now()
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
@@ -380,7 +391,7 @@ def blog_view(request, blog_id):
         
         if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
             return render(request, '403.html', status=403)
-        elif blog.trash and not request.user.is_staff and not request.user != blog.user:
+        elif blog.trash and not request.user.is_staff and not request.user == blog.user:
             raise Http404
 
         # Save view hit and update stat summary
@@ -433,7 +444,7 @@ def blog_download(request, blog_id):
         return render(request, '403.html', status=403)
     
     response = HttpResponse(FileWrapper(blog.image.file), mimetype='application/force-download')    
-    response['Content-Disposition'] = 'attachment; filename=%s-%s.%s' % (blog.created.strftime('%Y%m%d') , blog.id, blog.image.name.split('.')[-1])
+    response['Content-Disposition'] = 'attachment; filename=%s-%s.%s' % (blog.published.strftime('%Y%m%d') , blog.id, blog.image.name.split('.')[-1])
     
     # Nofify
     if request.user.is_authenticated() and request.user != blog.user:
@@ -513,7 +524,7 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
         items = items.filter(private=False)
     
     items = items.filter(**filter)
-    items = items.order_by('-created')
+    items = items.order_by('-published')
     
     pager = Paginator(items, 8)
     p = request.GET.get('page') or 1
@@ -698,7 +709,7 @@ def blog_search(request):
         blogs = Blog.objects.filter(
             Q(title__icontains=keyword) |
             Q(description__icontains=keyword)
-        ).order_by('-created')
+        ).order_by('-published')
 
         pager = Paginator(blogs, 8)
         p = request.GET.get('page') or 1

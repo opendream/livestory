@@ -12,8 +12,8 @@ from notification.models import Notification
 def view(request):
 	# Update view notification
 	try:
-		UserInvitation.objects.get(invited_by=request.user).update_view_notification()
-	except UserInvitation.DoesNotExist:
+		UserProfile.objects.get(user=request.user).update_view_notification()
+	except UserProfile.DoesNotExist:
 		pass
 
 	# If request is ajax

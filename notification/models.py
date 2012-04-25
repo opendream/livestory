@@ -17,7 +17,7 @@ class Notification(models.Model):
     blog = models.ForeignKey(Blog)
 
     def __unicode__(self):
-        return '%s %s %s' % (self.subject.get_profile().get_fullname(), self.get_action_text(), self.blog.title)
+        return '%s %s %s' % (self.subject.get_profile().get_full_name(), self.get_action_text(), self.blog.title)
 
     def get_action_text(self):
         actions = dict(ACTION_CHOICES)

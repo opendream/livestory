@@ -43,6 +43,7 @@ def create_blog(title='Icecream', user = None, category = None, location = None,
     blog.save()
     blog.save_tags(tags)
     blog.image.save('blog_%s.jpg' % blog.id, DjangoFile(open('static/tests/blog.jpg'), 'blog.jpg'))
+    blog.published = datetime.now()
     blog.save()
     
     return blog

@@ -281,12 +281,46 @@ a:active {
   100% {
     opacity: 1; } }
 
+@-webkit-keyframes slideUp {
+  0% {
+    height: 0px; }
+
+  100% {
+    height: 100px; } }
+
+@-moz-keyframes slideUp {
+  0% {
+    height: 0px; }
+
+  100% {
+    height: 100px; } }
+
+@-ms-keyframes slideUp {
+  0% {
+    height: 0px; }
+
+  100% {
+    height: 100px; } }
+
+@-o-keyframes slideUp {
+  0% {
+    height: 0px; }
+
+  100% {
+    height: 100px; } }
+
+@keyframes slideUp {
+  0% {
+    height: 0px; }
+
+  100% {
+    height: 100px; } }
+
 .rect {
-  -webkit-transition: all .75s;
-  -moz-transition: all .75s;
-  -o-transition: all .75s;
-  transition: all .75s;
-  background: transparent !important;
+  -webkit-transition: all 0.75s ease 0;
+  -moz-transition: all 0.75s ease 0;
+  -o-transition: all 0.75s ease 0;
+  transition: all 0.75s ease 0;
   -webkit-animation-name: fadeIn;
   -moz-animation-name: fadeIn;
   -ms-animation-name: fadeIn;
@@ -295,12 +329,16 @@ a:active {
   -moz-animation-duration: 3s;
   -moz-animation-delay: 0;
   -moz-animation-iteration-count: 1;
+  -moz-animation-timing-function: ease;
   -webkit-animation-duration: 3s;
   -webkit-animation-delay: 0;
   -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease;
   animation-duration: 3s;
   animation-delay: 0;
-  animation-iteration-count: 1; }
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  background: transparent !important; }
 
 /* Hint
 ---------------------------------------*/
@@ -754,7 +792,10 @@ legend h1, h1 {
   background: #333;
   z-index: 9999; }
 
-li:hover .tooltip-popup {
+.mood-popup {
+  position: relative; }
+
+.friend-lover:hover .tooltip-popup, .mood-popup:hover .tooltip-popup {
   display: block;
   position: absolute;
   left: 0;
@@ -769,7 +810,15 @@ li:hover .tooltip-popup {
   animation-duration: 300ms;
   animation-fill-mode: forwards; }
 
-.tooltip-popup:after {
+.mood-popup:hover .tooltip-popup {
+  left: 50px;
+  top: 2px;
+  line-height: 18px;
+  -moz-animation-name: mood-pop;
+  -webkit-animation-name: mood-pop;
+  animation-name: mood-pop; }
+
+.tooltip-popup:after, .mood-popup .tooltip-popup:after {
   position: absolute;
   left: 15px;
   bottom: 29px;
@@ -780,32 +829,64 @@ li:hover .tooltip-popup {
   border-style: solid;
   border-width: 0 5px 5px; }
 
+.mood-popup .tooltip-popup:after {
+  left: -11px;
+  bottom: 12px;
+  border-width: 11px 0px 0px 11px; }
+
 @-webkit-keyframes pop {
   0% {
     opacity: 0;
-    top: 45px; }
+    top: 38px; }
 
   100% {
     opacity: 1;
-    top: 50px; } }
+    top: 43px; } }
 
 @-moz-keyframes pop {
   0% {
     opacity: 0;
-    top: 45px; }
+    top: 38px; }
 
   100% {
     opacity: 1;
-    top: 50px; } }
+    top: 43px; } }
 
 @keyframes pop {
   0% {
     opacity: 0;
-    top: 45px; }
+    top: 38px; }
 
   100% {
     opacity: 1;
-    top: 50px; } }
+    top: 43px; } }
+
+@-webkit-keyframes mood-pop {
+  0% {
+    opacity: 0;
+    left: 40px; }
+
+  100% {
+    opacity: 1;
+    left: 50px; } }
+
+@-moz-keyframes mood-pop {
+  0% {
+    opacity: 0;
+    left: 40px; }
+
+  100% {
+    opacity: 1;
+    left: 50px; } }
+
+@keyframes mood-pop {
+  0% {
+    opacity: 0;
+    left: 40px; }
+
+  100% {
+    opacity: 1;
+    left: 50px; } }
 
 /* Moods Icons 
 ---------------------------------------*/
@@ -838,7 +919,7 @@ li:hover .tooltip-popup {
   background-position: 0 0; }
 
 .mood-sad {
-  background-position: -32px 0; }
+  background-position: -32px 0; alt: "xxx";}
 
 .mood-excited {
   background-position: -64px 0; }
@@ -952,10 +1033,11 @@ li:hover .tooltip-popup {
   .mood-list input[type="radio"] {
     display: none; }
 
-/* Menu Filter Block
+/* Filter Block
 ---------------------------------------*/
 .filter-block {
-  position: relative; }
+  position: relative;
+  /* 		@include animation(slideUp, 1s, 0, 1, ease); */ }
 
 .filter-wrap {
   margin-bottom: 10px; }
@@ -1084,6 +1166,9 @@ li:hover .tooltip-popup {
     width: 310px;
     height: 102px;
     z-index: 20000000; }
+
+.image-wrapper {
+  margin-bottom: 10px; }
 
 .image-border {
   background: transparent;
@@ -1435,12 +1520,12 @@ html[xmlns] .clearfix {
     display: none; }
 
   #rect-1 {
-    top: 55px !important;
+    top: 54px !important;
     left: 215px !important; }
 
   #rect-2 {
-    top: 160px !important;
-    left: 20px !important; }
+    top: 162px !important;
+    left: 22px !important; }
 
   #rect-4 {
     top: 275px !important;
@@ -1452,10 +1537,10 @@ html[xmlns] .clearfix {
 
   #rect-8 {
     top: 14px !important;
-    left: 117px !important; }
+    left: 119px !important; }
 
   #rect-11 {
-    top: 350px !important;
+    top: 348px !important;
     left: 408px !important; }
 
   #rect-13 {
@@ -1471,7 +1556,7 @@ html[xmlns] .clearfix {
     left: 602px !important; }
 
   #rect-16 {
-    top: 350px !important;
+    top: 348px !important;
     left: 505px !important; }
 
   /* Bootstrap override

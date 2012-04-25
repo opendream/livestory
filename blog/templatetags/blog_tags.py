@@ -14,14 +14,16 @@ def tags_js():
     tags.append(tag.name)
 
   return '''
-<script>
+<script type="text/javascript">
+
 $(document).ready(function() {
   $('#id_tags').tagit({
     availableTags: ['%s'],
-    allowSpaces: true,
-    removeConfirmation: true
+    allowSpaces: false,
+    removeConfirmation: true,
   });
 });
+
 </script>
 ''' % "', '".join(tags)
 
@@ -69,9 +71,9 @@ $(document).ready(function() {\n\
     }\n\
   });\n\
   $city.focus(function(e) {\n\
-    cityTypeahead(country_val);\n\
+    cityTypeahead($country.val());\n\
   });\n\
-  if (country_val != '') {\n\
+  if ($country.val() != '') {\n\
     cityTypeahead(country_val)\n\
   }\n\
 });\n\

@@ -19,6 +19,7 @@
   {% url blog_mood 'arg' as blog_mood %}
   {% url blog_category  'arg' as blog_category %}
   
+  {% if user.is_authenticated %}
   <ul class="menu">
     <li><a href="{{ blog_home }}" class="popular{% if request.path == '/' %} active{% endif %}">Popular</a></li>
     <li><a href="{% url blog_place_empty %}" class="place{% active request blog_place %}">Place</a></li>
@@ -26,6 +27,7 @@
     <li><a href="{% url blog_category 'choose' %}" class="categories{% active request blog_category %}">Categories</a></li>
     <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
   </ul>
+  {% endif %}
 </div>
 
 {% endblock %}

@@ -211,34 +211,48 @@
 	
 	/* CSS3 Transition
 	---------------------------------------*/
+	@mixin transition($duration, $function, $delay){
+		-webkit-transition: all $duration $function $delay;
+		-moz-transition: all $duration $function $delay;
+		-o-transition: all $duration $function $delay ;
+		transition: all $duration $function $delay ;
+	}
+	@mixin animation($name, $duration, $delay, $count, $function){
+		-webkit-animation-name: $name;
+		-moz-animation-name: $name;
+		-ms-animation-name: $name;
+		-o-animation-name: $name;
+		animation-name: $name;
+		-moz-animation-duration: $duration;
+		-moz-animation-delay: $delay;
+		-moz-animation-iteration-count: $count;
+		-moz-animation-timing-function: $function;
+		-webkit-animation-duration: $duration;
+		-webkit-animation-delay: $delay;
+		-webkit-animation-iteration-count: $count;
+		-webkit-animation-timing-function: $function;
+		animation-duration: $duration;
+		animation-delay: $delay;
+		animation-iteration-count: $count;
+		animation-timing-function: $function;
+	}
+	
 	@-webkit-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-moz-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-ms-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@-o-keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	@keyframes fadeIn { 0% {opacity: 0;} 100% {opacity: 1;} }
 	
+	@-webkit-keyframes slideUp {  0% { height: 0px ;} 100% { height: 100px ;} }
+	@-moz-keyframes slideUp { 0% { height: 0px ;} 100% { height: 100px ;} }
+	@-ms-keyframes slideUp { 0% { height: 0px ;} 100% { height: 100px ;} }
+	@-o-keyframes slideUp { 0% { height: 0px ;} 100% { height: 100px ;} }
+	@keyframes slideUp { 0% { height: 0px ;} 100% { height: 100px ;} }
+
 	.rect{
-		-webkit-transition: all .75s ;
-		-moz-transition: all .75s ;
-		-o-transition: all .75s ;
-		transition: all .75s ;
+		@include transition(.75s, ease, 0);
+		@include animation(fadeIn, 3s, 0, 1, ease);
 		background: transparent !important;
-		
-		-webkit-animation-name: fadeIn;
-		-moz-animation-name: fadeIn;
-		-ms-animation-name: fadeIn;
-		-o-animation-name: fadeIn;
-		animation-name: fadeIn;
-		
-		-moz-animation-duration: 3s;
-		-moz-animation-delay: 0;
-		-moz-animation-iteration-count: 1;
-		-webkit-animation-duration: 3s;
-		-webkit-animation-delay: 0;
-		-webkit-animation-iteration-count: 1;
-		animation-duration: 3s;
-		animation-delay: 0;
-		animation-iteration-count: 1;
 	}
 	
 	/* Hint
@@ -649,7 +663,10 @@
 		background: #333;
 		z-index: 9999;
 	}
-	li:hover .tooltip-popup{
+	.mood-popup {
+		position: relative;
+	}
+	.friend-lover:hover .tooltip-popup, .mood-popup:hover .tooltip-popup{
 		display: block;
 		position: absolute;
 		left: 0;
@@ -664,7 +681,15 @@
 		animation-duration: 300ms;
 		animation-fill-mode: forwards;
 	}
-	.tooltip-popup:after {
+	.mood-popup:hover .tooltip-popup{
+		left: 50px;
+		top: 2px;
+		line-height: 18px;
+		-moz-animation-name: mood-pop;
+		-webkit-animation-name: mood-pop;
+		animation-name: mood-pop;
+	}
+	.tooltip-popup:after, .mood-popup .tooltip-popup:after {
 	  position: absolute;
 	  left: 15px;
 	  bottom: 29px;
@@ -675,17 +700,36 @@
 	  border-style: solid;
 	  border-width: 0 5px 5px;
 	}
+	.mood-popup .tooltip-popup:after{
+		left: -11px;
+	  bottom: 12px;
+	  border-width: 11px 0px 0px 11px;
+	}
+	
 	@-webkit-keyframes pop{
-		0%{ opacity: 0; top: 45px; }
-		100%{ opacity: 1; top: 50px; }
+		0%{ opacity: 0; top: 38px; }
+		100%{ opacity: 1; top: 43px; }
 	}
 	@-moz-keyframes pop {
-	  0%{ opacity: 0; top: 45px; }
-		100%{ opacity: 1; top: 50px; }
+	  0%{ opacity: 0; top: 38px; }
+		100%{ opacity: 1; top: 43px; }
 	}
 	@keyframes pop {
-	  0%{ opacity: 0; top: 45px; }
-		100%{ opacity: 1; top: 50px; }
+	  0%{ opacity: 0; top: 38px; }
+		100%{ opacity: 1; top: 43px; }
+	}
+	
+	@-webkit-keyframes mood-pop{
+		0%{ opacity: 0; left: 40px; }
+		100%{ opacity: 1; left: 50px; }
+	}
+	@-moz-keyframes mood-pop {
+	  0%{ opacity: 0; left: 40px; }
+		100%{ opacity: 1; left: 50px; }
+	}
+	@keyframes mood-pop {
+	  0%{ opacity: 0; left: 40px; }
+		100%{ opacity: 1; left: 50px; }
 	}
 	
 	/* Moods Icons 
@@ -772,9 +816,12 @@
 		input[type="radio"]{ display: none; }
   }
 
-	/* Menu Filter Block
+	/* Filter Block
 	---------------------------------------*/
-	.filter-block { position: relative; }
+	.filter-block { 
+		position: relative;
+/* 		@include animation(slideUp, 1s, 0, 1, ease); */
+	}
 	.filter-wrap { margin-bottom: 10px; }
 	.filter-title {
 		@include inset-shadow(0px, 0px, 10px, 0px, #dcdcdc);
@@ -896,6 +943,7 @@
 			z-index: 20000000;
 		}
 	}
+	.image-wrapper{ margin-bottom: 10px;}
 	.image-border {
     background: transparent ;
     background: #f0f0f0;
@@ -1220,16 +1268,16 @@
 		#rect-21, #rect-22, #rect-23, #rect-24, #rect-25{
 			display: none;
 		}
-		#rect-1  { @include mark(55px, 215px)  }
-		#rect-2  { @include mark(160px, 20px)  }
+		#rect-1  { @include mark(54px, 215px)  }
+		#rect-2  { @include mark(162px, 22px)  }
 		#rect-4  { @include mark(275px, 215px) }
 		#rect-7  { @include mark(275px, 408px) }
-		#rect-8  { @include mark(14px, 117px)  }
-		#rect-11 { @include mark(350px, 408px) }
+		#rect-8  { @include mark(14px, 119px)  }
+		#rect-11 { @include mark(348px, 408px) }
 		#rect-13 { @include mark(127px, 602px) }
 		#rect-14 { @include mark(201px, 602px) }
 		#rect-15 { @include mark(276px, 602px) }
-		#rect-16 { @include mark(350px, 505px) }
+		#rect-16 { @include mark(348px, 505px) }
   
 	  /* Bootstrap override
 	  ---------------------------------------*/

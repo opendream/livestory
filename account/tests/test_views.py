@@ -25,13 +25,13 @@ class TestUserProfile(TestCase):
         pass
     
     def test_account_login_anonymous(self):
-        response = self.client.get('/account/login/')
+        response = self.client.get('/accounts/login/')
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'registration/login.html')
     
     def test_account_login_authenticated(self):
         self.client.login(username='tester2@example.com', password='testuser2')
-        response = self.client.get('/account/login/')
+        response = self.client.get('/accounts/login/')
         # self.assertRedirects(response, '/')
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'registration/login.html')
@@ -39,7 +39,7 @@ class TestUserProfile(TestCase):
     
     def test_account_invite_accessment(self):
         response = self.client.get('/account/invite/')
-        self.assertEquals(403, response.status_code)
+        self.assertRedirects(response, '/accounts/login/?next=/account/invite/')
 
         self.client.login(username='staff@example.com', password='staff')
         response = self.client.get('/account/invite/')
@@ -50,25 +50,25 @@ class TestUserProfile(TestCase):
     def test_account_invite_new_user(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'testnewuser@example.com, testnewuser2@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
-        self.assertContains(response, 'Sending email invite. you can see list of user invited in user managment.')
+        response = self.client.post('/account/invite/', {'emails': invite}, follow=True)
+        self.assertContains(response, '<span class="tags">Success</span> Sending invitation email(s).')
         
-        testnewuser = User.objects.get(username='testnewuser@example.com')
-        testnewuser2 = User.objects.get(username='testnewuser2@example.com')
-        self.assertEquals(False, testnewuser.is_active)
-        self.assertEquals(False, testnewuser2.is_active)
+        testnewuser = UserInvitation.objects.get(email='testnewuser@example.com')
+        testnewuser2 = UserInvitation.objects.get(email='testnewuser2@example.com')
+        self.assertEquals(True, len(testnewuser.invitation_key) > 0)
+        self.assertEquals(True, len(testnewuser2.invitation_key) > 0)
         self.client.logout()
     
     def test_account_invite_exists_inactive_user(self):    
         account_key1 = UserInvitation.objects.get(user=self.inactive_user1)
         account_key2 = UserInvitation.objects.get(user=self.inactive_user2)
         
-        key1 = account_key1.key
-        key2 = account_key2.key
+        key1 = account_key1.invitation_key
+        key2 = account_key2.invitation_key
         
         self.client.login(username='staff@example.com', password='staff')
         invite = 'inactivetest1@example.com, inactivetest2@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
+        response = self.client.post('/account/invite/', {'emails': invite}, follow=True)
         self.assertContains(response, 'Sending email invite. you can see list of user invited in user managment.')
         
         account_key1 = UserInvitation.objects.get(user=self.inactive_user1)
@@ -80,7 +80,7 @@ class TestUserProfile(TestCase):
     def test_account_invite_exists_active_user(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'tester2@example.com, staff@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
+        response = self.client.post('/account/invite/', {'emails': invite}, follow=True)
         self.assertContains(response, 'Email user has joined : tester2@example.com, staff@example.com')
         
         tester2 = User.objects.get(username='tester2@example.com')
@@ -92,18 +92,18 @@ class TestUserProfile(TestCase):
     def test_account_invite_invalid_email(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com'
-        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
-        self.assertContains(response, 'Email format is invalid : testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com')
+        response = self.client.post('/account/invite/', {'emails': invite}, follow=True)
+        self.assertContains(response, 'The following email(s) is invalid and has not been sent: testuser, www.google.com, tester bah bah, mail @com, testuser@example, testuser@.com')
         self.client.logout()
     
     def test_account_activate(self):
         self.client.login(username='staff@example.com', password='staff')
-        invite = 'testactivate@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite}, follow=True)
+        invite_email = 'testactivate@example.com'
+        response = self.client.post('/account/invite/', {'invite': invite_email}, follow=True)
         self.client.logout()
         
-        account_key = UserInvitation.objects.get(user__username='testactivate@example.com')
-        response = self.client.get('/account/activate/%s/' % account_key.key, follow=True)
+        account_key = UserInvitation.objects.get(email=invite_email)
+        response = self.client.get('/account/activate/%s/' % account_key.invitation_key, follow=True)
         current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
         
         self.assertRedirects(response, '/account/profile/edit/?activate=1')
@@ -116,12 +116,12 @@ class TestUserProfile(TestCase):
     
     def test_account_invalid_activate_key(self):
         response = self.client.get('/account/activate/invalidkey/', follow=True)
-        self.assertTemplateUsed(response, 'account/account_key_error.html')
+        self.assertContains(response, 'Invitation key is invalid')
         
     def test_account_profile_edit_get(self):
         response = self.client.get('/account/profile/edit/')
-        self.assertEquals(403, response.status_code)
-        
+        self.assertRedirects(response, '/accounts/login/?next=/account/profile/edit/')
+
         self.client.login(username='staff@example.com', password='staff')
         response = self.client.get('/account/profile/edit/')
         self.assertEquals(200, response.status_code)
@@ -130,35 +130,42 @@ class TestUserProfile(TestCase):
     
     def test_account_profile_edit_post_no_password(self):
         self.client.login(username='staff@example.com', password='staff')
-        response = self.client.post('/account/profile/edit/', {'firstname': 'Alan', 'lastname': 'Smith', 'password': '', 'confirm_password': '', 'timezone': 'Asia/Bangkok'})
+        response = self.client.post('/account/profile/edit/', {'first_name': 'Alan', 
+                                                               'last_name': 'Smith', 
+                                                               'timezone': 'Asia/Bangkok'})
+        self.assertContains(response, 'Your profile has been save.')
+        
         current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
         self.assertTemplateUsed(response, 'account/account_profile_edit.html')
+        self.assertEquals('staff@example.com', current_user.email)
         self.assertEquals('Asia/Bangkok', current_user.get_profile().timezone)
-        self.assertEquals('Smith', current_user.get_profile().lastname)
-        self.assertEquals('Smith', current_user.get_profile().lastname)
+        self.assertEquals('Alan', current_user.get_profile().first_name)
+        self.assertEquals('Smith', current_user.get_profile().last_name)
         self.assertEquals(True, current_user.check_password('staff'))
         self.client.logout()
     
     def test_account_profile_edit_post_new_password(self):
         self.client.login(username='staff@example.com', password='staff')
-        response = self.client.post('/account/profile/edit/', {'firstname': 'Steve', 'lastname': 'Jobs', 'password': 'Apple', 'confirm_password': 'Apple', 'timezone': 'Europe/Berlin'})
+        response = self.client.post('/account/profile/edit/', {'first_name': 'Steve', 'last_name': 'Jobs', 'password': 'Apple', 'confirm_password': 'Apple', 'timezone': 'Europe/Berlin'})
+        print '_auth_user_id', self.client.session.get('_auth_user_id')
         current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
         self.assertTemplateUsed(response, 'account/account_profile_edit.html')
+        self.assertEquals('staff@example.com', current_user.email)
         self.assertEquals('Europe/Berlin', current_user.get_profile().timezone)
-        self.assertEquals('Steve', current_user.get_profile().firstname)
-        self.assertEquals('Jobs', current_user.get_profile().lastname)
+        self.assertEquals('Steve', current_user.get_profile().first_name)
+        self.assertEquals('Jobs', current_user.get_profile().last_name)
         self.assertEquals(True, current_user.check_password('Apple'))
         
         self.client.logout()
         
     def test_account_profile_edit_post_missmatch_password(self):
         self.client.login(username='staff@example.com', password='staff')
-        response = self.client.post('/account/profile/edit/', {'firstname': 'Steve', 'lastname': 'Jobs', 'password': 'Apple', 'confirm_password': 'APPLE', 'timezone': 'Europe/Berlin'})
+        response = self.client.post('/account/profile/edit/', {'first_name': 'Steve', 'last_name': 'Jobs', 'password': 'Apple', 'confirm_password': 'APPLE', 'timezone': 'Europe/Berlin'})
         current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
         self.assertTemplateUsed(response, 'account/account_profile_edit.html')
         self.assertEquals('Asia/Bangkok', current_user.get_profile().timezone)
-        self.assertEquals('John', current_user.get_profile().firstname)
-        self.assertEquals('Doe', current_user.get_profile().lastname)
+        self.assertEquals('John', current_user.get_profile().first_name)
+        self.assertEquals('Doe', current_user.get_profile().last_name)
         self.assertEquals(True, current_user.check_password('staff'))
         self.assertContains(response, 'Password not match')
 
@@ -184,25 +191,19 @@ class TestCreateUserProfile(TestCase):
     
     def test_account_profile_create__get(self):
         response = self.client.get('/account/profile/create/')
-        assert '<input id="id_username" type="text" class="span3" name="username" />' in response.content
+        assert '<input id="id_email" type="text" class="span3" name="email" maxlength="254" />' in response.content
         assert '<input id="id_password1" type="password" class="span3" name="password1" />' in response.content
         assert '<input id="id_password2" type="password" class="span3" name="password2" />' in response.content
-        assert '<input id="id_firstname" type="text" class="span3" name="firstname" maxlength="200" />' in response.content
-        assert '<input id="id_lastname" type="text" class="span3" name="lastname" maxlength="200" />' in response.content
+        assert '<input id="id_first_name" type="text" class="span3" name="first_name" maxlength="200" />' in response.content
+        assert '<input id="id_last_name" type="text" class="span3" name="last_name" maxlength="200" />' in response.content
         assert '<select name="timezone" id="id_timezone">' in response.content
         assert '<option value="UTC" selected="selected">UTC</option>' in response.content
 
     def test_account_profile_create__post_saved(self):
-        response = self.client.post('/account/profile/create/', {'username': 'test@example.com', 'password1': 'password', 'password2': 'password', 'timezone': 'UTC'})
-        self.assertContains(response, 'New profile created.')
-        user = User.objects.get(username='test@example.com')
-        self.assertTrue(user.account)
-
-    def test_account_profile_create_post_invalid_username(self):
-        response = self.client.post('/account/profile/create/', {'username': 'test'})
-        self.assertContains(response, 'Please correct error(s) below.')
-        self.assertContains(response, '<input id="id_username" type="text" class="span3" value="test" name="username" />')
-        self.assertContains(response, '<span class="help-inline">* Enter a valid e-mail address.</span>')
+        response = self.client.post('/account/profile/create/', {'email': 'test@example.com', 'first_name': 'test', 'last_name': 'example', 'password1': 'password', 'password2': 'password', 'timezone': 'UTC'})
+        self.assertEquals(302, response.status_code)
+        user = User.objects.get(email='test@example.com')
+        self.assertTrue(user.get_profile())
 
 @override_settings(PRIVATE=False)
 class TestViewUserProfile(TestCase):
@@ -242,14 +243,14 @@ class TestViewUserProfile(TestCase):
         response = self.client.get('/account/profile/%s/view/' % user.id)
         self.assertContains(response, '<span class="count-num">1</span>')
         self.assertContains(response, '<span class="grey">Photo</span>')
-        self.assertContains(response, '<span class="mood-icon-s mood-happy-s">Mood</span><span class="location">Bangkok, Thailand</span>')
+        self.assertContains(response, '<span class="mood-icon-s mood-fun-s">Mood</span><span class="location">Bangkok, Thailand</span>')
 
     def test_user_profile_view_get_blogs_profile_with_pagination(self):
         user = User.objects.get(username='tester2@example.com')
         response = self.client.get('/account/profile/%s/view/' % user.id)
         self.assertContains(response, '<span class="count-num">9</span>')
         self.assertContains(response, '<span class="grey">Photos</span>')
-        self.assertContains(response, '<span class="mood-icon-s mood-happy-s">Mood</span><span class="location">Bangkok, Thailand</span>')
+        self.assertContains(response, '<span class="mood-icon-s mood-fun-s">Mood</span><span class="location">Bangkok, Thailand</span>')
         self.assertContains(response, '<li><a href="?page=2">2</a></li>')
 
 @override_settings(PRIVATE=False)
@@ -270,8 +271,8 @@ class TestEditUserProfile(TestCase):
         user = User.objects.get(username='tester@example.com')
         response = self.client.get('/account/profile/%s/edit/' % user.id)
         self.assertContains(response, '<span class="grey label-inline-form">tester@example.com</span>')
-        self.assertContains(response, '<input name="firstname" value="Panudate" class="span3" maxlength="200" type="text" id="id_firstname" />')
-        self.assertContains(response, '<input name="lastname" value="Vasinwattana" class="span3" maxlength="200" type="text" id="id_lastname" />')
+        self.assertContains(response, '<input name="first_name" value="Panudate" class="span3" maxlength="200" type="text" id="id_first_name" />')
+        self.assertContains(response, '<input name="last_name" value="Vasinwattana" class="span3" maxlength="200" type="text" id="id_last_name" />')
         self.assertContains(response, '<input id="id_password" type="password" class="span3" name="password" maxlength="200" />')
         self.assertContains(response, '<input id="id_confirm_password" type="password" class="span3" name="confirm_password" maxlength="200" />')
         self.assertContains(response, '<select name="timezone" id="id_timezone">')

@@ -197,7 +197,7 @@
                     }
                 }).blur(function(e){
                     // Create a tag when the element loses focus (unless it's empty).
-                    that.createTag(that._cleanedInput());
+                    //that.createTag(that._cleanedInput());
                 }).keydown(function(event) {
                     // Backspace is not detected within a keypress, so it must use keydown.
                     if (event.which == $.ui.keyCode.BACKSPACE && that._tagInput.val() === '') {

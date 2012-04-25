@@ -43,7 +43,7 @@ def account_activate(request, key):
 
     else:
         form = UserActivationForm()
-
+    
     return render(request, 'account/account_activate.html', {'form':form, 'invitation':invitation})
 
 
@@ -125,9 +125,6 @@ def account_profile_create(request):
 
 @login_required
 def account_profile_edit(request):
-    if not request.user.is_authenticated():
-        return render(request, '403.html', status=403)
-
     user = request.user
     account = user.get_profile()
 
@@ -219,7 +216,7 @@ def account_manage_users(request):
         if sort == 'role':
             sort = ['is_staff']
         elif sort == 'name':
-            sort = ['userprofile__first_name', 'userprofile_last_name']
+            sort = ['first_name', 'last_name']
         else:
             sort = [sort]
 
