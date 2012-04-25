@@ -197,7 +197,7 @@ def blog_create(request):
     blog_image_file = None
 
     if request.method == 'POST':
-        form = ModifyBlogForm(request.POST)
+        form = ModifyBlogForm(None, request.POST)
         if form.is_valid():
             location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
 
@@ -231,7 +231,7 @@ def blog_create(request):
             blog_image_file = '%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, request.POST.get('image_file_name'))
 
     else:
-        form = ModifyBlogForm(initial={'allow_download':True})
+        form = ModifyBlogForm(None, initial={'allow_download':True})
 
     context = {
         'page_title': 'Add New Story',
