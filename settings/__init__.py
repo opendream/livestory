@@ -94,8 +94,6 @@ INSTALLED_APPS = (
     'djcelery',
     'taggit',
 
-    'easy_thumbnails',
-
     'location',
     'blog',
     'account',
