@@ -90,8 +90,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'djkombu',
-    'djcelery',
     'taggit',
 
     'location',
@@ -132,9 +130,6 @@ LOGGING = {
         }
 }
 
-import djcelery
-djcelery.setup_loader()
-
 # EASY THUMBNAILS ################################################################################
 
 THUMBNAIL_DEBUG = True
@@ -165,13 +160,6 @@ PRIVATE = True
 # Unique for your project
 SITE_LOGO = 'static/img/logo-livestories.png'
 SITE_LOGO_EMAIL = 'static/img/logo-oxfam_email.png'
-
-BROKER_HOST = 'localhost'
-BROKER_PORT = 5672
-BROKER_USER = 'guest'
-BROKER_PASSWORD = 'guest'
-BROKER_VHOST = '/'
-BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
 
 # LIVE STORY
 
