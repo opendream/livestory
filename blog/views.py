@@ -434,14 +434,10 @@ def blog_view(request, blog_id):
 
 @login_required
 def blog_download(request, blog_id):
-    try:
-        blog = Blog.objects.get(id=blog_id)
-    except Blog.DoesNotExist:
-        raise Http404
-        
     if (blog.draft and request.user != blog.user) or not blog.allow_download or (blog.private and not request.user.is_authenticated()):
         return render(request, '403.html', status=403)
     
+    blog = get_object_or_404(Blog, blog_id)
     response = HttpResponse(FileWrapper(blog.image.file), mimetype='application/force-download')    
     response['Content-Disposition'] = 'attachment; filename=%s-%s.%s' % (blog.published.strftime('%Y%m%d') , blog.id, blog.image.name.split('.')[-1])
     

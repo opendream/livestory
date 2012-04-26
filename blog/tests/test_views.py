@@ -1059,7 +1059,7 @@ class TestBlogManagement(TestCase):
 
     def test_authenticated_user_trash_own_blog_on_published_section(self):
         self.client.login(username=self.john.username, password='1234')
-        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), {'section': 'published'})
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), {'from': 'published'})
         self.assertRedirects(response, reverse('blog_manage_published'))
         blog = Blog.objects.get(id=self.blogs[0].id)
         self.assertTrue(blog.trash)
@@ -1067,7 +1067,7 @@ class TestBlogManagement(TestCase):
 
     def test_authenticated_user_trash_own_blog_on_draft_section(self):
         self.client.login(username=self.john.username, password='1234')
-        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), {'section': 'draft'})
+        response = self.client.get(reverse('blog_trash', args=[self.blogs[0].id]), {'from': 'draft'})
         self.assertRedirects(response, reverse('blog_manage_draft'))
         blog = Blog.objects.get(id=self.blogs[0].id)
         self.assertTrue(blog.trash)
@@ -1083,9 +1083,8 @@ class TestBlogManagement(TestCase):
     def test_link_that_must_be_displayed_on_published_section_page(self):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_manage_published'))
-        print response.content
         self.assertContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
-        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]) + '?section=published')
+        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]) + '?from=published')
         self.client.logout()
 
     def test_link_that_must_be_displayed_on_draft_section_page(self):
@@ -1094,7 +1093,7 @@ class TestBlogManagement(TestCase):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_manage_draft'))
         self.assertContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
-        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]) + '?section=draft')
+        self.assertContains(response, reverse('blog_trash', args=[self.blogs[0].id]) + '?from=draft')
         self.client.logout()
 
     def test_link_that_must_be_displayed_on_trash_section_page(self):
@@ -1103,7 +1102,7 @@ class TestBlogManagement(TestCase):
         self.client.login(username=self.john.username, password='1234')
         response = self.client.get(reverse('blog_manage_trash'))
         self.assertNotContains(response, reverse('blog_edit', args=[self.blogs[0].id]))
-        self.assertContains(response, reverse('blog_restore', args=[self.blogs[0].id]) + '?section=trash')
+        self.assertContains(response, reverse('blog_restore', args=[self.blogs[0].id]) + '?from=trash')
         self.client.logout()
 
     def test_blog_trash_cannot_edit(self):
