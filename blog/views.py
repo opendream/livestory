@@ -316,7 +316,7 @@ def blog_edit(request, blog_id):
     (root, name ,ext) = split_filepath(blog.image.path)
     image_file_name = '%s.%s' % (name, ext)
 
-    if not request.user.is_staff and not request.user.id != blog.user.id:
+    if not request.user.is_staff and not request.user.id == blog.user.id:
         return render(request, '403.html', status=403)
     elif blog.trash:
         raise Http404
@@ -340,7 +340,7 @@ def blog_edit(request, blog_id):
             publish = bool(int(request.POST.get('publish')))
             if publish:
                 blog.published = datetime.datetime.now()
-                
+
             if form.cleaned_data['image_file_name'] != image_file_name:
                 remove_blog_image(blog)
                 blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
