@@ -331,13 +331,13 @@ def blog_edit(request, blog_id):
             blog.title = form.cleaned_data['title']
             blog.description = form.cleaned_data['description']
             blog.location = location
-            blog.draft = bool(int(request.POST.get('draft')))
+            blog.draft = bool(int(request.POST.get('draft', 0)))
             blog.allow_download = form.cleaned_data['allow_download']
             blog.category = form.cleaned_data['category']
             blog.mood = form.cleaned_data['mood']
-            blog.trash = bool(int(request.POST.get('trash')))
+            blog.trash = bool(int(request.POST.get('trash', 0)))
             #stamp a published date
-            publish = bool(int(request.POST.get('publish')))
+            publish = bool(int(request.POST.get('publish', 0)))
             if publish:
                 blog.published = datetime.datetime.now()
 

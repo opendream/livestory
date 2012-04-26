@@ -108,6 +108,9 @@ class Blog(models.Model):
             remove_blog_image(self)
         super(Blog, self).delete()
 
+    def get_image_file_name(self):
+        (root, name ,ext) = split_filepath(self.image.path)
+        return '%s.%s' % (name, ext)
 
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)

@@ -315,6 +315,7 @@ class TestBlogEdit(TestCase):
             'category': str(self.cat_travel.id),
             'allow_download': '0',
             'trash': '0',
+            'image_file_name': self.blog.get_image_file_name(),
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
@@ -353,6 +354,7 @@ class TestBlogEdit(TestCase):
             'category': str(self.cat_travel.id),
             'allow_download': '1',
             'trash': '0',
+            'image_file_name': self.blog.get_image_file_name(),
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog.id, params, follow=True)
@@ -395,6 +397,7 @@ class TestBlogEdit(TestCase):
             'category': str(self.cat_travel.id),
             'allow_download': '1',
             'trash': '0',
+            'image_file_name': self.blog_draft.get_image_file_name(),
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
@@ -460,6 +463,7 @@ class TestBlogEdit(TestCase):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
         dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
         shutil.copy2(src, dst)
+
         params = {
             'title': 'Hello world Edited',
             'image_path': dst,
@@ -472,6 +476,7 @@ class TestBlogEdit(TestCase):
             'category': str(self.cat_travel.id),
             'allow_download': '1',
             'trash': '0',
+            'image_file_name': self.blog_draft.get_image_file_name(),
         }
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
@@ -986,9 +991,11 @@ class TestAllPageTrash(TestCase):
         rm_user(self.user.id)
         
     def test_blog_all_trash_get(self):
+        self.client.login(username='testuser1@example.com', password='password')
         response = self.client.get('/blog/all/')
         context = response.context
         self.assertEquals(2, context['blogs'].count())
+        self.client.logout()
 
 @override_settings(PRIVATE=False)
 class TestBlogManagement(TestCase):
