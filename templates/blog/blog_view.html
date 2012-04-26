@@ -126,7 +126,7 @@ $(document).ready(function() {
           <img width="94" height="94" src="{{ profile.get_avatar|crop:'94x94' }}" alt="" class="porfile-photo"/>
         </a>
         <a href="{% url account_profile_view profile.pk %}" class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</a>
-        <span class="profile-email grey">{{ user.email }}</span>
+        <span class="profile-email grey">{{ profile.user.email }}</span>
       </div>
       
       <div class="blog-loveit block clearfix">
