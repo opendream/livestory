@@ -325,7 +325,7 @@ def blog_edit(request, blog_id):
         form = ModifyBlogForm(blog, request.POST)
         if form.is_valid():
             location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
-
+            
             from django.core.files import File
 
             blog.title = form.cleaned_data['title']
@@ -335,16 +335,15 @@ def blog_edit(request, blog_id):
             blog.allow_download = form.cleaned_data['allow_download']
             blog.category = form.cleaned_data['category']
             blog.mood = form.cleaned_data['mood']
-            blog.trash = request.POST.get('trash', 0)
-
+            blog.trash = bool(int(request.POST.get('trash')))
+            #stamp a published date
+            publish = bool(int(request.POST.get('publish')))
+            if publish:
+                blog.published = datetime.datetime.now()
+                
             if form.cleaned_data['image_file_name'] != image_file_name:
                 remove_blog_image(blog)
                 blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
-
-            #stamp a published date
-            publish = bool(int(form.data.get('publish')))
-            if publish:
-                blog.published = datetime.datetime.now()
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
