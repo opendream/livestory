@@ -26,19 +26,19 @@ class TestUserProfile(TestCase):
         self.assertEquals('Nirut Khemasakchai', self.users[0].get_profile().get_full_name())
         self.assertEquals('Panudate Vasinwattana', self.users[1].get_profile().get_full_name())
         
-    def test_get_image(self):
+    # def test_get_image(self):
 
-        account_has_image = self.users[0].get_profile()
-        account_no_image = self.users[1].get_profile()
+    #     account_has_image = self.users[0].get_profile()
+    #     account_no_image = self.users[1].get_profile()
         
-        self.assertEquals('static/img/default_user.png', account_no_image.get_avatar().path)
-        self.assertEquals('%simages/account/%s/avatar.png' % (settings.MEDIA_ROOT, account_has_image.user.id), account_has_image.get_avatar().path)
+    #     self.assertEquals('static/img/default_user.png', account_no_image.get_avatar().path)
+    #     self.assertEquals('%simages/account/%s/avatar.png' % (settings.MEDIA_ROOT, account_has_image.user.id), account_has_image.get_avatar().path)
     
-    def test_get_image_url(self):
-        account_has_image = self.users[0].get_profile()
-        account_no_image = self.users[1].get_profile()
-        self.assertEquals('/media/images/account/%s/avatar.png' % account_has_image.user.id, account_has_image.get_avatar_url())
-        self.assertEquals(None, account_no_image.get_avatar_url())
+    # def test_get_image_url(self):
+    #     account_has_image = self.users[0].get_profile()
+    #     account_no_image = self.users[1].get_profile()
+    #     self.assertEquals('/media/images/account/%s/avatar.png' % account_has_image.user.id, account_has_image.get_avatar_url())
+    #     self.assertEquals(None, account_no_image.get_avatar_url())
         
     def test_unicode(self):
         self.assertEquals('Nirut Khemasakchai', self.users[0].get_profile().__unicode__())

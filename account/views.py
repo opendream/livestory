@@ -56,6 +56,7 @@ def account_invite(request):
         if form.is_valid():
             invitation_requests = []
             invalid_emails = []
+            exist_emails = []
 
             for email in form.cleaned_data['emails'].split(','):
                 email = email.strip()
@@ -68,6 +69,16 @@ def account_invite(request):
                 except ValidationError:
                     invalid_emails.append(email)
                     continue
+
+                # check user that already exists
+                try:
+                    User.objects.get(email=email)
+                except User.DoesNotExist:
+                    pass
+                else:
+                    exist_emails.append(email)
+                    continue
+
 
                 try:
                     invitation = UserInvitation.objects.get(email=email)
@@ -88,7 +99,8 @@ def account_invite(request):
                 messages.success(request, 'Sending invitation email(s).')
             if invalid_emails:
                 messages.warning(request, 'The following email(s) is invalid and has not been sent: %s' % ', '.join(invalid_emails))
-
+            if exist_emails:
+                messages.warning(request, 'Email user has joined : %s' % ', '.join(exist_emails))
             return redirect('account_invite')
 
     else:
@@ -144,8 +156,8 @@ def account_profile_edit(request):
                 user.set_password(password)
                 user.save()
             
-            account.firstname = form.cleaned_data.get('first_name')
-            account.lastname  = form.cleaned_data.get('last_name')
+            account.first_name = form.cleaned_data.get('first_name')
+            account.last_name  = form.cleaned_data.get('last_name')
             account.timezone  = form.cleaned_data.get('timezone')
 
             #save avatar

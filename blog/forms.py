@@ -22,6 +22,11 @@ class ModifyBlogForm(forms.Form):
         forms.Form.__init__(self, *args, **kwargs)
         self.blog = blog
 
+    def clean(self):
+        #self.city
+        #self.country
+        pass
+
     def clean_image_file_name(self):
         image_file_name = self.cleaned_data.get('image_file_name')
 
