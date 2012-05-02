@@ -199,9 +199,7 @@ def blog_create(request):
     if request.method == 'POST':
         form = ModifyBlogForm(None, request.POST)
         if form.is_valid():
-            try:
-                location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
-            except Location.DoesNotExist:
+            location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
 
             from django.core.files import File
 
@@ -343,7 +341,8 @@ def blog_edit(request, blog_id):
             if publish:
                 blog.published = datetime.datetime.now()
 
-            if form.cleaned_data['image_file_name'] != image_file_name:
+            new_image_file = form.cleaned_data['image_file_name']
+            if new_image_file and (new_image_file != image_file_name):
                 remove_blog_image(blog)
                 blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
 

@@ -1,8 +1,12 @@
 from django import forms
+from django.utils import simplejson as json
+
 from blog.models import Category
 from taggit.forms import TagField
 
 from functions import check_temporary_blog_image, check_blog_image
+
+import urllib
 
 class ModifyBlogForm(forms.Form):
     image_file_name = forms.CharField(max_length=500, widget=forms.HiddenInput(), required=False)
@@ -22,36 +26,6 @@ class ModifyBlogForm(forms.Form):
         forms.Form.__init__(self, *args, **kwargs)
         self.blog = blog
 
-    # def clean(self):
-    #     resp = urllib.urlopen('http://maps.googleapis.com/maps/api/geocode/json?address=%s,%s&sensor=false' % (self.country, self.city))
-    #     data = json.load(resp)
-    #     if data['status'] == 'OK':
-    #         match_country = False
-    #         match_city = False
-            
-    #         location = data['results'][0]
-    #         for com in location['address_components']:
-    #             if not match_country and 'country' in com['types']:
-    #                 self.country = com['long_name']
-    #                 match_country = True
-    #             elif not match_city and 'country' not in com['types']:
-    #                 if 'locality' in com['types']:
-    #                     self.city = com['long_name']
-    #                     match_city = True
-    #                 elif 'administrative_area_level_1' in com['types']:
-    #                     self.city = com['long_name']
-    #                     match_city = True
-    #         if match_city or match_country:
-    #             return self.cleaned_data
-
-    #     elif data['status'] == 'ZERO_RESULTS':
-    #         raise self.DoesNotExist
-    def clean_city(self):
-        return self.cleaned_data['city']
-
-    def clean_country(self):
-        return self.cleaned_data['country']
-        
     def clean_image_file_name(self):
         image_file_name = self.cleaned_data.get('image_file_name')
 

@@ -194,7 +194,9 @@ class TestBlogCreate(TestCase):
 
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/create/', params, follow=True)
-        self.assertEquals(True, response.context['location_error'])
+
+        self.assertEquals(200, response.status_code)
+        self.assertContains(response, 'Blog post created.')
         self.client.logout()
 
     def test_blog_create_post_group_of_country(self):
@@ -218,11 +220,7 @@ class TestBlogCreate(TestCase):
         self.client.login(username='test@example.com', password='test')
         response = self.client.post(reverse('blog_create'), params)
         self.assertEquals(200, response.status_code)
-        form = response.context['form']
-        print 'country>', form.country
-        print 'city>', form.city
-        self.assertEquals('United Kingdom', form.country)
-        self.assertEquals('London', form.city)
+        self.assertContains(response, 'Blog post created.')
 
         self.client.logout()
 
@@ -523,7 +521,8 @@ class TestBlogEdit(TestCase):
         self.client.login(username='test@example.com', password='test')
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
 
-        self.assertEquals(True, response.context['location_error'])
+        self.assertEquals(200, response.status_code)
+        self.assertContains(response, 'Blog post updated.')
         self.client.logout()
 
 @override_settings(PRIVATE=False)
