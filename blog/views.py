@@ -199,7 +199,9 @@ def blog_create(request):
     if request.method == 'POST':
         form = ModifyBlogForm(None, request.POST)
         if form.is_valid():
-            location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
+            try:
+                location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
+            except Location.DoesNotExist:
 
             from django.core.files import File
 
@@ -231,7 +233,7 @@ def blog_create(request):
             blog_image_file = '%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, request.POST.get('image_file_name'))
 
     else:
-        form = ModifyBlogForm(None, initial={'allow_download':True})
+        form = ModifyBlogForm(None, initial={'allow_download': True})
 
     context = {
         'page_title': 'Add New Story',
@@ -239,7 +241,7 @@ def blog_create(request):
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
         'is_draft': True,
-        'blog_image_file':blog_image_file,
+        'blog_image_file': blog_image_file,
     }
 
     return render(request, 'blog/blog_form.html', context)
@@ -434,10 +436,11 @@ def blog_view(request, blog_id):
 
 @login_required
 def blog_download(request, blog_id):
+    blog = Blog.objects.get(id=blog_id)
+
     if (blog.draft and request.user != blog.user) or not blog.allow_download or (blog.private and not request.user.is_authenticated()):
         return render(request, '403.html', status=403)
     
-    blog = get_object_or_404(Blog, blog_id)
     response = HttpResponse(FileWrapper(blog.image.file), mimetype='application/force-download')    
     response['Content-Disposition'] = 'attachment; filename=%s-%s.%s' % (blog.published.strftime('%Y%m%d') , blog.id, blog.image.name.split('.')[-1])
     

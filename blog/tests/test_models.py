@@ -64,7 +64,7 @@ class TestBlog(TestCase):
         self.assertEquals('Frustrated'  , self.blogs[7].get_mood_text())
         self.assertEquals('Angry'       , self.blogs[8].get_mood_text())
         self.assertEquals('Sad'         , self.blogs[9].get_mood_text())
-        self.assertEquals('Moodless'    , self.blogs[9].get_mood_text())
+        self.assertEquals('Moodless'    , self.blogs[10].get_mood_text())
 
     def test_blog_default_private_is_private(self):
         self.assertEqual(True, self.blogs[0].private)
