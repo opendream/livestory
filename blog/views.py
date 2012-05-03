@@ -15,6 +15,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.uploadedfile import UploadedFile
+from django.views.decorators.cache import cache_page
 
 from blog.models import *
 from blog.forms import *
@@ -28,6 +29,7 @@ from common.scour import Scour
 from common import ucwords, get_page_range
 from taggit.models import TaggedItem
 
+@cache_page(60 * 10)
 def blog_home(request):
     if not request.user.is_authenticated():
         return render(request, 'blog/blog_static.html')
@@ -514,6 +516,7 @@ def blog_unlove(request, blog_id):
             raise Http404
 
 
+@cache_page(60 * 10)
 @login_required
 def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None, param='', color='blue'):
     items = Blog.objects.filter(draft=False, trash=False)

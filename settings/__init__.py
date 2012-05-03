@@ -203,3 +203,10 @@ INVITATION_EMAIL_FROM = 'postmaster@livestory.mailgun.org'
 
 MAILGUN_API_DOMAIN = 'https://api.mailgun.net/v2/livestory.mailgun.org'
 MAILGUN_API_KEY = 'key-9fju-vnl5spkmer1b2g2xtsxavhq2ai2'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_PATH, 'tmp/cache')
+    }
+}
