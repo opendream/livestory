@@ -25,6 +25,8 @@ STATIC_ROOT = os.path.join(BASE_PATH, 'sitestatic/')
 STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
+INTERNAL_IPS = ('127.0.0.1')
+
 STATICFILES_DIRS = (
     os.path.join(BASE_PATH, 'static'),
 )
@@ -62,6 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'middleware.TimezoneMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 TEMPLATE_DIRS = (
@@ -101,6 +104,8 @@ INSTALLED_APPS = (
 
     'south',
     'django_nose',
+
+    'debug_toolbar',
 )
 
 LOGGING = {
