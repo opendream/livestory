@@ -5,8 +5,8 @@ from common.utilities import capfirst
 import urllib
 
 class Location(models.Model):
-    country = models.CharField(max_length=200)
-    city = models.CharField(max_length=200)
+    country = models.CharField(max_length=200, db_index=True)
+    city = models.CharField(max_length=200, db_index=True)
     
     # Optional
     lat = models.CharField(max_length=50)
