@@ -25,8 +25,6 @@ STATIC_ROOT = os.path.join(BASE_PATH, 'sitestatic/')
 STATIC_URL = '/static/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
-INTERNAL_IPS = ('127.0.0.1')
-
 STATICFILES_DIRS = (
     os.path.join(BASE_PATH, 'static'),
 )
@@ -38,7 +36,7 @@ STATICFILES_FINDERS = (
 )
 
 AUTH_PROFILE_MODULE = 'account.UserProfile'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/home/'
 
 ROOT_URLCONF = 'urls'
 
@@ -214,4 +212,10 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': os.path.join(BASE_PATH, 'tmp/cache')
     }
+}
+
+INTERNAL_IPS = ('127.0.0.1')
+
+DEBUG_TOOLBAR_CONFIG = {
+     'INTERCEPT_REDIRECTS': False,
 }
