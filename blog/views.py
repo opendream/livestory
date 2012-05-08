@@ -374,52 +374,40 @@ def blog_edit(request, blog_id):
 
 @login_required
 def blog_view(request, blog_id):
-    try:
-        blog = Blog.objects.get(pk=blog_id)
-        
-        if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
-            return render(request, '403.html', status=403)
-        elif blog.trash and not request.user.is_staff and not request.user == blog.user:
-            raise Http404
-
-        # Save view hit and update stat summary
-        if not BlogViewHit.objects.filter(blog=blog, sessionkey=request.session.session_key).exists():
-            BlogViewHit.objects.create(blog=blog, sessionkey=request.session.session_key)
-
-        # History.objects.create(user=request.user, blog=blog)
-            
-        love_path = '/blog/%s/love/'
-        button_type = 'love'
-        try:
-            # If this blog is already loved by current logged in user
-            love = Love.objects.get(user=request.user, blog=blog)
-            love_path = '/blog/%s/unlove/'
-            button_type = 'unlove'
-        except (Love.DoesNotExist, TypeError):
-            # Do nothing. Use default love_path and button_type.
-            pass
-        
-        love_set = blog.love_set.all().order_by('-datetime', '-id')
-        loved_users = []
-        for l in love_set:
-            loved_users.append(l.user.get_profile())
-                
-        blog.allow_download = False if blog.draft and request.user != blog.user else blog.allow_download
-
-        context = {
-            'blog': blog,
-            'profile': blog.user.get_profile(),
-            'love_path': love_path % blog_id,
-            'button_type': button_type,
-            'love_count': Love.objects.filter(blog=blog).count(),
-            'loved_users': loved_users,
-            'max_items': 7,
-            'CAN_SHARE_SN': settings.CAN_SHARE_SN,
-        }
-        return render(request, 'blog/blog_view.html', context)
-    except Blog.DoesNotExist:
+    blog = get_object_or_404(Blog, id=blog_id)
+    
+    if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
+        return render(request, '403.html', status=403)
+    elif blog.trash and not request.user.is_staff and not request.user == blog.user:
         raise Http404
 
+    # Save view hit and update stat summary
+    session_key = request.session.session_key
+    if not blog.hit_stat.filter(sessionkey=session_key):
+        blog.hit_stat.create(sessionkey=session_key)
+
+    love_path = '/blog/%s/love/'
+    button_type = 'love'
+    if blog.love_set.filter(user=request.user):
+        love_path = '/blog/%s/unlove/'
+        button_type = 'unlove'
+
+    love_set = blog.love_set.all().order_by('-datetime', '-id')
+    loved_users = []
+    for l in love_set:
+        loved_users.append(l.user.get_profile())
+            
+    context = {
+        'blog': blog,
+        'profile': blog.user.get_profile(),
+        'love_path': love_path % blog_id,
+        'button_type': button_type,
+        'love_count': blog.love_set.count(),
+        'loved_users': loved_users,
+        'max_items': 7,
+        'CAN_SHARE_SN': settings.CAN_SHARE_SN,
+    }
+    return render(request, 'blog/blog_view.html', context)
 
 @login_required
 def blog_download(request, blog_id):

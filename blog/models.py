@@ -112,6 +112,12 @@ class Blog(models.Model):
         (root, name ,ext) = split_filepath(self.image.path)
         return '%s.%s' % (name, ext)
 
+    def downloadable(self, req_user=None):
+        if self.user == req_user:
+            return True
+        else:
+            return self.allow_download if not self.draft else False
+
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     
