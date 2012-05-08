@@ -267,11 +267,8 @@ def account_manage_users(request):
 
 @login_required
 def account_profile_view(request, pk):
-    if not request.user.is_authenticated():
-        return render(request, '403.html', status=403)
-
     user = get_object_or_404(User, pk=pk)
-    blogs = user.blog_set.filter(trash=False)
+    blogs = user.blog_set.filter(trash=False).select_related(depth=1)
     blog_count = blogs.count()
 
     pager = Paginator(blogs, 8)
