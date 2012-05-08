@@ -38,7 +38,7 @@ def blog_home(request):
         return render(request, 'blog/blog_static.html')
 
 @login_required
-# @cache_page(60 * 10)
+@cache_page(60 * 10)
 def blog_popular(request):
     _width = 960
     _height = 660
