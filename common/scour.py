@@ -37,10 +37,16 @@ class Scour:
     def get_rect(self):
         rects = []    
         for (x1, y1), (x2, y2) in self.get_rect_list():
+            _left = x1*self.pw
+            _right = y1*self.ph
+            _width = (x2-x1+1)*self.pw-self.gap
+            _height = (y2-y1+1)*self.ph-self.gap
             rects.append({
-                'left': x1*self.pw,
-                'top': y1*self.ph,
-                'width': (x2-x1+1)*self.pw-self.gap,
-                'height': (y2-y1+1)*self.ph-self.gap
+                'left': _left,
+                'top': _right,
+                'width': _width,
+                'height': _height,
+                'widthxheight': '%sx%s' % (_width, _height),
+                'placement': 'right' if _left <= _width/2 else 'left'
             })
         return rects

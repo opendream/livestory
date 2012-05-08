@@ -38,7 +38,7 @@ def blog_home(request):
         return render(request, 'blog/blog_static.html')
 
 @login_required
-@cache_page(60 * 10)
+# @cache_page(60 * 10)
 def blog_popular(request):
     _width = 960
     _height = 660
@@ -58,27 +58,12 @@ def blog_popular(request):
                             '-view_summary__totalcount'
                         )[:len(borders)])
 
-    rects = []
-    for i, rect in enumerate(borders):
-        try:
-            blog = blogs[i]
-        except IndexError:
-            blog = None
-                
-        rects.append({
-            'blog': blog, 
-            'rect': rect, 
-            'widthxheight': '%sx%s' % (rect['width'], rect['height']),
-            'placement': 'right' if rect['left'] <= _width/2 else 'left'
-        })
-    
-    context = {
-        'scour_width': _width,
-        'scour_height': _height,
-        'rects': rects,
-    }
-    
-    return render(request, 'blog/blog_home.html', context)
+    for i, blog in enumerate(blogs):
+        blog.position = borders[i]
+
+    return render(request, 'blog/blog_home.html', { 'blogs': blogs,
+                                                    'scour_width': _width, 
+                                                    'scour_height': _height })
 
 @login_required
 def blog_manage(request, section):
