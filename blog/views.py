@@ -16,6 +16,7 @@ from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.uploadedfile import UploadedFile
 from django.views.decorators.cache import cache_page
+from django.db.models import Count
 
 from blog.models import *
 from blog.forms import *
@@ -29,32 +30,34 @@ from common.scour import Scour
 from common import ucwords, get_page_range
 from taggit.models import TaggedItem
 
-@cache_page(60 * 10)
+
 def blog_home(request):
-    if not request.user.is_authenticated():
+    if request.user.is_authenticated():
+        return redirect(reverse('blog_popular'))
+    else:
         return render(request, 'blog/blog_static.html')
-    
-    scour_width = 960
-    scour_height = 660
-    scour = Scour(10, 9, scour_width, scour_height, 10)
+
+@login_required
+@cache_page(60 * 10)
+def blog_popular(request):
+    _width = 960
+    _height = 660
+    scour = Scour(nx=10, ny=9, width=_width, height=_height, gap=10)
     
     borders = scour.get_rect()
     
-    # Ask crosalot when you has question with long query.
-    blogs = Blog.objects.raw(
-    "SELECT tmp.bid AS id, SUM(tmp.rate) AS love_rate \
-     FROM ( \
-        SELECT blog_blog.id AS bid, COALESCE(blog_love.id, 0) AS rate \
-        FROM blog_blog \
-        LEFT JOIN blog_love \
-        ON blog_blog.id = blog_love.blog_id \
-        WHERE NOT blog_blog.draft AND NOT blog_blog.trash \
-    ) AS tmp \
-    GROUP BY tmp.bid \
-    ORDER BY love_rate DESC")[0: len(borders)]
-    
-    blogs = list(blogs)
-    
+    blogs = list(Blog.objects.filter(
+                            draft=False, 
+                            trash=False
+                        ).annotate(
+                            love_count=Count('love')
+                        ).select_related(
+                            depth=1
+                        ).order_by(
+                            '-love_count', 
+                            '-view_summary__totalcount'
+                        )[:len(borders)])
+
     rects = []
     for i, rect in enumerate(borders):
         try:
@@ -66,18 +69,16 @@ def blog_home(request):
             'blog': blog, 
             'rect': rect, 
             'widthxheight': '%sx%s' % (rect['width'], rect['height']),
-            'placement': 'right' if rect['left'] <= scour_width/2 else 'left'
+            'placement': 'right' if rect['left'] <= _width/2 else 'left'
         })
     
     context = {
-        'scour_width': scour_width,
-        'scour_height': scour_height,
-        'blogs': blogs,
+        'scour_width': _width,
+        'scour_height': _height,
         'rects': rects,
     }
     
     return render(request, 'blog/blog_home.html', context)
-
 
 @login_required
 def blog_manage(request, section):
@@ -523,7 +524,7 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
     if not request.user.is_authenticated():
         items = items.filter(private=False)
     
-    items = items.filter(**filter)
+    items = items.filter(**filter).select_related(depth=1)
     items = items.order_by('-published')
     
     pager = Paginator(items, 8)

@@ -36,7 +36,7 @@ STATICFILES_FINDERS = (
 )
 
 AUTH_PROFILE_MODULE = 'account.UserProfile'
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/'
 
 ROOT_URLCONF = 'urls'
 
@@ -62,7 +62,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'middleware.TimezoneMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 TEMPLATE_DIRS = (
@@ -103,7 +102,6 @@ INSTALLED_APPS = (
     'south',
     'django_nose',
 
-    'debug_toolbar',
 )
 
 LOGGING = {
@@ -214,8 +212,3 @@ CACHES = {
     }
 }
 
-INTERNAL_IPS = ('127.0.0.1')
-
-DEBUG_TOOLBAR_CONFIG = {
-     'INTERCEPT_REDIRECTS': False,
-}

@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 
 urlpatterns = patterns('blog.views',
+    url(r'popular/$', 'blog_popular', name='blog_popular'),
     url(r'create/$', 'blog_create', name='blog_create'),
     url(r'create/from/email/$', 'blog_create_by_email', name='blog_create_by_email'),
 

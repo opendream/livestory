@@ -15,7 +15,7 @@ class BlogViewHit(models.Model):
         super(BlogViewHit, self).save(*args, **kwargs)
 
 class BlogViewSummary(models.Model):
-    blog = models.OneToOneField(Blog)
+    blog = models.OneToOneField(Blog, related_name='view_summary')
     totalcount = models.IntegerField(default=0)
 
     def __unicode__(self):
