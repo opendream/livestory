@@ -975,9 +975,9 @@ class TestAllPage(TestCase):
 @override_settings(PRIVATE=False)
 class TestAllPageTrash(TestCase):
     def setUp(self):
-        blogs = Blog.objects.all()
-        for blog in blogs:
-            blog.delete(with_file=False)
+        # blogs = Blog.objects.all()
+        # for blog in blogs:
+        #     blog.delete(with_file=False)
         
         self.user = factory.create_user('testuser1@example.com', 'testuser1@example.com', 'password', 'John', 'Doe 1', True)
         self.category = factory.create_category('Food', 'food')
@@ -996,7 +996,7 @@ class TestAllPageTrash(TestCase):
         
     def test_blog_all_trash_get(self):
         self.client.login(username='testuser1@example.com', password='password')
-        response = self.client.get('/blog/all/')
+        response = self.client.get(reverse('blog_manage_trash'))
         context = response.context
         self.assertEquals(2, context['blogs'].count())
         self.client.logout()

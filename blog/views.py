@@ -38,7 +38,6 @@ def blog_home(request):
         return render(request, 'blog/blog_static.html')
 
 @login_required
-@cache_page(60 * 10)
 def blog_popular(request):
     _width = 960
     _height = 660
@@ -73,7 +72,7 @@ def blog_manage(request, section):
         sort = request.GET.get('sort')
         order = request.GET.get('order')
         if sort == 'num_views':
-            sort = 'blogviewsummary__totalcount'
+            sort = 'view_summary__totalcount'
         if order == 'desc':
             blogs = blogs.order_by('-%s' % sort)
         else:
@@ -490,15 +489,13 @@ def blog_unlove(request, blog_id):
             raise Http404
 
 
-@cache_page(60 * 10)
 @login_required
 def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None, param='', color='blue'):
-    items = Blog.objects.filter(draft=False, trash=False)
-    if not request.user.is_authenticated():
-        items = items.filter(private=False)
-    
-    items = items.filter(**filter).select_related(depth=1)
-    items = items.order_by('-published')
+    items = Blog.objects.filter(draft=False, 
+                                trash=False
+                                ).select_related(
+                                depth=1
+                                ).filter(**filter).order_by('-published')
     
     pager = Paginator(items, 8)
     p = request.GET.get('page') or 1
