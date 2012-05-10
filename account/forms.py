@@ -61,8 +61,10 @@ class UserActivationForm(forms.Form):
         return password2
 
 class UserProfileForm(forms.Form):
-    first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
-    last_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+    first_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
+    last_name = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}))
+    job_title = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
+    office = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span3'}), required=False)
     
     just_update_password = forms.IntegerField(required=False)
     

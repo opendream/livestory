@@ -31,12 +31,14 @@ class UserProfileManager(models.Manager):
         username = generate_md5_base64(email)
         user = User.objects.create_user(username, email, password)
         UserProfile.objects.create(user=user, first_name=first_name, last_name=last_name, timezone=timezone)
-        return user
+        return use
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
+    job_title = models.CharField(max_length=200, blank=True, null=True)
+    office = models.CharField(max_length=200, blank=True, null=True)
     avatar = models.ImageField(upload_to=account_avatar_url, null=True)
 
     timezone = models.CharField(max_length=200, default='UTC', choices=[(tz, tz) for tz in pytz.common_timezones])

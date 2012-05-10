@@ -741,3 +741,6 @@ def blog_about(request):
 
 def blog_term(request):
     return render(request, 'term.html')
+
+def blog_howto(request):
+    return render(request, 'howto.html')

@@ -40,6 +40,22 @@
         <span class="help-inline">{{ form.last_name.errors.as_text }}</span>
       </div>
     </div>
+
+      <div class="control-group{% if form.job_title.errors %} error{% endif %}">
+          <label class="control-label" for="id_job_title">Job title</label>
+          <div class="controls">
+              {{ form.job_title }}
+              <span class="help-inline">{{ form.job_title.errors.as_text }}</span>
+          </div>
+      </div>
+
+      <div class="control-group{% if form.office.errors %} error{% endif %}">
+          <label class="control-label" for="id_office">Oxfam office</label>
+          <div class="controls">
+              {{ form.office }}
+              <span class="help-inline">{{ form.office.errors.as_text }}</span>
+          </div>
+      </div>
     
     <div class="control-group{% if form.password.errors %} error{% endif %}">
       <label class="control-label" for="id_password">Password</label>

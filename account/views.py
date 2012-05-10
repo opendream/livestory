@@ -145,8 +145,10 @@ def account_profile_edit(request):
                 user.save()
             
             account.firstname = form.cleaned_data.get('first_name')
-            account.lastname  = form.cleaned_data.get('last_name')
-            account.timezone  = form.cleaned_data.get('timezone')
+            account.lastname = form.cleaned_data.get('last_name')
+            account.job_title = form.cleaned_data.get('job_title')
+            account.office = form.cleaned_data.get('office')
+            account.timezone = form.cleaned_data.get('timezone')
 
             #save avatar
             image = form.cleaned_data.get('image')
@@ -187,6 +189,8 @@ def user_profile_edit(request, pk):
 
             account.firstname = form.cleaned_data.get('first_name')
             account.lastname = form.cleaned_data.get('last_name')
+            account.job_title = form.cleaned_data.get('job_title')
+            account.office = form.cleaned_data.get('office')
             account.timezone = form.cleaned_data.get('timezone')
             # TODO: save avatar
             account.save()

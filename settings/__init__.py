@@ -4,7 +4,8 @@ import os
 BASE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), os.path.pardir)
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    #('Opendream Support', 'support@opendream.co.th'),
+    ('Opendream Support', 'panu@opendream.co.th'),
 )
 
 MANAGERS = ADMINS
