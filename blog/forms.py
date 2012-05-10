@@ -1,8 +1,12 @@
 from django import forms
+from django.utils import simplejson as json
+
 from blog.models import Category
 from taggit.forms import TagField
 
 from functions import check_temporary_blog_image, check_blog_image
+
+import urllib
 
 class ModifyBlogForm(forms.Form):
     image_file_name = forms.CharField(max_length=500, widget=forms.HiddenInput(), required=False)

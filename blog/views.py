@@ -15,6 +15,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.servers.basehttp import FileWrapper
 from django.views.decorators.csrf import csrf_exempt
 from django.core.files.uploadedfile import UploadedFile
+from django.views.decorators.cache import cache_page
+from django.db.models import Count
 
 from blog.models import *
 from blog.forms import *
@@ -28,54 +30,40 @@ from common.scour import Scour
 from common import ucwords, get_page_range
 from taggit.models import TaggedItem
 
+
 def blog_home(request):
-    if not request.user.is_authenticated():
+    if request.user.is_authenticated():
+        return redirect(reverse('blog_popular'))
+    else:
         return render(request, 'blog/blog_static.html')
-    
-    scour_width = 960
-    scour_height = 660
-    scour = Scour(10, 9, scour_width, scour_height, 10)
+
+@login_required
+@cache_page(60 * 10)
+def blog_popular(request):
+    _width = 960
+    _height = 660
+    scour = Scour(nx=10, ny=9, width=_width, height=_height, gap=10)
     
     borders = scour.get_rect()
     
-    # Ask crosalot when you has question with long query.
-    blogs = Blog.objects.raw(
-    "SELECT tmp.bid AS id, SUM(tmp.rate) AS love_rate \
-     FROM ( \
-        SELECT blog_blog.id AS bid, COALESCE(blog_love.id, 0) AS rate \
-        FROM blog_blog \
-        LEFT JOIN blog_love \
-        ON blog_blog.id = blog_love.blog_id \
-        WHERE NOT blog_blog.draft AND NOT blog_blog.trash \
-    ) AS tmp \
-    GROUP BY tmp.bid \
-    ORDER BY love_rate DESC")[0: len(borders)]
-    
-    blogs = list(blogs)
-    
-    rects = []
-    for i, rect in enumerate(borders):
-        try:
-            blog = blogs[i]
-        except IndexError:
-            blog = None
-                
-        rects.append({
-            'blog': blog, 
-            'rect': rect, 
-            'widthxheight': '%sx%s' % (rect['width'], rect['height']),
-            'placement': 'right' if rect['left'] <= scour_width/2 else 'left'
-        })
-    
-    context = {
-        'scour_width': scour_width,
-        'scour_height': scour_height,
-        'blogs': blogs,
-        'rects': rects,
-    }
-    
-    return render(request, 'blog/blog_home.html', context)
+    blogs = list(Blog.objects.filter(
+                            draft=False, 
+                            trash=False
+                        ).annotate(
+                            love_count=Count('love')
+                        ).select_related(
+                            depth=1
+                        ).order_by(
+                            '-love_count', 
+                            '-view_summary__totalcount'
+                        )[:len(borders)])
 
+    for i, blog in enumerate(blogs):
+        blog.position = borders[i]
+
+    return render(request, 'blog/blog_home.html', { 'blogs': blogs,
+                                                    'scour_width': _width, 
+                                                    'scour_height': _height })
 
 @login_required
 def blog_manage(request, section):
@@ -231,7 +219,7 @@ def blog_create(request):
             blog_image_file = '%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, request.POST.get('image_file_name'))
 
     else:
-        form = ModifyBlogForm(None, initial={'allow_download':True})
+        form = ModifyBlogForm(None, initial={'allow_download': True})
 
     context = {
         'page_title': 'Add New Story',
@@ -239,7 +227,7 @@ def blog_create(request):
         'moods': MOOD_CHOICES,
         'visibilities': PRIVATE_CHOICES,
         'is_draft': True,
-        'blog_image_file':blog_image_file,
+        'blog_image_file': blog_image_file,
     }
 
     return render(request, 'blog/blog_form.html', context)
@@ -316,7 +304,7 @@ def blog_edit(request, blog_id):
     (root, name ,ext) = split_filepath(blog.image.path)
     image_file_name = '%s.%s' % (name, ext)
 
-    if not request.user.is_staff and not request.user.id != blog.user.id:
+    if not request.user.is_staff and not request.user.id == blog.user.id:
         return render(request, '403.html', status=403)
     elif blog.trash:
         raise Http404
@@ -325,26 +313,26 @@ def blog_edit(request, blog_id):
         form = ModifyBlogForm(blog, request.POST)
         if form.is_valid():
             location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
-
+            
             from django.core.files import File
 
             blog.title = form.cleaned_data['title']
             blog.description = form.cleaned_data['description']
             blog.location = location
-            blog.draft = bool(int(request.POST.get('draft')))
+            blog.draft = bool(int(request.POST.get('draft', 0)))
             blog.allow_download = form.cleaned_data['allow_download']
             blog.category = form.cleaned_data['category']
             blog.mood = form.cleaned_data['mood']
-            blog.trash = request.POST.get('trash', 0)
-
-            if form.cleaned_data['image_file_name'] != image_file_name:
-                remove_blog_image(blog)
-                blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
-
+            blog.trash = bool(int(request.POST.get('trash', 0)))
             #stamp a published date
-            publish = bool(int(form.data.get('publish')))
+            publish = bool(int(request.POST.get('publish', 0)))
             if publish:
                 blog.published = datetime.datetime.now()
+
+            new_image_file = form.cleaned_data['image_file_name']
+            if new_image_file and (new_image_file != image_file_name):
+                remove_blog_image(blog)
+                blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
@@ -386,60 +374,45 @@ def blog_edit(request, blog_id):
 
 @login_required
 def blog_view(request, blog_id):
-    try:
-        blog = Blog.objects.get(pk=blog_id)
-        
-        if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
-            return render(request, '403.html', status=403)
-        elif blog.trash and not request.user.is_staff and not request.user == blog.user:
-            raise Http404
-
-        # Save view hit and update stat summary
-        if not BlogViewHit.objects.filter(blog=blog, sessionkey=request.session.session_key).exists():
-            BlogViewHit.objects.create(blog=blog, sessionkey=request.session.session_key)
-
-        # History.objects.create(user=request.user, blog=blog)
-            
-        love_path = '/blog/%s/love/'
-        button_type = 'love'
-        try:
-            # If this blog is already loved by current logged in user
-            love = Love.objects.get(user=request.user, blog=blog)
-            love_path = '/blog/%s/unlove/'
-            button_type = 'unlove'
-        except (Love.DoesNotExist, TypeError):
-            # Do nothing. Use default love_path and button_type.
-            pass
-        
-        love_set = blog.love_set.all().order_by('-datetime', '-id')
-        loved_users = []
-        for l in love_set:
-            loved_users.append(l.user.get_profile())
-                
-        blog.allow_download = False if blog.draft and request.user != blog.user else blog.allow_download
-
-        context = {
-            'blog': blog,
-            'profile': blog.user.get_profile(),
-            'love_path': love_path % blog_id,
-            'button_type': button_type,
-            'love_count': Love.objects.filter(blog=blog).count(),
-            'loved_users': loved_users,
-            'max_items': 7,
-            'CAN_SHARE_SN': settings.CAN_SHARE_SN,
-        }
-        return render(request, 'blog/blog_view.html', context)
-    except Blog.DoesNotExist:
+    blog = get_object_or_404(Blog, id=blog_id)
+    
+    if not request.user.is_staff and ((not request.user.is_authenticated() and blog.private) or (blog.draft and blog.user.id != request.user.id)):
+        return render(request, '403.html', status=403)
+    elif blog.trash and not request.user.is_staff and not request.user == blog.user:
         raise Http404
 
+    # Save view hit and update stat summary
+    session_key = request.session.session_key
+    if not blog.hit_stat.filter(sessionkey=session_key):
+        blog.hit_stat.create(sessionkey=session_key)
+
+    love_path = '/blog/%s/love/'
+    button_type = 'love'
+    if blog.love_set.filter(user=request.user):
+        love_path = '/blog/%s/unlove/'
+        button_type = 'unlove'
+
+    love_set = blog.love_set.all().order_by('-datetime', '-id')
+    loved_users = []
+    for l in love_set:
+        loved_users.append(l.user.get_profile())
+            
+    context = {
+        'blog': blog,
+        'profile': blog.user.get_profile(),
+        'love_path': love_path % blog_id,
+        'button_type': button_type,
+        'love_count': blog.love_set.count(),
+        'loved_users': loved_users,
+        'max_items': 7,
+        'CAN_SHARE_SN': settings.CAN_SHARE_SN,
+    }
+    return render(request, 'blog/blog_view.html', context)
 
 @login_required
 def blog_download(request, blog_id):
-    try:
-        blog = Blog.objects.get(id=blog_id)
-    except Blog.DoesNotExist:
-        raise Http404
-        
+    blog = Blog.objects.get(id=blog_id)
+
     if (blog.draft and request.user != blog.user) or not blog.allow_download or (blog.private and not request.user.is_authenticated()):
         return render(request, '403.html', status=403)
     
@@ -517,13 +490,14 @@ def blog_unlove(request, blog_id):
             raise Http404
 
 
+@cache_page(60 * 10)
 @login_required
 def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None, param='', color='blue'):
     items = Blog.objects.filter(draft=False, trash=False)
     if not request.user.is_authenticated():
         items = items.filter(private=False)
     
-    items = items.filter(**filter)
+    items = items.filter(**filter).select_related(depth=1)
     items = items.order_by('-published')
     
     pager = Paginator(items, 8)

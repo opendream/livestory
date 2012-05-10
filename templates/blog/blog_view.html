@@ -126,7 +126,7 @@ $(document).ready(function() {
           <img width="94" height="94" src="{{ profile.get_avatar|crop:'94x94' }}" alt="" class="porfile-photo"/>
         </a>
         <a href="{% url account_profile_view profile.pk %}" class="profile-name">{{ profile.first_name }} {{ profile.last_name }}</a>
-        <span class="profile-email grey">{{ user.email }}</span>
+        <span class="profile-email grey">{{ profile.user.email }}</span>
       </div>
       
       <div class="blog-loveit block clearfix">
@@ -220,13 +220,7 @@ $(document).ready(function() {
 			<div class="sidebar-list block">
 				<h3 class="sidebar-title">Photo</h3>
 				<ul>
-				  {% if not blog.allow_download %}
-					<li>
-						<div class="col-left"><span class="ic-widget ic-download">Download</span></div>
-						<div class="col-right"><span class="grey">The owner has disabled downloading of their photos</span>
-						</div>
-					</li>
-					{% else %}
+          {% if blog.downloadable %}
 					<li>
 						<div class="col-left"><span class="ic-widget ic-download">Download</span></div>
 						<div class="col-right"><a href="{% url blog_download blog.id %}">Download the Original size</a></div>
@@ -235,6 +229,12 @@ $(document).ready(function() {
 						<div class="col-left"><span class="ic-widget ic-size">Size</span></div>
 						<div class="col-right"><span class="col-right">{{ blog.image.width }}x{{ blog.image.height }}</span></div>
 						</li>
+          {% else %}
+          <li>
+            <div class="col-left"><span class="ic-widget ic-download">Download</span></div>
+            <div class="col-right"><span class="grey">The owner has disabled downloading of their photos</span>
+            </div>
+          </li>
 					{% endif %}
 				</ul>
 			</div>

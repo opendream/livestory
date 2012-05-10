@@ -9,34 +9,30 @@
 
 {% block content %}
 <div class="scour blog-list" style="width:{{ scour_width }}px; height:{{ scour_height }}px">
-  {% for rect in rects %}
-  <div 
-  {% if rect.blog %} id="rect-{{ forloop.counter }}" {% endif %}
-  class="rect {{ rect.placement }}{% if rect.blog %} has_blog{% endif %}" style="
-    left:{{ rect.rect.left }}px;
-    top:{{ rect.rect.top }}px;
-    width: {{ rect.rect.width }}px;
-    height: {{ rect.rect.height }}px;
-    padding: 5px;
-  " 
-  {% if rect.blog %}
-  data-original-title="<a href='{% url blog_view rect.blog.id %}'>{{ rect.blog.title }}</a>" 
-  data-content="<span class='mood-icon-s mood-{{ rect.blog.get_mood_text|lower }}-s'>Mood: {{ rect.blog.get_mood_text }}</span><span class='location'>{{ rect.blog.location.city }}, {{ rect.blog.location.country }}</span>" 
-  {% endif %}
+
+  {% for blog in blogs %}
+  <div id="rect-{{ forloop.counter }}"
+       class="rect {{ blog.position.placement }} has_blog" 
+       style="left:{{ blog.position.left }}px;
+              top:{{ blog.position.top }}px;
+              width: {{ blog.position.width }}px;
+              height: {{ blog.position.height }}px;
+              padding: 5px;" 
+       data-original-title="<a href='{% url blog_view blog.id %}'>{{ blog.title }}</a>" 
+       data-content="<span class='mood-icon-s mood-{{ blog.get_mood_text|lower }}-s'>Mood: {{ blog.get_mood_text }}</span><span class='location'>{{ blog.location.city }}, {{ blog.location.country }}</span>" 
   >
-    {% if rect.blog %}
-    <a href="{% url blog_view rect.blog.id %}">
+    <a href="{% url blog_view blog.id %}">
       <img 
-        width="{{ rect.rect.width }}" 
-        height="{{ rect.rect.height }}" 
-        alt="{{ rect.blog.title }}" 
-        src="{{ rect.blog.image|crop:rect.widthxheight }}" 
+        width="{{ blog.position.width }}" 
+        height="{{ blog.position.height }}" 
+        alt="{{ blog.title }}" 
+        src="{{ blog.image|crop:blog.position.widthxheight }}" 
       />
       <div class="black-layer"></div>
     </a>
-    {% endif %}
   </div>
   {% endfor %}
+
   <script type="text/javascript">
     var timeout;
     

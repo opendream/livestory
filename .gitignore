@@ -1,5 +1,6 @@
 *.pyc
 media/*
+tmp/*
 *.sublime-project
 *.sublime-workspace
 *.DS_Store

@@ -28,20 +28,20 @@ class TestAccountCreationForm(TestCase):
 											password2='testpassword'))
 		self.assertTrue(form.is_valid())
 
-	def test_save_form_email(self):
-		form = UserProfileCreationForm(dict(email='test@example.com',
-			password1='testpassword', 
-			password2='testpassword', 
-			first_name='test_firstname',
-			last_name='test_lastname'))
-		self.assertTrue(form.is_valid())
-		account = form.save()
-		user = account.user
-		self.assertEquals(user.email, 'test@example.com')
-		self.assertEquals(user.username, 'test@example.com')
-		self.assertEquals(account.first_name, 'test_firstname')
-		self.assertEquals(account.last_name, 'test_lastname')
-		self.assertTrue(user.is_active)
+	# def test_save_form_email(self):
+	# 	form = UserProfileCreationForm(dict(email='test@example.com',
+	# 										password1='testpassword', 
+	# 										password2='testpassword', 
+	# 										first_name='test_firstname',
+	# 										last_name='test_lastname'))
+	# 	self.assertTrue(form.is_valid())
+	# 	account = form.save()
+	# 	user = account.user
+	# 	self.assertEquals(user.email, 'test@example.com')
+	# 	self.assertEquals(user.username, 'test@example.com')
+	# 	self.assertEquals(account.first_name, 'test_firstname')
+	# 	self.assertEquals(account.last_name, 'test_lastname')
+	# 	self.assertTrue(user.is_active)
 
 	def test_save_form_invalid_email(self):
 		form = UserProfileCreationForm(dict(email='test'))

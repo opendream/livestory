@@ -1,10 +1,11 @@
-from account.models import UserProfile, UserInvitation
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth.models import User
-from tests import factory
+from django.core.urlresolvers import reverse
 
-from django.conf import settings
+from account.models import UserProfile, UserInvitation
 from override_settings import override_settings
+from tests import factory
 import shutil
 
 @override_settings(PRIVATE=False)
@@ -59,25 +60,7 @@ class TestUserProfile(TestCase):
         self.assertEquals(True, len(testnewuser2.invitation_key) > 0)
         self.client.logout()
     
-    def test_account_invite_exists_inactive_user(self):    
-        account_key1 = UserInvitation.objects.get(user=self.inactive_user1)
-        account_key2 = UserInvitation.objects.get(user=self.inactive_user2)
-        
-        key1 = account_key1.invitation_key
-        key2 = account_key2.invitation_key
-        
-        self.client.login(username='staff@example.com', password='staff')
-        invite = 'inactivetest1@example.com, inactivetest2@example.com'
-        response = self.client.post('/account/invite/', {'emails': invite}, follow=True)
-        self.assertContains(response, 'Sending email invite. you can see list of user invited in user managment.')
-        
-        account_key1 = UserInvitation.objects.get(user=self.inactive_user1)
-        account_key2 = UserInvitation.objects.get(user=self.inactive_user2)
-        self.assertNotEquals(key1, account_key1.key)
-        self.assertNotEquals(key2, account_key2.key)
-        self.client.logout()
-    
-    def test_account_invite_exists_active_user(self):
+    def test_account_invite_exists_users(self):
         self.client.login(username='staff@example.com', password='staff')
         invite = 'tester2@example.com, staff@example.com'
         response = self.client.post('/account/invite/', {'emails': invite}, follow=True)
@@ -99,19 +82,18 @@ class TestUserProfile(TestCase):
     def test_account_activate(self):
         self.client.login(username='staff@example.com', password='staff')
         invite_email = 'testactivate@example.com'
-        response = self.client.post('/account/invite/', {'invite': invite_email}, follow=True)
-        self.client.logout()
-        
+        response = self.client.post('/account/invite/', {'emails': invite_email}, follow=True)
+        self.assertEquals(200, response.status_code)
+
         account_key = UserInvitation.objects.get(email=invite_email)
         response = self.client.get('/account/activate/%s/' % account_key.invitation_key, follow=True)
-        current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
-        
-        self.assertRedirects(response, '/account/profile/edit/?activate=1')
-        self.assertEquals(True, bool(self.client.session))
-        self.assertEquals('testactivate@example.com', current_user.username)
-        self.assertContains(response, 'Password must be update')
-        self.assertContains(response, 'Password must be confirm')
-        self.assertContains(response, 'testactivate@example.com')
+        self.assertEquals(200, response.status_code)
+
+        response = self.client.post('/account/activate/%s/' % account_key.invitation_key, {'first_name': 'test_firstname',
+                                                                                           'last_name': 'test_lastname',
+                                                                                           'password': 'password',
+                                                                                           'confirm_password': 'password'})
+        self.assertEquals(302, response.status_code)
         self.client.logout()
     
     def test_account_invalid_activate_key(self):
@@ -130,13 +112,13 @@ class TestUserProfile(TestCase):
     
     def test_account_profile_edit_post_no_password(self):
         self.client.login(username='staff@example.com', password='staff')
-        response = self.client.post('/account/profile/edit/', {'first_name': 'Alan', 
-                                                               'last_name': 'Smith', 
-                                                               'timezone': 'Asia/Bangkok'})
+        response = self.client.post(reverse('account_profile_edit'), {'first_name': 'Alan', 
+                                                                      'last_name': 'Smith', 
+                                                                      'timezone': 'Asia/Bangkok'})
         self.assertContains(response, 'Your profile has been save.')
-        
+
         current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
-        self.assertTemplateUsed(response, 'account/account_profile_edit.html')
+
         self.assertEquals('staff@example.com', current_user.email)
         self.assertEquals('Asia/Bangkok', current_user.get_profile().timezone)
         self.assertEquals('Alan', current_user.get_profile().first_name)

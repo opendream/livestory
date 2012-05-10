@@ -43,7 +43,7 @@ def blog_image_url(instance, filename):
     return './images/blog/%s/%s.%s' % (instance.user.id, name, ext)
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True)
     code = models.SlugField()
     
     def __unicode__(self):
@@ -54,9 +54,9 @@ class Category(models.Model):
         super(Category, self).save(*args, **kwargs)
     
 class Blog(models.Model):
-    title          = models.CharField(max_length=200)
+    title          = models.CharField(max_length=200, db_index=True)
     image          = models.ImageField(upload_to=blog_image_url, max_length=500)
-    description    = models.TextField(null=True)
+    description    = models.TextField(null=True, db_index=True)
     mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
     draft          = models.BooleanField(default=False, choices=DRAFT_CHOICES)
@@ -108,6 +108,15 @@ class Blog(models.Model):
             remove_blog_image(self)
         super(Blog, self).delete()
 
+    def get_image_file_name(self):
+        (root, name ,ext) = split_filepath(self.image.path)
+        return '%s.%s' % (name, ext)
+
+    def downloadable(self, req_user=None):
+        if self.user == req_user:
+            return True
+        else:
+            return self.allow_download if not self.draft else False
 
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)

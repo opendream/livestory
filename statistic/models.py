@@ -3,7 +3,7 @@ from django.db import models
 from blog.models import Blog
 
 class BlogViewHit(models.Model):
-    blog = models.ForeignKey(Blog)
+    blog = models.ForeignKey(Blog, related_name='hit_stat')
     sessionkey = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -15,7 +15,7 @@ class BlogViewHit(models.Model):
         super(BlogViewHit, self).save(*args, **kwargs)
 
 class BlogViewSummary(models.Model):
-    blog = models.OneToOneField(Blog)
+    blog = models.OneToOneField(Blog, related_name='view_summary')
     totalcount = models.IntegerField(default=0)
 
     def __unicode__(self):

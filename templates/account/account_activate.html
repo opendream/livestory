@@ -6,10 +6,9 @@
 
 {% block base_content %}
 
-{% if invitation %}
-
 <div class="row login_form">
 	<div class="span4 offset4 control-group">
+		{% if invitation %}
 		<h1 class="oxfam-font"><span class="brand">Oxfam</span><span class="slogan">live stories</span></h1>
 		<h2 class="oxfam-font">Activate user account</h2>
 		<form class="form-vertical thumbnail" method="post" action="{% url account_activate invitation.invitation_key %}">
@@ -44,10 +43,10 @@
 		
 		    </fieldset>
 		</form>
+		{% else %}
+			<h2>Invitation key is invalid</h2>
+		{% endif %}
 	</div>
 </div>
-{% else %}
-<h2>Invitation key is invalid</h2>
-{% endif %}
 
 {% endblock %}

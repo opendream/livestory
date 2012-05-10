@@ -28,7 +28,8 @@ class TestBlog(TestCase):
             factory.create_blog('Hello world', self.user, self.category, self.location, 7),
             factory.create_blog('Hello world', self.user, self.category, self.location, 8),
             factory.create_blog('Hello world', self.user, self.category, self.location, 9),
-            factory.create_blog('Hello world', self.user, self.category, self.location, 10)
+            factory.create_blog('Hello world', self.user, self.category, self.location, 10),
+            factory.create_blog('Hello world', self.user, self.category, self.location, 99)
         ]
         
     def tearDown(self):
@@ -53,16 +54,17 @@ class TestBlog(TestCase):
         self.assertEquals(printed_unicode, result)
         
     def test_get_mood_text(self):
-        self.assertEquals('Happy'     , self.blogs[0].get_mood_text())
-        self.assertEquals('Sad'       , self.blogs[1].get_mood_text())
-        self.assertEquals('Excited'   , self.blogs[2].get_mood_text())
-        self.assertEquals('Inspired'  , self.blogs[3].get_mood_text())
-        self.assertEquals('Frustrated', self.blogs[4].get_mood_text())
-        self.assertEquals('Angry'     , self.blogs[5].get_mood_text())
-        self.assertEquals('Fun'       , self.blogs[6].get_mood_text())
-        self.assertEquals('Proud'     , self.blogs[7].get_mood_text())
-        self.assertEquals('Amazed'    , self.blogs[8].get_mood_text())
-        self.assertEquals('Motivated' , self.blogs[9].get_mood_text())
+        self.assertEquals('Fun'         , self.blogs[0].get_mood_text())
+        self.assertEquals('Amazed'      , self.blogs[1].get_mood_text())
+        self.assertEquals('Happy'       , self.blogs[2].get_mood_text())
+        self.assertEquals('Motivated'   , self.blogs[3].get_mood_text())
+        self.assertEquals('Proud'       , self.blogs[4].get_mood_text())
+        self.assertEquals('Excited'     , self.blogs[5].get_mood_text())
+        self.assertEquals('Inspired'    , self.blogs[6].get_mood_text())
+        self.assertEquals('Frustrated'  , self.blogs[7].get_mood_text())
+        self.assertEquals('Angry'       , self.blogs[8].get_mood_text())
+        self.assertEquals('Sad'         , self.blogs[9].get_mood_text())
+        self.assertEquals('Moodless'    , self.blogs[10].get_mood_text())
 
     def test_blog_default_private_is_private(self):
         self.assertEqual(True, self.blogs[0].private)

@@ -56,6 +56,7 @@ def account_invite(request):
         if form.is_valid():
             invitation_requests = []
             invalid_emails = []
+            exist_emails = []
 
             for email in form.cleaned_data['emails'].split(','):
                 email = email.strip()
@@ -68,6 +69,16 @@ def account_invite(request):
                 except ValidationError:
                     invalid_emails.append(email)
                     continue
+
+                # check user that already exists
+                try:
+                    User.objects.get(email=email)
+                except User.DoesNotExist:
+                    pass
+                else:
+                    exist_emails.append(email)
+                    continue
+
 
                 try:
                     invitation = UserInvitation.objects.get(email=email)
@@ -88,7 +99,8 @@ def account_invite(request):
                 messages.success(request, 'Sending invitation email(s).')
             if invalid_emails:
                 messages.warning(request, 'The following email(s) is invalid and has not been sent: %s' % ', '.join(invalid_emails))
-
+            if exist_emails:
+                messages.warning(request, 'Email user has joined : %s' % ', '.join(exist_emails))
             return redirect('account_invite')
 
     else:
@@ -259,11 +271,8 @@ def account_manage_users(request):
 
 @login_required
 def account_profile_view(request, pk):
-    if not request.user.is_authenticated():
-        return render(request, '403.html', status=403)
-
     user = get_object_or_404(User, pk=pk)
-    blogs = user.blog_set.filter(trash=False)
+    blogs = user.blog_set.filter(trash=False).select_related(depth=1)
     blog_count = blogs.count()
 
     pager = Paginator(blogs, 8)
