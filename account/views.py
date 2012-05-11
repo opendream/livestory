@@ -155,8 +155,8 @@ def account_profile_edit(request):
                 user.set_password(password)
                 user.save()
             
-            account.firstname = form.cleaned_data.get('first_name')
-            account.lastname = form.cleaned_data.get('last_name')
+            account.first_name = form.cleaned_data.get('first_name')
+            account.last_name = form.cleaned_data.get('last_name')
             account.job_title = form.cleaned_data.get('job_title')
             account.office = form.cleaned_data.get('office')
             account.timezone = form.cleaned_data.get('timezone')
@@ -168,7 +168,7 @@ def account_profile_edit(request):
                             
             account.save()
                         
-            messages.success(request, 'Your profile has been save.')
+            messages.success(request, 'Your profile has been saved.')
 
     else:
         form = UserProfileForm(inst)
