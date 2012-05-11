@@ -77,7 +77,7 @@ $(document).ready(function() {
           </th>
           <th class="centered">
             <a href="{{ url }}?sort=published&order={% if request.GET.sort == 'published' or not request.GET.sort %}{% if request.GET.order == 'desc' or not request.GET.order %}asc{% else %}desc{% endif %}{% else %}desc{% endif %}">
-              Date
+              Published Date
               {% if request.GET.sort == 'published' or not request.GET.sort %}
               {% if request.GET.order == 'desc' or not request.GET.order %}
               <i class="sort-desc"></i>
