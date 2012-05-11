@@ -44,7 +44,7 @@ class UserProfileManager(models.Manager):
             async.post('%s/mailboxes' % settings.MAILGUN_API_DOMAIN,
                 auth=('api', settings.MAILGUN_API_KEY),
                 data={
-                    'mailbox': email_posting_key,
+                    'mailbox': 'post-%s' % email_posting_key,
                     'password': mailbox_password
                 }
             )
