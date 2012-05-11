@@ -39,9 +39,9 @@ class UserProfileManager(models.Manager):
 
         # Creating a mailbox
         if settings.CREATE_MAILBOX_AFTER_CREATE_USER:
-            from requests import async
+            import requests
 
-            async.post('%s/mailboxes' % settings.MAILGUN_API_DOMAIN,
+            r = requests.post('%s/mailboxes' % settings.MAILGUN_API_DOMAIN,
                 auth=('api', settings.MAILGUN_API_KEY),
                 data={
                     'mailbox': 'post-%s' % email_posting_key,
@@ -72,6 +72,9 @@ class UserProfile(models.Model):
 
     def get_full_name(self):
         return '%s %s' % (self.first_name, self.last_name)
+
+    def get_posting_email(self):
+        return 'post-%s@%s' % (self.email_posting_key, settings.MAILGUN_EMAIL_DOMAIN)
 
     def get_avatar(self):
         if self.avatar:

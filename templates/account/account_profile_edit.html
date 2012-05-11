@@ -24,6 +24,15 @@
         <span class="grey label-inline-form">{{ user.email }}</span>
       </div>
     </div>
+
+      {% if user.get_profile.get_posting_email %}
+      <div class="control-group">
+          <label class="control-label">Posting email</label>
+          <div class="controls">
+              <span class="grey label-inline-form">{{ user.get_profile.get_posting_email }}</span>
+          </div>
+      </div>
+      {% endif %}
     
     <div class="control-group{% if form.first_name.errors %} error{% endif %}">
       <label class="control-label" for="id_first_name">Firstname</label>

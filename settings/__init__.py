@@ -193,20 +193,21 @@ NOSE_ARGS = [
 # MAILGUN EMAIL SERVICE #########
 CREATE_MAILBOX_AFTER_CREATE_USER = True
 
-DEFAULT_FROM_EMAIL = 'postmaster@livestory.mailgun.org'
+DEFAULT_FROM_EMAIL = 'postmaster@oxfamlivestories.org'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_HOST_USER = 'postmaster@livestory.mailgun.org'
-EMAIL_HOST_PASSWORD = '16ikiogvkjc0'
+EMAIL_HOST_USER = 'postmaster@oxfamlivestories.org'
+EMAIL_HOST_PASSWORD = '9ayog9ixa9f8'
 EMAIL_PORT = 587
 EMAIL_SUBJECT_PREFIX = '[LiveStory] '
 
-USER_RESET_EMAIL_FROM = 'postmaster@livestory.mailgun.org'
-INVITATION_EMAIL_FROM = 'postmaster@livestory.mailgun.org'
+USER_RESET_EMAIL_FROM = 'postmaster@oxfamlivestories.org'
+INVITATION_EMAIL_FROM = 'postmaster@oxfamlivestories.org'
 
-MAILGUN_API_DOMAIN = 'https://api.mailgun.net/v2/livestory.mailgun.org'
+MAILGUN_API_DOMAIN = 'https://api.mailgun.net/v2/oxfamlivestories.org'
 MAILGUN_API_KEY = 'key-9fju-vnl5spkmer1b2g2xtsxavhq2ai2'
+MAILGUN_EMAIL_DOMAIN = 'oxfamlivestories.org'
 
 CACHES = {
     'default': {
