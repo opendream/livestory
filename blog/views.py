@@ -216,7 +216,9 @@ def blog_create(request):
             return redirect(reverse('blog_edit', args=[blog.id]))
 
         else:
-            blog_image_file = '%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, request.POST.get('image_file_name'))
+            file_name = request.POST.get('image_file_name')
+            if file_name:
+                blog_image_file = '%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, file_name)
 
     else:
         form = ModifyBlogForm(None, initial={'allow_download': True})
