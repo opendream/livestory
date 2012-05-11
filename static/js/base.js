@@ -114,7 +114,7 @@ $(function () {
         var callback = function(result) {
             if (result.status == 200) {
                 $(self).children('.notify').children('.value').html('0');
-                // TODO. add class for zero notification
+                $(self).children('.notify').addClass('no-notify')
             }
         }
         $.get(url, params, callback);
