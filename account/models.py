@@ -59,8 +59,8 @@ class UserProfile(models.Model):
     office = models.CharField(max_length=200, blank=True, null=True)
     avatar = models.ImageField(upload_to=account_avatar_url, null=True)
 
-    email_posting_key = models.CharField(max_length=200, default='', db_index=True)
-    mailbox_password = models.CharField(max_length=200, default='')
+    email_posting_key = models.CharField(max_length=200, db_index=True, blank=True, null=True)
+    mailbox_password = models.CharField(max_length=200, blank=True, null=True)
 
     timezone = models.CharField(max_length=200, default='UTC', choices=[(tz, tz) for tz in pytz.common_timezones])
     notification_viewed = models.DateTimeField(auto_now_add=True)
