@@ -32,7 +32,7 @@ class UserProfileManager(models.Manager):
 
         salt = sha_constructor(str(random.random())).hexdigest()[:5]
         email_posting_key = sha_constructor(salt + email).hexdigest()
-        mailbox_password = sha_constructor(salt + password).hexdigest()
+        mailbox_password = sha_constructor(salt + password).hexdigest()[:32]
 
         user = User.objects.create_user(username, email, password)
         UserProfile.objects.create(user=user, first_name=first_name, last_name=last_name, timezone=timezone, email_posting_key=email_posting_key, mailbox_password=mailbox_password)
