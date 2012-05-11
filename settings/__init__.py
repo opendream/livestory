@@ -140,7 +140,7 @@ THUMBNAIL_PRESERVE_EXTENSIONS = True
 # LIVESTORY SETTINGS ################################################################################
 
 SITE_NAME = 'Oxfam Live Stories'
-SITE_DOMAIN = '127.0.0.1:8000'
+SITE_DOMAIN = 'oxfamlivestories.org'
 
 ORGANIZATION_NAME = 'Oxfam'
 CONTACT_EMAIL = 'info@oxfam.org.uk'
