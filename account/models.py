@@ -27,11 +27,29 @@ def account_avatar_url(instance, filename):
 
 class UserProfileManager(models.Manager):
 
-    def create_profile(self, email, first_name, last_name, password, timezone):
+    def create_profile(self, email, first_name, last_name, password, timezone='UTC'):
         username = generate_md5_base64(email)
+
+        salt = sha_constructor(str(random.random())).hexdigest()[:5]
+        email_posting_key = sha_constructor(salt + email).hexdigest()
+        mailbox_password = sha_constructor(salt + password).hexdigest()
+
         user = User.objects.create_user(username, email, password)
-        UserProfile.objects.create(user=user, first_name=first_name, last_name=last_name, timezone=timezone)
-        return use
+        UserProfile.objects.create(user=user, first_name=first_name, last_name=last_name, timezone=timezone, email_posting_key=email_posting_key, mailbox_password=mailbox_password)
+
+        # Creating a mailbox
+        if settings.CREATE_MAILBOX_AFTER_CREATE_USER:
+            from requests import async
+
+            async.post('%s/mailboxes' % settings.MAILGUN_API_DOMAIN,
+                auth=('api', settings.MAILGUN_API_KEY),
+                data={
+                    'mailbox': email_posting_key,
+                    'password': mailbox_password
+                }
+            )
+
+        return user
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
@@ -40,6 +58,9 @@ class UserProfile(models.Model):
     job_title = models.CharField(max_length=200, blank=True, null=True)
     office = models.CharField(max_length=200, blank=True, null=True)
     avatar = models.ImageField(upload_to=account_avatar_url, null=True)
+
+    email_posting_key = models.CharField(max_length=200, default='')
+    mailbox_password = models.CharField(max_length=200, default='')
 
     timezone = models.CharField(max_length=200, default='UTC', choices=[(tz, tz) for tz in pytz.common_timezones])
     notification_viewed = models.DateTimeField(auto_now_add=True)
@@ -101,11 +122,7 @@ class UserInvitationManager(models.Manager):
             return None
 
     def claim_invitation(self, invitation, first_name, last_name, password):
-        username = generate_md5_base64(invitation.email)
-
-        user = User.objects.create_user(username, invitation.email, password)
-        UserProfile.objects.create(user=user, first_name=first_name, last_name=last_name)
-
+        user = UserProfile.objects.create_profile(invitation.email, first_name, last_name, password)
         invitation.delete()
         return user
 

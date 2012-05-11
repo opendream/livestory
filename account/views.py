@@ -79,7 +79,6 @@ def account_invite(request):
                     exist_emails.append(email)
                     continue
 
-
                 try:
                     invitation = UserInvitation.objects.get(email=email)
                 except UserInvitation.DoesNotExist:

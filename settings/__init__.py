@@ -191,6 +191,8 @@ NOSE_ARGS = [
 ]
 
 # MAILGUN EMAIL SERVICE #########
+CREATE_MAILBOX_AFTER_CREATE_USER = True
+
 DEFAULT_FROM_EMAIL = 'postmaster@livestory.mailgun.org'
 
 EMAIL_USE_TLS = True

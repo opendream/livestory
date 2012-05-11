@@ -8,50 +8,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'Account'
-        db.delete_table('account_account')
-
-        # Deleting model 'AccountKey'
-        db.delete_table('account_accountkey')
-
-        # Adding field 'UserProfile.job_title'
-        db.add_column('account_userprofile', 'job_title',
-                      self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True),
-                      keep_default=False)
-
-        # Adding field 'UserProfile.office'
-        db.add_column('account_userprofile', 'office',
-                      self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True),
+        # Adding field 'UserProfile.mailbox_password'
+        db.add_column('account_userprofile', 'mailbox_password',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=200),
                       keep_default=False)
 
     def backwards(self, orm):
-        # Adding model 'Account'
-        db.create_table('account_account', (
-            ('firstname', self.gf('django.db.models.fields.CharField')(max_length=200, null=True)),
-            ('lastname', self.gf('django.db.models.fields.CharField')(max_length=200, null=True)),
-            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
-            ('timezone', self.gf('django.db.models.fields.CharField')(default='UTC', max_length=200)),
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-        ))
-        db.send_create_signal('account', ['Account'])
-
-        # Adding model 'AccountKey'
-        db.create_table('account_accountkey', (
-            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('view_notification', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
-            ('key', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('can_send_mail', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
-        ))
-        db.send_create_signal('account', ['AccountKey'])
-
-        # Deleting field 'UserProfile.job_title'
-        db.delete_column('account_userprofile', 'job_title')
-
-        # Deleting field 'UserProfile.office'
-        db.delete_column('account_userprofile', 'office')
+        # Deleting field 'UserProfile.mailbox_password'
+        db.delete_column('account_userprofile', 'mailbox_password')
 
     models = {
         'account.userinvitation': {
@@ -65,10 +29,12 @@ class Migration(SchemaMigration):
         'account.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
             'avatar': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True'}),
+            'email_posting_key': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '200'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'job_title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'mailbox_password': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '200'}),
             'notification_viewed': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'office': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'timezone': ('django.db.models.fields.CharField', [], {'default': "'UTC'", 'max_length': '200'}),
