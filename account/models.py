@@ -59,7 +59,7 @@ class UserProfile(models.Model):
     office = models.CharField(max_length=200, blank=True, null=True)
     avatar = models.ImageField(upload_to=account_avatar_url, null=True)
 
-    email_posting_key = models.CharField(max_length=200, default='')
+    email_posting_key = models.CharField(max_length=200, default='', db_index=True)
     mailbox_password = models.CharField(max_length=200, default='')
 
     timezone = models.CharField(max_length=200, default='UTC', choices=[(tz, tz) for tz in pytz.common_timezones])
@@ -128,7 +128,7 @@ class UserInvitationManager(models.Manager):
 
 class UserInvitation(models.Model):
     email = models.CharField(max_length=254)
-    invitation_key = models.CharField(max_length=200, unique=True)
+    invitation_key = models.CharField(max_length=200, unique=True, db_index=True)
     invited = models.DateTimeField(auto_now_add=True)
     invited_by = models.ForeignKey(User)
 

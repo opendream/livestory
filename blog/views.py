@@ -1,8 +1,9 @@
-import os
-from django.conf import settings
-import shutil
 import datetime
+import os
+import shutil
+import uuid
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, Http404
@@ -235,9 +236,13 @@ def blog_create(request):
 @csrf_exempt
 def blog_create_by_email(request):
     if request.method == 'POST':
+        prefix, separator, therest = request.POST.get('sender').partition('-')
+        posting_key, separator, email_domain = therest.rpartition('@')
+
         try:
-            user = User.objects.get(email=request.POST.get('sender'))
-        except User.DoesNotExist:
+            user_profile = UserProfile.objects.get(email_posting_key=posting_key)
+            user = user_profile.user
+        except UserProfile.DoesNotExist:
             return HttpResponse('Sender not found')
 
         title = request.POST.get('Subject')
@@ -259,6 +264,10 @@ def blog_create_by_email(request):
         
             if not image_file:
                 return HttpResponse('Image attachment not found')
+
+            (root, file_name, file_ext) = split_filepath(image_file.name)
+            if not file_ext.lower() in ('jpg', 'jpeg', 'png', 'gif'):
+                return HttpResponse('Image format is not supported')
 
         else:
             return HttpResponse('Image attachment not found')
@@ -290,7 +299,9 @@ def blog_create_by_email(request):
         BlogViewSummary.objects.get_or_create(blog=blog)
 
         uploading_file = UploadedFile(image_file)
-        blog.image.save('blog_%s.jpg' % blog.id, uploading_file.file)
+
+        (root, file_name, file_ext) = split_filepath(image_file.name)
+        blog.image.save('%s.%s' % (uuid.uuid4(), file_ext), uploading_file.file)
         blog.save()
 
     return HttpResponse('')
