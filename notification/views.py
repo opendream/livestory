@@ -20,12 +20,14 @@ def view(request):
 	if request.is_ajax():
 		return HttpResponse(json.dumps({'status': 200}), mimetype='application/json')
 
-	last_notification = Notification.objects.all().order_by('-datetime')[:1]
+	last_notification = Notification.objects.all().filter(blog__user=request.user).order_by('-datetime')[:1]
 	notifications = []
 	if len(last_notification) == 1:
 		last_seven_days = last_notification[0].datetime - timedelta(7)
 		notifications = Notification.objects.filter(
 			datetime__gt=last_seven_days
+		).filter(
+			blog__user=request.user
 		).exclude(
 			subject=request.user
 		).order_by('-datetime')
