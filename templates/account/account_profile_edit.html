@@ -25,6 +25,7 @@
       </div>
     </div>
 
+      {% comment %}
       {% if user.get_profile.get_posting_email %}
       <div class="control-group">
           <label class="control-label">Posting email</label>
@@ -33,6 +34,7 @@
           </div>
       </div>
       {% endif %}
+      {% endcomment %}
     
     <div class="control-group{% if form.first_name.errors %} error{% endif %}">
       <label class="control-label" for="id_first_name">Firstname</label>
