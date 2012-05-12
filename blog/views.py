@@ -506,9 +506,11 @@ def blog_unlove(request, blog_id):
 def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=None, param='', color='blue'):
     items = Blog.objects.filter(draft=False, 
                                 trash=False
-                                ).select_related(
+                            ).select_related(
                                 depth=1
-                                ).filter(**filter).order_by('-published')
+                            ).filter(
+                                **filter
+                            ).order_by('-published')
     
     pager = Paginator(items, 8)
     p = request.GET.get('page') or 1
@@ -593,23 +595,20 @@ def blog_place(request):
     title = '%s, %s' % (title_country, title_city)
     
     locations = Location.objects.all()
-    if country and city:
-        locations = locations.filter(country=country, city=city)
-    elif country:
+    if country:
         locations = locations.filter(country=country)
-    elif city:
+    if city:
         locations = locations.filter(city=city)
-        
-    filter = {}
-    if (country or city) and locations.count():
-        filter = {'location__in': locations}
-    elif (country or city) and not locations.count():
+
+    filter = {'location__in': locations}
+    if not locations.count():
         title = '%s (Miss match)'% title
-        filter = {'location__in': locations}
-    
+        
     param = 'country=%s&city=%s' % (country, city)
         
-    return blog_all(request, title, filter, {'location': {'country': country, 'city': city}}, reverse('blog_place'), param, color='yellow')
+    return blog_all(request, title, filter, 
+                        {'location': {'country': country, 'city': city}}, 
+                        reverse('blog_place'), param, color='yellow')
 
 
 @login_required
