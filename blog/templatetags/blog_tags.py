@@ -20,6 +20,7 @@ $(document).ready(function() {
   $('#id_tags').tagit({
     availableTags: ['%s'],
     allowSpaces: false,
+    caseSensitive: false,
     removeConfirmation: true,
   });
 });
