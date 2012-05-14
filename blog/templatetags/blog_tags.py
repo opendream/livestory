@@ -19,7 +19,7 @@ def tags_js():
 $(document).ready(function() {
   $('#id_tags').tagit({
     availableTags: ['%s'],
-    allowSpaces: false,
+    allowSpaces: true,
     caseSensitive: false,
     removeConfirmation: true,
   });
