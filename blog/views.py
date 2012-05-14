@@ -423,7 +423,7 @@ def blog_view(request, blog_id):
 
 @login_required
 def blog_download(request, blog_id):
-    blog = Blog.objects.get(id=blog_id)
+    blog = get_object_or_404(Blog, id=blod_id)
 
     if (blog.draft and request.user != blog.user) or not blog.allow_download or (blog.private and not request.user.is_authenticated()):
         return render(request, '403.html', status=403)
@@ -680,8 +680,6 @@ def blog_search(request):
     """Search blogs by title and description"""
     keyword = request.REQUEST.get("keyword", '')
 
-    print keyword
-
     context = {'title': 'keyword: %s' % keyword,
                'keyword': keyword,
                'param': 'keyword=%s' % keyword}
@@ -714,7 +712,6 @@ def blog_search(request):
                         'pager': pager,
                         'page_range': page_range,})
 
-        print blogs
     return render(request, 'blog/blog_search.html', context)
 
 

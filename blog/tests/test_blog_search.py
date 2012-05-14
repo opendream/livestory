@@ -44,7 +44,7 @@ class TestBlogSearch(TestCase):
         if settings.PRIVATE:
             self.client.login(email=self.TEST_USER_EMAIL, password=self.TEST_USER_PASSWORD)
 
-        response = self.client.post(reverse('blog_search'), {'keyword': 'food'})
+        response = self.client.post(reverse('blog_search'), {'keyword': 'star'})
         self.assertContains(response, 'No result')
 
     def test_search_blog__post_with_result_no_pagination(self):
@@ -58,9 +58,8 @@ class TestBlogSearch(TestCase):
         if settings.PRIVATE:
             self.client.login(email=self.TEST_USER_EMAIL, password=self.TEST_USER_PASSWORD)
 
-        response = self.client.post(reverse('blog_search'), {'keyword': 'Lorem'})
-        self.assertContains(response, '<div class="pagination pagination-centered">')
-        self.assertContains(response, '<a href="?keyword=Lorem&page=3">3</a>')
+        response = self.client.post(reverse('blog_search'), {'keyword': 'is'})
+        self.assertEquals(response.context['page_range'], [1, 2, 3])
 
     def test_search_blog__post_with_result_case_insensitive(self):
         if settings.PRIVATE:
