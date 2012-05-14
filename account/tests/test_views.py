@@ -115,7 +115,7 @@ class TestUserProfile(TestCase):
         response = self.client.post(reverse('account_profile_edit'), {'first_name': 'Alan', 
                                                                       'last_name': 'Smith', 
                                                                       'timezone': 'Asia/Bangkok'})
-        self.assertContains(response, 'Your profile has been save.')
+        self.assertContains(response, 'Your profile has been saved.')
 
         current_user = User.objects.get(id=self.client.session.get('_auth_user_id'))
 
@@ -215,7 +215,8 @@ class TestViewUserProfile(TestCase):
     def test_user_profile_view__get_no_blogs_profile(self):
         user = User.objects.get(username='staff@example.com')
         response = self.client.get('/account/profile/%s/view/' % user.id)
-        self.assertContains(response, '<span class="profile-name">John &nbsp; Doe</span>')
+        print response.content
+        self.assertContains(response, '<span class="profile-name">John Doe</span>')
         self.assertContains(response, '<span class="profile-email grey">staff@example.com</span>')
         self.assertContains(response, '<span class="count-num">0</span>')
         self.assertContains(response, 'No photos found.')
@@ -265,8 +266,8 @@ class TestEditUserProfile(TestCase):
         tz = 'Africa/Abidjan'
         user = User.objects.get(username='tester@example.com')
         response = self.client.post('/account/profile/%s/edit/' % user.id, {
-                'firstname': 'Panudate', 
-                'lastname': 'Vasinwattana',
+                'first_name': 'Panudate', 
+                'last_name': 'Vasinwattana',
                 'timezone': tz,
                 'is_active': True}
         )
@@ -281,8 +282,12 @@ class TestEditUserProfile(TestCase):
         user.is_active = False
         user.save()
 
-        response = self.client.post('/account/profile/%s/edit/' % user.id, {'is_active': True})
-        self.assertEquals(200, response.status_code)
+        post_url = reverse('user_profile_edit', args=[user.id])
+        resp = self.client.post(post_url, {'is_active': True, 
+                                           'first_name': user.get_profile().first_name, 
+                                           'last_name': user.get_profile().last_name})
+        self.assertEquals(200, resp.status_code)
+        print resp.content
         # check user is activated from database
         user2 = User.objects.get(username='tester@example.com')
         assert user2.is_active
@@ -290,8 +295,11 @@ class TestEditUserProfile(TestCase):
     def test_user_profile_edit__block_user(self):
         user = User.objects.get(username='tester@example.com')
         assert user.is_active
-        response = self.client.post('/account/profile/%s/edit/' % user.id, {'is_active': False})
-        self.assertEquals(200, response.status_code)
+        post_url = reverse('user_profile_edit', args=[user.id])
+        resp = self.client.post(post_url, {'is_active': False,
+                                           'first_name': user.get_profile().first_name,
+                                           'last_name': user.get_profile().last_name})
+        self.assertEquals(200, resp.status_code)
         # check user is blocked from database
         user2 = User.objects.get(username='tester@example.com')
         assert user2.is_active == False
