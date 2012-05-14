@@ -109,7 +109,7 @@ $(function () {
     
     $('.dropdown-toggle#notification-section').click(function(e) {
         var self = this;
-        var url = '/notifications/';
+        var url = '/notifications_viewed/';
         var params = {};
         var callback = function(result) {
             if (result.status == 200) {

@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^account/', include('account.urls')),
     url(r'^blog/', include('blog.urls')),
     url(r'^location/', include('location.urls')),
+    url(r'^', include('notification.urls')),
     url(r'^ajax/', include('ajax.urls')),
     url(r'^ajax/', include('blog.urls_ajax')),
 
@@ -25,7 +26,7 @@ urlpatterns = patterns('',
     url(r'^account/password_reset/done/$', 'django.contrib.auth.views.password_reset_done', name='account_password_reset_done'),
     url(r'^account/reset/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', 'django.contrib.auth.views.password_reset_confirm', name='account_password_reset_confirm'),
     url(r'^account/reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='account_password_reset_complete'),
-    url(r'^notifications/$', 'notification.views.view', name='notification_view'),
+
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

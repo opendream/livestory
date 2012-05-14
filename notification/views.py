@@ -9,16 +9,12 @@ from account.models import UserProfile, UserInvitation
 from notification.models import Notification
 
 @login_required
-def view(request):
+def view_notifications(request):
 	# Update view notification
 	try:
 		UserProfile.objects.get(user=request.user).update_view_notification()
 	except UserProfile.DoesNotExist:
 		pass
-
-	# If request is ajax
-	if request.is_ajax():
-		return HttpResponse(json.dumps({'status': 200}), mimetype='application/json')
 
 	last_notification = Notification.objects.all().filter(blog__user=request.user).order_by('-datetime')[:1]
 	notifications = []
@@ -36,6 +32,11 @@ def view(request):
 		'notification7days': notifications
 	}
 	return render(request, 'notification/notification_view.html', context)
+
+@login_required
+def ajax_set_notifications_as_viewed(request):
+    request.user.get_profile().update_view_notification()
+    return HttpResponse(json.dumps({'status': 200}), mimetype='application/json')
 
 def get_notifications(user):
 	notifications = []
