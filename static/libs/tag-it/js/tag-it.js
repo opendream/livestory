@@ -169,7 +169,6 @@
                     // Comma/Space/Enter are all valid delimiters for new tags,
                     // except when there is an open quote or if setting allowSpaces = true.
                     // Tab will also create a tag, unless the tag input is empty, in which case it isn't caught.
-                    console.log(event.which)
                     if (
                         event.which == 44 /*COMMA*/ ||
                         event.which == 13 /*ENTER*/ ||
@@ -191,7 +190,8 @@
                         )
                     ) {
                         event.preventDefault();
-                        if (!that._tagInput.data('typeahead').shown) {
+                        if (!that._tagInput.data('typeahead').isItemActive()) {
+                            console.log(that._cleanedInput());
                             that.createTag(that._cleanedInput());
                         }
                     }
@@ -219,6 +219,7 @@
                 var that = this;
                 this._tagInput.typeahead({
                     source: this.options.source,
+                    defaultActive: false,
                     onSelect: function(value) {
                         if (that._tagInput.val() === '') {
                             that.removeTag(that._lastTag(), false);

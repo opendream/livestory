@@ -1492,17 +1492,24 @@
     this.shown = false
     this.onSelect = this.options.onSelect || null
     this.listen()
+    this.defaultActive = this.options.defaultActive === undefined ? true : false
   }
 
   Typeahead.prototype = {
 
     constructor: Typeahead
 
+  , isItemActive: function() {
+      return this.$menu.find('.active').size() > 0
+    }
+
   , select: function () {
       var val = this.$menu.find('.active').attr('data-value')
-      this.$element.val(val)
-      if (this.onSelect) {
-        this.onSelect(val)
+      if (val) {
+        this.$element.val(val)
+        if (this.onSelect) {
+          this.onSelect(val)
+        }
       }
       return this.hide()
     }
@@ -1586,7 +1593,10 @@
         return i[0]
       })
 
-      items.first().addClass('active')
+      if (this.defaultActive) {
+        items.first().addClass('active')
+      }
+      
       this.$menu.html(items)
       return this
     }
@@ -1595,7 +1605,12 @@
       var active = this.$menu.find('.active').removeClass('active')
         , next = active.next()
 
-      if (!next.length) {
+      if (!this.defaultActive) {
+        if (!active.length) {
+          next = $(this.$menu.find('li')[0])
+        }
+      }
+      else if (!next.length) {
         next = $(this.$menu.find('li')[0])
       }
 
@@ -1661,7 +1676,7 @@
         case 9: // tab
         case 13: // enter
         case 27: // escape
-          e.preventDefault()
+          if (this.defaultActive) e.preventDefault()
           break
 
         case 38: // up arrow
