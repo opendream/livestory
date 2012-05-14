@@ -224,7 +224,7 @@ class TestBlogEdit(TestCase):
         self.category = factory.create_category('Animal', 'animal')
         self.location = factory.create_location('Japan', 'Tokyo')
         self.cat_travel = factory.create_category('Travel', 'travel')
-        self.loc_korea = factory.create_location('Korea', 'Sol')
+        self.loc_korea = factory.create_location('Korea', 'Seoul')
         self.blog = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
         self.blog_draft = factory.create_blog('Animal in Tokyo', self.user, self.category, self.location)
         self.blog_draft.draft = True
@@ -298,7 +298,7 @@ class TestBlogEdit(TestCase):
             'description': 'lorem ipsum Edited',
             'mood': '2',
             'country': 'Korea',
-            'city': 'Sol',
+            'city': 'Seoul',
             'private': '1',
             'draft': '0',
             'category': str(self.cat_travel.id),
@@ -337,7 +337,7 @@ class TestBlogEdit(TestCase):
             'description': 'lorem ipsum Edited',
             'mood': '2',
             'country': 'Korea',
-            'city': 'Sol',
+            'city': 'Seoul',
             'private': '1',
             'draft': '1',
             'category': str(self.cat_travel.id),
@@ -380,7 +380,7 @@ class TestBlogEdit(TestCase):
             'description': 'lorem ipsum Edited',
             'mood': '2',
             'country': 'Korea',
-            'city': 'Sol',
+            'city': 'Seoul',
             'private': '1',
             'draft': '1',
             'category': str(self.cat_travel.id),
@@ -455,7 +455,7 @@ class TestBlogEdit(TestCase):
             'description': 'lorem ipsum Edited',
             'mood': '2',
             'country': 'Korea',
-            'city': 'Sol',
+            'city': 'Seoul',
             'private': '1',
             'draft': '0',
             'category': str(self.cat_travel.id),

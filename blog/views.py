@@ -187,7 +187,9 @@ def blog_create(request):
     if request.method == 'POST':
         form = ModifyBlogForm(None, request.POST)
         if form.is_valid():
-            location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
+            country = form.cleaned_data['country']
+            city = form.cleaned_data['city']
+            location, created = Location.objects.get_or_create(country__iexact=country, city__iexact=city)
 
             from django.core.files import File
 
@@ -324,8 +326,10 @@ def blog_edit(request, blog_id):
     if request.method == 'POST':
         form = ModifyBlogForm(blog, request.POST)
         if form.is_valid():
-            location, created = Location.objects.get_or_create(country=form.cleaned_data['country'], city=form.cleaned_data['city'])
-            
+            country = form.cleaned_data['country']
+            city = form.cleaned_data['city']
+            location, created = Location.objects.get_or_create(country__iexact=country, city__iexact=city)
+
             from django.core.files import File
 
             blog.title = form.cleaned_data['title']
@@ -423,7 +427,7 @@ def blog_view(request, blog_id):
 
 @login_required
 def blog_download(request, blog_id):
-    blog = get_object_or_404(Blog, id=blod_id)
+    blog = get_object_or_404(Blog, id=blog_id)
 
     if (blog.draft and request.user != blog.user) or not blog.allow_download or (blog.private and not request.user.is_authenticated()):
         return render(request, '403.html', status=403)

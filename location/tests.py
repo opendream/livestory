@@ -6,11 +6,20 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from location.models import Location
 
+class LocationTest(TestCase):
+    def setUp(self):
+        Location.objects.create(country='Japan', city='Tokyo')
+        Location.objects.create(country='Thailand', city='Hat Yai')
+        Location.objects.create(country='Mali', city='Gao')
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+    def tearDown(self):
+        pass
+
+    def test_duplicate_location(self):
+        loc, created = Location.objects.get_or_create(country='Thailand', city='Hat Yai'.capitalize())
+        self.assertFalse(created)
+        self.assertEqual('Thailand', loc.country)
+        self.assertEqual('Hat Yai'.capitalize(), loc.city)
+
