@@ -18,8 +18,8 @@ class LocationTest(TestCase):
         pass
 
     def test_duplicate_location(self):
-        loc, created = Location.objects.get_or_create(country='Thailand', city='Hat Yai'.capitalize())
+        loc, created = Location.objects.get_or_create(country__iexact='Thailand', city__iexact='Hat Yai')
         self.assertFalse(created)
         self.assertEqual('Thailand', loc.country)
-        self.assertEqual('Hat Yai'.capitalize(), loc.city)
+        self.assertEqual('Hat yai', loc.city)
 
