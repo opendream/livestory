@@ -92,8 +92,8 @@ class TestBlogCreate(TestCase):
             'image_file_name': 'test_create_post.jpg',
             'description': 'lorem ipsum',
             'mood': '4',
-            'country': 'Japan',
-            'city': 'Tokyo',
+            'country': 'Thailand',
+            'city': 'Hat Yai',
             'private': '1',
             'draft': '0',
             'category': str(self.category.id),
@@ -119,7 +119,9 @@ class TestBlogCreate(TestCase):
         self.assertFalse(blog.draft)
         self.assertFalse(blog.allow_download)
         self.assertEquals(self.category, blog.category)
-        self.assertEquals(self.location, blog.location)
+        self.assertFalse(None==blog.location.id)
+        self.assertEquals('Thailand', blog.location.country)
+        self.assertEquals('Hat yai', blog.location.city)
 
         self.client.logout()
 
@@ -297,8 +299,8 @@ class TestBlogEdit(TestCase):
             'image_file_name': 'test_create_post.jpg',
             'description': 'lorem ipsum Edited',
             'mood': '2',
-            'country': 'Korea',
-            'city': 'Seoul',
+            'country': 'Thailand',
+            'city': 'Khon Kean',
             'private': '1',
             'draft': '0',
             'category': str(self.cat_travel.id),
@@ -324,7 +326,9 @@ class TestBlogEdit(TestCase):
         self.assertFalse(blog.draft)
         self.assertFalse(blog.allow_download)
         self.assertEquals(self.cat_travel, blog.category)
-        self.assertEquals(self.loc_korea, blog.location)
+        self.assertFalse(None==blog.location.id)
+        self.assertEquals('Thailand', blog.location.country)
+        self.assertEquals('Khon kean', blog.location.city)
         self.client.logout()
 
     def test_blog_edit_post_draft_publish_post(self, again=True):

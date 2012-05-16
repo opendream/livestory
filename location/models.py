@@ -16,8 +16,8 @@ class Location(models.Model):
     	return '%s: %s' % (self.country, self.city)
     
     def save(self, *args, **kwargs):
-        self.country = capfirst(self.country)
-        self.city = capfirst(self.city)
+        self.country = self.country.title()
+        self.city = self.city.title()
         
         exist = Location.objects.filter(country=self.country, city=self.city)
         if exist.count():

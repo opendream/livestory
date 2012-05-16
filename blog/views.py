@@ -189,8 +189,9 @@ def blog_create(request):
         if form.is_valid():
             country = form.cleaned_data['country']
             city = form.cleaned_data['city']
-            location, created = Location.objects.get_or_create(country__iexact=country, city__iexact=city)
-
+            location, created = Location.objects.get_or_create(city__iexact=city,
+                                                               country__iexact=country, 
+                                                               defaults = {'country': country,'city': city})
             from django.core.files import File
 
             blog = Blog(
@@ -328,8 +329,9 @@ def blog_edit(request, blog_id):
         if form.is_valid():
             country = form.cleaned_data['country']
             city = form.cleaned_data['city']
-            location, created = Location.objects.get_or_create(country__iexact=country, city__iexact=city)
-
+            location, created = Location.objects.get_or_create(city__iexact=city,
+                                                               country__iexact=country, 
+                                                               defaults = {'country': country,'city': city})
             from django.core.files import File
 
             blog.title = form.cleaned_data['title']
@@ -591,8 +593,8 @@ def blog_place(request):
     country = request.GET.get('country') or ''
     city = request.GET.get('city') or ''
         
-    country = ucwords(country)
-    city = ucwords(city)
+    country = ' '.join(country.split())
+    city = ' '.join(city.split())
     
     title_country = country if country else 'All Countries'
     title_city = city if city else 'All Cities'
@@ -600,9 +602,9 @@ def blog_place(request):
     
     locations = Location.objects.all()
     if country:
-        locations = locations.filter(country=country)
+        locations = locations.filter(country__icontains=country)
     if city:
-        locations = locations.filter(city=city)
+        locations = locations.filter(city__icontains=city)
 
     filter = {'location__in': locations}
     if not locations.count():
