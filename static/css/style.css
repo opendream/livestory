@@ -2474,7 +2474,6 @@ html[xmlns] .clearfix {
 
 .typeahead a {
   background: #fff !important; }
-  .typeahead a:hover,
-  .typeahead li.active a {
+  .typeahead a:hover {
     background: #F2F2F2 !important;
     text-decoration: underline !important; }

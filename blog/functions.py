@@ -34,7 +34,6 @@ def remove_temporary_blog_image(file_name):
 
 def check_blog_image(blog):
     (root, name, ext) = split_filepath(blog.image.path)
-    print '%s%s/%s.%s' % (settings.BLOG_IMAGE_ROOT, blog.user.id, name, ext)
     return os.path.exists('%s%s/%s.%s' % (settings.BLOG_IMAGE_ROOT, blog.user.id, name, ext))
 
 def remove_blog_image(blog):

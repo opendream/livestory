@@ -32,7 +32,7 @@ def ajax_profile_image_upload(request, user_id):
         'delete_url': reverse('ajax_account_image_delete'),
         'delete_type': 'DELETE'
     }
-    return HttpResponse(json.dumps(data), mimetype="application/json")
+    return HttpResponse(json.dumps(data))
 
 
 @login_required
@@ -57,7 +57,7 @@ def ajax_account_image_upload(request):
         'delete_type': 'DELETE'
     }
     
-    return HttpResponse(json.dumps(data), mimetype="application/json")
+    return HttpResponse(json.dumps(data))
 
 @login_required    
 def ajax_account_image_delete(request):
@@ -81,5 +81,5 @@ def ajax_account_image_delete(request):
     except:
         data = {'result': 'nofile'}
         
-    return HttpResponse(json.dumps(data), mimetype="application/json")
+    return HttpResponse(json.dumps(data))
 

@@ -3,6 +3,8 @@
 import os
 BASE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), os.path.pardir)
 
+from django.conf import global_settings
+
 ADMINS = (
     #('Opendream Support', 'support@opendream.co.th'),
     ('Opendream Support', 'panu@opendream.co.th'),
@@ -79,6 +81,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'context_processors.site_information',
 )
+
+FILE_UPLOAD_HANDLERS = ('handlers.UploadProgressCachedHandler', ) + global_settings.FILE_UPLOAD_HANDLERS
 
 INSTALLED_APPS = (
     'django.contrib.auth',

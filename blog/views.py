@@ -468,12 +468,12 @@ def blog_love(request, blog_id):
                 Notification(subject=request.user, action=1, blog=blog).save()
         
         if request.is_ajax():
-            return HttpResponse(json.dumps(data), mimetype="application/json")
+            return HttpResponse(json.dumps(data))
         else:
             return redirect('/blog/%s/view' % blog_id)
     except Blog.DoesNotExist:
         if request.is_ajax():
-            return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
+            return HttpResponse(json.dumps({'status': 404}))
         else:
             raise Http404
 
@@ -498,12 +498,12 @@ def blog_unlove(request, blog_id):
             data['type'] = 'love'
 
         if request.is_ajax():
-            return HttpResponse(json.dumps(data), mimetype="application/json")
+            return HttpResponse(json.dumps(data))
         else:
             return redirect('/blog/%s/view' % blog_id)
     except Blog.DoesNotExist:
         if request.is_ajax():
-            return HttpResponse(json.dumps({'status': 404}), mimetype="application/json")
+            return HttpResponse(json.dumps({'status': 404}))
         else:
             raise Http404
 

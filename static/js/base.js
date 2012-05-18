@@ -1,3 +1,82 @@
+$(document).ajaxSend(function(event, xhr, settings) {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    function sameOrigin(url) {
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+    function safeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+    }
+});
+
+function initializeBlogImageUpload() {
+    $('.fileupload').fileupload({
+        dataType: 'json',
+        dropZone: $('#upload_dropzone'),
+        url: $('.upload_url').val(),
+        add: function(e, data) {
+            $('#fileupload-progress').show();
+            $('#fileupload-progress-wrapper').show();
+            $('.drop-area').fadeOut();
+            data.submit();
+        },
+        progress: function(e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#fileupload-progress .bar').css('width', progress + '%');
+        },
+        done: function(e, data) {
+            $('div.image-append').html('');
+            $('div.image-append').append($('<img/>').attr('src', data.result.thumbnail_url));
+            $('input[type=hidden][name=image_file_name]').val(data.result.name);
+            $('.drop-area').hide();
+            $('.image-border').hide();
+            setTimeout(function () {
+                $('.image-wrapper').show();
+            }, 800);
+            
+            // Hide error message
+            $('.image-upload .help-inline').remove();
+        },
+        fail: function(e, data) {
+            $('.image-upload').append('<span class="help-inline">Error uploading, please retry it again.</span>');
+        }
+    });
+
+    $('.image-delete').click(function (e) {
+        e.preventDefault();
+        $('.drop-area').show();
+        $('.image-border').show();
+        $('.image-wrapper').hide();
+        $('input[type=hidden][name=image_file_name]').val('');
+    });
+}
+
 $(function () {
     $('.messages .close').click(function () {
         $(this).parent('.alert').slideUp('fast');
@@ -5,7 +84,14 @@ $(function () {
     
     $('.dropdown-toggle').dropdown();
 
+
     
+
+    
+
+    
+
+    /*
     $('.image-upload').each(function (i, item) {
         var scope = $(this);
         var upload_url = $('.upload_url', scope).val();
@@ -106,7 +192,7 @@ $(function () {
             progressTimer = window.setInterval(intervalHandler, interval);
         });
     })
-    
+    */
     $('.dropdown-toggle#notification-section').click(function(e) {
         var self = this;
         var url = '/notifications_viewed/';

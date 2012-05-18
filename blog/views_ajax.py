@@ -12,5 +12,5 @@ def ajax_blog_image_upload(request):
         'name': file_name,
         'thumbnail_url': thumbnail_url
     }
-    return HttpResponse(json.dumps(data), mimetype="application/json")
 
+    return HttpResponse(json.dumps(data))

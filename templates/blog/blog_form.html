@@ -13,10 +13,18 @@
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/vendor/jquery.ui.widget.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/tag-it/js/tag-it.js"></script>
+
 {% tags_js %}
 {% textcounter_js %}
+
+<script>
+$(document).ready(function () {
+  initializeBlogImageUpload();
+});
+</script>
 {% endblock %}
 
 {% block nav %}
@@ -36,9 +44,7 @@
           <div class="image-border rounded5"{% if blog_image_file %} style="display:none;"{% endif %}>
             <div id="fileupload-progress-wrapper">
               <div id="upload-detail">uploading...</div>
-              <div class="progress progress-info progress-striped active" id="fileupload-progress">
-                <div class="bar" id="fileupload-complete"></div>
-              </div>
+              <div class="progress progress-striped active" id="fileupload-progress"><div class="bar" style="width: 0%;" id="fileupload-complete"></div></div>
             </div>
             <div class="drop-area"{% if blog_image_file %} style="display:none;"{% endif %}>
               <div class="dropbox"><input id="id_image" class="input-file image-append fileupload" type="file" name="image"></div>
@@ -53,16 +59,10 @@
             <input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_blog_image_upload %}" />
           </div>
 
-           {{form.image_file_name}}
-          {% if form.image_file_name.errors %}
-          <div class="clear-both">
-              <p class="help-block">{{ form.image_file_name.errors.as_text }}</p>
-          </div>
-          {% endif %}
+          {{form.image_file_name}}
+
+          {% if form.image_file_name.errors %}<span class="help-inline">{{ form.image_file_name.errors.as_text }}</span>{% endif %}
         </div>
-        {% if imagefield_error %}
-        <span class="help-inline">* This field is required.</span>
-        {% endif %}
       </div>
     </div>
     

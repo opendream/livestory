@@ -9,7 +9,7 @@ from functions import check_temporary_blog_image, check_blog_image
 import urllib
 
 class ModifyBlogForm(forms.Form):
-    image_file_name = forms.CharField(max_length=500, widget=forms.HiddenInput(), required=False)
+    image_file_name = forms.CharField(max_length=500, widget=forms.HiddenInput())
 
     title = forms.CharField(max_length=200, widget=forms.TextInput(attrs={'class': 'span4'}))
     description = forms.CharField(max_length=300, required=False, widget=forms.Textarea(attrs={'rows': 7, 'class': 'textcounter span4'}))

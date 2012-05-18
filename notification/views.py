@@ -36,7 +36,7 @@ def view_notifications(request):
 @login_required
 def ajax_set_notifications_as_viewed(request):
     request.user.get_profile().update_view_notification()
-    return HttpResponse(json.dumps({'status': 200}), mimetype='application/json')
+    return HttpResponse(json.dumps({'status': 200}))
 
 def get_notifications(user):
 	notifications = []
