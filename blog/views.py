@@ -414,14 +414,17 @@ def blog_view(request, blog_id):
     loved_users = []
     for l in love_set:
         loved_users.append(l.user.get_profile())
-            
+    
+    comments = Comment.objects.select_related('user__profile', 'blog').filter(blog=blog).order_by('post_date');
     context = {
         'blog': blog,
+        'comments': comments,
         'profile': blog.user.get_profile(),
         'love_path': love_path % blog_id,
         'button_type': button_type,
         'love_count': blog.love_set.count(),
         'loved_users': loved_users,
+
         'max_items': 7,
         'CAN_SHARE_SN': settings.CAN_SHARE_SN,
     }
@@ -720,6 +723,21 @@ def blog_search(request):
 
     return render(request, 'blog/blog_search.html', context)
 
+def list_blog_comment(request, blog_id):
+    b = get_object_or_404(Blog, id=blog_id)
+    return render(request, 'blog/blo')
+
+def add_blog_comment(request, blog_id):
+    b = get_object_or_404(Blog, id=blog_id)
+    if request.method == 'POST':
+        f = BlogCommentForm(request.POST)
+        if f.is_valid():
+            b.comment_set.create(
+                comment=f.cleaned_data['comment'],
+                user=request.user,
+                blog=b
+            )
+    return redirect('blog_view', blog_id)
 
 # Static page
 def blog_about(request):

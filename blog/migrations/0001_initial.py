@@ -45,6 +45,16 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('blog', ['Love'])
 
+        # Adding model 'Comment'
+        db.create_table('blog_comment', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('comment', self.gf('django.db.models.fields.TextField')(null=False)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('blog', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.Blog'])),
+            ('post_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+        ))
+        db.send_create_signal('blog', ['Comment'])
+
     def backwards(self, orm):
         # Deleting model 'Category'
         db.delete_table('blog_category')
@@ -54,6 +64,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Love'
         db.delete_table('blog_love')
+
+        # Deleting model 'Comment'
+        db.delete_table('blog_comment')
 
     models = {
         'auth.group': {
@@ -142,7 +155,15 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
             'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'taggit_taggeditem_items'", 'to': "orm['taggit.Tag']"})
-        }
+        },
+        'blog.comment': {
+            'Meta': {'object_name': 'Comment'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'comment': ('django.db.models.fields.TextField', [], {'null': 'False'}),
+            'blog': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Blog']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'post_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+        },
     }
 
     complete_apps = ['blog']

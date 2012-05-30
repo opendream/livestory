@@ -126,3 +126,12 @@ class Love(models.Model):
     
     def __unicode__(self):
         return '%s love %s' % (self.user.username, self.blog.title)
+
+class Comment(models.Model):
+    user = models.ForeignKey(User)
+    blog = models.ForeignKey(Blog)
+    comment = models.TextField()
+    post_date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return '%s comment on blog(%d) - %s' % (user.username, blog.id, comment)

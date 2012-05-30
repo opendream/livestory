@@ -118,6 +118,15 @@ $(document).ready(function() {
       {% endif %}
       {% endif %}
       
+      <!-- Comment -->
+      <div class="blog_comment">
+       <div class="comment_list">
+          {% include 'blog/snippets/comment_list.html' %}
+       </div>
+       <div id='comment_form'>
+          {% include 'blog/snippets/comment_form.html' %}
+        </div>
+      </div>
     </div> <!-- span3 -->
     
     <div class="span4 block">
