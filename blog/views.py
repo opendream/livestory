@@ -734,7 +734,7 @@ def add_blog_comment(request, blog_id):
                 user    = request.user,
                 blog    = b
             )
-    return redirect('blog_view', blog_id)
+    return redirect(reverse('blog_view', args=[blog_id])+'#comment')
 
 # Static page
 def blog_about(request):
