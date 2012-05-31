@@ -1,7 +1,0 @@
-<div>
-  <form action="{% url add_blog_comment blog.id %}" method="POST">
-  	{% csrf_token %}
-	<textarea id="id_comment" name="comment" rows="7" cols="40" placeholder="Add your comment here..."></textarea>
-	<input type="submit" name="post" value="POST COMMENT"/>
-  </form>
-</div>

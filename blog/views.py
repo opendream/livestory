@@ -723,19 +723,16 @@ def blog_search(request):
 
     return render(request, 'blog/blog_search.html', context)
 
-def list_blog_comment(request, blog_id):
-    b = get_object_or_404(Blog, id=blog_id)
-    return render(request, 'blog/blo')
-
+@login_required
 def add_blog_comment(request, blog_id):
     b = get_object_or_404(Blog, id=blog_id)
     if request.method == 'POST':
         f = BlogCommentForm(request.POST)
         if f.is_valid():
             b.comment_set.create(
-                comment=f.cleaned_data['comment'],
-                user=request.user,
-                blog=b
+                comment = f.cleaned_data['comment'],
+                user    = request.user,
+                blog    = b
             )
     return redirect('blog_view', blog_id)
 
