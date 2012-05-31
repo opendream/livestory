@@ -9,7 +9,6 @@ from location.models import Location
 from mock import Mock, patch
 from math import ceil
 from tests import factory
-from bs4 import BeautifulSoup
 
 from common import rm_user
 from django.conf import settings
@@ -121,7 +120,7 @@ class TestBlogCreate(TestCase):
         self.assertEquals(self.category, blog.category)
         self.assertFalse(None==blog.location.id)
         self.assertEquals('Thailand', blog.location.country)
-        self.assertEquals('Hat yai', blog.location.city)
+        self.assertEquals('Hat Yai', blog.location.city)
 
         self.client.logout()
 
@@ -328,7 +327,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(self.cat_travel, blog.category)
         self.assertFalse(None==blog.location.id)
         self.assertEquals('Thailand', blog.location.country)
-        self.assertEquals('Khon kean', blog.location.city)
+        self.assertEquals('Khon Kean', blog.location.city)
         self.client.logout()
 
     def test_blog_edit_post_draft_publish_post(self, again=True):
@@ -488,11 +487,12 @@ class TestBlogEdit(TestCase):
 
     def test_blog_edit_post_miss_match_location(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
-        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        dst = '%stest_edit_post.jpg' % settings.TEMP_BLOG_IMAGE_ROOT
         shutil.copy2(src, dst)
+
         params = {
             'title': 'Hello world Edited',
-            'image_path': dst,
+            'image_file_name': 'test_edit_post.jpg',
             'description': 'lorem ipsum Edited',
             'mood': '2',
             'country': 'fdasdffafaf',
