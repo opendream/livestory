@@ -1,4 +1,7 @@
 import base64, hashlib, os
+import EXIF
+
+from dateutil import parser
 
 from django.conf import settings
 
@@ -76,3 +79,26 @@ def scale_image(image_path, size, method='scale'):
 
     #return os.path.abspath(cached_file_path).replace(os.path.abspath(settings.BASE_PATH), '')
     return cached_filename
+
+_IMG_MAKE = 'Image Make'
+_IMG_MAKE_MODEL = 'Image Model'
+_IMG_DATE_ORIGINAL = 'EXIF DateTimeOriginal'
+
+def extract_image_info(img):
+    return EXIF.process_file(img) if img else {}
+
+def get_image_captured_date(img):
+    data = extract_image_info(img)
+    if _IMG_DATE_ORIGINAL in data:
+        return parser.parse(str(data[_IMG_DATE_ORIGINAL]))
+    else:
+        None
+
+def get_image_captured_device(img):
+    data = extract_image_info(img)
+    device = ''
+    if _IMG_MAKE in data:
+        device += str(data[_IMG_MAKE])
+    if _IMG_MAKE_MODEL in data:
+        device += '/' + str(data[_IMG_MAKE_MODEL])
+    return device
