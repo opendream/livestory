@@ -114,7 +114,7 @@ $(document).ready(function() {
       {% if not blog.trash %}
       {% if blog.user.id == user.id or user.is_staff %}
       <br /><br />
-      <div><a href="{% url blog_edit blog.id %}" class="ic image-delete">Edit this story</a></div>
+      <div class="ic image-delete"><a href="{% url blog_edit blog.id %}">Edit this story</a></div>
       {% endif %}
       {% endif %}
       

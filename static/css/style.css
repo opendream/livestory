@@ -531,6 +531,9 @@ legend h1, h1 {
   border-right: 4px solid transparent;
   border-top: 4px solid #fff; }
 
+.nav .img-vertical {
+  max-width: 24px; }
+
 /* Dropdown
 ---------------------------------------*/
 .dropdown .dropdown-menu {
@@ -1164,6 +1167,20 @@ legend h1, h1 {
     background: #61A534;
     color: #fff; }
 
+/* New Story Icon
+---------------------------------------*/
+.new-story {
+  position: absolute;
+  top: 0;
+  left: 0; }
+
+.ic-new-story {
+  display: block;
+  width: 46px;
+  height: 42px;
+  text-indent: -999em;
+  background: url("../img/ic-new-story.png") no-repeat; }
+
 /* Upload Image
 ---------------------------------------*/
 .drop-area {
@@ -1256,7 +1273,8 @@ form#blog-form .dropbox {
 
 form#blog-form .dropbox .image-append {
   height: 150px;
-  width: 100%; }
+  width: 100%;
+  font-size: 100px; }
 
 form#blog-form #fileupload-progress-wrapper {
   margin: 55px 0 0 40px; }
