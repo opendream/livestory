@@ -1,8 +1,10 @@
 import os, uuid
+from datetime import datetime
 
 from django.conf import settings
 
 from common.utilities import split_filepath, scale_image
+from common import EXIF
 
 # Blog Image
 
@@ -41,3 +43,39 @@ def remove_blog_image(blog):
     for f in os.listdir('%s%s/' % (settings.BLOG_IMAGE_ROOT, blog.user.id)):
         if not f.find('%s.%s' % (name, ext)):
             os.remove(os.path.join('%s%s/' % (settings.BLOG_IMAGE_ROOT, blog.user.id), f))
+
+
+_IMG_MAKE = 'Image Make'
+_IMG_MAKE_MODEL = 'Image Model'
+_IMG_DATE_ORIGINAL = 'EXIF DateTimeOriginal'
+
+def _get_image_creation_date(file_name):
+    image = _load_temp_blog_image(file_name)
+    if image:
+        stat = os.stat(image.name)
+        return datetime.fromtimestamp(stat.st_ctime)
+    else:
+        return None
+
+def _load_temp_blog_image(file_name):
+    return open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, file_name), 'r') if check_temporary_blog_image(file_name) else None
+
+def _extract_image_info(file_name):
+    image = _load_temp_blog_image(file_name)
+    return EXIF.process_file(image) if image else {}
+
+def get_image_captured_date(file_name):
+    data = _extract_image_info(file_name)
+    if _IMG_DATE_ORIGINAL in data:
+        return datetime.strptime(str(data[_IMG_DATE_ORIGINAL]), '%Y:%m:%d %H:%M:%S')
+    else:
+        return _get_image_creation_date(file_name)
+
+def get_image_captured_device(image_name):
+    data = _extract_image_info(image_name)
+    device = ''
+    if _IMG_MAKE in data:
+        device += str(data[_IMG_MAKE])
+    if _IMG_MAKE_MODEL in data:
+        device += '/' + str(data[_IMG_MAKE_MODEL])
+    return device
