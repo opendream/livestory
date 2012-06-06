@@ -338,26 +338,26 @@ def blog_edit(request, blog_id):
     if request.method == 'POST':
         form = ModifyBlogForm(blog, request.POST)
         if form.is_valid():
-            country = form.cleaned_data['country']
-            city = form.cleaned_data['city']
-            location, created = Location.objects.get_or_create(city__iexact=city,
-                                                               country__iexact=country, 
-                                                               defaults = {'country': country,'city': city})
-            from django.core.files import File
+            action = request.POST.get('action', '')
 
-            blog.title = form.cleaned_data['title']
-            blog.description = form.cleaned_data['description']
-            blog.location = location
-            blog.draft = bool(int(request.POST.get('draft', 0)))
+            location, created = Location.objects.get_or_create(
+                city__iexact    = form.cleaned_data['city'],
+                country__iexact = form.cleaned_data['country'],
+                defaults = {
+                    'city'   : form.cleaned_data['city'],
+                    'country': form.cleaned_data['country']
+                }
+            )
+
+            blog.title          = form.cleaned_data['title']
+            blog.description    = form.cleaned_data['description']
+            blog.location       = location
             blog.allow_download = form.cleaned_data['allow_download']
-            blog.category = form.cleaned_data['category']
-            blog.mood = form.cleaned_data['mood']
-            blog.trash = bool(int(request.POST.get('trash', 0)))
-
-            #stamp a published date
-            publish = bool(int(request.POST.get('publish', 0)))
-            if publish:
-                blog.published = datetime.datetime.now()
+            blog.category       = form.cleaned_data['category']
+            blog.mood           = form.cleaned_data['mood']
+            blog.published      = datetime.datetime.now() if action == 'publish' else None
+            blog.draft          = 1 if action == 'draft' else 0
+            blog.trash          = 1 if action == 'trash' else 0
 
             new_image_file = form.cleaned_data['image_file_name']
             if new_image_file and (new_image_file != image_file_name):
@@ -369,36 +369,39 @@ def blog_edit(request, blog_id):
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
 
-            messages.success(request, 'Blog post updated. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+            messages.success(request, 'Blog post updated. \
+                <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
 
-            if blog.trash:
+            if action == 'trash':
                 return redirect('blog_view', blog_id=blog.id)
-
-            return redirect(reverse('blog_edit', args=[blog.id]))
+            else:
+                return redirect(reverse('blog_edit', args=[blog.id]))
 
     else:
 
-        form = ModifyBlogForm(blog, initial={
-            'title': blog.title,
-            'description': blog.description,
-            'country': blog.location.country,
-            'city': blog.location.city,
-            'mood': blog.mood,
-            'image_file_name':image_file_name,
-            'category': blog.category,
-            'private': str(int(blog.private)),
-            'allow_download': blog.allow_download,
-            'tags': blog.get_tags()
+        form = ModifyBlogForm(
+            blog, 
+            initial = {
+                'title'          : blog.title,
+                'description'    : blog.description,
+                'country'        : blog.location.country,
+                'city'           : blog.location.city,
+                'mood'           : blog.mood,
+                'image_file_name':image_file_name,
+                'category'       : blog.category,
+                'private'        : str(int(blog.private)),
+                'allow_download' : blog.allow_download,
+                'tags'           : blog.get_tags()
         })
 
     context = {
-        'page_title': 'Edit Blog',
-        'blog': blog,
-        'form': form,
-        'is_draft': blog.draft,
-        'moods': MOOD_CHOICES,
-        'visibilities': PRIVATE_CHOICES,
-        'blog_image_file':blog.image.path,
+        'page_title'     : 'Edit Blog',
+        'blog'           : blog,
+        'form'           : form,
+        'is_draft'       : blog.draft,
+        'moods'          : MOOD_CHOICES,
+        'visibilities'   : PRIVATE_CHOICES,
+        'blog_image_file': blog.image.path,
     }
 
     return render(request, 'blog/blog_form.html', context)
