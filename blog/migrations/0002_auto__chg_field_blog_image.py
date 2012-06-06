@@ -60,7 +60,9 @@ class Migration(SchemaMigration):
             'private': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'trash': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'image_captured_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'False', 'blank': 'True'}),
+            'image_captured_device': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
         },
         'blog.category': {
             'Meta': {'object_name': 'Category'},

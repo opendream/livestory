@@ -1,4 +1,7 @@
 import base64, hashlib, os
+import EXIF
+
+from datetime import datetime
 
 from django.conf import settings
 

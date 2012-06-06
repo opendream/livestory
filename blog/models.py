@@ -71,6 +71,9 @@ class Blog(models.Model):
     location       = models.ForeignKey(Location)
     tags           = TaggableManager()
     
+    image_captured_date   = models.DateTimeField(null=True, blank=True)
+    image_captured_device = models.CharField(max_length=200)
+    
     def __unicode__(self):
         return '(%d) %s' % (self.id, self.title)
     

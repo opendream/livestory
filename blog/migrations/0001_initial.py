@@ -33,6 +33,8 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.Category'])),
             ('location', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['location.Location'])),
+            ('image_captured_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=False, null=True, blank=True)),
+            ('image_captured_device', self.gf('django.db.models.fields.CharField')(max_length=200)),
         ))
         db.send_create_signal('blog', ['Blog'])
 
@@ -113,7 +115,9 @@ class Migration(SchemaMigration):
             'private': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'trash': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
+            'image_captured_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'False', 'blank': 'True'}),
+            'image_captured_device': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
         },
         'blog.category': {
             'Meta': {'object_name': 'Category'},

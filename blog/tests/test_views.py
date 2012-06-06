@@ -507,6 +507,7 @@ class TestBlogEdit(TestCase):
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
 
         self.assertEquals(200, response.status_code)
+        print response.content
         self.assertContains(response, 'Blog post updated.')
         self.client.logout()
         
