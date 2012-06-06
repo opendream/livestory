@@ -56,7 +56,6 @@ class Category(models.Model):
 class Blog(models.Model):
     title          = models.CharField(max_length=200, db_index=True)
     image          = models.ImageField(upload_to=blog_image_url, max_length=500)
-    image_exif     = models.TextField(null=True)
     description    = models.TextField(null=True, db_index=True)
     mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
