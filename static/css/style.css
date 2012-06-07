@@ -1404,7 +1404,13 @@ ul.tagit input[type="text"] {
   background-position: 0 -50px !important; }
 
 .ic-download {
-  background-position: 4px 3px !important; }
+  background-position: 4px 3px  !important; }
+
+.ic-date {
+  background-position: 0 -152px !important; }
+
+.ic-device {
+  background-position: 0 -100px !important; }
 
 .col-left, .col-right {
   float: left;
@@ -1491,6 +1497,38 @@ html[xmlns] .clearfix {
 
 * html .clearfix {
   height: 1%; }
+
+/* Comments
+---------------------------------------*/
+.comment_item {
+  position: relative;
+  margin: 0 0 5px;
+  background: #f9f9f9; }
+  .comment_item .comment_user_avatar {
+    float: left;
+    margin: 10px 0 0 10px; }
+    .comment_item .comment_user_avatar img {
+      border: 2px solid black; }
+  .comment_item .comment_user_fullname {
+    float: left;
+    margin: 0 10px;
+    padding: 10px 0 0;
+    font-weight: bold;
+    font-size: 12px; }
+  .comment_item .comment_msg {
+    padding: 10px 0 10px 60px; }
+  .comment_item .comment_date {
+    font-size: 11px;
+    padding: 10px 0 0; }
+
+/* Textbox Form Comment
+---------------------------------------*/
+.comment_form #id_comment {
+  width: 60%;
+  height: 60px;
+  padding: 10px; }
+.comment_form #comment_post {
+  margin: 50px 0 0 15px; }
 
 /*****************/
 /* Media Queries */
@@ -2164,7 +2202,14 @@ html[xmlns] .clearfix {
     width: auto !important; }
 
   .location-box {
-    width: auto !important; } }
+    width: auto !important; }
+
+  /* Textbox Form Comment
+  ---------------------------------------*/
+  .comment_form #id_comment {
+    width: 95%; }
+  .comment_form #comment_post {
+    margin: 10px 0 0 0; } }
 @media (max-width: 320px) {
   /* 	Scour Front 
 	---------------------------------------*/
@@ -2357,24 +2402,6 @@ html[xmlns] .clearfix {
     margin-top: 15px;
     padding: 0;
     display: block; } }
-/*****************/
-/* Crosalot zone */
-/*****************/
-.messages .tags {
-  font-weight: bold;
-  padding-right: 5px; }
-
-.filter-block-append {
-  overflow: hidden; }
-
-.filter-block-append .default {
-  z-index: 5; }
-
-.filter-menu {
-  background-color: #FFF;
-  z-index: 10;
-  width: 100%; }
-
 /* Notification Page
 ---------------------------------------*/
 .ic-status {
@@ -2495,3 +2522,18 @@ html[xmlns] .clearfix {
   .typeahead a:hover {
     background: #F2F2F2 !important;
     text-decoration: underline !important; }
+
+.messages .tags {
+  font-weight: bold;
+  padding-right: 5px; }
+
+.filter-block-append {
+  overflow: hidden; }
+
+.filter-block-append .default {
+  z-index: 5; }
+
+.filter-menu {
+  background-color: #FFF;
+  z-index: 10;
+  width: 100%; }

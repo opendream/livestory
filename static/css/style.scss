@@ -212,9 +212,9 @@
 	---------------------------------------*/
 	@mixin transition($duration, $function, $delay){
 		-webkit-transition: all $duration $function $delay;
-		-moz-transition: all $duration $function $delay;
-		-o-transition: all $duration $function $delay ;
-		transition: all $duration $function $delay ;
+		-moz-transition:    all $duration $function $delay;
+		-o-transition:      all $duration $function $delay ;
+		transition:         all $duration $function $delay ;
 	}
 	@mixin animation($name, $duration, $delay, $count, $function){
 		-webkit-animation-name: $name;
@@ -336,7 +336,7 @@
 		font-weight: normal;
 		font-style: normal;
 	}
-	.oxfam-font{ font-family: OxfamGlobalHeadlineRegular; }
+	.oxfam-font  { font-family: OxfamGlobalHeadlineRegular; }
 	.futura-font { font-family: FuturaMdCnBTMedium; }
 	.chalkduster-font { font-family: Chalkduster; }
 
@@ -718,28 +718,28 @@
 	}
 	
 	@-webkit-keyframes pop{
-		0%{ opacity: 0; top: 38px; }
+		0%  { opacity: 0; top: 38px; }
 		100%{ opacity: 1; top: 43px; }
 	}
 	@-moz-keyframes pop {
-	  0%{ opacity: 0; top: 38px; }
+	  0%  { opacity: 0; top: 38px; }
 		100%{ opacity: 1; top: 43px; }
 	}
 	@keyframes pop {
-	  0%{ opacity: 0; top: 38px; }
+	  0%  { opacity: 0; top: 38px; }
 		100%{ opacity: 1; top: 43px; }
 	}
 	
 	@-webkit-keyframes mood-pop{
-		0%{ opacity: 0; left: 40px; }
+		0%  { opacity: 0; left: 40px; }
 		100%{ opacity: 1; left: 50px; }
 	}
 	@-moz-keyframes mood-pop {
-	  0%{ opacity: 0; left: 40px; }
+	  0%  { opacity: 0; left: 40px; }
 		100%{ opacity: 1; left: 50px; }
 	}
 	@keyframes mood-pop {
-	  0%{ opacity: 0; left: 40px; }
+	  0%  { opacity: 0; left: 40px; }
 		100%{ opacity: 1; left: 50px; }
 	}
 	
@@ -770,16 +770,16 @@
     background: url(../img/ic-mood-32x32.png) 0 0 no-repeat;
     &:hover{ cursor: pointer; }
 	}
-	.mood-happy { background-position: 0 0; }
-  .mood-sad { background-position: -32px 0; }
-  .mood-excited { background-position: -64px 0; }
-  .mood-inspired { background-position: -96px 0; }
+	.mood-happy      { background-position: 0 0; }
+  .mood-sad        { background-position: -32px 0; }
+  .mood-excited    { background-position: -64px 0; }
+  .mood-inspired   { background-position: -96px 0; }
   .mood-frustrated { background-position: -128px 0; }
-  .mood-angry { background-position: -160px 0; }
-  .mood-fun { background-position: -192px 0; }
-  .mood-proud { background-position: -224px 0; }
-  .mood-amazed { background-position: -256px 0; }
-  .mood-motivated { background-position: -288px 0; }
+  .mood-angry      { background-position: -160px 0; }
+  .mood-fun        { background-position: -192px 0; }
+  .mood-proud      { background-position: -224px 0; }
+  .mood-amazed     { background-position: -256px 0; }
+  .mood-motivated  { background-position: -288px 0; }
   
   .mood-happy:hover, .mood-happy.active { background-position: 0 -32px; }	
   .mood-sad:hover, .mood-sad.active { background-position: -32px -32px; }
@@ -805,16 +805,16 @@
 		border: 1px solid #999;
 		background-image: url(../img/ic-mood-16x16.png);
 	}
-  .mood-happy-s {background-position: 0 0;}	
-  .mood-sad-s {background-position: -16px 0;}
-  .mood-excited-s {background-position: -32px 0;}
-  .mood-inspired-s {background-position: -48px 0;}
-  .mood-frustrated-s {background-position: -64px 0;}
-  .mood-angry-s {background-position: -80px 0;}
-  .mood-fun-s {background-position: -96px 0;}
-  .mood-proud-s {background-position: -112px 0;}
-  .mood-amazed-s {background-position: -128px 0;}
-  .mood-motivated-s {background-position: -144px 0;}
+  .mood-happy-s      { background-position: 0 0; }	
+  .mood-sad-s        { background-position: -16px 0; }
+  .mood-excited-s    { background-position: -32px 0; }
+  .mood-inspired-s   { background-position: -48px 0; }
+  .mood-frustrated-s { background-position: -64px 0; }
+  .mood-angry-s      { background-position: -80px 0; }
+  .mood-fun-s        { background-position: -96px 0; }
+  .mood-proud-s      { background-position: -112px 0; }
+  .mood-amazed-s     { background-position: -128px 0; }
+  .mood-motivated-s  { background-position: -144px 0; }
 
   /* Mood List Select Form (Create Blog)
   ---------------------------------------*/
@@ -833,7 +833,7 @@
 		position: relative;
 /* 		@include animation(slideUp, 1s, 0, 1, ease); */
 	}
-	.filter-wrap { margin-bottom: 10px; }
+	.filter-wrap  { margin-bottom: 10px; }
 	.filter-title {
 		@include inset-shadow(0px, 0px, 10px, 0px, #dcdcdc);
 		float: left;
@@ -1141,7 +1141,7 @@
 		padding-bottom: 5px;
 	}
 	.sidebar-list {
-		h3{ font-size: 16px; }
+		h3 { font-size: 16px; }
 		ul { margin-left: 0; }
 		li {
 			list-style-type: none;
@@ -1156,11 +1156,13 @@
 		padding-left: 25px;
 		background: url("../img/ic-blog.png") no-repeat;
 	}
-	.ic-size { background-position: 0 -50px !important; }
-	.ic-download { background-position: 4px 3px !important; }
+	.ic-size     { background-position: 0 -50px  !important; }
+	.ic-download { background-position: 4px 3px  !important; }
+	.ic-date     { background-position: 0 -152px !important; }
+	.ic-device   { background-position: 0 -100px !important; }
 	
 	.col-left, .col-right{ float: left; line-height: 28px; }
-	.col-left{ width: 30%;}
+	.col-left { width: 30%;}
 	.col-right{ width: 60%;}
 	
 	.badge {
@@ -1235,7 +1237,46 @@
 	html[xmlns] .clearfix { display: block; }
 	* html .clearfix { height: 1%; }
 
-
+/* Comments
+---------------------------------------*/
+	.comment_item{
+		position: relative;
+		margin: 0 0 5px;
+		background: #f9f9f9;
+		.comment_user_avatar{
+			float: left;
+			margin: 10px 0 0 10px;
+			
+			img{ border: 2px solid black; }
+		}
+		.comment_user_fullname{
+			float: left;
+			margin: 0 10px;
+			padding: 10px 0 0;
+			font-weight: bold;
+			font-size: 12px;
+		}
+		.comment_msg{
+			padding: 10px 0 10px 60px;
+		}
+		.comment_date{
+			font-size: 11px;
+			padding: 10px 0 0;
+		}
+	}
+	
+	/* Textbox Form Comment
+	---------------------------------------*/
+	.comment_form{
+		#id_comment{
+			width: 60%;
+			height: 60px;
+			padding: 10px;
+		}
+		#comment_post{
+			margin: 50px 0 0 15px;
+		}
+	}
 
 /*****************/
 /* Media Queries */
@@ -1326,7 +1367,7 @@
 	  /* Blog 
 	  ---------------------------------------*/
 	  .blog-profile .porfile-photo{ margin-bottom: 5px; }
-	  .blog-profile .profile-name{ clear: both; }
+	  .blog-profile .profile-name { clear: both; }
 	  .blog-profile{ margin-bottom: 20px; }
 	  
 	  /* Grid system
@@ -1664,14 +1705,19 @@
 		.mood-box{ width: auto !important; }
 		.location-box{ width: auto !important; }
 		
+		/* Textbox Form Comment
+		---------------------------------------*/
+		.comment_form{
+			#id_comment  { width: 95%; }
+			#comment_post{ margin: 10px 0 0 0; }
+		}
+		
   }
-  
   
   @mixin size($w, $h){
 	  width: $w !important;
 	  height: $h !important;
   }
-  
   
   @media (max-width: 320px) { 
 	  
@@ -1771,29 +1817,6 @@
 		}
   }
 
-
-
-
-/*****************/
-/* Crosalot zone */
-/*****************/
-.messages .tags {
-    font-weight: bold;
-      padding-right: 5px;
-}
-.filter-block-append {
-    overflow: hidden;
-}
-.filter-block-append .default {
-    z-index: 5;
-}
-.filter-menu {
-    background-color: #FFF;
-    z-index: 10;
-    width: 100%;
-}
-
-
 	/* Notification Page
 	---------------------------------------*/
 	.ic-status{
@@ -1888,6 +1911,20 @@
 	.typeahead a{ background: #fff !important;
 		&:hover{ background: #F2F2F2 !important; text-decoration: underline !important;}
 	}
-  
+	.messages .tags {
+	    font-weight: bold;
+	      padding-right: 5px;
+	}
+	.filter-block-append {
+	    overflow: hidden;
+	}
+	.filter-block-append .default {
+	    z-index: 5;
+	}
+	.filter-menu {
+	    background-color: #FFF;
+	    z-index: 10;
+	    width: 100%;
+	}
   
   
