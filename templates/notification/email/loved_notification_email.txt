@@ -1,0 +1,9 @@
+{% extends 'base_email.html' %}
+
+{% block email_content %}
+Love notification email from {{ settings.SITE_NAME }}.
+{% for item in loved_items %}
+  {{ item.subject.profile.first_name }} {{ item.subject.profile.last_name }} love {{ item.blog.title }}.
+{% endfor %}
+
+{% endblock %}

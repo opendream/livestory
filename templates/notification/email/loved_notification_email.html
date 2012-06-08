@@ -1,0 +1,12 @@
+{% extends 'base_email.html' %}
+
+{% block email_content %}
+<p>Love notification email from {{ settings.SITE_NAME }}.</p>
+<p>
+<ul>
+{% for item in loved_items %}
+  <li>{{ item.subject.profile.first_name }} {{ item.subject.profile.last_name }} love <a href='{{ base_url }}/blog/{{ item.blog.id }}/view/'>{{ item.blog.title }}</a>.</li>
+{% endfor %}
+</ul>
+</p>
+{% endblock %}
