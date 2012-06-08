@@ -1,9 +1,9 @@
 {% extends 'base_email.html' %}
 
 {% block email_content %}
-Love notification email from {{ settings.SITE_NAME }}.
+Here are your blog activities for {{ date }}.
 {% for item in loved_items %}
-  {{ item.subject.profile.first_name }} {{ item.subject.profile.last_name }} love {{ item.blog.title }}.
+  [{{ item.subject.get_profile.first_name }} {{ item.subject.profile.last_name }}] loves your blog. [{{ item.blog.title }}].
 {% endfor %}
 
 {% endblock %}
