@@ -244,11 +244,11 @@ $(document).ready(function() {
 					{% endif %}
           <li>
             <div class="col-left"><span class="ic-widget ic-date">Date</span></div>
-            <div class="col-right"><span class="col-right">{{ blog.image_captured_date}}</span></div>
+            <div class="col-right"><span class="col-right">{{ blog.image_captured_date|date:"d M Y" }}</span></div>
           </li>
           <li>
             <div class="col-left"><span class="ic-widget ic-device">Device</span></div>
-            <div class="col-right"><span class="col-right">{{ blog.image_captured_device}}</span></div>
+            <div class="col-right"><span class="col-right">{{ blog.image_captured_device|default:"N/A" }}</span></div>
           </li>
 				</ul>
 			</div>
