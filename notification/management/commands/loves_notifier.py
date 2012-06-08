@@ -18,7 +18,7 @@ class Command(NoArgsCommand):
     def handle(self, *args, **options):
         logger = open(self.LOG_FILE, 'a+')
         now = datetime.now()
-        loved_items = self.collect_love_nofications(now - timedelta(1))
+        loved_items = self.collect_love_nofications(now - timedelta(days=1))
         receivers = set([item.blog.user for item in loved_items])
         
         if len(receivers) > 0:
