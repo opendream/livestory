@@ -539,7 +539,9 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
                                 **filter
                             ).order_by('-published')
     
-    pager = Paginator(items, 8)
+    page_size = request.GET.get('page_size') or 8
+   
+    pager = Paginator(items, int(page_size))
     p = request.GET.get('page') or 1
     
     try:
@@ -568,6 +570,8 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
         'url': url,
         'param': param,
         'color': color,
+        'total_blogs': items.count(),
+        'page_size': page_size,
     }
     
     return render(request, 'blog/blog_list.html', context)
