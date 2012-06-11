@@ -332,4 +332,4 @@ def account_profile_search(request):
                                                                        'user_profile': user_profile,})
     else:
         form = AccountSearchForm()
-        return render(request, 'account/account_profile_search.html', {'form': form,})
+        return render(request, 'account/account_profile_search.html', {'form': form, 'is_first': True,})
