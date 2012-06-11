@@ -10,4 +10,6 @@ urlpatterns = patterns('account.views',
 
     url(r'users/manage/$', 'account_manage_users', name='account_manage_users'),
     url(r'users/bulk/$', 'account_manage_bulk', name='account_manage_bulk'),
+
+    url(r'profile/search/$', 'account_profile_search', name='account_profile_search'),
 )

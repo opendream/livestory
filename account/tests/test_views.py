@@ -360,3 +360,50 @@ class TestManageUserBulk(TestCase):
         assert user1.is_active
         assert user2.is_active
     
+
+@override_settings(PRIVATE=False)
+class TestAccountSearch(TestCase):
+    def setUp(self):
+        self.staff = factory.create_user('staff@example.com', 'staff@example.com', 'staff', 'John', 'Doe')
+        self.staff.is_staff = True
+        self.staff.save()
+
+        self.user1 = factory.create_user('tester1@example.com', 'tester1@example.com', 'testuser1', 'Panudate', 'Vasinwattana', 'head master', 'playplanet')
+        self.user2 = factory.create_user('tester2@example.com', 'tester2@example.com', 'testuser2', 'Tom', 'Hank', 'movie master', 'hollywood')
+        self.user2 = factory.create_user('tester3@example.com', 'tester3@example.com', 'testuser3', 'Tom', 'Jerry', 'cartoon master', 'workplanet')
+        
+        self.client.login(username='staff@example.com', password='staff')
+
+    def tearDown(self):
+        self.client.logout()
+
+    def test_search_get(self):
+        response = self.client.get(reverse('account_profile_search'))
+        self.assertEquals(200, response.status_code)
+
+    def test_search_no_result(self):
+        response = self.client.get(reverse('account_profile_search'), {'account_keywords': ''})
+        self.assertContains(response, 'No results')
+
+    def test_search_result(self):
+        #search first_name
+        response = self.client.get(reverse('account_profile_search'), {'account_keywords': 'tom'})
+        self.assertEquals(2, response.context['user_profile'].count())
+
+        #search last_name
+        response = self.client.get(reverse('account_profile_search'), {'account_keywords': 'jerry'})
+        self.assertEquals(1, response.context['user_profile'].count())
+
+        #search office_name
+        response = self.client.get(reverse('account_profile_search'), {'account_keywords': 'planet'})
+        self.assertEquals(2, response.context['user_profile'].count())
+
+    def test_search_keyword_insensitive(self):
+        response1 = self.client.get(reverse('account_profile_search'), {'account_keywords': 'PANUDATE'})
+        response2 = self.client.get(reverse('account_profile_search'), {'account_keywords': 'PanudatE'})
+        self.assertEquals(response1.context['user_profile'].count(), response2.context['user_profile'].count())
+
+    def test_search_keyword_with_spaces(self):
+        response1 = self.client.get(reverse('account_profile_search'), {'account_keywords': '   PANUDATE   '})
+        response2 = self.client.get(reverse('account_profile_search'), {'account_keywords': 'PanudatE'})
+        self.assertEquals(response1.context['user_profile'].count(), response2.context['user_profile'].count())
