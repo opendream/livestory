@@ -55,8 +55,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    job_title = models.CharField(max_length=200, blank=True, null=True)
-    office = models.CharField(max_length=200, blank=True, null=True)
+    job_title = models.CharField(max_length=200, blank=True, null=True, default='')
+    office = models.CharField(max_length=200, blank=True, null=True, default='')
     avatar = models.ImageField(upload_to=account_avatar_url, null=True)
 
     email_posting_key = models.CharField(max_length=200, db_index=True, blank=True, null=True)
