@@ -30,4 +30,5 @@ urlpatterns = patterns('blog.views',
     url(r'tags/$', 'blog_tags', name='blog_tags'),
     url(r'search/$', 'blog_search', name='blog_search'),
 
+    url(r'map/$', 'blog_map', name='blog_map'),
 )

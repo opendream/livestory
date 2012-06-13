@@ -82,3 +82,14 @@ def active(request, pattern, text=' active'):
                 return ''
   
         return text
+
+@register.filter
+def convert_blogs_locations_to_lat_array(querydict):
+    lat = ['"%s"' % item.location.lat for item in querydict]
+    return '[%s]' % ','.join(lat)
+
+
+@register.filter
+def convert_blogs_locations_to_lng_array(querydict):
+    lng = ['"%s"' % item.location.lng for item in querydict]
+    return '[%s]' % ','.join(lng)
