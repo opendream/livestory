@@ -101,16 +101,25 @@ $(document).ready(function() {
     	
       <div class="blog-container-photo">
         <div class="blog-photo rounded5">
-          <img src="{{ blog.image.path|scale_blog_image:'748x1000' }}" alt="{{ blog.title }}" />
+          <img src="{{ blog.image|scale_blog_image:'748x1000' }}" alt="{{ blog.title }}" />
         </div>
       </div>
-      
+
       <h2 id="title-blog">{{ blog.title }}</h2>
       
       <p class="block">{{ blog.description }}</p>
 
       <span class="grey">{% if blog.published %} {{ blog.published|localtime|timeago }} {% endif %}</span>
-      
+      <span class="grey">
+        <div class="">
+        {{ blog.view_summary.totalcount }} view{{ blog.view_summary.totalcount|pluralize }}
+        </div>
+        {% if comments %}
+          <div class="">
+          {{ comments.count }} comment{{ comments.count|pluralize }}
+          </div>
+        {% endif %}
+      </span>
       {% if not blog.trash %}
       {% if blog.user.id == user.id or user.is_staff %}
       <br /><br />
@@ -224,7 +233,7 @@ $(document).ready(function() {
 -->
 			
 			<div class="sidebar-list block">
-				<h3 class="sidebar-title">Photo</h3>
+				<h3>Photo</h3>
 				<ul>
           {% if blog.downloadable %}
 					<li>
@@ -233,7 +242,7 @@ $(document).ready(function() {
 					</li>
 					<li>
 						<div class="col-left"><span class="ic-widget ic-size">Size</span></div>
-						<div class="col-right"><span class="col-right">{{ blog.image.width }}x{{ blog.image.height }}</span></div>
+						<div class="col-right"><span class="col-right">{{ blog.get_image_size }}</span></div>
 						</li>
           {% else %}
           <li>
@@ -243,11 +252,11 @@ $(document).ready(function() {
           </li>
 					{% endif %}
           <li>
-            <div class="col-left"><span class="ic-widget ic-date">Date</span></div>
-            <div class="col-right"><span class="col-right">{{ blog.image_captured_date|date:"d M Y" }}</span></div>
+            <div class="col-left"><span class="ic-widget ic-date">Taken Date</span></div>
+            <div class="col-right"><span class="col-right">{{ blog.image_captured_date|date:"d M Y"|default:"N/A" }}</span></div>
           </li>
           <li>
-            <div class="col-left"><span class="ic-widget ic-device">Device</span></div>
+            <div class="col-left"><span class="ic-widget ic-device">Taken By</span></div>
             <div class="col-right"><span class="col-right">{{ blog.image_captured_device|default:"N/A" }}</span></div>
           </li>
 				</ul>
