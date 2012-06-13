@@ -6,15 +6,6 @@
 {% block email_content %}
 <p>Here are your blog activities for {{ date }}.</p>
 <p>
-{% comment %}
-<ul>
-{% for notification in loved_items %}
-  <li><a href = "{% url account_profile_view notification.subject.id %}"><img src="{{ notification.subject.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}"/></a>
-  	[<a href='{{ base_url }}/account/profile/{{ notification.subject.id }}/view/'>{{ notification.subject.get_profile.first_name }} {{ notification.subject.get_profile.last_name }}</a>] loves your blog. [<a href='{{ base_url }}/blog/{{ notification.blog.id }}/view/'>{{ notification.blog.title }}</a>]</li>
-{% endfor %}
-</ul>
-{% endcomment %}
-
 <table class="table table-striped table-list">
   <tbody>
     {% if loved_items %}
@@ -24,10 +15,6 @@
       <td class="middle"><a href ="{{ base_url }}/account/profile/{{ notification.subject.id }}/view/"><strong>{{ notification.subject.get_profile.get_full_name }}</strong></a> {{ notification.get_action_text }} your <a href="{{ base_url }}/{% url blog_view notification.blog.id %}">photo</a>. | <span class="grey">{{ notification.datetime|localtime|timeago }}</span></td>
     </tr>
     {% endfor %}
-    {% else %}
-    <tr class="no-notification">
-      <td>No notifications.</td>
-    </tr>
     {% endif %}
   </tbody>
 </table>
