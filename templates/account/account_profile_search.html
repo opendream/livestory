@@ -1,0 +1,42 @@
+{% extends 'base_single.html' %}
+
+{% load common_tags %}
+
+{% block content %}
+<form method="GET">
+    <div>{{ form.account_keywords }}{{ form.account_keywords.errors }}<button type="submit">Submit</button></div>
+    <div>Type your desired firstname, lastname or office name here</div>
+</form>
+
+{% if is_first %}
+  <div> No keywords </div>
+{% else %}
+  {% if not user_profile %}
+  <div> No results </div>
+  {% endif %}
+
+  <ul class="thumbnails blog-thumbnails">
+  {% for user in user_profile %}
+  <li class="span3">
+    <div class="thumbnail">
+      <div class="blog-thumbnail no-shadow">
+          <a href="{% url account_profile_view user.user.id %}">
+          <img 
+            width="260" 
+            height="180" 
+            src="{{user.get_avatar|crop:'260x180'}}" 
+          />
+          </a>
+      </div>
+      <div> {{ user.first_name }} </div>
+      <div> {{ user.last_name }} </div>
+      <div> {{ user.job_title }} </div>
+      <div> {{ user.office }} </div>
+    </div>
+  </li>
+  {% endfor %}
+  </ul>
+{% endif %}
+
+
+{% endblock %}

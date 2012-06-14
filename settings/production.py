@@ -13,3 +13,6 @@ DATABASES = {
         'PORT': '',
         }
 }
+
+# DJANGO-PRIVATE-FILES
+FILE_PROTECTION_METHOD = 'nginx'

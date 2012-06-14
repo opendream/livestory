@@ -22,13 +22,14 @@
   {% if user.is_authenticated %}
   <ul class="menu">
     <li><a href="{{ blog_home }}" class="popular{% if request.path == '/' %} active{% endif %}">Popular</a></li>
-    <li><a href="{% url blog_place_empty %}" class="place{% active request blog_place %}">Place</a></li>
+    <li><a href="{% url blog_place_empty %}" class="place{% active request blog_place %}{% if request.path == '/blog/map/' %} active{% endif %}">Place</a></li>
     <li><a href="{% url blog_mood 'choose' %}" class="moods{% active request blog_mood %}">Moods</a></li>
     <li><a href="{% url blog_category 'choose' %}" class="categories{% active request blog_category %}">Categories</a></li>
     <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
   </ul>
   {% endif %}
 </div>
+  <a href="{% url account_profile_search %}">Search users</a>
 
 {% endblock %}
 
@@ -81,6 +82,7 @@
             </div>
           </div>
     		</form>
+        <a href="{% url blog_map %}"> Maps </a>
     	</div>
     	<!-- End Place -->
     	

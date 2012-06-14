@@ -106,7 +106,7 @@ INSTALLED_APPS = (
 
     'south',
     'django_nose',
-
+    'private_files',
 )
 
 LOGGING = {
@@ -220,3 +220,5 @@ CACHES = {
     }
 }
 
+# DJANGO-PRIVATE-FILES
+FILE_PROTECTION_METHOD = 'basic'

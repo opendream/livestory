@@ -53,7 +53,7 @@ $(document).ready(function () {
 
           <div class="image-wrapper"{% if not blog_image_file %} style="display:none;"{% endif %}>
             <div class="image-append">
-              {% if blog_image_file %}<img src="{{ blog_image_file|scale_blog_image:settings.BLOG_IMAGE_PREVIEW_SIZE }}" />{% endif %}
+              {% if blog.image %}<img src="{{ blog.image|scale_blog_image:settings.BLOG_IMAGE_PREVIEW_SIZE }}" />{% endif %}
             </div>
             <a href="#" class="ic image-delete">change image</a>
             <input type="hidden" class="upload_url" name="upload_url" value="{% url ajax_blog_image_upload %}" />

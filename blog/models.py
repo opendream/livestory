@@ -12,7 +12,9 @@ from taggit.models import TaggedItem
 
 from common.utilities import split_filepath
 
+import Image
 import shutil
+import private_files
 
 MOOD_CHOICES = (
     (1, 'Fun'         ), 
@@ -55,7 +57,7 @@ class Category(models.Model):
     
 class Blog(models.Model):
     title          = models.CharField(max_length=200, db_index=True)
-    image          = models.ImageField(upload_to=blog_image_url, max_length=500)
+    image          = private_files.PrivateFileField(upload_to=blog_image_url, max_length=500, attachment=False)
     description    = models.TextField(null=True, db_index=True)
     mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
@@ -114,6 +116,11 @@ class Blog(models.Model):
     def get_image_file_name(self):
         (root, name ,ext) = split_filepath(self.image.path)
         return '%s.%s' % (name, ext)
+
+    def get_image_size(self):
+        if self.image and os.path.exists(self.image.path):
+            img = Image.open(self.image.path)
+            return str(img.size[0]) + 'x' + str(img.size[1])
 
     def downloadable(self, req_user=None):
         if self.user == req_user:

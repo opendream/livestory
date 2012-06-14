@@ -193,6 +193,8 @@ def blog_create(request):
     if request.method == 'POST':
         form = ModifyBlogForm(None, request.POST)
         if form.is_valid():
+            action = request.POST.get('action', '')
+
             location, created = Location.objects.get_or_create(
                 city__iexact    = form.cleaned_data['city'],
                 country__iexact = form.cleaned_data['country'], 
@@ -208,25 +210,24 @@ def blog_create(request):
                 description           = form.cleaned_data['description'],
                 user                  = request.user,
                 location              = location,
-                draft                 = bool(int(request.POST.get('draft'))),
                 allow_download        = form.cleaned_data['allow_download'],
                 image                 = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, image_name))),
                 image_captured_date   = get_image_captured_date(image_name),
                 image_captured_device = get_image_captured_device(image_name),
                 category              = form.cleaned_data['category'],
                 mood                  = form.cleaned_data['mood'],
+                published             = datetime.datetime.now() if action == 'publish' else None,
+                draft                 = 1 if action == 'draft' else 0,
+                trash                 = 1 if action == 'trash' else 0
             )
-
-            publish = bool(int(request.POST.get('publish')))
-            if publish:
-                blog.published = datetime.datetime.now()
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
 
             remove_temporary_blog_image(form.cleaned_data['image_file_name'])
 
-            messages.success(request, 'Blog post created. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+            messages.success(request, 'Blog post created. \
+                <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
             return redirect(reverse('blog_edit', args=[blog.id]))
 
         else:
@@ -238,12 +239,12 @@ def blog_create(request):
         form = ModifyBlogForm(None, initial={'allow_download': True})
 
     context = {
-        'page_title': 'Add New Story',
-        'form': form,
-        'moods': MOOD_CHOICES,
-        'visibilities': PRIVATE_CHOICES,
-        'is_draft': True,
-        'blog_image_file': blog_image_file,
+        'page_title'      : 'Add New Story',
+        'form'            : form,
+        'moods'           : MOOD_CHOICES,
+        'visibilities'    : PRIVATE_CHOICES,
+        'is_draft'        : True,
+        'blog_image_file' : blog_image_file,
     }
 
     return render(request, 'blog/blog_form.html', context)
@@ -538,7 +539,9 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
                                 **filter
                             ).order_by('-published')
     
-    pager = Paginator(items, 8)
+    page_size = request.GET.get('page_size') or 8
+   
+    pager = Paginator(items, int(page_size))
     p = request.GET.get('page') or 1
     
     try:
@@ -567,6 +570,8 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
         'url': url,
         'param': param,
         'color': color,
+        'total_blogs': items.count(),
+        'page_size': page_size,
     }
     
     return render(request, 'blog/blog_list.html', context)
@@ -762,3 +767,7 @@ def blog_term(request):
 
 def blog_howto(request):
     return render(request, 'howto.html')
+
+def blog_map(request):
+    blogs = Blog.objects.all()
+    return render(request, 'blog/blog_map.html', {'blogs': blogs,})

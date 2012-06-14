@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
+import private_files
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
-
 
 class Migration(SchemaMigration):
 
@@ -20,7 +20,8 @@ class Migration(SchemaMigration):
         db.create_table('blog_blog', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
+            # ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
+            ('image', self.gf('private_files.PrivateFileField')(max_length=100)),
             ('description', self.gf('django.db.models.fields.TextField')(null=True)),
             ('mood', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('private', self.gf('django.db.models.fields.BooleanField')(default=True)),
@@ -108,7 +109,8 @@ class Migration(SchemaMigration):
             'description': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'draft': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
+            # 'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
+            'image': ('private_files.PrivateFileField', [], {'max_length': '100'}),
             'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['location.Location']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'mood': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
