@@ -383,7 +383,7 @@ class TestAccountSearch(TestCase):
 
     def test_search_no_result(self):
         response = self.client.get(reverse('account_profile_search'), {'account_keywords': ''})
-        self.assertContains(response, 'No results')
+        self.assertContains(response, 'No keywords')
 
     def test_search_result(self):
         #search first_name

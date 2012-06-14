@@ -18,7 +18,7 @@ class TestBlogImageData(TestCase):
         self.category = factory.create_category('Animal', 'animal')
 
     def test_blog_create_post(self):
-        image = File(open(settings.BASE_PATH + 'static/tests/IMG_1405.jpg'))
+        image = File(open(settings.BASE_PATH + '/static/tests/IMG_1405.jpg'))
         file_name, thumbnail_url = save_temporary_blog_image(image)
 
         params = {

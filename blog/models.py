@@ -118,7 +118,7 @@ class Blog(models.Model):
         return '%s.%s' % (name, ext)
 
     def get_image_size(self):
-        if self.image:
+        if self.image and os.path.exists(self.image.path):
             img = Image.open(self.image.path)
             return str(img.size[0]) + 'x' + str(img.size[1])
 

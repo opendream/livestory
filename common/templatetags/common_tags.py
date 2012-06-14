@@ -33,9 +33,12 @@ def scale_blog_image(image, size):
     image_path = image.path
     (root, name, ext) = split_filepath(image_path)
     filename = scale_image(image_path, (int(size[0]), int(size[1])))
-    image_url = image.url.split('/')
-    image_url[-1] = filename
-    return '/'.join(image_url)
+    if filename:
+        image_url = image.url.split('/')
+        image_url[-1] = filename
+        return '/'.join(image_url)
+    else:
+        return image.url
 
 @register.filter()
 def crop(image, size):

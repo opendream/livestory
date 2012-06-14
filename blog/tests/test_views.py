@@ -108,7 +108,7 @@ class TestBlogCreate(TestCase):
         user_id = self.client.session.get('_auth_user_id')
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertFalse(response.context['is_draft'])
+        self.assertFalse(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertContains(response, 'Blog post created.')
         self.assertEquals('Hello world', blog.title)
@@ -136,7 +136,7 @@ class TestBlogCreate(TestCase):
             'country': country,
             'city': city,
             'private': '0',
-            'draft': '1',
+            'action': 'draft',
             'category': str(self.category.id),
             'allow_download': '1',
             'trash': '0',
@@ -152,7 +152,7 @@ class TestBlogCreate(TestCase):
 
         user_id = self.client.session.get('_auth_user_id')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertTrue(response.context['is_draft'])
+        self.assertTrue(blog.draft)
         self.assertEquals('Hello world (Draft)', blog.title)
         self.assertEquals('lorem ipsum (Draft)', blog.description)
         self.client.logout()
@@ -316,7 +316,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertFalse(response.context['is_draft'])
+        self.assertFalse(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertEquals('Hello world Edited', blog.title)
         self.assertEquals('lorem ipsum Edited', blog.description)
@@ -342,7 +342,7 @@ class TestBlogEdit(TestCase):
             'country': 'Korea',
             'city': 'Seoul',
             'private': '1',
-            'draft': '1',
+            'action': 'draft',
             'category': str(self.cat_travel.id),
             'allow_download': '1',
             'trash': '0',
@@ -357,7 +357,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertTrue(response.context['is_draft'])
+        self.assertTrue(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertEquals('Hello world Edited', blog.title)
         self.assertEquals('lorem ipsum Edited', blog.description)
@@ -385,7 +385,7 @@ class TestBlogEdit(TestCase):
             'country': 'Korea',
             'city': 'Seoul',
             'private': '1',
-            'draft': '1',
+            'action': 'draft',
             'category': str(self.cat_travel.id),
             'allow_download': '1',
             'trash': '0',
@@ -399,7 +399,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertTrue(response.context['is_draft'])
+        self.assertTrue(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertEquals('Hello world Edited', blog.title)
         self.assertEquals('lorem ipsum Edited', blog.description)
