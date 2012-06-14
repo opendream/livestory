@@ -419,10 +419,16 @@
 			left: 9px;
 		}
 		.dropdown-menu li a {
-			color:#390 !important;
+			color:#390 ;
 			&:hover { background: #f2f2f2; }
 		}
 		.caret{ opacity: 0.5; }
+		.dropdown-menu strong{
+			color:#390;
+		}
+		.dropdown-menu .notify-link{
+			color: #999;
+		}
 		
 		/* Notification
 		---------------------------------------*/
@@ -1889,6 +1895,7 @@
 	.dropdown-list .info{
 		width: 80%;
 		float: left;
+		color: #999;
 	}
 	.dropdown-list .info span{ font-size: 11px;}
 	
