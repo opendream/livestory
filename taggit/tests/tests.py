@@ -401,9 +401,9 @@ class TagStringParseTestCase(UnitTestCase):
         Test with simple space-delimited tags.
         """
         self.assertEqual(parse_tags('one'), [u'one'])
-        self.assertEqual(parse_tags('one two'), [u'one', u'two'])
-        self.assertEqual(parse_tags('one two three'), [u'one', u'three', u'two'])
-        self.assertEqual(parse_tags('one one two two'), [u'one', u'two'])
+        self.assertEqual(parse_tags('one two'), [u'one two'])
+        self.assertEqual(parse_tags('one two three'), [u'one two three'])
+        self.assertEqual(parse_tags('one one two two'), [u'one one two two'])
 
     def test_with_comma_delimited_multiple_words(self):
         """
@@ -422,8 +422,8 @@ class TagStringParseTestCase(UnitTestCase):
         A completed quote will trigger this.  Unclosed quotes are ignored.
         """
         self.assertEqual(parse_tags('"one'), [u'one'])
-        self.assertEqual(parse_tags('"one two'), [u'one', u'two'])
-        self.assertEqual(parse_tags('"one two three'), [u'one', u'three', u'two'])
+        self.assertEqual(parse_tags('"one two'), [u'one two'])
+        self.assertEqual(parse_tags('"one two three'), [u'one two three'])
         self.assertEqual(parse_tags('"one two"'), [u'one two'])
         self.assertEqual(parse_tags('a-one "a-two and a-three"'),
             [u'a-one', u'a-two and a-three'])
@@ -432,7 +432,7 @@ class TagStringParseTestCase(UnitTestCase):
         """
         Test with no loose commas -- split on spaces.
         """
-        self.assertEqual(parse_tags('one two "thr,ee"'), [u'one', u'thr,ee', u'two'])
+        self.assertEqual(parse_tags('one two "thr,ee"'), [u'one two', u'thr,ee'])
 
     def test_with_loose_commas(self):
         """
