@@ -318,18 +318,21 @@ def account_manage_bulk(request):
                 user.save()
         return redirect(reverse('account_manage_users'))
 
-
 @login_required
 def account_profile_search(request):
-    account_keywords = request.GET.get('account_keywords')
-    if account_keywords:
-        account_keywords = account_keywords.strip()
-        form = AccountSearchForm(initial={'account_keywords': account_keywords})
-        user_profile = UserProfile.objects.filter(Q(first_name__icontains=account_keywords) |
-                                                  Q(last_name__icontains=account_keywords) |
-                                                  Q(office__icontains=account_keywords))
-        return render(request, 'account/account_profile_search.html', {'form': form,
-                                                                       'user_profile': user_profile,})
-    else:
-        form = AccountSearchForm()
-        return render(request, 'account/account_profile_search.html', {'form': form, 'is_first': True,})
+    has_keyword = 'account_keywords' in request.GET
+    form = AccountSearchForm(request.GET) if has_keyword else AccountSearchForm()
+    params = {
+        'form': form, 
+        'has_keyword': has_keyword
+    }
+
+    if form.is_valid():
+        keyword = request.GET.get('account_keywords').strip()
+        accounts = UserProfile.objects.filter(Q(first_name__icontains=keyword) |
+                                              Q(last_name__icontains=keyword) |
+                                              Q(office__icontains=keyword))
+        params.update({'keyword': keyword})
+        params.update({'accounts': accounts})
+        
+    return render(request, 'account/account_profile_search.html', params)

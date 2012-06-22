@@ -281,7 +281,7 @@
 		}
 	}
 	.search-box { 
-		width: 300px;
+		width: 700px;
 		text-align: center;
 	}
 	.blog-list {min-height: 400px;}
@@ -296,6 +296,7 @@
 	.hide-text{ display: none; }
 	.inline{ display: inline !important; }
 	.no-shadow{ @include clear-shadow; }
+	.centered{ text-align: center; float: none; margin: 0 auto; }
 
 
 
