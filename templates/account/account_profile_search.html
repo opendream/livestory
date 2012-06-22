@@ -15,7 +15,9 @@
 		      <div class="">
 		        {{ form.account_keywords }}
 		        <input type="submit" value="Submit" class="btn-grey" />
-		        <span class="help-inline danger">{{ form.account_keywords.errors.as_text }}</span>
+		        {% if form.account_keywords.errors %}
+		        <span class="alert alert-error">{{ form.account_keywords.errors.as_text }}</span>
+		        {% endif %}
 		        <p class="help-block">Ex. John, Enya Smith, Oxfam GB</p>
 		      </div>
 		    </div>
@@ -26,7 +28,7 @@
 <!-- End People -->
 
 <div class="blog-list">
-{% if not has_keyword or form.account_keywords.errors %}
+{% if not keyword or form.account_keywords.errors %}
   <div class="hint-box search-box">
   	<div class="pull-left ic-hint"></div>
     <p class="chalkduster-font reset-box">Type your desired firstname, lastname or office name here</p>

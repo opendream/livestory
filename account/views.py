@@ -320,13 +320,13 @@ def account_manage_bulk(request):
 
 @login_required
 def account_profile_search(request):
-    has_keyword = 'account_keywords' in request.GET
-    form = AccountSearchForm(request.GET) if has_keyword else AccountSearchForm()
-    params = {
-        'form': form, 
-        'has_keyword': has_keyword
-    }
+    if 'account_keywords' in request.GET:
+        form = AccountSearchForm(request.GET)  
+    else:
+        form = AccountSearchForm()
 
+    params = {'form': form}
+    
     if form.is_valid():
         keyword = request.GET.get('account_keywords').strip()
         accounts = UserProfile.objects.filter(Q(first_name__icontains=keyword) |
@@ -334,5 +334,5 @@ def account_profile_search(request):
                                               Q(office__icontains=keyword))
         params.update({'keyword': keyword})
         params.update({'accounts': accounts})
-        
+
     return render(request, 'account/account_profile_search.html', params)
