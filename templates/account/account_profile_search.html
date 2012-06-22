@@ -12,7 +12,7 @@
 			<h3 class="filter-title futura-font red">Find people</h3>
 			<form class="form-horizontal filter-place filter-wrap" method="get" onsubmit="return validate_keyword()">
 			<div class="control-group">
-		      <div class="">
+		      <div>
 		        {{ form.account_keywords }}
 		        <input type="submit" value="Submit" class="btn-grey" />
 		        {% if form.account_keywords.errors %}
@@ -44,9 +44,10 @@
 		  {% for user in accounts %}
 		  <li class="span6">
 		    <div class="thumbnail people-list">
-					<a href="{% url account_profile_view user.user.id %}"><img src="{{user.get_avatar|crop:'94x94'}}" class="porfile-photo"/></a>
-		
-		      <a href="" class="profile-name">{{ user.first_name }} {{ user.last_name }}</a>
+			  <a href="{% url account_profile_view user.user.id %}">
+			  	<img src="{{user.get_avatar|crop:'94x94'}}" class="porfile-photo"/></a>
+		      <a href="{% url account_profile_view user.user.id %}" class="profile-name">
+		      	{{ user.first_name }} {{ user.last_name }}</a>
 		      <span class="grey"><strong>{{ user.job_title }}</strong></span> <span class="grey">{{ user.office }}</span>
 		    </div>
 		  </li>

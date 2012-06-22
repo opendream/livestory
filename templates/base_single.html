@@ -30,7 +30,7 @@
   </ul>
   
   <select id="nav-mobile">
-	  <option value="http://www.google.com">Popular</option>
+	  <option>Popular</option>
 	  <option>Place</option>
 	  <option>Moods</option>
 	  <option>Categories</option>
@@ -82,7 +82,7 @@
       <div id="filter-menu-map" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
       	{% if filter.location == 'map' %}
     		<h2 class="oxfam-font ic-page-title ic-title-blue block">all countries, all cities</h2>
-        <a href="{% url blog_place_empty %}" class="map-link">Go to filter</a>
+        <a href="{% url blog_place_empty %}" class="map-link">Go back to filter</a>
       	{% else %}
     		<h3 class="filter-title futura-font yellow">Filter by place</h3>
     		<form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">

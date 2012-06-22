@@ -143,5 +143,5 @@ class AccountSearchForm(forms.Form):
     account_keywords = forms.CharField(
                             required = True, 
                             max_length = 500, 
-                            error_messages = {'required': 'Search keyword is required.'}
+                            error_messages = {'required': 'Search keyword is required.'},
                         )
