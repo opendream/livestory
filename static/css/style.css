@@ -105,6 +105,9 @@ a:active {
 .blue {
   color: #12a3d4; }
 
+.red {
+  color: #dd5631; }
+
 /* 	Grid system 
 ---------------------------------------*/
 .grid-row {
@@ -375,6 +378,10 @@ a:active {
     width: 40px;
     background-position: -150px 0; }
 
+.search-box {
+  width: 300px;
+  text-align: center; }
+
 .blog-list {
   min-height: 400px; }
 
@@ -618,7 +625,7 @@ legend h1, h1 {
 ---------------------------------------*/
 .menu {
   float: right;
-  width: 470px;
+  /* width: 470px; */
   list-style: none;
   margin: 4px 0 0; }
   .menu li {
@@ -647,7 +654,11 @@ legend h1, h1 {
     background-position: -189px 0; }
   .menu .stories {
     width: 86px;
+    margin-right: 25px;
     background-position: -278px 0; }
+  .menu .people {
+    width: 63px;
+    background-position: -364px 0; }
 
 /* Navigation Active & Hover
 ---------------------------------------*/
@@ -665,6 +676,15 @@ legend h1, h1 {
 
 .stories:hover, .stories.active {
   background-position: -278px -69px; }
+
+.people:hover, .people.active {
+  background-position: -364px -69px; }
+
+/* Nav for Mobile
+---------------------------------------*/
+#nav-mobile {
+  width: 100%;
+  display: none; }
 
 /* Blog Photo
 ---------------------------------------*/
@@ -1056,8 +1076,7 @@ legend h1, h1 {
 /* Filter Block
 ---------------------------------------*/
 .filter-block {
-  position: relative;
-  /* 		@include animation(slideUp, 1s, 0, 1, ease); */ }
+  position: relative; }
 
 .filter-wrap {
   margin-bottom: 10px; }
@@ -1068,6 +1087,7 @@ legend h1, h1 {
   box-shadow: inset 0px 0px 10px 0px #dcdcdc;
   float: left;
   padding: 15px 15px 10px;
+  margin-bottom: 20px;
   font-size: 24px;
   font-weight: normal;
   background-color: #f7f7f7;
@@ -1101,6 +1121,16 @@ legend h1, h1 {
   float: left;
   margin-left: 30px; }
 
+.map-link {
+  float: right;
+  padding: 5px 10px;
+  margin-top: -15px;
+  background: black;
+  color: white;
+  font-weight: bold; }
+  .map-link:hover {
+    color: #efefef; }
+
 /* Categories Filter
 ---------------------------------------*/
 .categories-list {
@@ -1126,6 +1156,11 @@ legend h1, h1 {
   .list-block a.active {
     background: #eaeaea;
     font-weight: bold; }
+
+/* Map Filter
+---------------------------------------*/
+#filter-menu-map h2 {
+  float: left; }
 
 /* Thumbnail List
 ---------------------------------------*/
@@ -1172,6 +1207,14 @@ legend h1, h1 {
     text-decoration: none;
     background: #61A534;
     color: #fff; }
+
+.people-thumbnails li {
+  min-height: 122px; }
+.people-thumbnails .people-list {
+  padding: 10px;
+  height: 100px; }
+.people-thumbnails .profile-name {
+  padding-bottom: 10px; }
 
 /* New Story Icon
 ---------------------------------------*/
@@ -1685,13 +1728,19 @@ html[xmlns] .clearfix {
     float: none; }
 
   .filter-wrap {
-    margin-top: 20px; }
+    margin: 0; }
+
+  .filter-place {
+    margin: 0; }
 
   .categories-list {
     float: none;
     clear: both;
     width: 100%;
     margin: 0 0 10px; }
+
+  .map-link {
+    margin: 0; }
 
   /* 	Filter 
   ---------------------------------------*/
@@ -1704,7 +1753,10 @@ html[xmlns] .clearfix {
     width: 45%; }
 
   .col-right {
-    width: 50%; } }
+    width: 50%; }
+
+  .list-block {
+    width: 155px; } }
 /*----- Landscape phone to portrait tablet -----*/
 @media (max-width: 768px) {
   /* 	Scour Front 
@@ -1816,8 +1868,16 @@ html[xmlns] .clearfix {
   .filter-title {
     float: none; }
 
-  .filter-wrap {
-    margin-top: 20px; } }
+  .filter-place {
+    margin: 0; }
+
+  .map-link {
+    margin: 0; }
+
+  /* 	Search 
+  ---------------------------------------*/
+  .people-thumbnails .span6 {
+    width: 340px; } }
 @media (max-width: 730px) {
   /* Grid system
   ---------------------------------------*/
@@ -1934,7 +1994,22 @@ html[xmlns] .clearfix {
     width: auto !important; }
 
   .location-box {
-    width: auto !important; } }
+    width: auto !important; }
+
+  /* 	Search 
+  ---------------------------------------*/
+  .people-thumbnails .span6 {
+    width: 95.5%; }
+
+  /* Nav for Mobile
+  ---------------------------------------*/
+  .menu {
+    display: none; }
+
+  #nav-mobile {
+    display: block;
+    float: left;
+    margin-top: 25px; } }
 /*----- Landscape phones and down -----*/
 @media (max-width: 480px) {
   /* 	Scour Front 
@@ -2061,29 +2136,38 @@ html[xmlns] .clearfix {
 
   	/* Menu
     ---------------------------------------*/
-  .menu li {
-    border-top: 1px dotted #ccc;
-    border-bottom: 1px dotted #ccc;
-    padding: 10px 0 10px 5px; }
-  .menu a {
-    display: inline;
-    margin: 0 5px 0 0 !important;
-    padding-left: 7px;
-    width: auto !important;
-    background: none;
-    font-size: 16px;
-    text-align: center;
-    text-indent: 0em; }
-  .menu .popular {
-    border-left: 3px solid #72b64a; }
-  .menu .place {
-    border-left: 3px solid #f1bd36; }
-  .menu .moods {
-    border-left: 3px solid #573078; }
-  .menu .categories {
-    border-left: 3px solid #d04187; }
-  .menu .stories {
-    border-left: 3px solid #12a3d4; }
+  .menu {
+    display: none; }
+    .menu li {
+      border-top: 1px dotted #ccc;
+      border-bottom: 1px dotted #ccc;
+      padding: 10px 0 10px 5px; }
+    .menu a {
+      display: inline;
+      margin: 0 5px 0 0 !important;
+      padding-left: 7px;
+      width: auto !important;
+      background: none;
+      font-size: 16px;
+      text-align: center;
+      text-indent: 0em; }
+    .menu .popular {
+      border-left: 3px solid #72b64a; }
+    .menu .place {
+      border-left: 3px solid #f1bd36; }
+    .menu .moods {
+      border-left: 3px solid #573078; }
+    .menu .categories {
+      border-left: 3px solid #d04187; }
+    .menu .stories {
+      border-left: 3px solid #12a3d4; }
+
+  /* Nav for Mobile
+  ---------------------------------------*/
+  #nav-mobile {
+    display: block;
+    float: left;
+    margin-top: 25px; }
 
   /* 	Filter 
 	---------------------------------------*/
@@ -2092,9 +2176,6 @@ html[xmlns] .clearfix {
 
   .filter-place {
     margin-left: 0; }
-
-  .filter-wrap {
-    margin-top: 20px; }
 
   /* 	Header 
   ---------------------------------------*/
@@ -2123,6 +2204,12 @@ html[xmlns] .clearfix {
   .blog-thumbnails [class*="span"] {
     width: 200px;
     min-height: 225px; }
+
+  /* 	Search 
+  ---------------------------------------*/
+  .people-thumbnails .span6 {
+    width: 95.5%;
+    min-height: 122px; }
 
   /* Topbar
   ---------------------------------------*/
@@ -2215,7 +2302,12 @@ html[xmlns] .clearfix {
   .comment_form #id_comment {
     width: 95%; }
   .comment_form #comment_post {
-    margin: 10px 0 0 0; } }
+    margin: 10px 0 0 0; }
+
+  /* Filter Categories
+  ---------------------------------------*/
+  .list-block {
+    width: 180px; } }
 @media (max-width: 320px) {
   /* 	Scour Front 
 	---------------------------------------*/
@@ -2407,7 +2499,12 @@ html[xmlns] .clearfix {
   .btn-text {
     margin-top: 15px;
     padding: 0;
-    display: block; } }
+    display: block; }
+
+  /* Filter Categories
+  ---------------------------------------*/
+  .list-block {
+    width: 275px; } }
 /* Notification Page
 ---------------------------------------*/
 .ic-status {
@@ -2535,7 +2632,7 @@ html[xmlns] .clearfix {
   padding-right: 5px; }
 
 .filter-block-append {
-  overflow: hidden; }
+  /* overflow: hidden; Can't not overflow: hidden;*/ }
 
 .filter-block-append .default {
   z-index: 5; }

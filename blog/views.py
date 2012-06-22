@@ -768,6 +768,7 @@ def blog_term(request):
 def blog_howto(request):
     return render(request, 'howto.html')
 
+@login_required
 def blog_map(request):
     blogs = Blog.objects.all()
-    return render(request, 'blog/blog_map.html', {'blogs': blogs,})
+    return render(request, 'blog/blog_map.html', {'blogs': blogs, 'filter':{'location': 'map'}})

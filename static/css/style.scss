@@ -131,6 +131,7 @@
 	.purple{ color: #573078; }
 	.pink  { color: #d04187; }
 	.blue  { color: #12a3d4; }
+	.red   { color: #dd5631; }
 
 
 
@@ -279,7 +280,10 @@
 			background-position: -150px 0;
 		}
 	}
-
+	.search-box { 
+		width: 300px;
+		text-align: center;
+	}
 	.blog-list {min-height: 400px;}
 
 /* Utilities
@@ -491,7 +495,7 @@
 	---------------------------------------*/
 	.menu{
 		float: right;
-		width: 470px;
+		/* width: 470px; */
 		list-style: none;
 		margin: 4px 0 0;
 		li { float: left; }
@@ -524,16 +528,29 @@
 		}
 		.stories{
 			width: 86px;
+			margin-right: 25px;
 			background-position: -278px 0;
+		}
+		.people{
+			width: 63px;
+			background-position: -364px 0;
 		}
 	}
 		/* Navigation Active & Hover
 		---------------------------------------*/
 		.popular:hover, .popular.active{ background-position: 0 -69px; }
-		.place:hover, .place.active{ background-position: -65px -69px; }
-		.moods:hover, .moods.active{ background-position: -127px -69px; }
+		.place:hover, .place.active    { background-position: -65px -69px; }
+		.moods:hover, .moods.active    { background-position: -127px -69px; }
 		.categories:hover, .categories.active{ background-position: -189px -69px; }
-		.stories:hover, .stories.active{ background-position: -278px -69px; }
+		.stories:hover, .stories.active      { background-position: -278px -69px; }
+		.people:hover, .people.active        { background-position: -364px -69px; }
+	
+	/* Nav for Mobile
+	---------------------------------------*/	
+	#nav-mobile{
+		width: 100%;
+		display: none;
+	}
 
 	/* Blog Photo
 	---------------------------------------*/
@@ -837,13 +854,13 @@
 	---------------------------------------*/
 	.filter-block { 
 		position: relative;
-/* 		@include animation(slideUp, 1s, 0, 1, ease); */
 	}
 	.filter-wrap  { margin-bottom: 10px; }
 	.filter-title {
 		@include inset-shadow(0px, 0px, 10px, 0px, #dcdcdc);
 		float: left;
 		padding: 15px 15px 10px;
+		margin-bottom: 20px;
 		font-size: 24px;
 		font-weight: normal;  
 		background-color: #f7f7f7;
@@ -871,6 +888,17 @@
 		/* Place Filter 
 		---------------------------------------*/
 		.filter-place { float: left; margin-left: 30px; }
+		.map-link{
+			float: right;
+			padding: 5px 10px;
+			margin-top: -15px;
+			background: black;
+			color: white;
+			font-weight: bold;
+			&:hover{
+				color: #efefef;
+			}
+		}
 		
 		/* Categories Filter
 		---------------------------------------*/
@@ -895,6 +923,14 @@
 		    &:hover{ background: #eaeaea; }
 		  }
 		  a.active { background: #eaeaea; font-weight: bold; }
+		}
+		
+		/* Map Filter
+		---------------------------------------*/
+		#filter-menu-map{
+			h2{
+				float: left;
+			}
 		}
 
 	/* Thumbnail List
@@ -946,6 +982,20 @@
 				color: #fff;
 			}
 		}
+		
+		.people-thumbnails{
+			li{
+				min-height: 122px;
+			}
+			.people-list{
+				padding: 10px;
+				height: 100px;
+			}
+			.profile-name{
+				padding-bottom: 10px;
+			}
+		}
+		
 		/* New Story Icon
 		---------------------------------------*/
 		.new-story{
@@ -1388,13 +1438,15 @@
 	  /* 	Filter 
 		---------------------------------------*/
 		.filter-title{ float: none; }	  
-		.filter-wrap{ margin-top: 20px;}
+		.filter-wrap{ margin: 0;}
+		.filter-place{ margin: 0; }
 	  .categories-list{
 		  float: none;
 		  clear: both;
 		  width: 100%;
 		  margin: 0 0 10px;
 	  }
+	  .map-link{ margin: 0;}
 		
 		/* 	Filter 
 		---------------------------------------*/
@@ -1404,6 +1456,10 @@
 		---------------------------------------*/
 		.col-left  { width: 45%; }
 		.col-right { width: 50%; }
+		
+		.list-block{
+			width: 155px;
+		}
 
   }
 	
@@ -1472,7 +1528,16 @@
 		/* 	Filter 
 		---------------------------------------*/
 		.filter-title{ float: none; }
-		.filter-wrap{ margin-top: 20px;}
+		.filter-place{ margin: 0; }
+		.map-link{ margin: 0;}
+		
+		/* 	Search 
+		---------------------------------------*/
+		.people-thumbnails{
+			.span6{
+				width: 340px;
+			}
+		}
 		
   }
 	
@@ -1482,6 +1547,7 @@
 	  ---------------------------------------*/
 	  .grid{ width: 160px;}
 	  .grid-colspan{ width: 670px;}
+
   }
   
   @media (min-width: 480px) and (max-width: 730px){
@@ -1529,6 +1595,25 @@
 	  .category-box{ width: auto !important; }
 		.mood-box{ width: auto !important; }
 		.location-box{ width: auto !important; }
+		
+		/* 	Search 
+		---------------------------------------*/
+		.people-thumbnails{
+			.span6{
+				width: 95.5%;
+			}
+		}
+		
+		/* Nav for Mobile
+		---------------------------------------*/
+		.menu{
+			display: none;
+		}
+		#nav-mobile{
+			display: block;
+			float: left;
+			margin-top: 25px;
+		}
 	  
   }
   
@@ -1592,6 +1677,7 @@
 		/* Menu
 	  ---------------------------------------*/
 		.menu{
+			display: none;
 			li{
 				border-top: 1px dotted #ccc;
 				border-bottom: 1px dotted #ccc;
@@ -1613,12 +1699,19 @@
 			.categories{ border-left: 3px solid #d04187;}
 			.stories{ border-left: 3px solid #12a3d4;}
 		}
+		
+		/* Nav for Mobile
+		---------------------------------------*/	
+		#nav-mobile{
+			display: block;
+			float: left;
+			margin-top: 25px;
+		}
 	  
 	  /* 	Filter 
 		---------------------------------------*/
 		.mood-container{ width: 300px;}
 		.filter-place { margin-left: 0; }
-		.filter-wrap{ margin-top: 20px; }
 		
 		/* 	Header 
 		---------------------------------------*/
@@ -1635,6 +1728,15 @@
 		.blog-thumbnails [class*="span"] {
 			width: 200px;
 			min-height: 225px;
+		}
+		
+		/* 	Search 
+		---------------------------------------*/
+		.people-thumbnails{
+			.span6{
+				width: 95.5%;
+				min-height: 122px;
+			}
 		}
 	  
 	  /* Topbar
@@ -1716,6 +1818,12 @@
 		.comment_form{
 			#id_comment  { width: 95%; }
 			#comment_post{ margin: 10px 0 0 0; }
+		}
+		
+		/* Filter Categories
+		---------------------------------------*/
+		.list-block{
+			width: 180px;
 		}
 		
   }
@@ -1821,6 +1929,13 @@
 			padding: 0;
 			display: block;
 		}
+		
+		/* Filter Categories
+		---------------------------------------*/
+		.list-block{
+			width: 275px;
+		}
+		
   }
 
 	/* Notification Page
@@ -1923,7 +2038,7 @@
 	      padding-right: 5px;
 	}
 	.filter-block-append {
-	    overflow: hidden;
+	    /* overflow: hidden; Can't not overflow: hidden;*/
 	}
 	.filter-block-append .default {
 	    z-index: 5;

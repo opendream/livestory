@@ -26,10 +26,19 @@
     <li><a href="{% url blog_mood 'choose' %}" class="moods{% active request blog_mood %}">Moods</a></li>
     <li><a href="{% url blog_category 'choose' %}" class="categories{% active request blog_category %}">Categories</a></li>
     <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
+    <li><a href="{% url account_profile_search %}" class="people{% if request.path == '/account/profile/search/' %} active{% endif %}">People</a></li>
   </ul>
+  
+  <select id="nav-mobile">
+	  <option>Popular</option>
+	  <option>Place</option>
+	  <option>Moods</option>
+	  <option>Categories</option>
+	  <option>All Stories</option>
+	  <option>People</option>
+  </select>
   {% endif %}
 </div>
-  <a href="{% url account_profile_search %}">Search users</a>
 
 {% endblock %}
 
@@ -38,7 +47,7 @@
   
   <div class="filter-block block">
     <div class="filter-block-append"{% if not filter %} style="height:0;"{% endif %}>
-      <span class="filter-top"></span>
+      <span class="filter-top" {% if not filter %} style="display: none;"{% endif %}></span>
       
       <!-- Mood -->
       <div id="filter-menu-mood" class="filter-menu{% if filter.mood %} default dshow{% endif %}"{% if not filter.mood %} style="display: none;"{% endif %}>
@@ -70,7 +79,11 @@
       <!-- End Category -->
       
       <!-- Place -->
-      <div id="filter-menu-place" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
+      <div id="filter-menu-map" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
+      	{% if filter.location == 'map' %}
+    		<h2 class="oxfam-font ic-page-title ic-title-blue block">all countries, all cities</h2>
+        <a href="{% url blog_place_empty %}" class="map-link">Go to filter</a>
+      	{% else %}
     		<h3 class="filter-title futura-font yellow">Filter by place</h3>
     		<form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">
     			<div class="control-group">
@@ -82,11 +95,13 @@
             </div>
           </div>
     		</form>
-        <a href="{% url blog_map %}"> Maps </a>
+        <a href="{% url blog_map %}" class="map-link">Go to map</a>
+        {% endif %}
     	</div>
     	<!-- End Place -->
+ 
     	
-  		<span class="filter-bottom"></span>
+  		<span class="filter-bottom" {% if not filter %} style="display: none;"{% endif %}></span>
     </div>
   </div>
 </div>

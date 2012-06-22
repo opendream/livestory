@@ -3,40 +3,56 @@
 {% load common_tags %}
 
 {% block content %}
-<form method="GET">
-    <div>{{ form.account_keywords }}{{ form.account_keywords.errors }}<button type="submit">Submit</button></div>
-    <div>Type your desired firstname, lastname or office name here</div>
-</form>
 
+
+<!-- People -->
+<div class="filter-block block">
+	<span class="filter-top"></span>
+			<div id="filter-menu-people" class="filter-menu">
+			<h3 class="filter-title futura-font red">Find people</h3>
+			<form class="form-horizontal filter-place filter-wrap" method="get">
+				<div class="control-group">
+		      <div class="">
+		        {{ form.account_keywords }}{{ form.account_keywords.errors }}
+		        <input type="submit" value="Submit" class="btn-grey" />
+		        <p class="help-block">Type your desired firstname, lastname or office name here</p>
+		      </div>
+		    </div>
+			</form>
+			</div>
+	<span class="filter-bottom"></span>
+</div>
+<!-- End People -->
+
+<div class="blog-list">
 {% if is_first %}
-  <div> No keywords </div>
+  <div class="hint-box search-box">
+    <p class="chalkduster-font reset-box">No Keyword</p>
+  </div>
 {% else %}
   {% if not user_profile %}
-  <div> No results </div>
+  <div class="hint-box search-box">
+    <p class="chalkduster-font reset-box">No Result</p>
+  </div>
   {% endif %}
-
-  <ul class="thumbnails blog-thumbnails">
-  {% for user in user_profile %}
-  <li class="span3">
-    <div class="thumbnail">
-      <div class="blog-thumbnail no-shadow">
-          <a href="{% url account_profile_view user.user.id %}">
-          <img 
-            width="260" 
-            height="180" 
-            src="{{user.get_avatar|crop:'260x180'}}" 
-          />
-          </a>
-      </div>
-      <div> {{ user.first_name }} </div>
-      <div> {{ user.last_name }} </div>
-      <div> {{ user.job_title }} </div>
-      <div> {{ user.office }} </div>
-    </div>
-  </li>
-  {% endfor %}
-  </ul>
-{% endif %}
+	<div class="row">
+		<div class="span12">
+			<ul class="thumbnails people-thumbnails">
+		  {% for user in user_profile %}
+		  <li class="span6">
+		    <div class="thumbnail people-list">
+					<a href="{% url account_profile_view user.user.id %}"><img src="{{user.get_avatar|crop:'94x94'}}" class="porfile-photo"/></a>
+		
+		      <a href="" class="profile-name">{{ user.first_name }} {{ user.last_name }}</a>
+		      <span class="grey"><strong>{{ user.job_title }}</strong></span> <span class="grey">{{ user.office }}</span>
+		    </div>
+		  </li>
+		  {% endfor %}
+		  </ul>
+		{% endif %}
+		</div>
+	</div>
+</div> 
 
 
 {% endblock %}
