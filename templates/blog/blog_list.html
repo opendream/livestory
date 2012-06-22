@@ -54,13 +54,13 @@
     </ul>
   </div>
   {% endif %}
-  {% if blogs %}
-  <div>Item per page: 
+  {% if blogs and has_pager %}
+  <div>Items per page:
     <a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page_size=8">8</a> | 
     <a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page_size=16">16</a> | 
-    <a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page_size=32">32</a></div>
+    <a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page_size=32">32</a>
+  </div>
   {% endif %}
 </div>
-
 {% endblock %}
 
