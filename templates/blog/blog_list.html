@@ -43,19 +43,23 @@
   <div class="pagination pagination-centered">
     <ul>
       {% if pagination.has_previous %}
-      <li><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.previous_page_number }}&page_size={{ page_size }}">«</a></li>
+      <li><a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page={{ pagination.previous_page_number }}&mps;page_size={{ page_size }}">«</a></li>
       {% endif %}
       {% for p in page_range %}
-      <li{% ifequal page p %} class="active"{% endifequal %}><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ p }}&page_size={{ page_size }}">{{ p }}</a></li>
+      <li{% ifequal page p %} class="active"{% endifequal %}><a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page={{ p }}&amp;page_size={{ page_size }}">{{ p }}</a></li>
       {% endfor %}
       {% if pagination.has_next %}
-      <li><a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page={{ pagination.next_page_number }}&page_size={{ page_size }}">»</a></li>
+      <li><a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page={{ pagination.next_page_number }}&amp;page_size={{ page_size }}">»</a></li>
       {% endif %}
     </ul>
   </div>
   {% endif %}
-
-  <div>Show <a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page_size=8">8</a>|<a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page_size=16">16</a>|<a href="{{ url }}{% if param %}?{{ param }}&{% else %}?{% endif %}page_size=32">32</a> photos</div>
+  {% if blogs %}
+  <div>Item per page: 
+    <a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page_size=8">8</a> | 
+    <a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page_size=16">16</a> | 
+    <a href="{{ url }}{% if param %}?{{ param }}&amp;{% else %}?{% endif %}page_size=32">32</a></div>
+  {% endif %}
 </div>
 
 {% endblock %}
