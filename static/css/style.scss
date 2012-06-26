@@ -548,8 +548,45 @@
 	/* Nav for Mobile
 	---------------------------------------*/	
 	#nav-mobile{
-		width: 100%;
 		display: none;
+		width: 100%;
+		ul{
+			margin: 0;
+		}
+		li{
+			padding: 10px 15px;
+			border-bottom: 1px dashed #ccc;
+			list-style: none;
+			a{
+				display: block;
+				padding: 0 0 0 15px;
+				border-left: 6px solid #ccc;
+			}
+		}
+		
+		.popular    { border-color: #72b64a; }
+		.place      { border-color: #f1bd36; }
+		.moods      { border-color: #573078; }
+		.categories { border-color: #d04187; }
+		.stories    { border-color: #12a3d4; }
+		.people     { border-color: #dd5631; }
+	}
+	.menu-toggle{
+		display: block;
+		width: 95.5%;
+		padding: 5px 15px 15px;
+		margin: 15px 0 0;
+		border-bottom: 1px dashed #ccc;
+		color: #686868;
+		font-weight: bold;
+		span{
+			background: #CCC;
+			padding: 0 5px 3px 5px;
+			color: white;
+			font-size: 18px;
+		}
+		.expand:before  { content: '+'; }
+		.collapse:before{ content: '-'; }
 	}
 
 	/* Blog Photo
@@ -1551,6 +1588,10 @@
   }
   
   @media (min-width: 480px) and (max-width: 730px){
+  
+	  #navigation h1{
+		  float: none;
+	  }
 		
 		/* 	Scour Front 
 		---------------------------------------*/
@@ -1612,13 +1653,17 @@
 		#nav-mobile{
 			display: block;
 			float: left;
-			margin-top: 25px;
+			margin-bottom: 50px;
 		}
 	  
   }
   
 	/*----- Landscape phones and down -----*/
   @media (max-width: 480px) { 
+  
+	  #navigation h1{
+		  float: none;
+	  }
 	  
 	  /* 	Scour Front 
 		---------------------------------------*/
@@ -1705,7 +1750,7 @@
 		#nav-mobile{
 			display: block;
 			float: left;
-			margin-top: 25px;
+			margin-bottom: 50px;
 		}
 	  
 	  /* 	Filter 

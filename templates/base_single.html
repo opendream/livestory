@@ -29,14 +29,18 @@
     <li><a href="{% url account_profile_search %}" class="people{% if request.path == '/account/profile/search/' %} active{% endif %}">People</a></li>
   </ul>
   
-  <select id="nav-mobile">
-	  <option>Popular</option>
-	  <option>Place</option>
-	  <option>Moods</option>
-	  <option>Categories</option>
-	  <option>All Stories</option>
-	  <option>People</option>
-  </select>
+  <div id="nav-mobile">
+   <a href="" class="menu-toggle">MENU <span class="expand collapse"></span></a>
+	  <ul>
+		  <li><a href="{{ blog_home }}" class="popular">Popular</a></li>
+		  <li><a href="{% url blog_place_empty %}" class="place">Place</a></li>
+		  <li><a href="{% url blog_mood 'choose' %}" class="moods">Moods</a></li>
+		  <li><a href="{% url blog_category 'choose' %}" class="categories">Categories</a></li>
+		  <li><a href="{{ blog_all }}" class="stories">All Stories</a></li>
+		  <li><a href="{% url account_profile_search %}" class="people">People</a></li>
+	  </ul>
+  </div>
+ 
   {% endif %}
 </div>
 
@@ -81,7 +85,7 @@
       <!-- Place -->
       <div id="filter-menu-map" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
       	{% if filter.location == 'map' %}
-    		<h2 class="oxfam-font ic-page-title ic-title-blue block">all countries, all cities</h2>
+    		<h2 class="oxfam-font ic-page-title ic-title-yellow block">all countries, all cities</h2>
         <a href="{% url blog_place_empty %}" class="map-link">Go to filter</a>
       	{% else %}
     		<h3 class="filter-title futura-font yellow">Filter by place</h3>
