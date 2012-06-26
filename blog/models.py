@@ -140,7 +140,7 @@ class Love(models.Model):
 class Comment(models.Model):
     user = models.ForeignKey(User)
     blog = models.ForeignKey(Blog)
-    comment = models.TextField()
+    comment = models.TextField(max_length=500)
     post_date = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):

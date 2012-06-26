@@ -379,7 +379,7 @@ a:active {
     background-position: -150px 0; }
 
 .search-box {
-  width: 300px;
+  width: 700px;
   text-align: center; }
 
 .blog-list {
@@ -414,6 +414,11 @@ a:active {
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
   box-shadow: none; }
+
+.centered {
+  text-align: center;
+  float: none;
+  margin: 0 auto; }
 
 /* Form
 ---------------------------------------*/

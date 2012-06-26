@@ -140,4 +140,8 @@ class UserProfileForgotForm(forms.Form):
         return req_email
 
 class AccountSearchForm(forms.Form):
-    account_keywords = forms.CharField()
+    account_keywords = forms.CharField(
+                            required = True, 
+                            max_length = 500, 
+                            error_messages = {'required': 'Search keyword is required.'},
+                        )
