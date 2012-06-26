@@ -230,6 +230,9 @@ a:active {
 .ic-title-grey {
   background: url("../img/ic-title_grey.png") 0px 10px no-repeat; }
 
+.ic-title-red {
+  background: url("../img/ic-title_red.png") 0px 10px no-repeat; }
+
 /* Manage Story Icon
 ---------------------------------------*/
 .ic-action-story {
