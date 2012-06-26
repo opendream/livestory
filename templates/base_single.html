@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block base_navi %}
-<!------- Navigation -->
+<!-- Navigation -->
 <div id="navigation" class="clearfix">
   <h1 class="oxfam-font">
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
@@ -30,8 +30,8 @@
   </ul>
   
   <div id="nav-mobile">
-   <a href="" class="menu-toggle">MENU <span class="expand collapse"></span></a>
-	  <ul>
+   <a href="javascript:void(0)" class="menu-toggle">MENUS<span id="toggle-btn" class="expandable collapsable" data-toggle="collapse" data-target="#mobile-menus"></span></a>
+	  <ul id="mobile-menus" class="collapse in">
 		  <li><a href="{{ blog_home }}" class="popular">Popular</a></li>
 		  <li><a href="{% url blog_place_empty %}" class="place">Place</a></li>
 		  <li><a href="{% url blog_mood 'choose' %}" class="moods">Moods</a></li>
@@ -40,7 +40,7 @@
 		  <li><a href="{% url account_profile_search %}" class="people">People</a></li>
 	  </ul>
   </div>
- 
+  
   {% endif %}
 </div>
 
@@ -102,7 +102,6 @@
     	</div>
     	<!-- End Place -->
  
-    	
   		<span class="filter-bottom" {% if not filter %} style="display: none;"{% endif %}></span>
     </div>
   </div>
@@ -111,4 +110,11 @@
 <div class="clear-both">
     {% block content %}{% endblock %}
 </div>
+<script type="text/javascript">
+   $(function() {
+      $('#toggle-btn').click(function() {
+        $(this).toggleClass('collapsable')
+      })
+   })
+</script>
 {% endblock %}

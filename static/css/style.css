@@ -729,9 +729,9 @@ legend h1, h1 {
     padding: 0 5px 3px 5px;
     color: white;
     font-size: 18px; }
-  .menu-toggle .expand:before {
+  .menu-toggle .expandable:before {
     content: '+'; }
-  .menu-toggle .collapse:before {
+  .menu-toggle .collapsable:before {
     content: '-'; }
 
 /* Blog Photo

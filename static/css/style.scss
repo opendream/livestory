@@ -587,8 +587,8 @@
 			color: white;
 			font-size: 18px;
 		}
-		.expand:before  { content: '+'; }
-		.collapse:before{ content: '-'; }
+		.expandable:before  { content: '+'; }
+		.collapsable:before{ content: '-'; }
 	}
 
 	/* Blog Photo
