@@ -85,10 +85,12 @@
       <!-- Place -->
       <div id="filter-menu-map" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
       	{% if filter.location == 'map' %}
-    		<h2 class="oxfam-font ic-page-title ic-title-yellow block">all countries, all cities</h2>
+        <h2 class="oxfam-font ic-page-title ic-title-yellow block">all countries, all cities</h2>
         <a href="{% url blog_place_empty %}" class="map-link">Go to filter</a>
-    		<form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">
-    			<div class="control-group">
+        {% else %}
+        <h3 class="filter-title futura-font yellow">Filter by place</h3>
+        <form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">
+          <div class="control-group">
             <div class="">
               {{ place_form.country }}
               {{ place_form.city }}
@@ -96,7 +98,7 @@
               <p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
             </div>
           </div>
-    		</form>
+        </form>
         <a href="{% url blog_map %}" class="map-link">Go to map</a>
         {% endif %}
     	</div>
