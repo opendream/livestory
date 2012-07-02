@@ -11,7 +11,7 @@
     var lat = {{ blogs|convert_blogs_locations_to_lat_array|safe }};
     var lng = {{ blogs|convert_blogs_locations_to_lng_array|safe }};
 
-    var cloudmade = new CM.Tiles.CloudMade.Web({key: 'bbb27eb98eee47458164f911231fee8a', minZoomLevel:0,  maxZoomLevel:7});
+    var cloudmade = new CM.Tiles.CloudMade.Web({key: 'bbb27eb98eee47458164f911231fee8a', minZoomLevel:2,  maxZoomLevel:7});
     var map = new CM.Map('cm-example', cloudmade);
     map.setCenter(new CM.LatLng(-50, 0), 2);
 
