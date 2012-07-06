@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
-import private_files
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+
 
 class Migration(SchemaMigration):
 
@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
         # Adding model 'Category'
         db.create_table('blog_category', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=200, db_index=True)),
             ('code', self.gf('django.db.models.fields.SlugField')(max_length=50)),
         ))
         db.send_create_signal('blog', ['Category'])
@@ -19,23 +19,19 @@ class Migration(SchemaMigration):
         # Adding model 'Blog'
         db.create_table('blog_blog', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            # ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100)),
-            ('image', self.gf('private_files.PrivateFileField')(max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=200, db_index=True)),
+            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=500)),
+            ('description', self.gf('django.db.models.fields.TextField')(null=True, db_index=True)),
             ('mood', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('private', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('draft', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('trash', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('allow_download', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            # ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('published', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=False, null=True, blank=True)),
+            ('published', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.Category'])),
             ('location', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['location.Location'])),
-            ('image_captured_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=False, null=True, blank=True)),
-            ('image_captured_device', self.gf('django.db.models.fields.CharField')(max_length=200)),
         ))
         db.send_create_signal('blog', ['Blog'])
 
@@ -48,16 +44,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('blog', ['Love'])
 
-        # Adding model 'Comment'
-        db.create_table('blog_comment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('comment', self.gf('django.db.models.fields.TextField')(null=False)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('blog', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.Blog'])),
-            ('post_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal('blog', ['Comment'])
-
     def backwards(self, orm):
         # Deleting model 'Category'
         db.delete_table('blog_category')
@@ -67,9 +53,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Love'
         db.delete_table('blog_love')
-
-        # Deleting model 'Comment'
-        db.delete_table('blog_comment')
 
     models = {
         'auth.group': {
@@ -105,27 +88,24 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Blog'},
             'allow_download': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Category']"}),
-            # 'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'db_index': 'True'}),
             'draft': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            # 'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
-            'image': ('private_files.PrivateFileField', [], {'max_length': '100'}),
+            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '500'}),
             'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['location.Location']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'mood': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'private': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'published': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'trash': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'image_captured_date': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'False', 'blank': 'True'}),
-            'image_captured_device': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'blog.category': {
             'Meta': {'object_name': 'Category'},
             'code': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'})
         },
         'blog.love': {
             'Meta': {'object_name': 'Love'},
@@ -143,8 +123,8 @@ class Migration(SchemaMigration):
         },
         'location.location': {
             'Meta': {'object_name': 'Location'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'country': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
+            'country': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lat': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'lng': ('django.db.models.fields.CharField', [], {'max_length': '50'})
@@ -161,15 +141,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
             'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'taggit_taggeditem_items'", 'to': "orm['taggit.Tag']"})
-        },
-        'blog.comment': {
-            'Meta': {'object_name': 'Comment'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'comment': ('django.db.models.fields.TextField', [], {'null': 'False'}),
-            'blog': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Blog']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'post_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-        },
+        }
     }
 
     complete_apps = ['blog']

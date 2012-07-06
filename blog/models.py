@@ -145,3 +145,10 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return '%s comment on blog(%d) - %s' % (user.username, blog.id, comment)
+
+# Schema Migration Rules for South
+from private_files import PrivateFileField
+from south.modelsinspector import add_introspection_rules
+
+rules = [((PrivateFileField,), [], {"attachment" : ["attachment", {"default": True}],},)]
+add_introspection_rules(rules, ["^private_files\.models\.fields\.PrivateFileField"])
