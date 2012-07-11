@@ -216,10 +216,11 @@ def blog_create(request):
                 image_captured_device = get_image_captured_device(image_name),
                 category              = form.cleaned_data['category'],
                 mood                  = form.cleaned_data['mood'],
-                published             = datetime.datetime.now() if action == 'publish' else None,
                 draft                 = 1 if action == 'draft' else 0,
                 trash                 = 1 if action == 'trash' else 0
             )
+            if action == 'publish':
+                published = datetime.datetime.now() 
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
