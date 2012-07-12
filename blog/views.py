@@ -357,10 +357,12 @@ def blog_edit(request, blog_id):
             blog.allow_download = form.cleaned_data['allow_download']
             blog.category       = form.cleaned_data['category']
             blog.mood           = form.cleaned_data['mood']
-            blog.published      = datetime.datetime.now() if action == 'publish' else None
             blog.draft          = 1 if action == 'draft' else 0
             blog.trash          = 1 if action == 'trash' else 0
 
+            if action == 'publish':
+                blog.published = datetime.datetime.now() 
+                
             new_image_file = form.cleaned_data['image_file_name']
             if new_image_file and (new_image_file != image_file_name):
                 remove_blog_image(blog)
