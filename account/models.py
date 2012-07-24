@@ -74,7 +74,7 @@ class UserProfile(models.Model):
         return '%s %s' % (self.first_name, self.last_name)
 
     def get_posting_email(self):
-        return 'post-%s@%s' % (self.email_posting_key, settings.MAILGUN_EMAIL_DOMAIN)
+        return 'post-%s@%s' % (self.email_posting_key, settings.MAILGUN_EMAIL_DOMAIN) if self.email_posting_key else ''
 
     def get_avatar(self):
         if self.avatar:
