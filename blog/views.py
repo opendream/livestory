@@ -21,6 +21,7 @@ from django.db.models import Count
 
 from blog.models import *
 from blog.forms import *
+from account.models import UserProfile
 from statistic.models import BlogViewHit, BlogViewSummary
 from notification.models import Notification
 
@@ -241,8 +242,10 @@ def blog_create(request):
 @csrf_exempt
 def blog_create_by_email(request):
     if request.method == 'POST':
-        prefix, separator, therest = request.POST.get('sender').partition('-')
-        posting_key, separator, email_domain = therest.rpartition('@')
+	for p in request.POST:
+            print '> %s = %s ' % (p, request.POST.get(p))
+	recipient = request.POST.get('recipient')
+        posting_key = recipient.split('@')[0].split('-')[1]
 
         try:
             user_profile = UserProfile.objects.get(email_posting_key=posting_key)
@@ -276,30 +279,24 @@ def blog_create_by_email(request):
 
         else:
             return HttpResponse('Image attachment not found')
-
-        form_data = {
-            'title':title,
-            'description':description,
-            'country':'England',
-            'city':'Oxford',
-            'mood':99, # Moodless
-            'private':0,
-            'category':22, # No category
-            'tags':None
-        }
-
-        form = BlogCreateForm(form_data, request.FILES)
-
-        if not form.is_valid():
-            return HttpResponse('Server error')
-
-        blog = form.save(commit=False)
-        blog.user = user
-        blog.draft = False
-        blog.allow_download = False
-        blog.location = blog_save_location(form.cleaned_data.get('country'), form.cleaned_data.get('city'))
-        blog.published = datetime.datetime.now()
-        blog.save()
+        
+        #Oxfam GB HQ as default location
+        location = blog_save_location('England', 'Oxford')
+        #no-category
+        category = Category.objects.get(id=22)
+        blog = Blog.objects.create(
+            title          = title, 
+            description    = description, 
+            user           = user, 
+            trash          = False,
+            draft          = False, 
+            allow_download = False,
+            location       = location,
+            category       = category,
+            mood           = 99, # Moodless
+            private        = settings.PRIVATE,
+            published      = datetime.datetime.now()
+        )
 
         BlogViewSummary.objects.get_or_create(blog=blog)
 
@@ -309,7 +306,7 @@ def blog_create_by_email(request):
         blog.image.save('%s.%s' % (uuid.uuid4(), file_ext), uploading_file.file)
         blog.save()
 
-    return HttpResponse('')
+    return HttpResponse('Blog Create Successfully.')
 
 
 @login_required
