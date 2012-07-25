@@ -12,7 +12,9 @@ from taggit.models import TaggedItem
 
 from common.utilities import split_filepath
 
+import Image
 import shutil
+import private_files
 
 MOOD_CHOICES = (
     (1, 'Fun'         ), 
@@ -55,7 +57,7 @@ class Category(models.Model):
     
 class Blog(models.Model):
     title          = models.CharField(max_length=200, db_index=True)
-    image          = models.ImageField(upload_to=blog_image_url, max_length=500)
+    image          = private_files.PrivateFileField(upload_to=blog_image_url, max_length=500, attachment=False)
     description    = models.TextField(null=True, db_index=True)
     mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
@@ -69,6 +71,9 @@ class Blog(models.Model):
     category       = models.ForeignKey(Category)
     location       = models.ForeignKey(Location)
     tags           = TaggableManager()
+    
+    image_captured_date   = models.DateTimeField(null=True, blank=True)
+    image_captured_device = models.CharField(max_length=200)
     
     def __unicode__(self):
         return '(%d) %s' % (self.id, self.title)
@@ -112,6 +117,11 @@ class Blog(models.Model):
         (root, name ,ext) = split_filepath(self.image.path)
         return '%s.%s' % (name, ext)
 
+    def get_image_size(self):
+        if self.image and os.path.exists(self.image.path):
+            img = Image.open(self.image.path)
+            return str(img.size[0]) + 'x' + str(img.size[1])
+
     def downloadable(self, req_user=None):
         if self.user == req_user:
             return True
@@ -126,3 +136,19 @@ class Love(models.Model):
     
     def __unicode__(self):
         return '%s love %s' % (self.user.username, self.blog.title)
+
+class Comment(models.Model):
+    user = models.ForeignKey(User)
+    blog = models.ForeignKey(Blog)
+    comment = models.TextField(max_length=500)
+    post_date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return '%s comment on blog(%d) - %s' % (user.username, blog.id, comment)
+
+# Schema Migration Rules for South
+from private_files import PrivateFileField
+from south.modelsinspector import add_introspection_rules
+
+rules = [((PrivateFileField,), [], {"attachment" : ["attachment", {"default": True}],},)]
+add_introspection_rules(rules, ["^private_files\.models\.fields\.PrivateFileField"])

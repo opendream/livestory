@@ -1,0 +1,9 @@
+{% extends 'base_email.html' %}
+
+{% block email_content %}
+Here are your blog activities for {{ date }}.
+{% for item in loved_items %}
+  [{{ item.subject.get_profile.first_name }} {{ item.subject.profile.last_name }}] loves your blog. [{{ item.blog.title }}].
+{% endfor %}
+
+{% endblock %}

@@ -28,11 +28,17 @@ def path_to_url(path):
 	return path.replace(settings.BASE_PATH, '')
 
 @register.filter()
-def scale_blog_image(image_path, size):
+def scale_blog_image(image, size):
     size = size.split('x')
+    image_path = image.path
     (root, name, ext) = split_filepath(image_path)
     filename = scale_image(image_path, (int(size[0]), int(size[1])))
-    return '%s%s/%s' % (settings.MEDIA_URL, os.path.abspath(root).replace('%s/' % os.path.abspath(settings.MEDIA_ROOT), ''), filename)
+    if filename:
+        image_url = image.url.split('/')
+        image_url[-1] = filename
+        return '/'.join(image_url)
+    else:
+        return image.url
 
 @register.filter()
 def crop(image, size):
@@ -79,3 +85,14 @@ def active(request, pattern, text=' active'):
                 return ''
   
         return text
+
+@register.filter
+def convert_blogs_locations_to_lat_array(querydict):
+    lat = ['"%s"' % item.location.lat for item in querydict]
+    return '[%s]' % ','.join(lat)
+
+
+@register.filter
+def convert_blogs_locations_to_lng_array(querydict):
+    lng = ['"%s"' % item.location.lng for item in querydict]
+    return '[%s]' % ','.join(lng)

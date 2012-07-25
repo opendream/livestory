@@ -138,3 +138,10 @@ class UserProfileForgotForm(forms.Form):
         except User.DoesNotExist:
             raise forms.ValidationError(_('Your email miss match.'))
         return req_email
+
+class AccountSearchForm(forms.Form):
+    account_keywords = forms.CharField(
+                            required = True, 
+                            max_length = 500, 
+                            error_messages = {'required': 'Search keyword is required.'},
+                        )

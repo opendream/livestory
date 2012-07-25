@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     url(r'^account/reset/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', 'django.contrib.auth.views.password_reset_confirm', name='account_password_reset_confirm'),
     url(r'^account/reset/done/$', 'django.contrib.auth.views.password_reset_complete', name='account_password_reset_complete'),
 
+    url(r'^private_files/', include('private_files.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),

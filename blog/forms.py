@@ -42,3 +42,10 @@ class ModifyBlogForm(forms.Form):
 class BlogPlaceFilterForm(forms.Form):
     country = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'span2', 'placeHolder': 'Country'}))
     city = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class': 'span2', 'placeHolder': 'City'}))
+
+class BlogCommentForm(forms.Form):
+    comment = forms.CharField(
+        max_length = 300, 
+        required   = True, 
+        widget     = forms.Textarea(attrs={'rows': 7, 'class': 'span4'})
+    )

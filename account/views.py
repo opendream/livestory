@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from django.forms.models import model_to_dict
 from django.http import HttpResponseForbidden
 
@@ -198,8 +199,8 @@ def user_profile_edit(request, pk):
             usr.is_active = active
             usr.save()
 
-            account.firstname = form.cleaned_data.get('first_name')
-            account.lastname = form.cleaned_data.get('last_name')
+            account.first_name = form.cleaned_data.get('first_name')
+            account.last_name = form.cleaned_data.get('last_name')
             account.job_title = form.cleaned_data.get('job_title')
             account.office = form.cleaned_data.get('office')
             account.timezone = form.cleaned_data.get('timezone')
@@ -317,3 +318,21 @@ def account_manage_bulk(request):
                 user.save()
         return redirect(reverse('account_manage_users'))
 
+@login_required
+def account_profile_search(request):
+    if 'account_keywords' in request.GET:
+        form = AccountSearchForm(request.GET)  
+    else:
+        form = AccountSearchForm()
+
+    params = {'form': form}
+    
+    if form.is_valid():
+        keyword = request.GET.get('account_keywords').strip()
+        accounts = UserProfile.objects.filter(Q(first_name__icontains=keyword) |
+                                              Q(last_name__icontains=keyword) |
+                                              Q(office__icontains=keyword))
+        params.update({'keyword': keyword})
+        params.update({'accounts': accounts})
+
+    return render(request, 'account/account_profile_search.html', params)

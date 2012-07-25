@@ -131,6 +131,7 @@
 	.purple{ color: #573078; }
 	.pink  { color: #d04187; }
 	.blue  { color: #12a3d4; }
+	.red   { color: #dd5631; }
 
 
 
@@ -193,6 +194,7 @@
 	.ic-title-blue   { background: url('../img/ic-title_blue.png')   0px 10px no-repeat; }
 	.ic-title-yellow { background: url('../img/ic-title_yellow.png') 0px 10px no-repeat; }
 	.ic-title-grey   { background: url('../img/ic-title_grey.png')   0px 10px no-repeat; }
+	.ic-title-red   { background: url('../img/ic-title_red.png')   0px 10px no-repeat; }
 	
 	/* Manage Story Icon
 	---------------------------------------*/
@@ -212,9 +214,9 @@
 	---------------------------------------*/
 	@mixin transition($duration, $function, $delay){
 		-webkit-transition: all $duration $function $delay;
-		-moz-transition: all $duration $function $delay;
-		-o-transition: all $duration $function $delay ;
-		transition: all $duration $function $delay ;
+		-moz-transition:    all $duration $function $delay;
+		-o-transition:      all $duration $function $delay ;
+		transition:         all $duration $function $delay ;
 	}
 	@mixin animation($name, $duration, $delay, $count, $function){
 		-webkit-animation-name: $name;
@@ -279,7 +281,10 @@
 			background-position: -150px 0;
 		}
 	}
-
+	.search-box { 
+		width: 700px;
+		text-align: center;
+	}
 	.blog-list {min-height: 400px;}
 
 /* Utilities
@@ -292,6 +297,7 @@
 	.hide-text{ display: none; }
 	.inline{ display: inline !important; }
 	.no-shadow{ @include clear-shadow; }
+	.centered{ text-align: center; float: none; margin: 0 auto; }
 
 
 
@@ -336,7 +342,7 @@
 		font-weight: normal;
 		font-style: normal;
 	}
-	.oxfam-font{ font-family: OxfamGlobalHeadlineRegular; }
+	.oxfam-font  { font-family: OxfamGlobalHeadlineRegular; }
 	.futura-font { font-family: FuturaMdCnBTMedium; }
 	.chalkduster-font { font-family: Chalkduster; }
 
@@ -419,10 +425,16 @@
 			left: 9px;
 		}
 		.dropdown-menu li a {
-			color:#390 !important;
+			color:#390 ;
 			&:hover { background: #f2f2f2; }
 		}
 		.caret{ opacity: 0.5; }
+		.dropdown-menu strong{
+			color:#390;
+		}
+		.dropdown-menu .notify-link{
+			color: #999;
+		}
 		
 		/* Notification
 		---------------------------------------*/
@@ -485,7 +497,7 @@
 	---------------------------------------*/
 	.menu{
 		float: right;
-		width: 470px;
+		/* width: 470px; */
 		list-style: none;
 		margin: 4px 0 0;
 		li { float: left; }
@@ -518,16 +530,66 @@
 		}
 		.stories{
 			width: 86px;
+			margin-right: 25px;
 			background-position: -278px 0;
+		}
+		.people{
+			width: 63px;
+			background-position: -364px 0;
 		}
 	}
 		/* Navigation Active & Hover
 		---------------------------------------*/
 		.popular:hover, .popular.active{ background-position: 0 -69px; }
-		.place:hover, .place.active{ background-position: -65px -69px; }
-		.moods:hover, .moods.active{ background-position: -127px -69px; }
+		.place:hover, .place.active    { background-position: -65px -69px; }
+		.moods:hover, .moods.active    { background-position: -127px -69px; }
 		.categories:hover, .categories.active{ background-position: -189px -69px; }
-		.stories:hover, .stories.active{ background-position: -278px -69px; }
+		.stories:hover, .stories.active      { background-position: -278px -69px; }
+		.people:hover, .people.active        { background-position: -364px -69px; }
+	
+	/* Nav for Mobile
+	---------------------------------------*/	
+	#nav-mobile{
+		display: none;
+		width: 100%;
+		ul{
+			margin: 0;
+		}
+		li{
+			padding: 10px 15px;
+			border-bottom: 1px dashed #ccc;
+			list-style: none;
+			a{
+				display: block;
+				padding: 0 0 0 15px;
+				border-left: 6px solid #ccc;
+			}
+		}
+		
+		.popular    { border-color: #72b64a; }
+		.place      { border-color: #f1bd36; }
+		.moods      { border-color: #573078; }
+		.categories { border-color: #d04187; }
+		.stories    { border-color: #12a3d4; }
+		.people     { border-color: #dd5631; }
+	}
+	.menu-toggle{
+		display: block;
+		width: 95.5%;
+		padding: 5px 15px 15px;
+		margin: 15px 0 0;
+		border-bottom: 1px dashed #ccc;
+		color: #686868;
+		font-weight: bold;
+		span{
+			background: #CCC;
+			padding: 0 5px 3px 5px;
+			color: white;
+			font-size: 18px;
+		}
+		.expandable:before  { content: '+'; }
+		.collapsable:before{ content: '-'; }
+	}
 
 	/* Blog Photo
 	---------------------------------------*/
@@ -718,28 +780,28 @@
 	}
 	
 	@-webkit-keyframes pop{
-		0%{ opacity: 0; top: 38px; }
+		0%  { opacity: 0; top: 38px; }
 		100%{ opacity: 1; top: 43px; }
 	}
 	@-moz-keyframes pop {
-	  0%{ opacity: 0; top: 38px; }
+	  0%  { opacity: 0; top: 38px; }
 		100%{ opacity: 1; top: 43px; }
 	}
 	@keyframes pop {
-	  0%{ opacity: 0; top: 38px; }
+	  0%  { opacity: 0; top: 38px; }
 		100%{ opacity: 1; top: 43px; }
 	}
 	
 	@-webkit-keyframes mood-pop{
-		0%{ opacity: 0; left: 40px; }
+		0%  { opacity: 0; left: 40px; }
 		100%{ opacity: 1; left: 50px; }
 	}
 	@-moz-keyframes mood-pop {
-	  0%{ opacity: 0; left: 40px; }
+	  0%  { opacity: 0; left: 40px; }
 		100%{ opacity: 1; left: 50px; }
 	}
 	@keyframes mood-pop {
-	  0%{ opacity: 0; left: 40px; }
+	  0%  { opacity: 0; left: 40px; }
 		100%{ opacity: 1; left: 50px; }
 	}
 	
@@ -770,16 +832,16 @@
     background: url(../img/ic-mood-32x32.png) 0 0 no-repeat;
     &:hover{ cursor: pointer; }
 	}
-	.mood-happy { background-position: 0 0; }
-  .mood-sad { background-position: -32px 0; }
-  .mood-excited { background-position: -64px 0; }
-  .mood-inspired { background-position: -96px 0; }
+	.mood-happy      { background-position: 0 0; }
+  .mood-sad        { background-position: -32px 0; }
+  .mood-excited    { background-position: -64px 0; }
+  .mood-inspired   { background-position: -96px 0; }
   .mood-frustrated { background-position: -128px 0; }
-  .mood-angry { background-position: -160px 0; }
-  .mood-fun { background-position: -192px 0; }
-  .mood-proud { background-position: -224px 0; }
-  .mood-amazed { background-position: -256px 0; }
-  .mood-motivated { background-position: -288px 0; }
+  .mood-angry      { background-position: -160px 0; }
+  .mood-fun        { background-position: -192px 0; }
+  .mood-proud      { background-position: -224px 0; }
+  .mood-amazed     { background-position: -256px 0; }
+  .mood-motivated  { background-position: -288px 0; }
   
   .mood-happy:hover, .mood-happy.active { background-position: 0 -32px; }	
   .mood-sad:hover, .mood-sad.active { background-position: -32px -32px; }
@@ -805,16 +867,16 @@
 		border: 1px solid #999;
 		background-image: url(../img/ic-mood-16x16.png);
 	}
-  .mood-happy-s {background-position: 0 0;}	
-  .mood-sad-s {background-position: -16px 0;}
-  .mood-excited-s {background-position: -32px 0;}
-  .mood-inspired-s {background-position: -48px 0;}
-  .mood-frustrated-s {background-position: -64px 0;}
-  .mood-angry-s {background-position: -80px 0;}
-  .mood-fun-s {background-position: -96px 0;}
-  .mood-proud-s {background-position: -112px 0;}
-  .mood-amazed-s {background-position: -128px 0;}
-  .mood-motivated-s {background-position: -144px 0;}
+  .mood-happy-s      { background-position: 0 0; }	
+  .mood-sad-s        { background-position: -16px 0; }
+  .mood-excited-s    { background-position: -32px 0; }
+  .mood-inspired-s   { background-position: -48px 0; }
+  .mood-frustrated-s { background-position: -64px 0; }
+  .mood-angry-s      { background-position: -80px 0; }
+  .mood-fun-s        { background-position: -96px 0; }
+  .mood-proud-s      { background-position: -112px 0; }
+  .mood-amazed-s     { background-position: -128px 0; }
+  .mood-motivated-s  { background-position: -144px 0; }
 
   /* Mood List Select Form (Create Blog)
   ---------------------------------------*/
@@ -831,13 +893,13 @@
 	---------------------------------------*/
 	.filter-block { 
 		position: relative;
-/* 		@include animation(slideUp, 1s, 0, 1, ease); */
 	}
-	.filter-wrap { margin-bottom: 10px; }
+	.filter-wrap  { margin-bottom: 10px; }
 	.filter-title {
 		@include inset-shadow(0px, 0px, 10px, 0px, #dcdcdc);
 		float: left;
 		padding: 15px 15px 10px;
+		margin-bottom: 20px;
 		font-size: 24px;
 		font-weight: normal;  
 		background-color: #f7f7f7;
@@ -865,6 +927,17 @@
 		/* Place Filter 
 		---------------------------------------*/
 		.filter-place { float: left; margin-left: 30px; }
+		.map-link{
+			float: right;
+			padding: 5px 10px;
+			margin-top: -15px;
+			background: black;
+			color: white;
+			font-weight: bold;
+			&:hover{
+				color: #efefef;
+			}
+		}
 		
 		/* Categories Filter
 		---------------------------------------*/
@@ -889,6 +962,14 @@
 		    &:hover{ background: #eaeaea; }
 		  }
 		  a.active { background: #eaeaea; font-weight: bold; }
+		}
+		
+		/* Map Filter
+		---------------------------------------*/
+		#filter-menu-map{
+			h2{
+				float: left;
+			}
 		}
 
 	/* Thumbnail List
@@ -940,6 +1021,20 @@
 				color: #fff;
 			}
 		}
+		
+		.people-thumbnails{
+			li{
+				min-height: 122px;
+			}
+			.people-list{
+				padding: 10px;
+				height: 100px;
+			}
+			.profile-name{
+				padding-bottom: 10px;
+			}
+		}
+		
 		/* New Story Icon
 		---------------------------------------*/
 		.new-story{
@@ -1141,7 +1236,7 @@
 		padding-bottom: 5px;
 	}
 	.sidebar-list {
-		h3{ font-size: 16px; }
+		h3 { font-size: 16px; }
 		ul { margin-left: 0; }
 		li {
 			list-style-type: none;
@@ -1156,11 +1251,13 @@
 		padding-left: 25px;
 		background: url("../img/ic-blog.png") no-repeat;
 	}
-	.ic-size { background-position: 0 -50px !important; }
-	.ic-download { background-position: 4px 3px !important; }
+	.ic-size     { background-position: 0 -50px  !important; }
+	.ic-download { background-position: 4px 3px  !important; }
+	.ic-date     { background-position: 0 -152px !important; }
+	.ic-device   { background-position: 0 -100px !important; }
 	
 	.col-left, .col-right{ float: left; line-height: 28px; }
-	.col-left{ width: 30%;}
+	.col-left { width: 30%;}
 	.col-right{ width: 60%;}
 	
 	.badge {
@@ -1235,7 +1332,46 @@
 	html[xmlns] .clearfix { display: block; }
 	* html .clearfix { height: 1%; }
 
-
+/* Comments
+---------------------------------------*/
+	.comment_item{
+		position: relative;
+		margin: 0 0 5px;
+		background: #f9f9f9;
+		.comment_user_avatar{
+			float: left;
+			margin: 10px 0 0 10px;
+			
+			img{ border: 2px solid black; }
+		}
+		.comment_user_fullname{
+			float: left;
+			margin: 0 10px;
+			padding: 10px 0 0;
+			font-weight: bold;
+			font-size: 12px;
+		}
+		.comment_msg{
+			padding: 10px 0 10px 60px;
+		}
+		.comment_date{
+			font-size: 11px;
+			padding: 10px 0 0;
+		}
+	}
+	
+	/* Textbox Form Comment
+	---------------------------------------*/
+	.comment_form{
+		#id_comment{
+			width: 60%;
+			height: 60px;
+			padding: 10px;
+		}
+		#comment_post{
+			margin: 50px 0 0 15px;
+		}
+	}
 
 /*****************/
 /* Media Queries */
@@ -1326,7 +1462,7 @@
 	  /* Blog 
 	  ---------------------------------------*/
 	  .blog-profile .porfile-photo{ margin-bottom: 5px; }
-	  .blog-profile .profile-name{ clear: both; }
+	  .blog-profile .profile-name { clear: both; }
 	  .blog-profile{ margin-bottom: 20px; }
 	  
 	  /* Grid system
@@ -1341,13 +1477,15 @@
 	  /* 	Filter 
 		---------------------------------------*/
 		.filter-title{ float: none; }	  
-		.filter-wrap{ margin-top: 20px;}
+		.filter-wrap{ margin: 0;}
+		.filter-place{ margin: 0; }
 	  .categories-list{
 		  float: none;
 		  clear: both;
 		  width: 100%;
 		  margin: 0 0 10px;
 	  }
+	  .map-link{ margin: 0;}
 		
 		/* 	Filter 
 		---------------------------------------*/
@@ -1357,6 +1495,10 @@
 		---------------------------------------*/
 		.col-left  { width: 45%; }
 		.col-right { width: 50%; }
+		
+		.list-block{
+			width: 155px;
+		}
 
   }
 	
@@ -1425,7 +1567,16 @@
 		/* 	Filter 
 		---------------------------------------*/
 		.filter-title{ float: none; }
-		.filter-wrap{ margin-top: 20px;}
+		.filter-place{ margin: 0; }
+		.map-link{ margin: 0;}
+		
+		/* 	Search 
+		---------------------------------------*/
+		.people-thumbnails{
+			.span6{
+				width: 340px;
+			}
+		}
 		
   }
 	
@@ -1435,9 +1586,14 @@
 	  ---------------------------------------*/
 	  .grid{ width: 160px;}
 	  .grid-colspan{ width: 670px;}
+
   }
   
   @media (min-width: 480px) and (max-width: 730px){
+  
+	  #navigation h1{
+		  float: none;
+	  }
 		
 		/* 	Scour Front 
 		---------------------------------------*/
@@ -1482,11 +1638,34 @@
 	  .category-box{ width: auto !important; }
 		.mood-box{ width: auto !important; }
 		.location-box{ width: auto !important; }
+		
+		/* 	Search 
+		---------------------------------------*/
+		.people-thumbnails{
+			.span6{
+				width: 95.5%;
+			}
+		}
+		
+		/* Nav for Mobile
+		---------------------------------------*/
+		.menu{
+			display: none;
+		}
+		#nav-mobile{
+			display: block;
+			float: left;
+			margin-bottom: 50px;
+		}
 	  
   }
   
 	/*----- Landscape phones and down -----*/
   @media (max-width: 480px) { 
+  
+	  #navigation h1{
+		  float: none;
+	  }
 	  
 	  /* 	Scour Front 
 		---------------------------------------*/
@@ -1545,6 +1724,7 @@
 		/* Menu
 	  ---------------------------------------*/
 		.menu{
+			display: none;
 			li{
 				border-top: 1px dotted #ccc;
 				border-bottom: 1px dotted #ccc;
@@ -1566,12 +1746,19 @@
 			.categories{ border-left: 3px solid #d04187;}
 			.stories{ border-left: 3px solid #12a3d4;}
 		}
+		
+		/* Nav for Mobile
+		---------------------------------------*/	
+		#nav-mobile{
+			display: block;
+			float: left;
+			margin-bottom: 50px;
+		}
 	  
 	  /* 	Filter 
 		---------------------------------------*/
 		.mood-container{ width: 300px;}
 		.filter-place { margin-left: 0; }
-		.filter-wrap{ margin-top: 20px; }
 		
 		/* 	Header 
 		---------------------------------------*/
@@ -1588,6 +1775,15 @@
 		.blog-thumbnails [class*="span"] {
 			width: 200px;
 			min-height: 225px;
+		}
+		
+		/* 	Search 
+		---------------------------------------*/
+		.people-thumbnails{
+			.span6{
+				width: 95.5%;
+				min-height: 122px;
+			}
 		}
 	  
 	  /* Topbar
@@ -1664,14 +1860,25 @@
 		.mood-box{ width: auto !important; }
 		.location-box{ width: auto !important; }
 		
+		/* Textbox Form Comment
+		---------------------------------------*/
+		.comment_form{
+			#id_comment  { width: 95%; }
+			#comment_post{ margin: 10px 0 0 0; }
+		}
+		
+		/* Filter Categories
+		---------------------------------------*/
+		.list-block{
+			width: 180px;
+		}
+		
   }
-  
   
   @mixin size($w, $h){
 	  width: $w !important;
 	  height: $h !important;
   }
-  
   
   @media (max-width: 320px) { 
 	  
@@ -1769,30 +1976,14 @@
 			padding: 0;
 			display: block;
 		}
+		
+		/* Filter Categories
+		---------------------------------------*/
+		.list-block{
+			width: 275px;
+		}
+		
   }
-
-
-
-
-/*****************/
-/* Crosalot zone */
-/*****************/
-.messages .tags {
-    font-weight: bold;
-      padding-right: 5px;
-}
-.filter-block-append {
-    overflow: hidden;
-}
-.filter-block-append .default {
-    z-index: 5;
-}
-.filter-menu {
-    background-color: #FFF;
-    z-index: 10;
-    width: 100%;
-}
-
 
 	/* Notification Page
 	---------------------------------------*/
@@ -1866,6 +2057,7 @@
 	.dropdown-list .info{
 		width: 80%;
 		float: left;
+		color: #999;
 	}
 	.dropdown-list .info span{ font-size: 11px;}
 	
@@ -1888,6 +2080,20 @@
 	.typeahead a{ background: #fff !important;
 		&:hover{ background: #F2F2F2 !important; text-decoration: underline !important;}
 	}
-  
+	.messages .tags {
+	    font-weight: bold;
+	      padding-right: 5px;
+	}
+	.filter-block-append {
+	    /* overflow: hidden; Can't not overflow: hidden;*/
+	}
+	.filter-block-append .default {
+	    z-index: 5;
+	}
+	.filter-menu {
+	    background-color: #FFF;
+	    z-index: 10;
+	    width: 100%;
+	}
   
   

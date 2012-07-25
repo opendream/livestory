@@ -1,0 +1,28 @@
+{% load common_tags %}
+
+{% if comments %}
+<div class="comment_list">
+{% for c in comments %}
+  <div class="comment_item">
+    <div class="comment_user_avatar">
+  	  <img src="{{ c.user.get_profile.get_avatar|crop:'35x35' }}" alt="{{ user.get_profile.get_fulll_name }}" /></div>
+    <div class="comment_user_fullname"> {{ c.user.get_profile.get_full_name }}</div>
+    <div class="comment_date grey">{{ c.post_date }}</div>
+    <div class="comment_msg">{{ c.comment }}</div>
+  </div>
+{% endfor %}
+</div>
+{% endif %}
+<div class="comment_form">
+  <a name="comment">&nbsp;</a>
+  <form action="{% url add_blog_comment blog.id %}" method="POST">
+  	{% csrf_token %}
+	<textarea id="id_comment" name="comment" rows="7" cols="40" placeholder="Add your comment here..."></textarea>
+	<input type="submit" id="comment_post" name="comment_post" value="POST COMMENT" class="btn-green"/>
+  </form>
+</div>
+<script type="text/javascript">
+  $('#comment_post').bind('click', function() {
+    if (!($('#id_comment').val())) return false;
+  });
+</script>

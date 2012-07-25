@@ -21,5 +21,5 @@ class LocationTest(TestCase):
         loc, created = Location.objects.get_or_create(country__iexact='Thailand', city__iexact='Hat Yai')
         self.assertFalse(created)
         self.assertEqual('Thailand', loc.country)
-        self.assertEqual('Hat yai', loc.city)
+        self.assertEqual('Hat Yai', loc.city)
 

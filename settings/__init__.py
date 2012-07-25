@@ -106,7 +106,7 @@ INSTALLED_APPS = (
 
     'south',
     'django_nose',
-
+    'private_files',
 )
 
 LOGGING = {
@@ -197,7 +197,7 @@ NOSE_ARGS = [
 # MAILGUN EMAIL SERVICE #########
 CREATE_MAILBOX_AFTER_CREATE_USER = True
 
-DEFAULT_FROM_EMAIL = 'postmaster@oxfamlivestories.org'
+DEFAULT_FROM_EMAIL = 'Oxfam Live Stories <postmaster@oxfamlivestories.org>'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.mailgun.org'
@@ -206,8 +206,8 @@ EMAIL_HOST_PASSWORD = '9ayog9ixa9f8'
 EMAIL_PORT = 587
 EMAIL_SUBJECT_PREFIX = '[LiveStory] '
 
-USER_RESET_EMAIL_FROM = 'postmaster@oxfamlivestories.org'
-INVITATION_EMAIL_FROM = 'postmaster@oxfamlivestories.org'
+USER_RESET_EMAIL_FROM = 'Oxfam Live Stories <postmaster@oxfamlivestories.org>'
+INVITATION_EMAIL_FROM = 'Oxfam Live Stories <postmaster@oxfamlivestories.org>'
 
 MAILGUN_API_DOMAIN = 'https://api.mailgun.net/v2/oxfamlivestories.org'
 MAILGUN_API_KEY = 'key-9fju-vnl5spkmer1b2g2xtsxavhq2ai2'
@@ -220,3 +220,5 @@ CACHES = {
     }
 }
 
+# DJANGO-PRIVATE-FILES
+FILE_PROTECTION_METHOD = 'basic'

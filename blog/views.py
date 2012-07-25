@@ -3,6 +3,7 @@ import os
 import shutil
 import uuid
 
+from django.core.files import File
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -26,10 +27,11 @@ from statistic.models import BlogViewHit, BlogViewSummary
 from notification.models import Notification
 
 from functions import remove_temporary_blog_image, remove_blog_image
+from functions import get_image_captured_device, get_image_captured_date
 
 from location.models import Location
 from common.scour import Scour
-from common import ucwords, get_page_range
+from common import ucwords, get_page_range, utilities
 from taggit.models import TaggedItem
 
 
@@ -43,9 +45,9 @@ def blog_home(request):
 def blog_popular(request):
     _width = 960
     _height = 660
-    scour = Scour(nx=10, ny=9, width=_width, height=_height, gap=10)
+    _scour = Scour(nx=10, ny=9, width=_width, height=_height, gap=10)
     
-    borders = scour.get_rect()
+    borders = _scour.get_rect()
     
     blogs = list(Blog.objects.filter(
                             draft=False, 
@@ -62,9 +64,13 @@ def blog_popular(request):
     for i, blog in enumerate(blogs):
         blog.position = borders[i]
 
-    return render(request, 'blog/blog_home.html', { 'blogs': blogs,
-                                                    'scour_width': _width, 
-                                                    'scour_height': _height })
+    return render(request, 
+        'blog/blog_home.html', 
+        {'blogs'       : blogs,
+         'scour_width' : _width, 
+         'scour_height': _height
+        }
+    )
 
 @login_required
 def blog_manage(request, section):
@@ -188,35 +194,42 @@ def blog_create(request):
     if request.method == 'POST':
         form = ModifyBlogForm(None, request.POST)
         if form.is_valid():
-            country = form.cleaned_data['country']
-            city = form.cleaned_data['city']
-            location, created = Location.objects.get_or_create(city__iexact=city,
-                                                               country__iexact=country, 
-                                                               defaults = {'country': country,'city': city})
-            from django.core.files import File
+            action = request.POST.get('action', '')
+
+            location, created = Location.objects.get_or_create(
+                city__iexact    = form.cleaned_data['city'],
+                country__iexact = form.cleaned_data['country'], 
+                defaults = {
+                    'city'    : form.cleaned_data['city'],
+                    'country' : form.cleaned_data['country'],
+                }
+            )
+            image_name = form.cleaned_data['image_file_name']
 
             blog = Blog(
-                title = form.cleaned_data['title'],
-                description = form.cleaned_data['description'],
-                user = request.user,
-                location = location,
-                draft = bool(int(request.POST.get('draft'))),
-                allow_download = form.cleaned_data['allow_download'],
-                image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name']))),
-                category = form.cleaned_data['category'],
-                mood = form.cleaned_data['mood'],
+                title                 = form.cleaned_data['title'],
+                description           = form.cleaned_data['description'],
+                user                  = request.user,
+                location              = location,
+                allow_download        = form.cleaned_data['allow_download'],
+                image                 = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, image_name))),
+                image_captured_date   = get_image_captured_date(image_name),
+                image_captured_device = get_image_captured_device(image_name),
+                category              = form.cleaned_data['category'],
+                mood                  = form.cleaned_data['mood'],
+                draft                 = 1 if action == 'draft' else 0,
+                trash                 = 1 if action == 'trash' else 0
             )
-
-            publish = bool(int(request.POST.get('publish')))
-            if publish:
-                blog.published = datetime.datetime.now()
+            if action == 'publish':
+                published = datetime.datetime.now() 
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
 
             remove_temporary_blog_image(form.cleaned_data['image_file_name'])
 
-            messages.success(request, 'Blog post created. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+            messages.success(request, 'Blog post created. \
+                <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
             return redirect(reverse('blog_edit', args=[blog.id]))
 
         else:
@@ -228,12 +241,12 @@ def blog_create(request):
         form = ModifyBlogForm(None, initial={'allow_download': True})
 
     context = {
-        'page_title': 'Add New Story',
-        'form': form,
-        'moods': MOOD_CHOICES,
-        'visibilities': PRIVATE_CHOICES,
-        'is_draft': True,
-        'blog_image_file': blog_image_file,
+        'page_title'      : 'Add New Story',
+        'form'            : form,
+        'moods'           : MOOD_CHOICES,
+        'visibilities'    : PRIVATE_CHOICES,
+        'is_draft'        : True,
+        'blog_image_file' : blog_image_file,
     }
 
     return render(request, 'blog/blog_form.html', context)
@@ -324,64 +337,72 @@ def blog_edit(request, blog_id):
     if request.method == 'POST':
         form = ModifyBlogForm(blog, request.POST)
         if form.is_valid():
-            country = form.cleaned_data['country']
-            city = form.cleaned_data['city']
-            location, created = Location.objects.get_or_create(city__iexact=city,
-                                                               country__iexact=country, 
-                                                               defaults = {'country': country,'city': city})
-            from django.core.files import File
+            action = request.POST.get('action', '')
 
-            blog.title = form.cleaned_data['title']
-            blog.description = form.cleaned_data['description']
-            blog.location = location
-            blog.draft = bool(int(request.POST.get('draft', 0)))
+            location, created = Location.objects.get_or_create(
+                city__iexact    = form.cleaned_data['city'],
+                country__iexact = form.cleaned_data['country'],
+                defaults = {
+                    'city'   : form.cleaned_data['city'],
+                    'country': form.cleaned_data['country']
+                }
+            )
+
+            blog.title          = form.cleaned_data['title']
+            blog.description    = form.cleaned_data['description']
+            blog.location       = location
             blog.allow_download = form.cleaned_data['allow_download']
-            blog.category = form.cleaned_data['category']
-            blog.mood = form.cleaned_data['mood']
-            blog.trash = bool(int(request.POST.get('trash', 0)))
-            #stamp a published date
-            publish = bool(int(request.POST.get('publish', 0)))
-            if publish:
-                blog.published = datetime.datetime.now()
+            blog.category       = form.cleaned_data['category']
+            blog.mood           = form.cleaned_data['mood']
+            blog.draft          = 1 if action == 'draft' else 0
+            blog.trash          = 1 if action == 'trash' else 0
 
+            if action == 'publish':
+                blog.published = datetime.datetime.now() 
+                
             new_image_file = form.cleaned_data['image_file_name']
             if new_image_file and (new_image_file != image_file_name):
                 remove_blog_image(blog)
-                blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, form.cleaned_data['image_file_name'])))
+                blog.image = File(open('%s%s' % (settings.TEMP_BLOG_IMAGE_ROOT, new_image_file)))
+                blog.image_captured_date = get_image_captured_date(new_image_file)
+                blog.image_captured_device = get_image_captured_device(new_image_file)
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
 
-            messages.success(request, 'Blog post updated. <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
+            messages.success(request, 'Blog post updated. \
+                <a class="btn btn-success" href="%s">View post</a>' % reverse('blog_view', args=[blog.id]))
 
-            if blog.trash:
+            if action == 'trash':
                 return redirect('blog_view', blog_id=blog.id)
-
-            return redirect(reverse('blog_edit', args=[blog.id]))
+            else:
+                return redirect(reverse('blog_edit', args=[blog.id]))
 
     else:
 
-        form = ModifyBlogForm(blog, initial={
-            'title': blog.title,
-            'description': blog.description,
-            'country': blog.location.country,
-            'city': blog.location.city,
-            'mood': blog.mood,
-            'image_file_name':image_file_name,
-            'category': blog.category,
-            'private': str(int(blog.private)),
-            'allow_download': blog.allow_download,
-            'tags': blog.get_tags()
+        form = ModifyBlogForm(
+            blog, 
+            initial = {
+                'title'          : blog.title,
+                'description'    : blog.description,
+                'country'        : blog.location.country,
+                'city'           : blog.location.city,
+                'mood'           : blog.mood,
+                'image_file_name':image_file_name,
+                'category'       : blog.category,
+                'private'        : str(int(blog.private)),
+                'allow_download' : blog.allow_download,
+                'tags'           : blog.get_tags()
         })
 
     context = {
-        'page_title': 'Edit Blog',
-        'blog': blog,
-        'form': form,
-        'is_draft': blog.draft,
-        'moods': MOOD_CHOICES,
-        'visibilities': PRIVATE_CHOICES,
-        'blog_image_file':blog.image.path,
+        'page_title'     : 'Edit Blog',
+        'blog'           : blog,
+        'form'           : form,
+        'is_draft'       : blog.draft,
+        'moods'          : MOOD_CHOICES,
+        'visibilities'   : PRIVATE_CHOICES,
+        'blog_image_file': blog.image.path,
     }
 
     return render(request, 'blog/blog_form.html', context)
@@ -411,14 +432,17 @@ def blog_view(request, blog_id):
     loved_users = []
     for l in love_set:
         loved_users.append(l.user.get_profile())
-            
+    
+    comments = Comment.objects.select_related('user__profile', 'blog').filter(blog=blog).order_by('post_date');
     context = {
         'blog': blog,
+        'comments': comments,
         'profile': blog.user.get_profile(),
         'love_path': love_path % blog_id,
         'button_type': button_type,
         'love_count': blog.love_set.count(),
         'loved_users': loved_users,
+
         'max_items': 7,
         'CAN_SHARE_SN': settings.CAN_SHARE_SN,
     }
@@ -515,7 +539,9 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
                                 **filter
                             ).order_by('-published')
     
-    pager = Paginator(items, 8)
+    page_size = request.GET.get('page_size') or 8
+   
+    pager = Paginator(items, int(page_size))
     p = request.GET.get('page') or 1
     
     try:
@@ -544,6 +570,8 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
         'url': url,
         'param': param,
         'color': color,
+        'total_blogs': items.count(),
+        'page_size': page_size,
     }
     
     return render(request, 'blog/blog_list.html', context)
@@ -717,6 +745,18 @@ def blog_search(request):
 
     return render(request, 'blog/blog_search.html', context)
 
+@login_required
+def add_blog_comment(request, blog_id):
+    b = get_object_or_404(Blog, id=blog_id)
+    if request.method == 'POST':
+        f = BlogCommentForm(request.POST)
+        if f.is_valid():
+            b.comment_set.create(
+                comment = f.cleaned_data['comment'],
+                user    = request.user,
+                blog    = b
+            )
+    return redirect(reverse('blog_view', args=[blog_id])+'#comment')
 
 # Static page
 def blog_about(request):
@@ -727,3 +767,8 @@ def blog_term(request):
 
 def blog_howto(request):
     return render(request, 'howto.html')
+
+@login_required
+def blog_map(request):
+    blogs = Blog.objects.all()
+    return render(request, 'blog/blog_map.html', {'blogs': blogs, 'filter':{'location': 'map'}})

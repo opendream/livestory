@@ -55,8 +55,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
-    job_title = models.CharField(max_length=200, blank=True, null=True)
-    office = models.CharField(max_length=200, blank=True, null=True)
+    job_title = models.CharField(max_length=200, blank=True, null=True, default='')
+    office = models.CharField(max_length=200, blank=True, null=True, default='')
     avatar = models.ImageField(upload_to=account_avatar_url, null=True)
 
     email_posting_key = models.CharField(max_length=200, db_index=True, blank=True, null=True)
@@ -74,7 +74,7 @@ class UserProfile(models.Model):
         return '%s %s' % (self.first_name, self.last_name)
 
     def get_posting_email(self):
-        return 'post-%s@%s' % (self.email_posting_key, settings.MAILGUN_EMAIL_DOMAIN)
+        return 'post-%s@%s' % (self.email_posting_key, settings.MAILGUN_EMAIL_DOMAIN) if self.email_posting_key else ''
 
     def get_avatar(self):
         if self.avatar:

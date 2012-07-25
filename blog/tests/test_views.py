@@ -9,7 +9,6 @@ from location.models import Location
 from mock import Mock, patch
 from math import ceil
 from tests import factory
-from bs4 import BeautifulSoup
 
 from common import rm_user
 from django.conf import settings
@@ -109,7 +108,7 @@ class TestBlogCreate(TestCase):
         user_id = self.client.session.get('_auth_user_id')
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertFalse(response.context['is_draft'])
+        self.assertFalse(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertContains(response, 'Blog post created.')
         self.assertEquals('Hello world', blog.title)
@@ -121,7 +120,7 @@ class TestBlogCreate(TestCase):
         self.assertEquals(self.category, blog.category)
         self.assertFalse(None==blog.location.id)
         self.assertEquals('Thailand', blog.location.country)
-        self.assertEquals('Hat yai', blog.location.city)
+        self.assertEquals('Hat Yai', blog.location.city)
 
         self.client.logout()
 
@@ -137,7 +136,7 @@ class TestBlogCreate(TestCase):
             'country': country,
             'city': city,
             'private': '0',
-            'draft': '1',
+            'action': 'draft',
             'category': str(self.category.id),
             'allow_download': '1',
             'trash': '0',
@@ -153,7 +152,7 @@ class TestBlogCreate(TestCase):
 
         user_id = self.client.session.get('_auth_user_id')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertTrue(response.context['is_draft'])
+        self.assertTrue(blog.draft)
         self.assertEquals('Hello world (Draft)', blog.title)
         self.assertEquals('lorem ipsum (Draft)', blog.description)
         self.client.logout()
@@ -317,7 +316,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertFalse(response.context['is_draft'])
+        self.assertFalse(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertEquals('Hello world Edited', blog.title)
         self.assertEquals('lorem ipsum Edited', blog.description)
@@ -328,7 +327,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(self.cat_travel, blog.category)
         self.assertFalse(None==blog.location.id)
         self.assertEquals('Thailand', blog.location.country)
-        self.assertEquals('Khon kean', blog.location.city)
+        self.assertEquals('Khon Kean', blog.location.city)
         self.client.logout()
 
     def test_blog_edit_post_draft_publish_post(self, again=True):
@@ -343,7 +342,7 @@ class TestBlogEdit(TestCase):
             'country': 'Korea',
             'city': 'Seoul',
             'private': '1',
-            'draft': '1',
+            'action': 'draft',
             'category': str(self.cat_travel.id),
             'allow_download': '1',
             'trash': '0',
@@ -358,7 +357,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertTrue(response.context['is_draft'])
+        self.assertTrue(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertEquals('Hello world Edited', blog.title)
         self.assertEquals('lorem ipsum Edited', blog.description)
@@ -386,7 +385,7 @@ class TestBlogEdit(TestCase):
             'country': 'Korea',
             'city': 'Seoul',
             'private': '1',
-            'draft': '1',
+            'action': 'draft',
             'category': str(self.cat_travel.id),
             'allow_download': '1',
             'trash': '0',
@@ -400,7 +399,7 @@ class TestBlogEdit(TestCase):
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, 'blog/blog_form.html')
         self.assertEquals('Edit Blog', response.context['page_title'])
-        self.assertTrue(response.context['is_draft'])
+        self.assertTrue(blog.draft)
         self.assertFalse(None==blog.image.path)
         self.assertEquals('Hello world Edited', blog.title)
         self.assertEquals('lorem ipsum Edited', blog.description)
@@ -488,11 +487,12 @@ class TestBlogEdit(TestCase):
 
     def test_blog_edit_post_miss_match_location(self):
         src = '%s/static/tests/blog.jpg' % settings.BASE_PATH
-        dst = '%stemp/test_edit_post.jpg' % settings.MEDIA_ROOT
+        dst = '%stest_edit_post.jpg' % settings.TEMP_BLOG_IMAGE_ROOT
         shutil.copy2(src, dst)
+
         params = {
             'title': 'Hello world Edited',
-            'image_path': dst,
+            'image_file_name': 'test_edit_post.jpg',
             'description': 'lorem ipsum Edited',
             'mood': '2',
             'country': 'fdasdffafaf',
@@ -507,6 +507,7 @@ class TestBlogEdit(TestCase):
         response = self.client.post('/blog/%s/edit/' % self.blog_draft.id, params, follow=True)
 
         self.assertEquals(200, response.status_code)
+        print response.content
         self.assertContains(response, 'Blog post updated.')
         self.client.logout()
         

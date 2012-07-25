@@ -8,13 +8,42 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Comment'
+        db.create_table('blog_comment', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('blog', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.Blog'])),
+            ('comment', self.gf('django.db.models.fields.TextField')(max_length=500)),
+            ('post_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+        ))
+        db.send_create_signal('blog', ['Comment'])
+
+        # Adding field 'Blog.image_captured_date'
+        db.add_column('blog_blog', 'image_captured_date',
+                      self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True),
+                      keep_default=False)
+
+        # Adding field 'Blog.image_captured_device'
+        db.add_column('blog_blog', 'image_captured_device',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=200),
+                      keep_default=False)
+
+
+        # Changing field 'Blog.image'
+        db.alter_column('blog_blog', 'image', self.gf('private_files.models.fields.PrivateFileField')(max_length=500, attachment=False))
+    def backwards(self, orm):
+        # Deleting model 'Comment'
+        db.delete_table('blog_comment')
+
+        # Deleting field 'Blog.image_captured_date'
+        db.delete_column('blog_blog', 'image_captured_date')
+
+        # Deleting field 'Blog.image_captured_device'
+        db.delete_column('blog_blog', 'image_captured_device')
+
 
         # Changing field 'Blog.image'
         db.alter_column('blog_blog', 'image', self.gf('django.db.models.fields.files.ImageField')(max_length=500))
-    def backwards(self, orm):
-
-        # Changing field 'Blog.image'
-        db.alter_column('blog_blog', 'image', self.gf('django.db.models.fields.files.ImageField')(max_length=100))
     models = {
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -49,16 +78,18 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Blog'},
             'allow_download': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Category']"}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'db_index': 'True'}),
             'draft': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '500'}),
+            'image': ('private_files.models.fields.PrivateFileField', [], {'max_length': '500', 'attachment': 'False'}),
+            'image_captured_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'image_captured_device': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['location.Location']"}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'mood': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'private': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'published': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'trash': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
@@ -66,7 +97,15 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Category'},
             'code': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'})
+        },
+        'blog.comment': {
+            'Meta': {'object_name': 'Comment'},
+            'blog': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Blog']"}),
+            'comment': ('django.db.models.fields.TextField', [], {'max_length': '500'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'post_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'blog.love': {
             'Meta': {'object_name': 'Love'},
@@ -84,8 +123,8 @@ class Migration(SchemaMigration):
         },
         'location.location': {
             'Meta': {'object_name': 'Location'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'country': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
+            'country': ('django.db.models.fields.CharField', [], {'max_length': '200', 'db_index': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'lat': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'lng': ('django.db.models.fields.CharField', [], {'max_length': '50'})

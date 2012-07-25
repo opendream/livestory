@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block base_navi %}
-<!------- Navigation -->
+<!-- Navigation -->
 <div id="navigation" class="clearfix">
   <h1 class="oxfam-font">
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
@@ -22,11 +22,25 @@
   {% if user.is_authenticated %}
   <ul class="menu">
     <li><a href="{{ blog_home }}" class="popular{% if request.path == '/' %} active{% endif %}">Popular</a></li>
-    <li><a href="{% url blog_place_empty %}" class="place{% active request blog_place %}">Place</a></li>
+    <li><a href="{% url blog_place_empty %}" class="place{% active request blog_place %}{% if request.path == '/blog/map/' %} active{% endif %}">Place</a></li>
     <li><a href="{% url blog_mood 'choose' %}" class="moods{% active request blog_mood %}">Moods</a></li>
     <li><a href="{% url blog_category 'choose' %}" class="categories{% active request blog_category %}">Categories</a></li>
     <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
+    <li><a href="{% url account_profile_search %}" class="people{% if request.path == '/account/profile/search/' %} active{% endif %}">People</a></li>
   </ul>
+  
+  <div id="nav-mobile">
+   <a href="javascript:void(0)" class="menu-toggle">MENUS <span id="toggle-btn" class="expandable collapsable" data-toggle="collapse" data-target="#mobile-menus"></span></a>
+	  <ul id="mobile-menus" class="collapse in">
+		  <li><a href="{{ blog_home }}" class="popular">Popular</a></li>
+		  <li><a href="{% url blog_place_empty %}" class="place">Place</a></li>
+		  <li><a href="{% url blog_mood 'choose' %}" class="moods">Moods</a></li>
+		  <li><a href="{% url blog_category 'choose' %}" class="categories">Categories</a></li>
+		  <li><a href="{{ blog_all }}" class="stories">All Stories</a></li>
+		  <li><a href="{% url account_profile_search %}" class="people">People</a></li>
+	  </ul>
+  </div>
+  
   {% endif %}
 </div>
 
@@ -37,7 +51,7 @@
   
   <div class="filter-block block">
     <div class="filter-block-append"{% if not filter %} style="height:0;"{% endif %}>
-      <span class="filter-top"></span>
+      <span class="filter-top" {% if not filter %} style="display: none;"{% endif %}></span>
       
       <!-- Mood -->
       <div id="filter-menu-mood" class="filter-menu{% if filter.mood %} default dshow{% endif %}"{% if not filter.mood %} style="display: none;"{% endif %}>
@@ -69,10 +83,14 @@
       <!-- End Category -->
       
       <!-- Place -->
-      <div id="filter-menu-place" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
-    		<h3 class="filter-title futura-font yellow">Filter by place</h3>
-    		<form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">
-    			<div class="control-group">
+      <div id="filter-menu-map" class="filter-menu{% if filter.location %} default dshow{% endif %}"{% if not filter.location %} style="display: none;"{% endif %}>
+      	{% if filter.location == 'map' %}
+        <h2 class="oxfam-font ic-page-title ic-title-yellow block">all countries, all cities</h2>
+        <a href="{% url blog_place_empty %}" class="map-link">Go to filter</a>
+        {% else %}
+        <h3 class="filter-title futura-font yellow">Filter by place</h3>
+        <form class="form-horizontal filter-place filter-wrap" action="{% url blog_place %}" method="get">
+          <div class="control-group">
             <div class="">
               {{ place_form.country }}
               {{ place_form.city }}
@@ -80,11 +98,13 @@
               <p class="help-block">Ex. Japan, Brazil, Liverpool, Bangkok</p>
             </div>
           </div>
-    		</form>
+        </form>
+        <a href="{% url blog_map %}" class="map-link">Go to map</a>
+        {% endif %}
     	</div>
     	<!-- End Place -->
-    	
-  		<span class="filter-bottom"></span>
+ 
+  		<span class="filter-bottom" {% if not filter %} style="display: none;"{% endif %}></span>
     </div>
   </div>
 </div>
@@ -92,4 +112,11 @@
 <div class="clear-both">
     {% block content %}{% endblock %}
 </div>
+<script type="text/javascript">
+   $(function() {
+      $('#toggle-btn').click(function() {
+        $(this).toggleClass('collapsable')
+      })
+   })
+</script>
 {% endblock %}

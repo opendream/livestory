@@ -57,13 +57,20 @@
 	            {% if notifications %}
 	            {% for notification in notifications %}
 	            <li class="clearfix">
-	              <div class="avatar">
-	                <a href="#"><img src="{{ notification.subject.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}"/></a>
-	              </div>
-	              <div class="info"> 
-	                <a href ="#"><strong>{{ notification.subject.get_profile.get_full_name }}</strong></a> {{ notification.get_action_text }} your <a href="{% url blog_view notification.blog.id %}">photo</a>.<br/>
-	                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span> {{ notification.datetime|localtime|timeago }}.</span>
-	              </div>
+		            <!-- Link -->
+		            <a href="{% url blog_view notification.blog.id %}" class="notify-link">
+		  
+			            <div class="avatar">
+		                <img src="{{ notification.subject.get_profile.get_avatar|crop:AVATAR_TOP_SIZE }}"/>
+		              </div>
+		              
+		              <div class="info"> 
+		                <strong>{{ notification.subject.get_profile.get_full_name }} </strong>{{ notification.get_action_text }} your photo.<br/>
+		                  <span class="grey"><span class="ic-status{% if notification.action == 2 %} ic-download-notify{% endif %}"></span> {{ notification.datetime|localtime|timeago }}.</span>
+		              </div>
+		            
+		            </a>
+	              
 	            </li>
 	            <li class="divider"></li>
 	            {% endfor %}
