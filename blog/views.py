@@ -19,6 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.files.uploadedfile import UploadedFile
 from django.views.decorators.cache import cache_page
 from django.db.models import Count
+from django.template.loader import render_to_string
 
 from blog.models import *
 from blog.forms import *
@@ -251,12 +252,45 @@ def blog_create(request):
 
     return render(request, 'blog/blog_form.html', context)
 
+@csrf_exempt
+def blog_create_success(request):
+    print 'Blog create success.'
+    return HttpResponse('Blog create success')
+
+@csrf_exempt
+def blog_create_failed(request):
+    print 'Blog create failed.'
+    return HttpResponse('Blog create failed')
+
+def blog_create_response(status, message, recipient):
+    context = {
+        'status' : status, 
+        'message': message
+    }
+    subject = ''
+    if 'success' == status:
+        subject = 'Your blog created successfully.'
+    elif 'failed' == status:
+        subject = 'Your blog create failed.'
+    email_text = render_to_string('blog/email/blog_create.txt', context)
+    email_html = render_to_string('blog/email/blog_create.html', context)
+    print 'sending email to %s from %s as %s' % (recipient, settings.INVITATION_EMAIL_FROM, subject)
+    from requests import async
+
+    return async.post('%s/messages' % settings.MAILGUN_API_DOMAIN,
+        auth=('api', settings.MAILGUN_API_KEY),
+        data={
+            'from'    : settings.INVITATION_EMAIL_FROM,
+            'to'      : recipient,
+            'subject' : subject,
+            'text'    : email_text,
+            'html'    : email_html
+        }
+    )
 
 @csrf_exempt
 def blog_create_by_email(request):
     if request.method == 'POST':
-	for p in request.POST:
-            print '> %s = %s ' % (p, request.POST.get(p))
 	recipient = request.POST.get('recipient')
         posting_key = recipient.split('@')[0].split('-')[1]
 
@@ -318,7 +352,7 @@ def blog_create_by_email(request):
         (root, file_name, file_ext) = split_filepath(image_file.name)
         blog.image.save('%s.%s' % (uuid.uuid4(), file_ext), uploading_file.file)
         blog.save()
-
+    blog_create_response('success', 'blog created successfully', user.email)
     return HttpResponse('Blog Create Successfully.')
 
 

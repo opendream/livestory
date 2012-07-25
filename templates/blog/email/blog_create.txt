@@ -1,0 +1,5 @@
+{% extends 'base_email.txt' %}
+
+{% block email_content %}
+Blog create mail response.
+{% endblock %}
