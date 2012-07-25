@@ -8,6 +8,7 @@
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.iframe-transport.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/jquery.fileupload/js/jquery.fileupload.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}libs/chosen/chosen.jquery.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}libs/bootstrap/js/bootstrap-tooltip.js"></script>
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}libs/chosen/chosen.css">
 
 {% endblock %}
@@ -30,6 +31,7 @@
           <label class="control-label">Posting email</label>
           <div class="controls">
               <span class="grey label-inline-form">{{ user.get_profile.get_posting_email }}</span>
+              <a href="#" rel="tooltip" id="example" data-original-title="You can create a new blog via email by sending mail to this email address."><span class="label label-info">?</span></a>
           </div>
       </div>
       {% endif %}
@@ -115,5 +117,6 @@
 </form>
 <script type="text/javascript">
   $("#id_timezone").chosen();
+  $('#example').popover();
 </script>
 {% endblock %}
