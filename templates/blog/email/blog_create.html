@@ -1,5 +1,10 @@
 {% extends 'base_email.html' %}
 
 {% block email_content %}
-Blog create email response.
+{% if blog %}
+Your blog has been created successfully. You can click a link below to view blog.<br/>
+<a href="{{ base_url }}{{ blog.get_absolute_url }}">{{ base_url }}{{ blog.get_absolute_url }}</a>
+{% else %}
+Your blog create failed - {{ error }}
+{% endif %}
 {% endblock %}

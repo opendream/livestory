@@ -1,5 +1,9 @@
 {% extends 'base_email.txt' %}
 
 {% block email_content %}
-Blog create mail response.
+{% if blog %}
+Your blog has been created successfully.
+{% else %}
+Your blog create failed - {{ error }}
+{% endif %}
 {% endblock %}

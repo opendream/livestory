@@ -20,6 +20,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.views.decorators.cache import cache_page
 from django.db.models import Count
 from django.template.loader import render_to_string
+from django.contrib.sites.models import Site
 
 from blog.models import *
 from blog.forms import *
@@ -252,109 +253,118 @@ def blog_create(request):
 
     return render(request, 'blog/blog_form.html', context)
 
-@csrf_exempt
-def blog_create_success(request):
-    print 'Blog create success.'
-    return HttpResponse('Blog create success')
-
-@csrf_exempt
-def blog_create_failed(request):
-    print 'Blog create failed.'
-    return HttpResponse('Blog create failed')
-
-def blog_create_response(status, message, recipient):
+def _create_blog_response(recipient, blog, error, settings):
     context = {
-        'status' : status, 
-        'message': message
+        'base_url' : get_base_url(),
+        'settings' : settings,
+        'blog'     : blog,
+        'error'    : error
     }
-    subject = ''
-    if 'success' == status:
+    if blog:
         subject = 'Your blog created successfully.'
-    elif 'failed' == status:
+    else:
         subject = 'Your blog create failed.'
     email_text = render_to_string('blog/email/blog_create.txt', context)
     email_html = render_to_string('blog/email/blog_create.html', context)
-    print 'sending email to %s from %s as %s' % (recipient, settings.INVITATION_EMAIL_FROM, subject)
-    from requests import async
 
-    return async.post('%s/messages' % settings.MAILGUN_API_DOMAIN,
+    import requests
+    requests.post('%s/messages' % settings.MAILGUN_API_DOMAIN,
         auth=('api', settings.MAILGUN_API_KEY),
         data={
             'from'    : settings.INVITATION_EMAIL_FROM,
-            'to'      : recipient,
+            'to'      : [recipient],
             'subject' : subject,
             'text'    : email_text,
             'html'    : email_html
         }
     )
 
-@csrf_exempt
-def blog_create_by_email(request):
-    if request.method == 'POST':
-	recipient = request.POST.get('recipient')
-        posting_key = recipient.split('@')[0].split('-')[1]
+def _create_blog(request):
+    data = {}
+    recipient = request.POST.get('recipient')
+    posting_key = recipient.split('@')[0].split('-')[1]
+    try:
+        user_profile = UserProfile.objects.get(email_posting_key=posting_key)
+        user = user_profile.user
+        data.update({'sender': user.email})
+    except UserProfile.DoesNotExist:
+        data.update({'error': 'Sender not found'})
+        return data
 
-        try:
-            user_profile = UserProfile.objects.get(email_posting_key=posting_key)
-            user = user_profile.user
-        except UserProfile.DoesNotExist:
-            return HttpResponse('Sender not found')
+    title = request.POST.get('Subject')
+    description = request.POST.get('stripped-text') # Text without signature
 
-        title = request.POST.get('Subject')
-        description = request.POST.get('stripped-text') # Text without signature
+    if not title or not description:
+        data.update({'error': 'Email subject or body is empty'})
+        return data
 
-        if not title or not description:
-            return HttpResponse('Email subject or body is empty')
+    if request.FILES:
+        keys = request.FILES.keys()
+        key_with_max_size = keys[0]
+        max_size = request.FILES[keys[0]].size
+        for key in keys[1:]:
+            if request.FILES[key].size > max_size:
+                key_with_max_size = key
+                max_size = request.FILES[key].size
 
-        if request.FILES:
-            keys = request.FILES.keys()
-            key_with_max_size = keys[0]
-            max_size = request.FILES[keys[0]].size
-            for key in keys[1:]:
-                if request.FILES[key].size > max_size:
-                    key_with_max_size = key
-                    max_size = request.FILES[key].size
-
-            image_file = request.FILES[key_with_max_size]
-        
-            if not image_file:
-                return HttpResponse('Image attachment not found')
-
-            (root, file_name, file_ext) = split_filepath(image_file.name)
-            if not file_ext.lower() in ('jpg', 'jpeg', 'png', 'gif'):
-                return HttpResponse('Image format is not supported')
-
-        else:
-            return HttpResponse('Image attachment not found')
-        
-        #Oxfam GB HQ as default location
-        location = blog_save_location('England', 'Oxford')
-        #no-category
-        category = Category.objects.get(id=22)
-        blog = Blog.objects.create(
-            title          = title, 
-            description    = description, 
-            user           = user, 
-            trash          = False,
-            draft          = False, 
-            allow_download = False,
-            location       = location,
-            category       = category,
-            mood           = 99, # Moodless
-            private        = settings.PRIVATE,
-            published      = datetime.datetime.now()
-        )
-
-        BlogViewSummary.objects.get_or_create(blog=blog)
-
-        uploading_file = UploadedFile(image_file)
+        image_file = request.FILES[key_with_max_size]
+    
+        if not image_file:
+            data.update({'error': 'Image attachment not found'})
+            return data
 
         (root, file_name, file_ext) = split_filepath(image_file.name)
-        blog.image.save('%s.%s' % (uuid.uuid4(), file_ext), uploading_file.file)
-        blog.save()
-    blog_create_response('success', 'blog created successfully', user.email)
-    return HttpResponse('Blog Create Successfully.')
+        if not file_ext.lower() in ('jpg', 'jpeg', 'png', 'gif'):
+            data.update({'error': 'Image format is not supported'})
+            return data
 
+    else:
+        data.update({'error': 'Image attachment not found'})
+        return data
+    
+    #Oxfam GB HQ as default location
+    location = blog_save_location('England', 'Oxford')
+    #no-category
+    category = Category.objects.get(id=22)
+    blog = Blog.objects.create(
+        title          = title, 
+        description    = description, 
+        user           = user, 
+        trash          = False,
+        draft          = False, 
+        allow_download = False,
+        location       = location,
+        category       = category,
+        mood           = 99, # Moodless
+        private        = settings.PRIVATE,
+        published      = datetime.datetime.now()
+    )
+
+    BlogViewSummary.objects.get_or_create(blog=blog)
+
+    uploading_file = UploadedFile(image_file)
+
+    (root, file_name, file_ext) = split_filepath(image_file.name)
+    blog.image.save('%s.%s' % (uuid.uuid4(), file_ext), uploading_file.file)
+    blog.save()
+    data.update({'blog': blog})
+    return data
+
+def get_base_url():
+    site = Site.objects.get(id=settings.SITE_ID)
+    return site.domain if site else None
+
+from django.views.decorators.http import require_POST
+
+@csrf_exempt
+@require_POST
+def blog_create_by_email(request):
+    response = _create_blog(request)
+    sender = response['sender'] if response.has_key('sender') else request.POST.get('sender')
+    blog = response['blog'] if response.has_key('blog') else None
+    error = response['error'] if response.has_key('error') else None
+    _create_blog_response(sender, blog, error , settings)
+    return HttpResponse('')
 
 @login_required
 def blog_edit(request, blog_id):

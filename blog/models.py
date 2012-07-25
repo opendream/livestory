@@ -4,8 +4,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.core.urlresolvers import reverse
 
-#from common.templatetags.common_tags import cache_path
 from location.models import Location
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItem
@@ -127,6 +127,9 @@ class Blog(models.Model):
             return True
         else:
             return self.allow_download if not self.draft else False
+
+    def get_absolute_url(self):
+        return reverse('blog_view', args=[self.id])
 
 class Love(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
