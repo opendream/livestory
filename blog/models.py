@@ -123,10 +123,16 @@ class Blog(models.Model):
             return str(img.size[0]) + 'x' + str(img.size[1])
 
     def downloadable(self, req_user=None):
-        if self.user == req_user:
+        is_owner = self.user == req_user if req_user else False
+        is_admin = req_user.is_superuser if req_user else False
+        download_allow = getattr(settings, 'ALLOW_USER_TO_DOWNLOAD_PHOTO', False)
+
+        if is_owner or is_admin:
             return True
+        elif self.draft:
+            return False
         else:
-            return self.allow_download if not self.draft else False
+            return self.allow_download if download_allow else False
 
     def get_absolute_url(self):
         return reverse('blog_view', args=[self.id])

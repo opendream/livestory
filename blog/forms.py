@@ -1,5 +1,6 @@
 from django import forms
 from django.utils import simplejson as json
+from django.conf import settings
 
 from blog.models import Category
 from taggit.forms import TagField
@@ -38,6 +39,13 @@ class ModifyBlogForm(forms.Form):
             if not check_blog_image(self.blog):
                 raise forms.ValidationError('Uploaded image is missing, please upload it again.')
             return image_file_name
+
+    def clean_allow_download(self):
+        return self.cleaned_data.get('allow_downlod') if self.is_allow_user_to_download_photo else False
+
+    @property
+    def is_allow_user_to_download_photo(self):
+        return getattr(settings, 'ALLOW_USER_TO_DOWNLOAD_PHOTO', False)
 
 class BlogPlaceFilterForm(forms.Form):
     country = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'span2', 'placeHolder': 'Country'}))

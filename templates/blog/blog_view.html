@@ -235,7 +235,7 @@ $(document).ready(function() {
 			<div class="sidebar-list block">
 				<h3>Photo</h3>
 				<ul>
-          {% if blog.downloadable %}
+          {% if download_allow %}
 					<li>
 						<div class="col-left"><span class="ic-widget ic-download">Download</span></div>
 						<div class="col-right"><a href="{% url blog_download blog.id %}">Download the Original size</a></div>
@@ -247,7 +247,7 @@ $(document).ready(function() {
           {% else %}
           <li>
             <div class="col-left"><span class="ic-widget ic-download">Download</span></div>
-            <div class="col-right"><span class="grey">The owner has disabled downloading of their photos</span>
+            <div class="col-right"><span class="grey">Disable</span>
             </div>
           </li>
 					{% endif %}

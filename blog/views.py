@@ -486,7 +486,7 @@ def blog_view(request, blog_id):
         'button_type': button_type,
         'love_count': blog.love_set.count(),
         'loved_users': loved_users,
-
+        'download_allow': blog.downloadable(request.user),
         'max_items': 7,
         'CAN_SHARE_SN': settings.CAN_SHARE_SN,
     }
