@@ -65,14 +65,24 @@ def _extract_image_info(file_name):
     return EXIF.process_file(image) if image else {}
 
 def get_image_captured_date(file_name):
-    data = _extract_image_info(file_name)
+    data = {}
+    try:
+        data = _extract_image_info(file_name)
+    except StandardError:
+        pass
+
     if _IMG_DATE_ORIGINAL in data:
         return datetime.strptime(str(data[_IMG_DATE_ORIGINAL]), '%Y:%m:%d %H:%M:%S')
     else:
         return _get_image_creation_date(file_name)
 
 def get_image_captured_device(image_name):
-    data = _extract_image_info(image_name)
+    data = {}
+    try:
+        data = _extract_image_info(image_name)
+    except StandardError:
+        pass
+
     device = ''
     if _IMG_MAKE in data:
         device += str(data[_IMG_MAKE])
