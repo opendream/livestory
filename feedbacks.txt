@@ -1,0 +1,47 @@
+Functions Not Working
+
+	•	Reset password link is not working:
+	•	Users still having trouble uploading photos (EXIF error, fixed)
+	•	New photos not updating in the All Stories tab, only updates when you click on viewing 16 or 32 photos 
+	•	Option to put name of photographer and date not in the Create new story. It shows up in the posted section though.
+	•	Compatibility for Internet Explorer. Lots of errors with current users in uploading. (IE 7)
+
+
+To Do:
+	•	Delete pictures from the first demo (that were not uploaded by users)
+	•	Take out the download full size link for all users, limit it only for admin staff (fixed)
+
+
+New Features:
+
+	•	<Accept> Show list of users in the people button along with the search option can we have choices of (alphabetically? By most frequent? By most popular? By country?)
+
+	•	<Accept> Add option in personal profile setting to ‘send me email notifications when photo is loved, or when someone comments. (Can they also have an option how often they want to receive these notifications – as it happens, daily, weekly?) 
+
+	•	<Accept> Add function : Admin can add a URL link to Words and Pictures (Oxfam’s internal database) under the photo
+		1. Admin จะ donwload ได้คนเดียว
+		2. มีช่องใส่ link ไปที่ W&P
+		3. user กด donwload จะ link ไปที่ W&P แทน
+
+	•	Multiple view option? Shuffle between how photos are organized on the home page. Popularity/Views/New 
+	•	Map of current locations of the photos (more interactive?) similar to Crowdmap?
+
+	•	<Accept> Add a ‘related information’ box under the photo where people can add a URL (one URL, optional)
+
+	•	<Accept> RSS feeds
+
+	•	Automatic updates generated and sent to members possible via Newsletter? Similar to Twitter (what’s new this week, most loved photos, etc.)
+	•	Winner Page – for contest winning photos when a picture is won
+	•	Badges – silly ones : Winner, Most loved, most creative? Etc (we’ll come up with the names)
+	•	Multiple Uploads 
+	•	“Follow” other users + show followers on profile like on twitter
+From Oxfam’s side
+	•	Guidance on Taking pictures
+	•	Guidance on writing captions, stories, main stories
+	•	Integrating with SUMUS
+	•	Award for best story
+	•	Moderators use photos to ask questions, run features, connect to Internal comms, connect to DV newsletter, 
+	•	Most loved photo gets a REAL award
+
+1. ปรับปรุง notification emails ด้วย (batch job)
+2. ปรับปรุง private_files configuration
