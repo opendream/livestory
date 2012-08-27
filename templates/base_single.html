@@ -14,19 +14,22 @@
     <span class="brand">oxfam</span><span class="slogan">live stories</span>
   </h1>  
   {% url blog_home as blog_home %}
+  {% url blog_popular as blog_popular %}
   {% url blog_all as blog_all %}
   {% url blog_place as blog_place %}
+  {% url blog_map as blog_map %}
   {% url blog_mood 'arg' as blog_mood %}
   {% url blog_category  'arg' as blog_category %}
+  {% url account_profile_search as account_profile_search %}
   
   {% if user.is_authenticated %}
   <ul class="menu">
-    <li><a href="{{ blog_home }}" class="popular{% if request.path == '/' %} active{% endif %}">Popular</a></li>
-    <li><a href="{% url blog_place_empty %}" class="place{% active request blog_place %}{% if request.path == '/blog/map/' %} active{% endif %}">Place</a></li>
+    <li><a href="{{ blog_home }}" class="popular{% active request blog_popular %}">Popular</a></li>
+    <li><a href="{% url blog_place_empty %}" class="place{% active request blog_place %}{% active request blog_map %}">Place</a></li>
     <li><a href="{% url blog_mood 'choose' %}" class="moods{% active request blog_mood %}">Moods</a></li>
     <li><a href="{% url blog_category 'choose' %}" class="categories{% active request blog_category %}">Categories</a></li>
     <li><a href="{{ blog_all }}" class="stories{% active request blog_all %}">All Stories</a></li>
-    <li><a href="{% url account_profile_search %}" class="people{% if request.path == '/account/profile/search/' %} active{% endif %}">People</a></li>
+    <li><a href="{{ account_profile_search }}" class="people{% active request account_profile_search %}">People</a></li>
   </ul>
   
   <div id="nav-mobile">
