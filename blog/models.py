@@ -59,6 +59,8 @@ class Blog(models.Model):
     title          = models.CharField(max_length=200, db_index=True)
     image          = private_files.PrivateFileField(upload_to=blog_image_url, max_length=500, attachment=False)
     description    = models.TextField(null=True, db_index=True)
+    related_url    = models.URLField(blank=True)
+    download_url   = models.URLField(blank=True)
     mood           = models.IntegerField(default=0, choices=MOOD_CHOICES)
     private        = models.BooleanField(default=settings.PRIVATE, choices=PRIVATE_CHOICES)
     draft          = models.BooleanField(default=False, choices=DRAFT_CHOICES)

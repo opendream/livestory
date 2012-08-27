@@ -5,36 +5,36 @@ import uuid
 
 from django.core.files import File
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404, redirect, render
-from django.core.urlresolvers import reverse
-from django.forms.models import model_to_dict
-from django.utils import simplejson as json
-from django.db.models import Count, Sum, Q
+from django.contrib.auth.decorators import login_required
+from django.contrib.sites.models import Site
+from django.core.files.uploadedfile import UploadedFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.servers.basehttp import FileWrapper
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.uploadedfile import UploadedFile
-from django.views.decorators.cache import cache_page
-from django.db.models import Count
+from django.core.urlresolvers import reverse
+from django.db.models import Count, Sum, Q
+from django.forms.models import model_to_dict
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
-from django.contrib.sites.models import Site
+from django.utils import simplejson as json
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.cache import cache_page
+from django.views.decorators.http import require_POST
 
-from blog.models import *
-from blog.forms import *
+from common import ucwords, get_page_range, utilities
+from common.scour import Scour
+
 from account.models import UserProfile
-from statistic.models import BlogViewHit, BlogViewSummary
+from location.models import Location
 from notification.models import Notification
+from statistic.models import BlogViewHit, BlogViewSummary
+from taggit.models import TaggedItem
 
+from models import *
+from forms import *
 from functions import remove_temporary_blog_image, remove_blog_image
 from functions import get_image_captured_device, get_image_captured_date
-
-from location.models import Location
-from common.scour import Scour
-from common import ucwords, get_page_range, utilities
-from taggit.models import TaggedItem
 
 
 def blog_home(request):
@@ -76,7 +76,10 @@ def blog_popular(request):
 
 @login_required
 def blog_manage(request, section):
-    blogs = Blog.objects.filter(user=request.user).annotate(num_loves=Count('love'))
+    if request.user.is_superuser:
+        blogs = Blog.objects.annotate(num_loves=Count('love'))
+    else:
+        blogs = Blog.objects.filter(user=request.user).annotate(num_loves=Count('love'))
 
     if request.GET.get('sort') and request.GET.get('order'):
         sort = request.GET.get('sort')
@@ -211,6 +214,8 @@ def blog_create(request):
             blog = Blog(
                 title                 = form.cleaned_data['title'],
                 description           = form.cleaned_data['description'],
+                related_url           = form.cleaned_data['related_url'],
+                download_url          = form.cleaned_data['download_url'],
                 user                  = request.user,
                 location              = location,
                 allow_download        = form.cleaned_data['allow_download'],
@@ -223,7 +228,7 @@ def blog_create(request):
                 trash                 = 1 if action == 'trash' else 0
             )
             if action == 'publish':
-                published = datetime.datetime.now() 
+                blog.published = datetime.datetime.now() 
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
@@ -354,7 +359,6 @@ def get_base_url():
     site = Site.objects.get(id=settings.SITE_ID)
     return site.domain if site else None
 
-from django.views.decorators.http import require_POST
 
 @csrf_exempt
 @require_POST
@@ -394,6 +398,8 @@ def blog_edit(request, blog_id):
 
             blog.title          = form.cleaned_data['title']
             blog.description    = form.cleaned_data['description']
+            blog.related_url    = form.cleaned_data['related_url']
+            blog.download_url    = form.cleaned_data['download_url']
             blog.location       = location
             blog.allow_download = form.cleaned_data['allow_download']
             blog.category       = form.cleaned_data['category']
@@ -429,6 +435,8 @@ def blog_edit(request, blog_id):
             initial = {
                 'title'          : blog.title,
                 'description'    : blog.description,
+                'related_url'    : blog.related_url,
+                'download_url'   : blog.download_url,
                 'country'        : blog.location.country,
                 'city'           : blog.location.city,
                 'mood'           : blog.mood,

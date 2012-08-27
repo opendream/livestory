@@ -109,6 +109,8 @@ $(document).ready(function() {
       
       <p class="block">{{ blog.description }}</p>
 
+      {% if blog.related_url %}<p class="block"><strong>Related Information:</strong> <a href="{{ blog.related_url }}">{{ blog.related_url }}</a></p>{% endif %}
+
       <span class="grey">{% if blog.published %} {{ blog.published|localtime|timeago }} {% endif %}</span>
       <span class="grey">
         <div class="">
@@ -247,7 +249,7 @@ $(document).ready(function() {
           {% else %}
           <li>
             <div class="col-left"><span class="ic-widget ic-download">Download</span></div>
-            <div class="col-right"><span class="grey">Disable</span>
+            <div class="col-right"><span class="grey">{% if blog.download_url %}<a href="{{ blog.download_url }}">Download</a>{% else %}Disable{% endif %}</span>
             </div>
           </li>
 					{% endif %}

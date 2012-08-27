@@ -79,6 +79,8 @@ class Migration(SchemaMigration):
             'allow_download': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Category']"}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'db_index': 'True'}),
+            'related_url': ('django.db.models.fields.URLField', [], {'blank': 'True'}),
+            'download_url': ('django.db.models.fields.URLField', [], {'blank': 'True'}),
             'draft': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image': ('private_files.models.fields.PrivateFileField', [], {'max_length': '500', 'attachment': 'False'}),

@@ -87,6 +87,30 @@ $(document).ready(function () {
       </div>
     </div>
     
+    <div class="field-related-url control-group{% if form.related_url.errors %} error{% endif %}">
+      <label class="control-label" for="id_description">Related Information</label>
+      <div class="controls">
+        {{ form.related_url }}
+        <p class="help-block">a url link.</p>
+        {% if form.related_url.errors %}
+        <span class="help-inline">{{ form.related_url.errors.as_text }}</span>
+        {% endif %}
+      </div>
+    </div>
+    
+    {% if user.is_superuser %}
+    <div class="field-download-url control-group{% if form.download_url.errors %} error{% endif %}">
+      <label class="control-label" for="id_description">Image Download Link</label>
+      <div class="controls">
+        {{ form.download_url }}
+        <p class="help-block">a url link.</p>
+        {% if form.download_url.errors %}
+        <span class="help-inline">{{ form.download_url.errors.as_text }}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    
     <div class="field-location control-group{% if form.country.errors or form.city.errors or location_error %} error{% endif %}">
       <label class="control-label" for="id_country">Location</label>
       <div class="controls">
