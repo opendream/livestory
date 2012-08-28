@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.forms.models import model_to_dict
 from django.http import HttpResponseForbidden
 
@@ -320,19 +320,40 @@ def account_manage_bulk(request):
 
 @login_required
 def account_profile_search(request):
-    if 'account_keywords' in request.GET:
-        form = AccountSearchForm(request.GET)  
+    form = AccountSearchForm(request.GET) if 'account_keywords' in request.GET else AccountSearchForm()
+
+    keyword = request.GET.get('account_keywords', '').strip()
+    if keyword and form.is_valid():
+        accounts_list = UserProfile.objects.filter(Q(first_name__icontains=keyword) |
+                                                  Q(last_name__icontains=keyword) |
+                                                  Q(office__icontains=keyword))
     else:
-        form = AccountSearchForm()
+        accounts_list = UserProfile.objects.all()
 
-    params = {'form': form}
-    
-    if form.is_valid():
-        keyword = request.GET.get('account_keywords').strip()
-        accounts = UserProfile.objects.filter(Q(first_name__icontains=keyword) |
-                                              Q(last_name__icontains=keyword) |
-                                              Q(office__icontains=keyword))
-        params.update({'keyword': keyword})
-        params.update({'accounts': accounts})
+    ordering = request.GET.get('ordering')
+    if ordering == 'country':
+        accounts_list = accounts_list.order_by('office')
+    elif ordering == 'most_photos':
+        accounts_list = accounts_list.annotate(total_blog=Count('user__blog')).order_by('-total_blog')
+    elif ordering == 'most_loves':
+        accounts_list = accounts_list.annotate(total_love=Count('user__blog__love')).order_by('-total_love')
+    else:
+        ordering == None
 
-    return render(request, 'account/account_profile_search.html', params)
+    paginator = Paginator(accounts_list, 8)
+    page = request.GET.get('page') or 1
+    try:
+        accounts = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        raise Http404
+
+    context = {
+        'accounts'  : accounts,
+        'form'      : form,
+        'keyword'   : keyword,
+        'ordering'  : ordering,
+        'paginator' : paginator,
+        'page'      : page,
+    }
+
+    return render(request, 'account/account_profile_search.html', context)

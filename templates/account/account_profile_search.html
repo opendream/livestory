@@ -28,35 +28,58 @@
 <!-- End People -->
 
 <div class="blog-list">
-{% if not keyword or form.account_keywords.errors %}
-  <div class="hint-box search-box">
-  	<div class="pull-left ic-hint"></div>
-    <p class="chalkduster-font reset-box">Type your desired firstname, lastname or office name here</p>
-  </div>
-{% else %}
-  <h2 class="oxfam-font ic-page-title ic-title-red block">{{ keyword }}</h2>
-  {% if not accounts %}
-  <p class="span4 centered alert alert-block">No Results</p>
-  {% endif %}
-	<div class="row">
-		<div class="span12">
-		  <ul class="thumbnails people-thumbnails">
-		  {% for user in accounts %}
-		  <li class="span6">
-		    <div class="thumbnail people-list">
-			  <a href="{% url account_profile_view user.user.id %}">
-			  	<img src="{{user.get_avatar|crop:'94x94'}}" class="porfile-photo"/></a>
-		      <a href="{% url account_profile_view user.user.id %}" class="profile-name">
-		      	{{ user.first_name }} {{ user.last_name }}</a>
-		      <span class="grey"><strong>{{ user.job_title }}</strong></span> <span class="grey">{{ user.office }}</span>
-		    </div>
-		  </li>
-		  {% endfor %}
-		  </ul>
-		{% endif %}
-		</div>
-	</div>
-</div> 
+    <h2 class="oxfam-font ic-page-title ic-title-red block">{{ keyword|default:"All Users" }}</h2>
+    {% if accounts.object_list %}
+    <div class="people-sort-tab pull-right">
+        <span>Sorted by: </span>
+        <span><a href="?{% if keyword %}account_keywords={{ keyword }}&amp;{% endif %}page={{ page }}" class="active">By name</a></span><span> | </span>
+        <span><a href="?{% if keyword %}account_keywords={{ keyword }}&amp;{% endif %}ordering=country&amp;page={{ page }}">By country</a></span><span> | </span>
+        <span><a href="?{% if keyword %}account_keywords={{ keyword }}&amp;{% endif %}ordering=most_photos&amp;page={{ page }}">Most photos</a></span><span> | </span>
+        <span><a href="?{% if keyword %}account_keywords={{ keyword }}&amp;{% endif %}ordering=most_loves&amp;page={{ page }}">Most loves</a></span>
+    </div>
+    <div class="row">
+    	<div class="span12">
+    	  <ul class="thumbnails people-thumbnails">
+    	  {% for user in accounts.object_list %}
+    	  <li class="span6">
+    	    <div class="thumbnail people-list">
+    		  <a href="{% url account_profile_view user.user.id %}"><img src="{{user.get_avatar|crop:'94x94'}}" class="porfile-photo"/></a>
+    	      <a href="{% url account_profile_view user.user.id %}" class="profile-name">{{ user.first_name }} {{ user.last_name }}</a>
+    	      {% if user.job_title or user.office %}<p><span class="grey"><strong>{{ user.job_title }} {% if user.office %}@{% endif %} {{ user.office }}</strong></span></p>{% endif %}
+              <p><span class="profile-title">{{ user.user.blog_set.count }} photo{{ user.user.blog_set.count|pluralize }}/ {{ user.get_total_blog_loved }} love{{ user.get_total_blog_loved|pluralize }}</span></p>
+    	    </div>
+    	  </li>
+    	  {% endfor %}
+    	  </ul>
+    	</div>
+    </div>
+
+    {% if paginator.num_pages > 1 %}
+    <div class="pagination pagination-centered">
+        <ul>
+            {% if accounts.has_previous %}
+            <li><a href="?{% if keyword %}account_keywords={{ keyword }}&amp;{% endif %}{% if ordering %}ordering={{ ordering }}&amp;{% endif %}page={{ accounts.previous_page_number }}">«</a></li>
+            {% endif %}
+
+            {% for page_no in paginator.page_range %}
+            <li{% if page_no == accounts.number %} class="active"{% endif %}><a href="?{% if keyword %}account_keywords={{ keyword }}&amp;{% endif %}{% if ordering %}ordering={{ ordering }}&amp;{% endif %}page={{ page_no }}">{{page_no}}</a></li>
+            {% endfor %}
+            
+            {% if accounts.has_next %}
+            <li><a href="?{% if keyword %}account_keywords={{ keyword }}&amp;{% endif %}{% if ordering %}ordering={{ ordering }}&amp;{% endif %}page={{ accounts.next_page_number }}">»</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="row">
+        <p class="span4 centered alert alert-block">No Results</p>
+    </div>
+    {% endif %}
+    
+</div>
+
 <script type="text/javascript">
     function validate_keyword() {
      	if (!($('#id_account_keywords').val())) return false;

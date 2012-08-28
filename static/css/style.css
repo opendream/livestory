@@ -1926,6 +1926,8 @@ html[xmlns] .clearfix {
   ---------------------------------------*/
   .people-thumbnails .span6 {
     width: 340px; } }
+  .people-sort-tab {
+    margin-bottom: 10px;}
 @media (max-width: 730px) {
   /* Grid system
   ---------------------------------------*/

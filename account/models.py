@@ -1,18 +1,7 @@
+import datetime
+import pytz
 import random
 import re
-import datetime
-
-from django.db import models
-from django.contrib.auth.models import User
-from django.template.loader import render_to_string
-from django.utils.hashcompat import sha_constructor
-
-from common.templatetags.common_tags import *
-from common.utilities import generate_md5_base64
-
-SHA1_RE = re.compile('^[a-f0-9]{40}$')
-
-import pytz
 
 try :
     import Image
@@ -20,6 +9,18 @@ except ImportError:
     from PIL import Image
 
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import models
+from django.template.loader import render_to_string
+from django.utils.hashcompat import sha_constructor
+
+from common.templatetags.common_tags import *
+from common.utilities import generate_md5_base64
+
+from blog.models import Blog
+
+SHA1_RE = re.compile('^[a-f0-9]{40}$')
+
 
 def account_avatar_url(instance, filename):
     ext = filename.split('.')[-1]
@@ -68,6 +69,9 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return '%s' % (self.get_full_name())
 
+    class Meta:
+        ordering = ['first_name', 'last_name']
+
     objects = UserProfileManager()
 
     def get_full_name(self):
@@ -101,9 +105,18 @@ class UserProfile(models.Model):
                 return 'not-activate'
             else:
                 return 'block'
+
     def update_view_notification(self):
         self.notification_viewed = datetime.now()
         self.save()
+
+    def get_total_blog_loved(self):
+        blogs_love_count = 0
+        for blog in Blog.objects.filter(user=self.user):
+            blogs_love_count += blog.love_set.count()
+
+        return blogs_love_count
+
 
 class UserInvitationManager(models.Manager):
 
