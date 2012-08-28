@@ -8,3 +8,6 @@ tmp/*
 .sass-cache
 .idea
 settings/active.py
+
+#Celery
+celerybeat-schedule

@@ -1,11 +1,12 @@
-from account.models import UserProfile, UserInvitation
-from blog.models import Blog, Category, Location, Love
-from notification.models import Notification
+import hashlib
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.core.files.base import File as DjangoFile
 
-import hashlib
-from datetime import datetime
+from account.models import UserProfile, UserInvitation
+from blog.models import Blog, Category, Location, Love
+from notification.models import Notification
 
 def create_user(username='testuser', email='test@example.com', password='testuser', first_name='John', last_name='Doe', job_title='scrum master', office='opendream', has_image=False, timezone='Asia/Bangkok'):
     user = User.objects.create_user(username, email, password)
@@ -52,4 +53,32 @@ def create_notification(subject, action, blog, dt):
     notification = Notification(subject=subject, action=action, blog=blog, datetime=dt)
     notification.save()
     return notification
-    
+
+def rm_user(id):
+    try:
+        user = User.objects.get(id=id)
+        try:
+            UserProfile.objects.get(user=user).delete()
+        except UserProfile.DoesNotExist:
+            pass
+        user.delete()
+    except User.DoesNotExist:
+        pass
+
+    try:
+        shutil.rmtree('%sblog/%s' % (settings.IMAGE_ROOT, id))
+    except:
+        pass
+    try:
+        shutil.rmtree('%scache/images/blog/%s' % (settings.MEDIA_ROOT, id))
+    except:
+        pass
+        
+    try:
+        shutil.rmtree('%saccount/%s' % (settings.IMAGE_ROOT, id))
+    except:
+        pass
+    try:
+        shutil.rmtree('%scache/images/account/%s' % (settings.MEDIA_ROOT, id))
+    except:
+        pass

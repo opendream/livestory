@@ -1,15 +1,16 @@
-from blog.models import Blog, Love
+import os
+import shutil
+
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 #from statistic.models import ViewCount
-from tests import factory
-from common import rm_user
 from override_settings import override_settings
 
+from tests import factory, rm_user
 
-import os
-from django.conf import settings
-import shutil
+from blog.models import Blog, Love
+
 
 @override_settings(PRIVATE=False)        
 class TestBlog(TestCase):

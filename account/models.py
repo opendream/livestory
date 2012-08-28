@@ -14,8 +14,7 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils.hashcompat import sha_constructor
 
-from common.templatetags.common_tags import *
-from common.utilities import generate_md5_base64
+from common.utilities import generate_md5_base64, path_to_url
 
 from blog.models import Blog
 

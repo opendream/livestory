@@ -106,6 +106,8 @@ INSTALLED_APPS = (
 
     'south',
     'django_nose',
+    'djcelery',
+    'djkombu',
     'private_files',
 )
 
@@ -227,3 +229,34 @@ FILE_PROTECTION_METHOD = 'basic'
 # Allow users to download photo or not.
 # If this flag set to False then only admin and blog owner can download photo.
 ALLOW_USER_TO_DOWNLOAD_PHOTO = False
+
+# Celery #######################################################################################################
+
+import djcelery
+djcelery.setup_loader()
+
+BROKER_BACKEND = "djkombu.transport.DatabaseTransport"
+#celery
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+BROKER_VHOST = "/"
+
+from datetime import timedelta
+# from celery.schedules import crontab
+
+CELERYBEAT_SCHEDULE = {
+    # ###### Test
+    'runs-every-10-seconds': {
+        'task': 'notification.tasks.add',
+        'schedule': timedelta(seconds=10),
+        'args': (16, 16)
+    },
+
+    # ###### RUN EVERYDAY
+    # 'runs-everyday': {
+    #     'task': 'notification.tasks.send_notification_email',
+    #     'schedule': timedelta(days=1),
+    # },
+}

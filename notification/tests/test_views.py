@@ -1,13 +1,15 @@
-from account.models import UserProfile, UserInvitation
-from common import rm_user
+from datetime import datetime, timedelta
+
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from override_settings import override_settings
+
+from tests import factory, rm_user
+
+from account.models import UserProfile, UserInvitation
 from notification.models import Notification
 from notification.views import get_notifications
-from tests import factory
 
-from datetime import datetime, timedelta
-from override_settings import override_settings
 
 @override_settings(PRIVATE=False)
 class TestHelperFunction(TestCase):
