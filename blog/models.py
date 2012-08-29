@@ -1,20 +1,24 @@
 import os
+import private_files
+import shutil
+
+try :
+    import Image
+except ImportError:
+    from PIL import Image
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.core.urlresolvers import reverse
+
+from common.utilities import split_filepath
 
 from location.models import Location
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItem
 
-from common.utilities import split_filepath
-
-import Image
-import shutil
-import private_files
 
 MOOD_CHOICES = (
     (1, 'Fun'         ), 

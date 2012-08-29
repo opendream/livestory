@@ -1,12 +1,11 @@
-from account.models import UserProfile, UserInvitation
+from django.conf import settings
 from django.test import TestCase
-from tests import factory
 from override_settings import override_settings
 
+from tests import factory, rm_user
 
-from common import rm_user
+from account.models import UserProfile, UserInvitation
 
-from django.conf import settings
 
 @override_settings(PRIVATE=False)
 class TestUserProfile(TestCase):

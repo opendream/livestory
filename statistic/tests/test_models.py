@@ -3,10 +3,9 @@ from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-
-from common import rm_user
-from tests import factory
 from override_settings import override_settings
+
+from tests import factory, rm_user
 
 from blog.models import Blog
 from statistic.models import BlogViewHit, BlogViewSummary

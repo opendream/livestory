@@ -12,9 +12,9 @@ from django.db.models import Q, Count
 from django.forms.models import model_to_dict
 from django.http import HttpResponseForbidden
 
-from common import get_page_range
 from common.decorators import user_is_staff
 from common.templatetags.common_tags import *
+from common.utilities import get_page_range
 
 from account.forms import *
 from account.models import *

@@ -1,14 +1,13 @@
 import hashlib
 import os
-from django.conf import settings
-
-from django import template
 from datetime import datetime, timedelta
 
-from django.utils.timesince import timesince
-from common.templatetags.tz import localtime
+from django import template
+from django.conf import settings
 from django.template.defaultfilters import date as dateformat
+from django.utils.timesince import timesince
 
+from common.templatetags.tz import localtime
 from common.utilities import scale_image, split_filepath
 
 register = template.Library()
@@ -21,11 +20,6 @@ def timeago(d, format='M d, Y f a'):
         return dateformat(d, format)
     else:
         return '%s ago' %timesince(d) 
-
-
-@register.filter()
-def path_to_url(path):
-	return path.replace(settings.BASE_PATH, '')
 
 @register.filter()
 def scale_blog_image(image, size):
@@ -57,12 +51,7 @@ def crop(image, size):
 
 @register.filter('ucwords')
 def ucwords_tag(string):
-    """ucwords -- Converts first letter of each word
-    within a string into an uppercase all other to lowercase.
-
-    (string) ucwords( (string) string )"""
-    erg=[ item.capitalize() for item in string.split( ' ' ) ]
-    return ' '.join( erg )
+    return ucwords(string)
 
 @register.simple_tag
 def active(request, pattern, text=' active'):

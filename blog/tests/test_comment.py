@@ -1,9 +1,9 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from tests import factory, rm_user
+
 from blog.models import Blog
-from tests import factory
-from common import rm_user
 
 class TestBlogComment(TestCase):
 	fixtures = ['demo_data.json']

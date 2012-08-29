@@ -1,19 +1,19 @@
+import shutil
+from mock import Mock, patch
+from math import ceil
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.base import File as DjangoFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import simplejson as json
+from override_settings import override_settings
+
+from tests import factory, rm_user
 
 from blog.models import Blog, Love
 from location.models import Location
-from mock import Mock, patch
-from math import ceil
-from tests import factory
-
-from common import rm_user
-from django.conf import settings
-from override_settings import override_settings
-import shutil
 
 
 @override_settings(PRIVATE=False)

@@ -22,8 +22,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_POST
 
-from common import ucwords, get_page_range, utilities
 from common.scour import Scour
+from common.utilities import ucwords, get_page_range
 
 from account.models import UserProfile
 from location.models import Location
