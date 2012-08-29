@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # Feeds
-    url(r'^latest/rss/$', LatestEntriesFeed()),
+    url(r'^latest/rss/$', LatestEntriesFeed(), name="feed"),
 )
 
 if settings.DEBUG:

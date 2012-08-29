@@ -8,7 +8,7 @@ Functions Not Working
 
 
 To Do:
-	•	Delete pictures from the first demo (that were not uploaded by users)
+	•	<Done> Delete pictures from the first demo (that were not uploaded by users)
 	•	Take out the download full size link for all users, limit it only for admin staff (fixed)
 
 
