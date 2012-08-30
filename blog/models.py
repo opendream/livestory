@@ -159,7 +159,7 @@ class Comment(models.Model):
     post_date = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
-        return '%s comment on blog(%d) - %s' % (user.username, blog.id, comment)
+        return '%s comment on blog(%d) - %s' % (self.user.username, self.blog.id, self.comment)
 
 # Schema Migration Rules for South
 from private_files import PrivateFileField

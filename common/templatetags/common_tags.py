@@ -8,7 +8,7 @@ from django.template.defaultfilters import date as dateformat
 from django.utils.timesince import timesince
 
 from common.templatetags.tz import localtime
-from common.utilities import scale_image, split_filepath
+from common.utilities import scale_image, split_filepath, ucwords
 
 register = template.Library()
 

@@ -1,7 +1,7 @@
-<table cellspacing="0" cellpadding="0" border="0" width="740px" background="{{ base_url }}/static/img/bg-body_email.png">
+<table cellspacing="0" cellpadding="0" border="0" width="740px" background="{{ settings.SITE_DOMAIN }}/static/img/bg-body_email.png">
     <tbody>
     <tr>
-        <td><img src="{{ base_url }}/static/img/bg-header_email.png"  width="740px" height="62px" /></td>
+        <td><img src="{{ settings.SITE_DOMAIN }}/static/img/bg-header_email.png"  width="740px" height="62px" /></td>
     </tr>
     <tr>
     <tr>
@@ -9,7 +9,7 @@
     </tr>
     <td>
         <div style="padding: 20px 50px; line-height: 1.5em;">
-            <img src="{{ base_url }}/{{ settings.SITE_LOGO }}" alt="{{ site_name }}" />
+            <img src="{{ settings.SITE_DOMAIN }}/{{ settings.SITE_LOGO }}" alt="{{ settings.SITE_NAME }}" />
             <h2>Hi, </h2>
             {% block email_content %}{% endblock %}
 
@@ -23,11 +23,11 @@
         <td>
             <div style="padding: 0px 50px;">
                 <span style="display:block; width: 640px; border-bottom:1px solid #ccc; margin-bottom: 15px;"></span>
-                <p style="float:left; line-height: 30px; margin:0;"><a href="{{ base_url }}/" style="color: #339900; text-decoration: none;">{{ base_url }}/</a></p>
-                <img style="float:right;" src="{{ base_url }}/{{ settings.SITE_LOGO_EMAIL }}" />
+                <p style="float:left; line-height: 30px; margin:0;"><a href="{{ settings.SITE_DOMAIN }}/" style="color: #339900; text-decoration: none;">{{ settings.SITE_DOMAIN }}/</a></p>
+                <img style="float:right;" src="{{ settings.SITE_DOMAIN }}/{{ settings.SITE_LOGO_EMAIL }}" />
             </div>
 
-            <img src="{{ base_url }}/static/img/bg-footer_email.png" />
+            <img src="{{ settings.SITE_DOMAIN }}/static/img/bg-footer_email.png" />
         </td>
 
     </tr>

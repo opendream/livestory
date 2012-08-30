@@ -8,14 +8,33 @@
 <p>
 <table class="table table-striped table-list">
   <tbody>
-    {% if loved_items %}
-    {% for notification in loved_items %}
-    <tr class="action-{{ notification.action }}">
-      <td class="avatar"><a href = "{{ base_url }}/{% url account_profile_view notification.subject.id %}"><img src="{{ base_url }}/{{ notification.subject.get_profile.get_avatar|crop:'24x24' }}"/></a></td>
-      <td class="middle"><a href ="{{ base_url }}/account/profile/{{ notification.subject.id }}/view/"><strong>{{ notification.subject.get_profile.get_full_name }}</strong></a> {{ notification.get_action_text }} your <a href="{{ base_url }}/{% url blog_view notification.blog.id %}">photo</a>. | <span class="grey">{{ notification.datetime|localtime|timeago }}</span></td>
+    {% for love in loves %}
+    <tr class="action-loved">
+      <td class="avatar">
+        <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view love.user.id %}"><img src="{{ settings.SITE_DOMAIN }}/{{ love.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
+      </td>
+      <td class="middle">
+        <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ love.user.id }}/view/"><strong>{{ love.user.get_profile.get_full_name }}</strong></a> loved your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view love.blog.id %}">photo</a>.
+      </td>
     </tr>
     {% endfor %}
-    {% endif %}
+
+    {% for comment in comments %}
+    <tr class="action-comment">
+      <td class="avatar">
+        {% if comment.count_user_comments == 1 %}
+        <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user %}"><img src="{{ settings.SITE_DOMAIN }}/{{ comment.avatar|crop:'24x24' }}"/></a>
+        {% endif %}
+      </td>
+      <td class="middle">
+        {% if comment.count_user_comments == 1 %}
+        <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user }}/view/"><strong>{{ comment.user_fullname }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog %}">photo</a>.
+        {% else %}
+        <strong>{{ comment.count_user_comments }} people</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog %}">photo</a>.
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
   </tbody>
 </table>
 

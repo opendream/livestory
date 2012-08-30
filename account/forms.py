@@ -74,6 +74,7 @@ class UserProfileForm(forms.Form):
     image = forms.ImageField(required=False)
     
     timezone = forms.ChoiceField(choices=[(tz, tz) for tz in pytz.common_timezones], required=False)
+    notification_type = forms.ChoiceField(choices=UserProfile.NOTIFICATION_FREQUENCY_CHOICES, initial=UserProfile.NOTIFICATION_FREQUENCY_CHOICES[1][0])
     
     is_active = forms.BooleanField(required=False)
 

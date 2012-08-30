@@ -51,7 +51,14 @@ class UserProfileManager(models.Manager):
 
         return user
 
+
 class UserProfile(models.Model):
+    NOTIFICATION_FREQUENCY_CHOICES = (
+        (0, 'None'  ),
+        (1, 'Daily' ), 
+        (7, 'Weekly'), 
+    )
+
     user = models.OneToOneField(User)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
@@ -64,6 +71,9 @@ class UserProfile(models.Model):
 
     timezone = models.CharField(max_length=200, default='UTC', choices=[(tz, tz) for tz in pytz.common_timezones])
     notification_viewed = models.DateTimeField(auto_now_add=True)
+    
+    notification_type = models.IntegerField(default=1, choices=NOTIFICATION_FREQUENCY_CHOICES)
+    next_notified = models.DateField(default=datetime.datetime.now()+datetime.timedelta(days=1))
 
     def __unicode__(self):
         return '%s' % (self.get_full_name())

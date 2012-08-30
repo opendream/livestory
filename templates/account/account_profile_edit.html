@@ -84,6 +84,14 @@
       </div>
     </div>
     
+    <div class="control-group{% if form.notification_type.errors %} error{% endif %}">
+      <label class="control-label" for="notification_type">Notification</label>
+      <div class="controls">
+        {{ form.notification_type }}
+        <span class="help-inline">{{ form.notification_type.errors.as_text }}</span>
+      </div>
+    </div>
+    
     <div class="control-group{% if form.timezone.errors %} error{% endif %}">
       <label class="control-label" for="timezone">Timezone</label>
       <div class="controls">

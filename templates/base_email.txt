@@ -2,8 +2,7 @@ Hi,
 {% block email_content %}{% endblock %}
 
 Sincerely,
-{{ settings.site_name }} Team
+{{ settings.SITE_NAME }} Team
 
 ---------------------------------------------------
-{{ settings.site_name }}
-{{ base_url }}/
+{{ settings.SITE_DOMAIN }}

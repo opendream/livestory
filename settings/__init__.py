@@ -248,15 +248,15 @@ from datetime import timedelta
 
 CELERYBEAT_SCHEDULE = {
     # ###### Test
-    'runs-every-10-seconds': {
-        'task': 'notification.tasks.add',
-        'schedule': timedelta(seconds=10),
-        'args': (16, 16)
-    },
+    # 'runs-every-10-seconds': {
+    #     'task': 'notification.tasks.send_notification_email',
+    #     'schedule': timedelta(seconds=20),
+    #     'args': (16, 16)
+    # },
 
     # ###### RUN EVERYDAY
-    # 'runs-everyday': {
-    #     'task': 'notification.tasks.send_notification_email',
-    #     'schedule': timedelta(days=1),
-    # },
+    'runs-everyday': {
+        'task': 'notification.tasks.send_notification_email',
+        'schedule': timedelta(days=1),
+    },
 }

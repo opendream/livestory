@@ -51,6 +51,8 @@ class Migration(SchemaMigration):
             'job_title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'mailbox_password': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'next_notified': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now()+datetime.timedelta(days=1)'}),
+            'notification_type': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'notification_viewed': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'office': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'timezone': ('django.db.models.fields.CharField', [], {'default': "'UTC'", 'max_length': '200'}),

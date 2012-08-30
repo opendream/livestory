@@ -1,9 +1,12 @@
-{% extends 'base_email.html' %}
+{% extends 'base_email.txt' %}
 
 {% block email_content %}
 Here are your blog activities for {{ date }}.
-{% for item in loved_items %}
-  [{{ item.subject.get_profile.first_name }} {{ item.subject.profile.last_name }}] loves your blog. [{{ item.blog.title }}].
+{% for item in loves %}
+  {{ item.subject.get_profile.get_full_name }} loved your {{ item.blog.title }} blog.
+{% endfor %}
+{% for item in comments %}
+  {{ item.comment.user.get_profile.get_full_name }} commented your {{ item.blog.title }} blog.
 {% endfor %}
 
 {% endblock %}

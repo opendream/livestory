@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -19,7 +21,6 @@ from common.utilities import get_page_range
 from account.forms import *
 from account.models import *
 
-from datetime import datetime
 
 def auth_login(request):
     from django.contrib.auth.views import login
@@ -161,6 +162,9 @@ def account_profile_edit(request):
             account.job_title = form.cleaned_data.get('job_title')
             account.office = form.cleaned_data.get('office')
             account.timezone = form.cleaned_data.get('timezone')
+            if account.notification_type != int(form.cleaned_data.get('notification_type')):
+                account.notification_type = form.cleaned_data.get('notification_type')
+                account.next_notified = datetime.date.today() + datetime.timedelta(days=int(account.notification_type))
 
             #save avatar
             image = form.cleaned_data.get('image')
