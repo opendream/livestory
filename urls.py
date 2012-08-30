@@ -5,6 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 from django.conf import settings
+from blog.feeds import LatestEntriesFeed
 
 urlpatterns = patterns('',
     url(r'^$', 'blog.views.blog_home', name='blog_home'),
@@ -31,6 +32,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
+    # Feeds
+    url(r'^latest/rss/$', LatestEntriesFeed(), name="feed"),
 )
 
 if settings.DEBUG:
