@@ -8,31 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding index on 'UserInvitation', fields ['invitation_key']
-        db.create_index('account_userinvitation', ['invitation_key'])
+        # Adding field 'UserProfile.notification_type'
+        db.add_column('account_userprofile', 'notification_type',
+                      self.gf('django.db.models.fields.IntegerField')(default=1),
+                      keep_default=False)
 
-
-        # Changing field 'UserProfile.mailbox_password'
-        db.alter_column('account_userprofile', 'mailbox_password', self.gf('django.db.models.fields.CharField')(max_length=200, null=True))
-
-        # Changing field 'UserProfile.email_posting_key'
-        db.alter_column('account_userprofile', 'email_posting_key', self.gf('django.db.models.fields.CharField')(max_length=200, null=True))
-        # Adding index on 'UserProfile', fields ['email_posting_key']
-        db.create_index('account_userprofile', ['email_posting_key'])
+        # Adding field 'UserProfile.next_notified'
+        db.add_column('account_userprofile', 'next_notified',
+                      self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2012, 8, 31, 0, 0), null=True),
+                      keep_default=False)
 
     def backwards(self, orm):
-        # Removing index on 'UserProfile', fields ['email_posting_key']
-        db.delete_index('account_userprofile', ['email_posting_key'])
+        # Deleting field 'UserProfile.notification_type'
+        db.delete_column('account_userprofile', 'notification_type')
 
-        # Removing index on 'UserInvitation', fields ['invitation_key']
-        db.delete_index('account_userinvitation', ['invitation_key'])
+        # Deleting field 'UserProfile.next_notified'
+        db.delete_column('account_userprofile', 'next_notified')
 
-
-        # Changing field 'UserProfile.mailbox_password'
-        db.alter_column('account_userprofile', 'mailbox_password', self.gf('django.db.models.fields.CharField')(max_length=200))
-
-        # Changing field 'UserProfile.email_posting_key'
-        db.alter_column('account_userprofile', 'email_posting_key', self.gf('django.db.models.fields.CharField')(max_length=200))
     models = {
         'account.userinvitation': {
             'Meta': {'object_name': 'UserInvitation'},
@@ -43,16 +35,18 @@ class Migration(SchemaMigration):
             'invited_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'account.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
+            'Meta': {'ordering': "['first_name', 'last_name']", 'object_name': 'UserProfile'},
             'avatar': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True'}),
             'email_posting_key': ('django.db.models.fields.CharField', [], {'db_index': 'True', 'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'job_title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'job_title': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'mailbox_password': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'next_notified': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2012, 8, 31, 0, 0)', 'null': 'True'}),
+            'notification_type': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'notification_viewed': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'office': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'office': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'timezone': ('django.db.models.fields.CharField', [], {'default': "'UTC'", 'max_length': '200'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['auth.User']", 'unique': 'True'})
         },

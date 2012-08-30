@@ -74,7 +74,7 @@ class UserProfile(models.Model):
     notification_viewed = models.DateTimeField(auto_now_add=True)
     
     notification_type = models.IntegerField(default=1, choices=NOTIFICATION_FREQUENCY_CHOICES)
-    next_notified = models.DateField(default=datetime.datetime.now()+datetime.timedelta(days=1))
+    next_notified = models.DateField(null=True, default=datetime.datetime.now()+datetime.timedelta(days=1))
 
     def __unicode__(self):
         return '%s' % (self.get_full_name())

@@ -164,7 +164,10 @@ def account_profile_edit(request):
             account.timezone = form.cleaned_data.get('timezone')
             if account.notification_type != int(form.cleaned_data.get('notification_type')):
                 account.notification_type = form.cleaned_data.get('notification_type')
-                account.next_notified = datetime.date.today() + datetime.timedelta(days=int(account.notification_type))
+                if int(account.notification_type) > 0:
+                    account.next_notified = datetime.date.today() + datetime.timedelta(days=int(account.notification_type))
+                else:
+                    account.next_notified = None
 
             #save avatar
             image = form.cleaned_data.get('image')

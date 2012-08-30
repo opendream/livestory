@@ -20,8 +20,6 @@ class Migration(SchemaMigration):
             ('email_posting_key', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('timezone', self.gf('django.db.models.fields.CharField')(default='UTC', max_length=200)),
             ('notification_viewed', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('notification_type', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('next_notified', self.gf('django.db.models.fields.DateField')(default=datetime.datetime.now()+datetime.timedelta(days=1))),
         ))
         db.send_create_signal('account', ['UserProfile'])
 
@@ -59,8 +57,6 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'job_title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'next_notified': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime.now()+datetime.timedelta(days=1)'}),
-            'notification_type': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'notification_viewed': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'office': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'timezone': ('django.db.models.fields.CharField', [], {'default': "'UTC'", 'max_length': '200'}),

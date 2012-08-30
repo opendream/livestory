@@ -22,8 +22,6 @@ class Migration(SchemaMigration):
             ('title', self.gf('django.db.models.fields.CharField')(max_length=200, db_index=True)),
             ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=500)),
             ('description', self.gf('django.db.models.fields.TextField')(null=True, db_index=True)),
-            ('related_url', self.gf('django.db.models.fields.URLField')(blank=True)),
-            ('download_url', self.gf('django.db.models.fields.URLField')(blank=True)),
             ('mood', self.gf('django.db.models.fields.IntegerField')(default=0)),
             ('private', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('draft', self.gf('django.db.models.fields.BooleanField')(default=False)),
