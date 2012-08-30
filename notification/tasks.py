@@ -18,7 +18,7 @@ def send_notification_email():
     user_profile = UserProfile.objects.exclude(user__is_superuser=True)
 
     for user in user_profile:
-        if user.notification_type and user.next_notified == datetime_imported.date.today():
+        if user.notification_type > 0 and user.next_notified == datetime_imported.date.today():
             send_to_emails = ['tarongpong@opendream.co.th'] if settings.DEBUG else [user.user.email]
 
             start_date = user.next_notified - datetime_imported.timedelta(days=int(user.notification_type))
@@ -45,7 +45,10 @@ def send_notification_email():
                 comment.update({'avatar': user_profile.get_avatar()})
 
             if loves or comments:
-                date = start_date.strftime('%B %d, %Y') if user.get_notification_type_display() == 'Daily' else str(start_date.strftime('%B %d, %Y')) + ' to ' + str((datetime_imported.date.today()-datetime_imported.timedelta(days=1)).strftime('%B %d, %Y'))
+                if user.get_notification_type_display() == 'Daily':
+                    date = start_date.strftime('%B %d, %Y')  
+                else:
+                    date = str(start_date.strftime('%B %d, %Y')) + ' to ' + str((datetime_imported.date.today()-datetime_imported.timedelta(days=1)).strftime('%B %d, %Y'))
 
                 email_context = {
                     'comments': comments,

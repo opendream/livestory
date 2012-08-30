@@ -55,6 +55,7 @@ class UserProfileManager(models.Manager):
 class UserProfile(models.Model):
     NOTIFICATION_FREQUENCY_CHOICES = (
         (0, 'None'  ),
+        (-1, 'Immediately'), 
         (1, 'Daily' ), 
         (7, 'Weekly'), 
     )
