@@ -45,3 +45,12 @@ From Oxfam’s side
 
 1. ปรับปรุง notification emails ด้วย (batch job)
 2. ปรับปรุง private_files configuration
+3. Statistics
+	For example: Site focused: 
+		1. How many new users per day/month 
+		2. How many photos added per day/month 
+		3. How many comments added per day/month 
+
+	User focused: 
+		1. Which user is the most active per month 
+		2. Who has the most love 
