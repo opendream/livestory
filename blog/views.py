@@ -797,17 +797,19 @@ def blog_search(request):
 
     return render(request, 'blog/blog_search.html', context)
 
+from notification.tasks import BlogCommentNotifyOwnerTask as notify_task
 @login_required
 def add_blog_comment(request, blog_id):
-    b = get_object_or_404(Blog, id=blog_id)
+    blog = get_object_or_404(Blog, id=blog_id)
     if request.method == 'POST':
-        f = BlogCommentForm(request.POST)
-        if f.is_valid():
-            b.comment_set.create(
-                comment = f.cleaned_data['comment'],
-                user    = request.user,
-                blog    = b
+        form = BlogCommentForm(request.POST)
+        if form.is_valid():
+            comment = Comment.objects.create(
+                comment = form.cleaned_data['comment'],
+                user = request.user,
+                blog = blog
             )
+    notify_task.delay(comment)
     return redirect(reverse('blog_view', args=[blog_id])+'#comment')
 
 # Static page

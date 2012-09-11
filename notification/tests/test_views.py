@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from override_settings import override_settings
 
-from tests import factory, rm_user
+from tests import factory
 
 from account.models import UserProfile, UserInvitation
 from notification.models import Notification
@@ -24,8 +24,8 @@ class TestHelperFunction(TestCase):
 		self.notification.save()
 
 	def tearDown(self):
-		rm_user(self.user.id)
-		rm_user(self.user_with_notification.id)
+		factory.rm_user(self.user.id)
+		factory.rm_user(self.user_with_notification.id)
 		self.notification.delete()
 
 	def test_get_notifications(self):
@@ -52,8 +52,8 @@ class TestNotification(TestCase):
 		self.notification.save()
 
 	def tearDown(self):
-		rm_user(self.user.id)
-		rm_user(self.user_with_notification.id)
+		factory.rm_user(self.user.id)
+		factory.rm_user(self.user_with_notification.id)
 
 	def test_notification_page_get_by_anonymous_user(self):
 		response = self.client.get(reverse('notification_view'))

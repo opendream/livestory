@@ -117,7 +117,7 @@ class UserProfile(models.Model):
                 return 'block'
 
     def update_view_notification(self):
-        self.notification_viewed = datetime.now()
+        self.notification_viewed = datetime.datetime.now()
         self.save()
 
     def get_total_blog_loved(self):
