@@ -4,7 +4,9 @@
 {% load tz %}
 
 {% block email_content %}
-{% if date %}<p>Here are your blog activities for {{ date }}.</p>{% endif %}
+{% if date %}
+<p>Here are your blog activities for {{ date }}.</p>
+{% endif %}
 <p>
 <table class="table table-striped table-list">
   <tbody>
@@ -20,23 +22,35 @@
     {% endfor %}
 
     {% for comment in comments %}
-    <tr class="action-comment">
-      <td class="avatar">
-        {% if comment.count_user_comments == 1 %}
-        <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user %}"><img src="{{ settings.SITE_DOMAIN }}/{{ comment.avatar|crop:'24x24' }}"/></a>
-        {% endif %}
-      </td>
-      <td class="middle">
-        {% if comment.count_user_comments == 1 %}
-        <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user }}/view/"><strong>{{ comment.user_fullname }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
-        {% else %}
-        <strong>{{ comment.count_user_comments }} people</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
-        {% endif %}
-      </td>
-    </tr>
+      {% if date %}
+        <!-- periodic mail notify {% endcomment -->
+        <tr class="action-comment">
+          <td class="avatar">
+            {% if comment.count_user_comments == 1 %}
+            <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user.id %}"><img src="{{ settings.SITE_DOMAIN }}/{{ comment.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
+            {% endif %}
+          </td>
+          <td class="middle">
+            {% if comment.count_user_comments == 1 %}
+            <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user.id }}/view/"><strong>{{ comment.user.get_profile.get_full_name }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
+            {% else %}
+            <strong>{{ comment.count_user_comments }} people</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <!-- instant mail notify {% endcomment -->
+        <tr class="action-comment">
+          <td class="avatar">
+            <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user.id %}"><img src="{{ settings.SITE_DOMAIN }}/{{ comment.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
+          </td>
+          <td class="middle">
+            <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user.id }}/view/"><strong>{{ comment.user.get_profile.get_full_name }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
+          </td>
+        </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 </table>
-
 </p>
 {% endblock %}

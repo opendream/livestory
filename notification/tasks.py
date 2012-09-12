@@ -41,7 +41,7 @@ def create_notify_message(user, love_list, comment_list, start_date, end_date):
     period_type = user.get_profile().notification_type
     date = start_date.strftime('%B %d, %Y')
     if period_type == -1:
-        subject = '[Oxfam Livestories] New activity on your story.'
+        subject = '[Oxfam Livestories] New activity on your photo.'
     elif period_type > 0:
         subject = 'Oxfam Livestories notifications %s update.' % period_type
         if period_type == 7:
