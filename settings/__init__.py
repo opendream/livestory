@@ -249,14 +249,14 @@ from datetime import timedelta
 CELERYBEAT_SCHEDULE = {
     # ###### Test
     # 'runs-every-10-seconds': {
-    #     'task': 'notification.tasks.send_notification_email',
+    #     'task': 'notification.tasks.send_periodic_notification_mail',
     #     'schedule': timedelta(seconds=20),
     #     'args': (16, 16)
     # },
 
     # ###### RUN EVERYDAY
     'runs-everyday': {
-        'task': 'notification.tasks.send_notification_email',
+        'task': 'notification.tasks.send_periodic_notification_mail',
         'schedule': timedelta(days=1),
     },
 }

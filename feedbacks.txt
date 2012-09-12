@@ -52,5 +52,5 @@ From Oxfam’s side
 		3. How many comments added per day/month 
 
 	User focused: 
-		1. Which user is the most active per month 
+		1. Which user is the most active per month (blog count)
 		2. Who has the most love 

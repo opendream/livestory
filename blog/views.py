@@ -797,7 +797,7 @@ def blog_search(request):
 
     return render(request, 'blog/blog_search.html', context)
 
-from notification.tasks import BlogCommentNotifyOwnerTask as notify_task
+from notification.tasks import send_comment_notification_mail as notify_task
 @login_required
 def add_blog_comment(request, blog_id):
     blog = get_object_or_404(Blog, id=blog_id)

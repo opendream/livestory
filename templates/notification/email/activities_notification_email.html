@@ -4,7 +4,7 @@
 {% load tz %}
 
 {% block email_content %}
-<p>Here are your blog activities for {{ date }}.</p>
+{% if date %}<p>Here are your blog activities for {{ date }}.</p>{% endif %}
 <p>
 <table class="table table-striped table-list">
   <tbody>
@@ -28,9 +28,9 @@
       </td>
       <td class="middle">
         {% if comment.count_user_comments == 1 %}
-        <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user }}/view/"><strong>{{ comment.user_fullname }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog %}">photo</a>.
+        <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user }}/view/"><strong>{{ comment.user_fullname }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
         {% else %}
-        <strong>{{ comment.count_user_comments }} people</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog %}">photo</a>.
+        <strong>{{ comment.count_user_comments }} people</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
         {% endif %}
       </td>
     </tr>
