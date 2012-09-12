@@ -225,7 +225,6 @@ CACHES = {
 # DJANGO-PRIVATE-FILES
 FILE_PROTECTION_METHOD = 'basic'
 
-
 # Allow users to download photo or not.
 # If this flag set to False then only admin and blog owner can download photo.
 ALLOW_USER_TO_DOWNLOAD_PHOTO = False
@@ -260,3 +259,6 @@ CELERYBEAT_SCHEDULE = {
         'schedule': timedelta(days=1),
     },
 }
+
+# GOOGLE ANALYTICS
+GOOGLE_ANALYTICS_MODEL = True

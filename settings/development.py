@@ -6,7 +6,7 @@ DEBUG = True
 
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
-INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
+INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar','google_analytics') 
 
 INTERNAL_IPS = ('127.0.0.1')
 
