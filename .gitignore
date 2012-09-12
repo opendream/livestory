@@ -11,3 +11,4 @@ settings/active.py
 
 #Celery
 celerybeat-schedule
+celerybeat.pid
