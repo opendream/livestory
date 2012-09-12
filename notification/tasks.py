@@ -61,7 +61,7 @@ def create_notify_message(user, love_list, comment_list, start_date, end_date):
     msg.attach_alternative(html_email_body, "text/html")
     return msg
 
-def notify_blog_owner(day):
+def periodic_notify_blog_owner(day):
     msg_list = []
     usr_list = get_periodic_notify_users(today=day)
     for user in usr_list:
@@ -84,11 +84,14 @@ def notify_blog_owner(day):
         profile.save()
     return msg_list
 
-def comment_notify_blog_owner(comment):
-    profile = comment.blog.user.get_profile()
+def instant_notify_blog_owner(event):
+    profile = event.blog.user.get_profile()
     notify_type = profile.notification_type
-    if (comment.user != comment.blog.user) and notify_type == -1:
-        return create_notify_message(comment.blog.user, [], [comment,], comment.post_date, None)
+    if (event.user != event.blog.user) and notify_type == -1:
+        if isinstance(event, Comment):
+            return create_notify_message(event.blog.user, [], [event], event.post_date, None)
+        elif isinstance(event, Love):
+            return create_notify_message(event.blog.user, [event], [], event.datetime, None)
 
 def _send_mail(message):
     try:
@@ -101,10 +104,10 @@ def _send_mail(message):
 
 @task()
 def send_periodic_notification_mail():
-    messages = notify_blog_owner(date.today())
+    messages = periodic_notify_blog_owner(date.today())
     for msg in messages:
         _send_mail(msg)
             
 @task
-def send_comment_notification_mail(comment):
-    _send_mail(comment_notify_blog_owner(comment))
+def send_instant_notification_mail(event):
+    _send_mail(instant_notify_blog_owner(event))

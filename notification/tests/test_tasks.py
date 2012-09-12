@@ -1,15 +1,16 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from notification.tasks import comment_notify_blog_owner as notify_task
-from notification.tasks import get_periodic_notify_users, notify_blog_owner 
+from notification.tasks import instant_notify_blog_owner as instant_notify
+from notification.tasks import periodic_notify_blog_owner as periodic_notify
+from notification.tasks import get_periodic_notify_users 
 from notification.tasks import get_blog_love_events, get_blog_comment_events
 from account.models import UserProfile
 from blog.models import Blog, Comment, Love
 from datetime import date, datetime, timedelta
 from tests import factory
 
-class TestNotificationTask(TestCase):
+class TestInstantNotificationTask(TestCase):
     fixtures = ['demo_data.json']
 
     def setUp(self):
@@ -20,8 +21,12 @@ class TestNotificationTask(TestCase):
             user=james, 
             blog=blog
         )
+        self.love = Love.objects.create(
+            user=james,
+            blog=blog
+        )
 
-    def test_immediate_notification_task_email_sent(self):
+    def test_instant_notification_task_email_sent(self):
         # set notification type to be immediately (-1), email sent
         last_notify_datetime = datetime.now() - timedelta(minutes=10)
         user_profile = self.comment.blog.user.get_profile()
@@ -29,17 +34,20 @@ class TestNotificationTask(TestCase):
         user_profile.next_notified = last_notify_datetime
         user_profile.save()
 
-        response = notify_task(self.comment)
+        response = instant_notify(self.comment)
         self.assertNotEquals(response, None)
 
-    def test_immediate_notification_task_email_not_sent(self):
+        response = instant_notify(self.love)
+        self.assertNotEquals(response, None)
+
+    def test_instant_notification_task_email_not_sent(self):
         # people comment on their own blog, email not sent
         comment2 = Comment.objects.create(
             comment = 'test comment 2',
             user = self.comment.blog.user,
             blog = self.comment.blog
         )
-        response = notify_task(self.comment)
+        response = instant_notify(self.comment)
         self.assertEquals(response, None)
 
         # set notification type to be weekly (7), email not sent
@@ -47,7 +55,10 @@ class TestNotificationTask(TestCase):
         user_profile.notification_type = 7
         user_profile.save()
 
-        response = notify_task(self.comment)
+        response = instant_notify(self.comment)
+        self.assertEquals(response, None)
+
+        response = instant_notify(self.love)
         self.assertEquals(response, None)
 
 class TestPeriodicNotificationTask(TestCase):
@@ -108,7 +119,7 @@ class TestPeriodicNotificationTask(TestCase):
         l.datetime=datetime(1999, 12, 31, 0, 0, 0)
         l.save()
 
-        response = notify_blog_owner(execute_date)
+        response = periodic_notify(execute_date)
         self.assertEquals(1, len(response))
 
         pf = User.objects.get(id=self.user1.id).get_profile()
@@ -127,7 +138,7 @@ class TestPeriodicNotificationTask(TestCase):
         l.datetime=datetime(1999, 12, 31, 0, 0, 0)
         l.save()
 
-        response = notify_blog_owner(execute_date)
+        response = periodic_notify(execute_date)
         self.assertEquals(1, len(response))
 
         pf = User.objects.get(id=self.user1.id).get_profile()
@@ -154,7 +165,7 @@ class TestPeriodicNotificationTask(TestCase):
         l.datetime=datetime(2000, 1, 1, 23, 59, 59)
         l.save()
 
-        response = notify_blog_owner(execute_date)
+        response = periodic_notify(execute_date)
         self.assertEquals(1, len(response))
 
         pf = User.objects.get(id=self.user1.id).get_profile()
@@ -181,7 +192,7 @@ class TestPeriodicNotificationTask(TestCase):
         l.datetime=datetime(2000, 1, 1, 23, 59, 59)
         l.save()
 
-        response = notify_blog_owner(execute_date)
+        response = periodic_notify(execute_date)
         self.assertEquals(1, len(response))
 
         pf = User.objects.get(id=self.user1.id).get_profile()
@@ -209,7 +220,7 @@ class TestPeriodicNotificationTask(TestCase):
         l.datetime=datetime(2000, 1, 1, 10, 10, 10)
         l.save()
 
-        response = notify_blog_owner(execute_date)
+        response = periodic_notify(execute_date)
         self.assertEquals(2, len(response))
 
         pf1 = User.objects.get(id=self.user1.id).get_profile()
@@ -240,7 +251,7 @@ class TestPeriodicNotificationTask(TestCase):
         l.datetime=datetime(2000, 1, 1, 10, 10, 10)
         l.save()
 
-        response = notify_blog_owner(execute_date)
+        response = periodic_notify(execute_date)
         self.assertEquals(2, len(response))
 
         pf1 = User.objects.get(id=self.user1.id).get_profile()

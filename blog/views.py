@@ -35,6 +35,7 @@ from models import *
 from forms import *
 from functions import remove_temporary_blog_image, remove_blog_image
 from functions import get_image_captured_device, get_image_captured_date
+from notification.tasks import send_instant_notification_mail as notify_task
 
 
 def blog_home(request):
@@ -539,7 +540,8 @@ def blog_love(request, blog_id):
             # Nofify
             if request.user != blog.user:
                 Notification(subject=request.user, action=1, blog=blog).save()
-        
+                notify_task(love)
+                
         if request.is_ajax():
             return HttpResponse(json.dumps(data))
         else:
@@ -797,7 +799,6 @@ def blog_search(request):
 
     return render(request, 'blog/blog_search.html', context)
 
-from notification.tasks import send_comment_notification_mail as notify_task
 @login_required
 def add_blog_comment(request, blog_id):
     blog = get_object_or_404(Blog, id=blog_id)
