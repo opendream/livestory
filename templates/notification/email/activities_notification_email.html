@@ -13,10 +13,10 @@
     {% for love in loves %}
     <tr class="action-loved">
       <td class="avatar">
-        <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view love.user %}"><img src="{{ settings.SITE_DOMAIN }}/{{ love.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
+        <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view love.user.id %}"><img src="{{ settings.SITE_DOMAIN }}/{{ love.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
       </td>
       <td class="middle">
-        <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ love.user }}/view/"><strong>{{ love.user.get_profile.get_full_name }}</strong></a> loved your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view love.blog %}">photo</a>.
+        <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ love.user }}/view/"><strong>{{ love.user.get_profile.get_full_name }}</strong></a> loved your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view love.blog.id %}">photo</a>.
       </td>
     </tr>
     {% endfor %}
@@ -27,7 +27,7 @@
         <tr class="action-comment">
           <td class="avatar">
             {% if comment.count_user_comments == 1 %}
-            <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user %}">
+            <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user.id %}">
               <img src="{{ settings.SITE_DOMAIN }}/{{ comment.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
             {% endif %}
           </td>
@@ -44,10 +44,10 @@
         <!-- instant mail notify {% endcomment -->
         <tr class="action-comment">
           <td class="avatar">
-            <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user %}"><img src="{{ settings.SITE_DOMAIN }}/{{ comment.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
+            <a href = "{{ settings.SITE_DOMAIN }}/{% url account_profile_view comment.user.id %}"><img src="{{ settings.SITE_DOMAIN }}/{{ comment.user.get_profile.get_avatar|crop:'24x24' }}"/></a>
           </td>
           <td class="middle">
-            <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user }}/view/"><strong>{{ comment.user.get_profile.get_full_name }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog %}">photo</a>.
+            <a href ="{{ settings.SITE_DOMAIN }}/account/profile/{{ comment.user }}/view/"><strong>{{ comment.user.get_profile.get_full_name }}</strong></a> commented on your <a href="{{ settings.SITE_DOMAIN }}/{% url blog_view comment.blog.id %}">photo</a>.
           </td>
         </tr>
       {% endif %}
