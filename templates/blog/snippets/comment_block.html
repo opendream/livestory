@@ -24,5 +24,7 @@
 <script type="text/javascript">
   $('#comment_post').bind('click', function() {
     if (!($('#id_comment').val())) return false;
+    var userLabel = "{{ user.get_profile.get_full_name}}" || "{{ user.email }}"
+    pushEvent(document.location.pathname,'comment',userLabel);
   });
 </script>

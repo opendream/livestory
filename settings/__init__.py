@@ -109,6 +109,9 @@ INSTALLED_APPS = (
     'djcelery',
     'djkombu',
     'private_files',
+
+    # analytics tool
+    'google_analytics',
 )
 
 LOGGING = {

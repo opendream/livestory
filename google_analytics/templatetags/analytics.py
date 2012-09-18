@@ -23,7 +23,7 @@ def do_get_analytics(parser, token):
         code = code[1:-1]
         current_site = None
     return AnalyticsNode(current_site, code)
-    
+
 class AnalyticsNode(template.Node):
     def __init__(self, site=None, code=None):
         self.site = site

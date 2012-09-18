@@ -300,3 +300,8 @@ $(function () {
 
     // End Filter =====================
 });
+
+// Google Analytics 
+function pushEvent(url, action, user) {
+    _gaq.push(['_trackEvent', url, action, user]); 
+};

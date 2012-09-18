@@ -68,6 +68,10 @@ $(document).ready(function() {
 
       // Update type.
       loveType = result.type;
+
+      // Google Analytics
+      // var userLabel = "{{ user.get_profile.get_full_name}}" || "{{ user.email }}"
+      // pushEvent(['blog', blogId].join('/'), loveType, userLabel);
     }
   };
   var getAjaxUrl = function() {
