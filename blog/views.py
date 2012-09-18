@@ -540,7 +540,7 @@ def blog_love(request, blog_id):
             # Nofify
             if request.user != blog.user:
                 Notification(subject=request.user, action=1, blog=blog).save()
-                notify_task(love)
+                notify_task.delay(love)
                 
         if request.is_ajax():
             return HttpResponse(json.dumps(data))
