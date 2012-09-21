@@ -21,8 +21,13 @@
 {% textcounter_js %}
 
 <script>
-$(document).ready(function () {
+$(document).ready(function() {
   initializeBlogImageUpload();
+  $('input[type=submit],[name=action]').first().bind("click",function(){
+    // Google Analytics
+    var userLabel = "{{ user.get_profile.get_full_name}}" || "{{ user.email }}"
+    pushEvent(['blog', 'create'].join('/'), attr('value'), userLabel);
+  });
 });
 </script>
 {% endblock %}

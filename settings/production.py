@@ -15,4 +15,7 @@ DATABASES = {
 }
 
 # DJANGO-PRIVATE-FILES
-FILE_PROTECTION_METHOD = 'nginx'
+FILE_PROTECTION_METHOD = 'basic'
+
+# DJANGO CELERY
+CELERYD_LOG_FILE='/web/livestory/logs/celery.log'
