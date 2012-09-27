@@ -55,11 +55,13 @@ def create_notify_message(user, love_list, comment_list, start_date, end_date):
     }
     text_email_body = render_to_string('%s.txt' % ACTIVITIES_EMAIL_TEMPLATE, email_context)
     html_email_body = render_to_string('%s.html' % ACTIVITIES_EMAIL_TEMPLATE, email_context)
-    msg = EmailMultiAlternatives(
-        subject, text_email_body, settings.EMAIL_HOST_USER, [user.email]
-    )
-    msg.attach_alternative(html_email_body, "text/html")
-    return msg
+    return {
+        'from': settings.EMAIL_HOST_USER,
+        'to': [user.email],
+        'subject': subject,
+        'text_email_body': text_email_body,
+        'html_email_body': html_email_body,
+    }
 
 def periodic_notify_blog_owner(day):
     msg_list = []
@@ -93,14 +95,21 @@ def instant_notify_blog_owner(event):
         elif isinstance(event, Love):
             return create_notify_message(event.blog.user, [event], [], event.datetime, None)
 
+from requests import async
+
 def _send_mail(message):
-    try:
-        message.send()
-        print "send notification SUCCESS"
-    except:
-        import sys
-        print sys.exc_info()
-        print "send notification FAILED"
+    async.map([
+        async.post('%s/messages' % settings.MAILGUN_API_DOMAIN,
+            auth=('api', settings.MAILGUN_API_KEY),
+            data={
+                'from'    : message['from'],
+                'to'      : message['to'],
+                'subject' : message['subject'],
+                'text'    : message['text_email_body'],
+                'html'    : message['html_email_body']
+            }
+        )
+    ])
 
 @task()
 def send_periodic_notification_mail():
