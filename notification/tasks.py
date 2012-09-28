@@ -41,9 +41,9 @@ def create_notify_message(user, love_list, comment_list, start_date, end_date):
     period_type = user.get_profile().notification_type
     date = start_date.strftime('%B %d, %Y')
     if period_type == -1:
-        subject = '[Oxfam Livestories] New activity on your photo.'
+        subject = 'New activity.'
     elif period_type > 0:
-        subject = 'Oxfam Livestories notifications %s update.' % period_type
+        subject = '%s update.' % period_type
         if period_type == 7:
             date += str(' to ' + end_date.strftime('%B %d, %Y'))
 
@@ -56,7 +56,7 @@ def create_notify_message(user, love_list, comment_list, start_date, end_date):
     text_email_body = render_to_string('%s.txt' % ACTIVITIES_EMAIL_TEMPLATE, email_context)
     html_email_body = render_to_string('%s.html' % ACTIVITIES_EMAIL_TEMPLATE, email_context)
     return {
-        'from': settings.EMAIL_HOST_USER,
+        'from': settings.DEFAULT_FROM_EMAIL,
         'to': [user.email],
         'subject': subject,
         'text_email_body': text_email_body,
