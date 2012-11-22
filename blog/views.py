@@ -229,7 +229,7 @@ def blog_create(request):
                 trash                 = 1 if action == 'trash' else 0
             )
             if action == 'publish':
-                blog.published = datetime.datetime.now() 
+                blog.published = datetime.datetime.now()
 
             blog.save()
             blog.save_tags(form.cleaned_data['tags'])
@@ -704,7 +704,7 @@ def blog_tags(request):
         
     title = 'Tagged with "%s"' % tags
     
-    return blog_all(request, title, {'tags__name': tags}, {'tags': tags}, reverse('blog_tags'), color='grey')
+    return blog_all(request, title, {'tags__name': tags}, {'tags': tags}, reverse('blog_tags'), color='grey', param='tags=%s' % tags)
 
 
 def blog_save_location(country, city):
