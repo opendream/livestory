@@ -198,20 +198,20 @@ $(document).ready(function() {
     
     <div class="field-draft form-backend">
       {% if is_draft %}
-      <button type="submit" class="btn-green" name="action" value="publish">Publish</button>
+      <input type="submit" class="btn-green" name="action" value="Publish" />
       {% else %}
-      <button type="submit" class="btn-green" name="action" value="update">Save changes</button>
+      <input type="submit" class="btn-green" name="action" value="Save changes" />
       {% endif %}
-      <button type="reset" class="btn-grey">Reset</button>
+      <input type="reset" class="btn-grey">Reset</input>
        or 
       {% if is_draft %}
-      <button type="submit" class="btn-text" name="action" value="draft">Save Draft</button>
+      <input type="submit" class="btn-text" name="action" value="Save Draft" />
       {% endif %}
       {% if blog.id %}
       {% if is_draft %}
       , 
       {% endif %}
-      <button type="submit" class="btn-text" name="action" value="trash">Move to Trash</button>
+      <input type="submit" class="btn-text" name="action" value="Move to Trash" />
       {% endif %}
     </div>
   </fieldset>

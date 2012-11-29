@@ -192,6 +192,9 @@ def blog_restore(request, blog_id):
 
     return redirect('blog_manage_trash')
 
+def get_blog_action(action_str):
+    act = [k for k in ['draft', 'publish', 'trash', 'change'] if k in action_str.lower()]
+    return act[0] if act else 'change'
 
 @login_required
 def blog_create(request):
@@ -200,7 +203,7 @@ def blog_create(request):
     if request.method == 'POST':
         form = ModifyBlogForm(None, request.POST)
         if form.is_valid():
-            action = request.POST.get('action', '')
+            action = get_blog_action(request.POST.get('action', ''))
 
             location, created = Location.objects.get_or_create(
                 city__iexact    = form.cleaned_data['city'],
@@ -386,8 +389,8 @@ def blog_edit(request, blog_id):
     if request.method == 'POST':
         form = ModifyBlogForm(blog, request.POST)
         if form.is_valid():
-            action = request.POST.get('action', '')
-
+            action = get_blog_action(request.POST.get('action', ''))
+            
             location, created = Location.objects.get_or_create(
                 city__iexact    = form.cleaned_data['city'],
                 country__iexact = form.cleaned_data['country'],
