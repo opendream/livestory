@@ -408,11 +408,14 @@ def blog_edit(request, blog_id):
             blog.allow_download = form.cleaned_data['allow_download']
             blog.category       = form.cleaned_data['category']
             blog.mood           = form.cleaned_data['mood']
-            blog.draft          = 1 if action == 'draft' else 0
-            blog.trash          = 1 if action == 'trash' else 0
-
-            if action == 'publish':
-                blog.published = datetime.datetime.now() 
+            
+            if action == 'trash':
+                blog.trash = 1
+            elif action == 'draft':
+                blog.draft = 1
+            elif action == 'publish':
+                blog.published = datetime.datetime.now()
+                blog.draft = 0
                 
             new_image_file = form.cleaned_data['image_file_name']
             if new_image_file and (new_image_file != image_file_name):
@@ -594,7 +597,7 @@ def blog_all(request, title='Latest Stories', filter={}, filter_text={}, url=Non
                                 depth=1
                             ).filter(
                                 **filter
-                            ).order_by('-published')
+                            ).order_by('-published', '-id')
     
     page_size = request.GET.get('page_size') or 8
    
