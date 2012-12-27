@@ -72,9 +72,11 @@ def get_image_captured_date(file_name):
         pass
 
     if _IMG_DATE_ORIGINAL in data:
-        return datetime.strptime(str(data[_IMG_DATE_ORIGINAL]), '%Y:%m:%d %H:%M:%S')
-    else:
-        return _get_image_creation_date(file_name)
+        try:
+            return datetime.strptime(str(data[_IMG_DATE_ORIGINAL]), '%Y:%m:%d %H:%M:%S')
+        except Exception, e:
+            pass
+    return _get_image_creation_date(file_name)
 
 def get_image_captured_device(image_name):
     data = {}
