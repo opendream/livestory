@@ -214,6 +214,7 @@ def blog_create(request):
             blog = Blog(
                 title                 = form.cleaned_data['title'],
                 description           = form.cleaned_data['description'],
+                photographer_name     = form.cleaned_data['photographer_name'],
                 related_url           = form.cleaned_data['related_url'],
                 download_url          = form.cleaned_data['download_url'],
                 user                  = request.user,
@@ -398,6 +399,7 @@ def blog_edit(request, blog_id):
 
             blog.title          = form.cleaned_data['title']
             blog.description    = form.cleaned_data['description']
+            blog.photographer_name    = form.cleaned_data['photographer_name']
             blog.related_url    = form.cleaned_data['related_url']
             blog.download_url    = form.cleaned_data['download_url']
             blog.location       = location
@@ -435,6 +437,7 @@ def blog_edit(request, blog_id):
             initial = {
                 'title'          : blog.title,
                 'description'    : blog.description,
+                'photographer_name' : blog.photographer_name,
                 'related_url'    : blog.related_url,
                 'download_url'   : blog.download_url,
                 'country'        : blog.location.country,

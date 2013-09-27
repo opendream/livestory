@@ -623,6 +623,16 @@
 		margin: 0 0 10px;
 		font-size: 18px;
 	}
+
+    .photographer-name {
+        color: #777;
+        font-style: italic;
+
+        em {
+            color: #444;
+            font-weight: bold;
+        }
+    }
 	
 	/* Blog Profile
 	---------------------------------------*/

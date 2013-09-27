@@ -109,6 +109,8 @@ $(document).ready(function() {
       
       <p class="block">{{ blog.description }}</p>
 
+      {% if blog.photographer_name %}<p class="photographer-name">Photo courtesy of <em>{{ blog.photographer_name }}</em></p>{% endif %}
+
       {% if blog.related_url %}<p class="block"><strong>Related Information:</strong> <a href="{{ blog.related_url }}">{{ blog.related_url }}</a></p>{% endif %}
 
       <span class="grey">{% if blog.published %} {{ blog.published|localtime|timeago }} {% endif %}</span>
