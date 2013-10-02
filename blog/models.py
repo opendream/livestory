@@ -77,7 +77,8 @@ class Blog(models.Model):
     category       = models.ForeignKey(Category)
     location       = models.ForeignKey(Location)
     tags           = TaggableManager()
-    
+
+    photographer_name = models.CharField(max_length=200, blank=True)
     image_captured_date   = models.DateTimeField(null=True, blank=True)
     image_captured_device = models.CharField(max_length=200)
     

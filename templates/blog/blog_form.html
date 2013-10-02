@@ -91,6 +91,17 @@ $(document).ready(function() {
         {% endif %}
       </div>
     </div>
+
+    <div class="field-photographer control-group{% if form.photographer_name.errors %} error{% endif %}">
+        <label class="control-label" for="id_photographer_name">Photographer</label>
+        <div class="controls">
+            {{ form.photographer_name }}
+            <p class="help-block">Not required.</p>
+            {% if form.photographer_name.errors %}
+                <span class="help-inline">{{ form.photographer_name.errors.as_text }}</span>
+            {% endif %}
+        </div>
+    </div>
     
     <div class="field-related-url control-group{% if form.related_url.errors %} error{% endif %}">
       <label class="control-label" for="id_description">Related Information</label>
