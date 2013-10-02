@@ -19,7 +19,7 @@ def send_notification_email():
 
     for user in user_profile:
         if user.notification_type > 0 and user.next_notified == datetime_imported.date.today():
-            send_to_emails = ['tarongpong@opendream.co.th'] if settings.DEBUG else [user.user.email]
+            send_to_emails = [user.user.email]
 
             start_date = user.next_notified - datetime_imported.timedelta(days=int(user.notification_type))
 
